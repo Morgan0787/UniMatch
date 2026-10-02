@@ -247,8 +247,13 @@ export default function Profile() {
                                                     <span className="text-sm text-slate-600">
                                                         {uni.tuition_min === 0 ? (
                                                             <span className="text-emerald-600 font-medium">{t('profile.freeTuition')}</span>
+                                                        ) : uni.tuition_min === null || uni.tuition_min === undefined ? (
+                                                            // A NULL tuition must not render as a bare "€/year":
+                                                            // that reads as a near-zero price, which is the same lie
+                                                            // as "Free". Same wording as the comparison table.
+                                                            <span className="text-slate-400 italic font-normal text-sm">Not published</span>
                                                         ) : (
-                                                            <>€{uni.tuition_min?.toLocaleString()}/{t('common.year')}</>
+                                                            <>€{uni.tuition_min.toLocaleString()}/{t('common.year')}</>
                                                         )}
                                                     </span>
                                                 </div>

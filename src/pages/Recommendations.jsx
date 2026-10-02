@@ -24,11 +24,10 @@ import { VERDICT, describeMissingChanceData, hasGpaData } from '@/lib/matching';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
 
 // Both cost inputs must be present before any cost total may be compared to a
-// student's budget. `normalizeUniversity` (`apiClient.js:92`) has already
-// coerced a NULL `living_cost_estimate` to 8000 upstream — that coercion is a
-// separate, known problem we are not touching here — but `tuition_min` keeps
-// its null, and that alone is enough to make an unknown cost look like the
-// cheapest option in the market.
+// student's budget or printed as a figure. `normalizeUniversity`
+// (`apiClient.js`) preserves null for both fields, so an unknown cost arrives
+// here as null and has to be refused rather than defaulted — the old
+// `(tuition_min || 0) + (living_cost_estimate || 8000)` invented both operands.
 function hasCostData(university) {
     return university.tuition_min !== null
         && university.tuition_min !== undefined
@@ -47,30 +46,29 @@ const RECOMMENDATION_LIMIT = 20;
 const RESERVED_UNSCORED_ROWS = 5;
 
 // Returns a 0-100 match score, or null when the row cannot be scored honestly.
-// null is not "0%" and not "we could not find the row": it means this
-// university publishes no GPA cutoff, so there is nothing to compare the
-// student's grades against. Returning null is what lets the call site render
-// the shared `unknown` state instead of a misleading percentage.
+// null is not "0%" and not "we could not find the row": it means either side of
+// the GPA comparison is missing — the university publishes no cutoff, or the
+// student has not given us their GPA — so there is nothing to compare grades
+// against. Returning null is what lets the call site render the shared
+// `unknown` state instead of a misleading percentage, and it is the same rule
+// `calculateChance` applies in src/lib/matching.js ("no verdict is possible").
 function calculateMatchScore(university, profile, countryWeights = {}) {
     let score = 0;
     let maxScore = 0;
     
     // GPA Match (25 points)
     maxScore += 25;
-    if (!profile.gpa) {
-        // The student has not told us their GPA. Neutral credit, not a match.
-        score += 12;
-    } else if (hasGpaData(university)) {
+    if (profile.gpa && hasGpaData(university)) {
         const gpaDiff = profile.gpa - university.min_gpa;
         if (gpaDiff >= 0.5) score += 25;
         else if (gpaDiff >= 0.2) score += 21;
         else if (gpaDiff >= 0) score += 17;
         else if (gpaDiff >= -0.2) score += 8;
     }
-    // Student GPA known but no published cutoff: this term is unscoreable, so it
-    // earns nothing. It must not fall through to `x - null`, which is `x - 0`
-    // and handed every all-null US row full marks. The null return below is
-    // what actually surfaces the gap to the student.
+    // Either side missing: this term is unscoreable, so it earns nothing. It must
+    // not fall through to `x - null`, which is `x - 0` and handed every all-null
+    // US row full GPA marks. The null return below is what actually surfaces the
+    // gap to the student.
     
     // IELTS Match (20 points)
     maxScore += 20;
@@ -166,11 +164,14 @@ function calculateMatchScore(university, profile, countryWeights = {}) {
         score += 5;
     }
     
-    // A missing GPA cutoff means the number above is not a match score: it is
-    // the other 9 terms with the single most admission-relevant term missing.
-    // Reporting it as a percentage is how ~1,944 universities with no data came
-    // to score 85-90%. Return null and let the caller show the unknown state.
-    if (!hasGpaData(university)) return null;
+    // A missing GPA cutoff *or* a missing student GPA means the number above is
+    // not a match score: it is the other 9 terms with the single most
+    // admission-relevant term missing. Reporting it as a percentage is how
+    // ~1,944 universities with no data came to score 85-90%, and it is how a
+    // student who never told us their GPA came to read "Good match · 72%" here
+    // while every other surface showed them "Not enough data". Return null and
+    // let the caller show the unknown state.
+    if (!profile.gpa || !hasGpaData(university)) return null;
 
     // Pre-existing bug found in passing, unrelated to null safety: maxScore
     // sums to 110 while the two bonuses above can add 10 more, so this ratio
@@ -310,7 +311,13 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                             <TrendingUp className="w-4 h-4 text-blue-500" />
                             <div>
                                 <p className="text-xs text-slate-500">{t('university.minGpa')}</p>
-                                <p className="font-semibold text-slate-800">{university.min_gpa?.toFixed(1)}</p>
+                                <p className="font-semibold text-slate-800">
+                                    {university.min_gpa === null || university.min_gpa === undefined ? (
+                                        <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                    ) : (
+                                        university.min_gpa.toFixed(1)
+                                    )}
+                                </p>
                             </div>
                         </div>
                         {university.required_ielts && (

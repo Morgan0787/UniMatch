@@ -20,22 +20,47 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from '@/lib/i18n';
+import { VERDICT, describeMissingChanceData, hasGpaData } from '@/lib/matching';
+import ChanceIndicator from '@/components/ui/ChanceIndicator';
 
+// Both cost inputs must be present before any cost total may be compared to a
+// student's budget. `normalizeUniversity` (`apiClient.js:92`) has already
+// coerced a NULL `living_cost_estimate` to 8000 upstream — that coercion is a
+// separate, known problem we are not touching here — but `tuition_min` keeps
+// its null, and that alone is enough to make an unknown cost look like the
+// cheapest option in the market.
+function hasCostData(university) {
+    return university.tuition_min !== null
+        && university.tuition_min !== undefined
+        && university.living_cost_estimate !== null
+        && university.living_cost_estimate !== undefined;
+}
+
+// Returns a 0-100 match score, or null when the row cannot be scored honestly.
+// null is not "0%" and not "we could not find the row": it means this
+// university publishes no GPA cutoff, so there is nothing to compare the
+// student's grades against. Returning null is what lets the call site render
+// the shared `unknown` state instead of a misleading percentage.
 function calculateMatchScore(university, profile, countryWeights = {}) {
     let score = 0;
     let maxScore = 0;
     
     // GPA Match (25 points)
     maxScore += 25;
-    if (profile.gpa) {
+    if (!profile.gpa) {
+        // The student has not told us their GPA. Neutral credit, not a match.
+        score += 12;
+    } else if (hasGpaData(university)) {
         const gpaDiff = profile.gpa - university.min_gpa;
         if (gpaDiff >= 0.5) score += 25;
         else if (gpaDiff >= 0.2) score += 21;
         else if (gpaDiff >= 0) score += 17;
         else if (gpaDiff >= -0.2) score += 8;
-    } else {
-        score += 12;
     }
+    // Student GPA known but no published cutoff: this term is unscoreable, so it
+    // earns nothing. It must not fall through to `x - null`, which is `x - 0`
+    // and handed every all-null US row full marks. The null return below is
+    // what actually surfaces the gap to the student.
     
     // IELTS Match (20 points)
     maxScore += 20;
@@ -57,14 +82,19 @@ function calculateMatchScore(university, profile, countryWeights = {}) {
     
     // Budget Match (18 points)
     maxScore += 18;
-    if (profile.budget_max) {
-        const totalCost = (university.tuition_min || 0) + (university.living_cost_estimate || 8000);
+    if (!profile.budget_max) {
+        // The student has not told us their budget. Neutral credit.
+        score += 9;
+    } else if (hasCostData(university)) {
+        const totalCost = university.tuition_min + university.living_cost_estimate;
         if (totalCost <= profile.budget_max * 0.8) score += 18;
         else if (totalCost <= profile.budget_max) score += 14;
         else if (totalCost <= profile.budget_max * 1.2) score += 7;
-    } else {
-        score += 9;
     }
+    // Budget known but cost unknown: the term is unscoreable, so it earns
+    // nothing. The old `(tuition_min || 0) + (living_cost_estimate || 8000)`
+    // invented both operands, which made unknown cost score as the cheapest
+    // possible cost and take the full 18 points.
     
     // Country/Region Preference (weighted, up to 20 points)
     maxScore += 20;
@@ -126,7 +156,16 @@ function calculateMatchScore(university, profile, countryWeights = {}) {
         score += 5;
     }
     
-    return Math.round((score / maxScore) * 100);
+    // A missing GPA cutoff means the number above is not a match score: it is
+    // the other 9 terms with the single most admission-relevant term missing.
+    // Reporting it as a percentage is how ~1,944 universities with no data came
+    // to score 85-90%. Return null and let the caller show the unknown state.
+    if (!hasGpaData(university)) return null;
+
+    // Pre-existing bug found in passing, unrelated to null safety: maxScore
+    // sums to 110 while the two bonuses above can add 10 more, so this ratio
+    // could return a percentage above 100.
+    return Math.min(100, Math.round((score / maxScore) * 100));
 }
 
 // Daily shuffle function - gives different order each day but consistent within the day
@@ -147,8 +186,15 @@ function getDailyShuffle(arr) {
     return shuffled;
 }
 
-function MatchScoreIndicator({ score }) {
+function MatchScoreIndicator({ score, missingReason }) {
     const { t } = useLanguage();
+
+    // null is "we cannot say", not a low score and not an absent one. Reuse the
+    // same neutral indicator the cards and modal use so a missing GPA cutoff
+    // reads identically everywhere.
+    if (score === null) {
+        return <ChanceIndicator chance={VERDICT.UNKNOWN} reason={missingReason} />;
+    }
     
     const getColor = () => {
         if (score >= 80) return 'text-emerald-600 bg-emerald-50 border-emerald-200';
@@ -177,7 +223,11 @@ function MatchScoreIndicator({ score }) {
 
 function RecommendationCard({ university, profile, matchScore, isSaved, onSave, onView, isComparing, onCompareToggle }) {
     const { t } = useLanguage();
-    const totalCost = (university.tuition_min || 0) + (university.living_cost_estimate || 8000);
+    // null when the cost is unknown, so no badge below can assert a budget fit
+    // from invented numbers.
+    const totalCost = hasCostData(university)
+        ? university.tuition_min + university.living_cost_estimate
+        : null;
     
     return (
         <motion.div
@@ -225,7 +275,10 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                     {/* Match Score */}
                     <div>
                         <p className="text-xs text-slate-500 mb-2">{t('recommendations.matchScore')}</p>
-                        <MatchScoreIndicator score={matchScore} />
+                        <MatchScoreIndicator
+                            score={matchScore}
+                            missingReason={describeMissingChanceData(university)?.note}
+                        />
                     </div>
                     
                     {/* Key Stats */}
@@ -273,12 +326,12 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                     <div className="pt-3 border-t space-y-1">
                         <p className="text-xs font-medium text-slate-700">{t('recommendations.whyRecommended')}</p>
                         <div className="flex flex-wrap gap-1.5">
-                            {profile.gpa && profile.gpa >= university.min_gpa && (
+                            {profile.gpa && hasGpaData(university) && profile.gpa >= university.min_gpa && (
                                 <Badge variant="outline" className="text-xs">
                                     ✓ {t('recommendations.gpaFit')}
                                 </Badge>
                             )}
-                            {profile.budget_max && totalCost <= profile.budget_max && (
+                            {profile.budget_max && totalCost !== null && totalCost <= profile.budget_max && (
                                 <Badge variant="outline" className="text-xs">
                                     ✓ {t('recommendations.withinBudget')}
                                 </Badge>
@@ -293,7 +346,9 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                                     ✓ {t('recommendations.topRanked')}
                                 </Badge>
                             )}
-                            {university.international_students_percent >= 15 && (
+                            {university.international_students_percent !== null
+                                && university.international_students_percent !== undefined
+                                && university.international_students_percent >= 15 && (
                                 <Badge variant="outline" className="text-xs">
                                     ✓ {t('recommendations.diverseCampus')}
                                 </Badge>
@@ -402,26 +457,41 @@ export default function Recommendations() {
     const recommendedUniversities = React.useMemo(() => {
         const withScores = universities.map(uni => ({
             ...uni,
-            matchScore: userProfile ? calculateMatchScore(uni, userProfile, countryWeights) : 50
+            // null, not a placeholder 50: with no profile there is no score to
+            // report. This branch is unreachable while the page gates on
+            // `userProfile` below, and `RecommendationCard` reads `profile.gpa`
+            // unconditionally, so the grid cannot render without one.
+            matchScore: userProfile ? calculateMatchScore(uni, userProfile, countryWeights) : null
         }));
         
-        // Sort by score
-        const sorted = withScores.sort((a, b) => b.matchScore - a.matchScore);
+        // Sort by score. A null score means "we cannot say", not "worst": keep
+        // unscored rows at the end instead of letting `null - 70` rank them as
+        // if they had scored below zero.
+        const sorted = withScores.sort((a, b) => {
+            if (a.matchScore === null) return b.matchScore === null ? 0 : 1;
+            if (b.matchScore === null) return -1;
+            return b.matchScore - a.matchScore;
+        });
         
         // Group by score tiers and shuffle within each tier for daily variety
+        const scored = sorted.filter(u => u.matchScore !== null);
         const tiers = {
-            excellent: sorted.filter(u => u.matchScore >= 80),
-            good: sorted.filter(u => u.matchScore >= 60 && u.matchScore < 80),
-            fair: sorted.filter(u => u.matchScore >= 40 && u.matchScore < 60),
-            consider: sorted.filter(u => u.matchScore < 40)
+            excellent: scored.filter(u => u.matchScore >= 80),
+            good: scored.filter(u => u.matchScore >= 60 && u.matchScore < 80),
+            fair: scored.filter(u => u.matchScore >= 40 && u.matchScore < 60),
+            consider: scored.filter(u => u.matchScore < 40)
         };
         
-        // Apply daily shuffle to each tier
+        // Apply daily shuffle to each tier. Unscored rows form their own tier:
+        // they are still shown, but never ranked above a row we can score, and
+        // `null >= 80` / `null < 40` are both false, so they belong in no
+        // numeric tier.
         const shuffledTiers = [
             ...getDailyShuffle(tiers.excellent),
             ...getDailyShuffle(tiers.good),
             ...getDailyShuffle(tiers.fair),
-            ...getDailyShuffle(tiers.consider)
+            ...getDailyShuffle(tiers.consider),
+            ...getDailyShuffle(sorted.filter(u => u.matchScore === null))
         ];
         
         return shuffledTiers.slice(0, 20); // Top 20 recommendations

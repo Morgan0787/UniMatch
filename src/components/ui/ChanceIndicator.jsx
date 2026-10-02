@@ -4,10 +4,11 @@ import { CheckCircle2, AlertCircle, XCircle, HelpCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
 // The `chance` prop is a `VERDICT` value from `src/lib/matching.js`. Those are
-// spelled out as bare literals here on purpose: nothing asserts the literal
-// strings in that module, so if a `VERDICT` value were ever renamed this
-// allowlist would simply stop matching and the badge would fall back to the
-// neutral "unknown" state instead of showing a confident, wrong verdict.
+// spelled out as bare literals here on purpose: importing `VERDICT` would pin
+// nothing, since `VERDICT.HIGH` would follow a rename silently. What does pin
+// them is scripts/check-matching.mjs, which asserts each literal string, so a
+// rename fails that script instead of quietly dropping every badge to the
+// neutral "unknown" state.
 const SCORABLE_VERDICTS = new Set(['high', 'medium', 'low']);
 
 export default function ChanceIndicator({ chance, size = "default", reason }) {
@@ -32,8 +33,10 @@ export default function ChanceIndicator({ chance, size = "default", reason }) {
             icon: XCircle,
             iconColor: "text-rose-400"
         },
-        // Not a verdict: this university has no published GPA to compare
-        // against, so the badge stays visually neutral and unscored.
+        // Not a verdict, and not one cause: `calculateChance` returns UNKNOWN
+        // from two guards — the student has no GPA, or the university
+        // publishes no cutoff to compare against. Either way there is nothing
+        // to score, so the badge stays visually neutral and unscored.
         unknown: {
             label: t('chance.unknown'),
             color: "bg-slate-50 text-slate-600 border-slate-200",

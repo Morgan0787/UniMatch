@@ -34,6 +34,32 @@ function test(name, run) {
   }
 }
 
+// Contract on the public string surface. Every other assertion in this file
+// compares through `VERDICT.*`, so a rename of any value here would leave them
+// all green while `ChanceIndicator` — which keys its config off these literals
+// rather than importing them — stopped matching and fell back to the neutral
+// "unknown" badge. `src/lib/**` and `ChanceIndicator.jsx` are both excluded
+// from ESLint and tsc, so these four assertions are the only gate on the
+// spelling of these strings. Numbered `V` to leave the 1-11 behaviour
+// assertions untouched.
+console.log('VERDICT string surface');
+
+test('V1. VERDICT.HIGH is the literal "high"', () => {
+  assert.equal(VERDICT.HIGH, 'high');
+});
+
+test('V2. VERDICT.MEDIUM is the literal "medium"', () => {
+  assert.equal(VERDICT.MEDIUM, 'medium');
+});
+
+test('V3. VERDICT.LOW is the literal "low"', () => {
+  assert.equal(VERDICT.LOW, 'low');
+});
+
+test('V4. VERDICT.UNKNOWN is the literal "unknown"', () => {
+  assert.equal(VERDICT.UNKNOWN, 'unknown');
+});
+
 console.log('calculateChance');
 
 test('1. US row with min_gpa null returns UNKNOWN, not a fabricated chance', () => {
@@ -105,4 +131,4 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log('\nAll 11 assertion groups passed.');
+console.log('\nAll 15 assertion groups passed.');

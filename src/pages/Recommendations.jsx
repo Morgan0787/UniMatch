@@ -512,9 +512,13 @@ export default function Recommendations() {
         // Cut the candidate pool down to the quota before shuffling. `unscored`
         // is ~1,944 rows and the quota is 5, so shuffling the whole set would
         // copy and Fisher-Yates all of them on every recompute just to pick
-        // five; the sorted tail is the same pool every time, so the daily seed
-        // still rotates which of them appear. `slice` yields fewer when fewer
-        // exist, and `getDailyShuffle([])` is `[]`.
+        // five. `sort` is stable and the null-last comparator above leaves the
+        // unscored rows in a fixed order at the tail, so `slice` picks the same
+        // five rows every load for a given dataset: the daily seed permutes
+        // their order within the reserved slots, not which rows appear.
+        // Widening the pool is what would add variety, and it would reintroduce
+        // the full-set shuffle this slice exists to avoid. `slice` yields fewer
+        // when fewer exist, and `getDailyShuffle([])` is `[]`.
         const unscored = sorted.filter(u => u.matchScore === null);
         const reservedUnscored = getDailyShuffle(unscored.slice(0, RESERVED_UNSCORED_ROWS));
         

@@ -1,9 +1,16 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
-import { CheckCircle2, AlertCircle, XCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, XCircle, HelpCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 
-export default function ChanceIndicator({ chance, size = "default" }) {
+// The `chance` prop is a `VERDICT` value from `src/lib/matching.js`. Those are
+// spelled out as bare literals here on purpose: nothing asserts the literal
+// strings in that module, so if a `VERDICT` value were ever renamed this
+// allowlist would simply stop matching and the badge would fall back to the
+// neutral "unknown" state instead of showing a confident, wrong verdict.
+const SCORABLE_VERDICTS = new Set(['high', 'medium', 'low']);
+
+export default function ChanceIndicator({ chance, size = "default", reason }) {
     const { t } = useLanguage();
     
     const config = {
@@ -24,10 +31,22 @@ export default function ChanceIndicator({ chance, size = "default" }) {
             color: "bg-rose-50 text-rose-600 border-rose-200",
             icon: XCircle,
             iconColor: "text-rose-400"
+        },
+        // Not a verdict: this university has no published GPA to compare
+        // against, so the badge stays visually neutral and unscored.
+        unknown: {
+            label: t('chance.unknown'),
+            color: "bg-slate-50 text-slate-600 border-slate-200",
+            icon: HelpCircle,
+            iconColor: "text-slate-400"
         }
     };
 
-    const { label, color, icon: Icon, iconColor } = config[chance] || config.medium;
+    // Only the three real verdicts may be rendered as a verdict. Anything else
+    // - a typo, a stale caller, or a missing `chance` prop - resolves to
+    // `unknown` rather than silently reporting "Medium Chance".
+    const { label, color, icon: Icon, iconColor } =
+        config[SCORABLE_VERDICTS.has(chance) ? chance : 'unknown'];
 
     return (
         <div className={cn(
@@ -38,6 +57,7 @@ export default function ChanceIndicator({ chance, size = "default" }) {
         )}>
             <Icon className={cn("w-4 h-4", iconColor, size === "sm" && "w-3 h-3")} />
             <span>{label}</span>
+            {reason && <span className="sr-only">{reason}</span>}
         </div>
     );
 }

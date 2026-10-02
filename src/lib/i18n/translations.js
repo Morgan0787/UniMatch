@@ -219,6 +219,7 @@ const en = {
     high: 'High Chance',
     medium: 'Medium Chance',
     low: 'Low Chance',
+    unknown: 'Not enough data',
   },
   common: {
     year: 'year',
@@ -490,6 +491,7 @@ const ru = {
     high: 'Высокий шанс',
     medium: 'Средний шанс',
     low: 'Низкий шанс',
+    unknown: 'Недостаточно данных',
   },
   common: {
     year: 'год',
@@ -761,6 +763,7 @@ const uz = {
     high: 'Yuqori ehtimol',
     medium: 'O‘rtacha ehtimol',
     low: 'Past ehtimol',
+    unknown: 'Maʼlumot yetarli emas',
   },
   common: {
     year: 'yil',

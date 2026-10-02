@@ -13,8 +13,38 @@ import UniversityCard from '@/components/search/UniversityCard';
 import UniversityDetailModal from '@/components/search/UniversityDetailModal';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
 import { useLanguage } from '@/lib/i18n';
+import { hasGpaData } from '@/lib/matching';
 
 const DEFAULT_FILTERS = { gpa: 3.0, ielts: 0, topikLevel: "Not taken", budget: 15000, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
+
+// Orders universities by their published GPA cutoff, ascending — equivalently by
+// descending GPA gap, so the least selective cutoff leads and the most
+// selective trails. This is the ordering the previous inline comparators
+// produced (`(gpa - b.min_gpa) - (gpa - a.min_gpa)` is algebraically
+// `a.min_gpa - b.min_gpa`), and it is deliberately unchanged.
+//
+// `gpa - null` is `gpa`, i.e. a cutoff of 0, so sorting straight on the gap
+// treated "no published cutoff" as the *least* selective cutoff of all and
+// ranked all ~1,944 College Scorecard US rows at the very top of the results,
+// for every student. A missing cutoff is not a cutoff of 0: partition on
+// `hasGpaData` and only compare inside the scored partition, so unknown rows
+// sort last without their `min_gpa` ever being subtracted.
+//
+// The comparator is a total order. Two rows in the same partition with the same
+// key return 0 rather than NaN, which would make sort behavior implementation-
+// defined and could scramble the list. NaN cannot arise from the arithmetic
+// either: `apiClient`'s `asNullableNumber` gives us either null or a finite
+// number for `min_gpa`, and `normalizeFilters` / the GPA slider give us a finite
+// `gpa`.
+const byGpaGap = (gpa) => (a, b) => {
+    const aHasGpa = hasGpaData(a);
+    const bHasGpa = hasGpaData(b);
+    if (!aHasGpa || !bHasGpa) {
+        if (aHasGpa === bHasGpa) return 0;
+        return aHasGpa ? -1 : 1;
+    }
+    return (gpa - b.min_gpa) - (gpa - a.min_gpa);
+};
 
 const toNumber = (value, fallback) => {
     const normalized = typeof value === 'string' ? Number(value.replace(/,/g, '').trim()) : Number(value);
@@ -98,14 +128,14 @@ export default function Search() {
             filteredUniversities.forEach(uni => { if (!byCountry[uni.country]) byCountry[uni.country] = []; byCountry[uni.country].push(uni); });
             const balanced = []; const remaining = [];
             Object.values(byCountry).forEach(countryUnis => {
-                const sorted = [...countryUnis].sort((a, b) => (filters.gpa - b.min_gpa) - (filters.gpa - a.min_gpa));
+                const sorted = [...countryUnis].sort(byGpaGap(filters.gpa));
                 balanced.push(...sorted.slice(0, 4)); remaining.push(...sorted.slice(4));
             });
             const shuffled = balanced.sort(() => Math.random() - 0.5);
-            const sortedRemaining = remaining.sort((a, b) => (filters.gpa - b.min_gpa) - (filters.gpa - a.min_gpa));
+            const sortedRemaining = remaining.sort(byGpaGap(filters.gpa));
             return [...shuffled, ...sortedRemaining];
         }
-        return [...filteredUniversities].sort((a, b) => (filters.gpa - b.min_gpa) - (filters.gpa - a.min_gpa));
+        return [...filteredUniversities].sort(byGpaGap(filters.gpa));
     })();
 
     const handleSave = async (universityId) => {

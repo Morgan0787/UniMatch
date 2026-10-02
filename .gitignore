@@ -36,3 +36,6 @@ dist-ssr
 # temp/cache
 .tmp
 .cache
+
+# Agent scratch (superpowers ledgers, task briefs, review diff packages)
+.superpowers

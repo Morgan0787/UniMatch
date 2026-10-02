@@ -1,10 +1,17 @@
 /**
  * matching.js
  *
- * Pure, framework-free admission-chance scoring. Intended end state: every
- * surface that ranks a university against a student's GPA / IELTS / TOPIK
- * shares this one implementation, so the verdict cannot drift between them.
- * Call sites migrate onto it separately; nothing in the app imports it yet.
+ * Pure, framework-free admission-chance scoring. Every surface that ranks a
+ * university against a student's GPA / IELTS / TOPIK now shares this one
+ * implementation, so the verdict cannot drift between them: UniversityCard,
+ * UniversityDetailModal, ComparisonModal, Search, Profile and Recommendations
+ * all import it.
+ *
+ * `src/pages/Recommendations.jsx` keeps its own `calculateMatchScore` (a
+ * weighted 0-100 blend across nine terms, not a verdict) but now returns null
+ * under the same two conditions this module returns UNKNOWN, so a student with
+ * no GPA sees "Not enough data" everywhere instead of a percentage here and an
+ * unknown verdict everywhere else.
  *
  * NULL SAFETY: the ~1,944 US rows imported via the College Scorecard API carry
  * `min_gpa = NULL` because that source publishes no GPA cutoff. Per

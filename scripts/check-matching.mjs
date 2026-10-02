@@ -3,11 +3,12 @@
  *
  * Standalone assertions for src/lib/matching.js.
  *
- * This repo has no test runner, and src/lib/** is excluded from both ESLint
- * (eslint.config.js ignores) and TypeScript (jsconfig.json exclude), so this
- * file is the only automated guard on the admission-chance scoring. Run it:
+ * This repo has no test runner, and ESLint applies no rules to src/lib/**
+ * (its config globs never match those paths), so this file is the only
+ * automated guard on the admission-chance scoring. TypeScript does check
+ * src/lib/** via imports, but it reports types, not behaviour. Run it:
  *
- *   node scripts/check-matching.mjs
+ *   npm run check:matching
  *
  * Must resolve under bare Node: relative imports only, no `@/` alias.
  */
@@ -38,10 +39,10 @@ function test(name, run) {
 // compares through `VERDICT.*`, so a rename of any value here would leave them
 // all green while `ChanceIndicator` — which keys its config off these literals
 // rather than importing them — stopped matching and fell back to the neutral
-// "unknown" badge. `src/lib/**` and `ChanceIndicator.jsx` are both excluded
-// from ESLint and tsc, so these four assertions are the only gate on the
-// spelling of these strings. Numbered `V` to leave the 1-11 behaviour
-// assertions untouched.
+// "unknown" badge. ESLint applies no rules to either path, and nothing pins the
+// label strings `ChanceIndicator` looks up, so these four assertions are the only
+// gate on the spelling of these strings. Numbered `V` to leave the 1-11
+// behaviour assertions untouched.
 console.log('VERDICT string surface');
 
 test('V1. VERDICT.HIGH is the literal "high"', () => {

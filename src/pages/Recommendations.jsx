@@ -235,7 +235,11 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                             <div>
                                 <p className="text-xs text-slate-500">{t('university.tuition')}</p>
                                 <p className="font-semibold text-slate-800">
-                                    {university.tuition_min === 0 ? t('university.free') : `€${university.tuition_min.toLocaleString()}`}
+                                    {university.tuition_min === 0 ? t('university.free') : university.tuition_min === null || university.tuition_min === undefined ? (
+                                        <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                    ) : (
+                                        `€${university.tuition_min.toLocaleString()}`
+                                    )}
                                 </p>
                             </div>
                         </div>

@@ -11,6 +11,7 @@ import {
     GraduationCap, Award, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
+import { calculateChance, describeMissingChanceData } from '@/lib/matching';
 import { useLanguage } from '@/lib/i18n';
 
 export default function ComparisonModal({ universities, isOpen, onClose, onRemove, userProfile }) {
@@ -279,6 +280,8 @@ Which university is the best match and why? Consider their qualifications, budge
                                             <p className="font-semibold text-slate-800">
                                                 {uni.tuition_min === 0 ? (
                                                     <span className="text-emerald-600">Free</span>
+                                                ) : uni.tuition_min === null || uni.tuition_min === undefined ? (
+                                                    <span className="text-slate-400 italic font-normal text-sm">Not published</span>
                                                 ) : (
                                                     `€${uni.tuition_min.toLocaleString()}`
                                                 )}
@@ -295,7 +298,13 @@ Which university is the best match and why? Consider their qualifications, budge
                                     </td>
                                     {universities.map((uni, i) => (
                                         <td key={i} className="p-4 text-center">
-                                            <p className="font-semibold text-slate-800">{uni.min_gpa.toFixed(1)}</p>
+                                            <p className="font-semibold text-slate-800">
+                                                {uni.min_gpa === null || uni.min_gpa === undefined ? (
+                                                    <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                                ) : (
+                                                    uni.min_gpa.toFixed(1)
+                                                )}
+                                            </p>
                                         </td>
                                     ))}
                                 </tr>
@@ -353,27 +362,15 @@ Which university is the best match and why? Consider their qualifications, budge
                                             Your Chance
                                         </td>
                                         {universities.map((uni, i) => {
-                                            let score = 0;
-                                            const gpaDiff = userProfile.gpa - uni.min_gpa;
-                                            if (gpaDiff >= 0.3) score += 60;
-                                            else if (gpaDiff >= -0.2) score += 40;
-                                            else score += 20;
-                                            
-                                            if (uni.required_ielts) {
-                                                if (userProfile.english_proficiency === 0) score += 0;
-                                                else if (userProfile.english_proficiency >= uni.required_ielts) score += 40;
-                                                else if (userProfile.english_proficiency >= uni.required_ielts - 0.5) score += 20;
-                                                else score += 0;
-                                            } else {
-                                                score += 40;
-                                            }
-                                            
-                                            const chance = score >= 80 ? 'high' : score >= 50 ? 'medium' : 'low';
-                                            
+                                            // Shared scoring, so the tray cannot disagree with
+                                            // the card it was opened from. Returns 'unknown'
+                                            // when the row has no published GPA to compare.
+                                            const chance = calculateChance(uni, userProfile.gpa, userProfile.english_proficiency, userProfile.topikLevel);
+
                                             return (
                                                 <td key={i} className="p-4 text-center">
                                                     <div className="flex justify-center">
-                                                        <ChanceIndicator chance={chance} size="sm" />
+                                                        <ChanceIndicator chance={chance} reason={describeMissingChanceData(uni)?.note} size="sm" />
                                                     </div>
                                                 </td>
                                             );

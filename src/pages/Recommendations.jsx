@@ -36,6 +36,16 @@ function hasCostData(university) {
         && university.living_cost_estimate !== undefined;
 }
 
+// How many universities this page shows.
+const RECOMMENDATION_LIMIT = 20;
+
+// How many of those slots are held back for rows we cannot score, so that a
+// university with no published GPA cutoff still reaches the student as an
+// honest "Not enough data" row instead of being ranked away. Only ~24 of
+// ~1,968 rows publish a cutoff, so without a reservation the scored tiers
+// would fill every slot and no unknown row would ever render.
+const RESERVED_UNSCORED_ROWS = 5;
+
 // Returns a 0-100 match score, or null when the row cannot be scored honestly.
 // null is not "0%" and not "we could not find the row": it means this
 // university publishes no GPA cutoff, so there is nothing to compare the
@@ -482,19 +492,39 @@ export default function Recommendations() {
             consider: scored.filter(u => u.matchScore < 40)
         };
         
-        // Apply daily shuffle to each tier. Unscored rows form their own tier:
-        // they are still shown, but never ranked above a row we can score, and
-        // `null >= 80` / `null < 40` are both false, so they belong in no
-        // numeric tier.
+        // Apply daily shuffle to each score tier
         const shuffledTiers = [
             ...getDailyShuffle(tiers.excellent),
             ...getDailyShuffle(tiers.good),
             ...getDailyShuffle(tiers.fair),
-            ...getDailyShuffle(tiers.consider),
-            ...getDailyShuffle(sorted.filter(u => u.matchScore === null))
+            ...getDailyShuffle(tiers.consider)
         ];
         
-        return shuffledTiers.slice(0, 20); // Top 20 recommendations
+        // Rows we cannot score honestly — no published GPA cutoff, so nothing to
+        // compare the student's grades against — are not ranked, but they are
+        // also not hidden. The product decision is to show "Not enough data"
+        // rather than drop these universities from the list, which needs
+        // reserved room: only ~24 of ~1,968 rows publish a cutoff, so letting
+        // the scored tiers take the whole slice would silently exclude all
+        // ~1,944 others and make the unknown state unreachable on this page.
+        const scoredSlots = Math.max(RECOMMENDATION_LIMIT - RESERVED_UNSCORED_ROWS, 0);
+        
+        // Cut the candidate pool down to the quota before shuffling. `unscored`
+        // is ~1,944 rows and the quota is 5, so shuffling the whole set would
+        // copy and Fisher-Yates all of them on every recompute just to pick
+        // five; the sorted tail is the same pool every time, so the daily seed
+        // still rotates which of them appear. `slice` yields fewer when fewer
+        // exist, and `getDailyShuffle([])` is `[]`.
+        const unscored = sorted.filter(u => u.matchScore === null);
+        const reservedUnscored = getDailyShuffle(unscored.slice(0, RESERVED_UNSCORED_ROWS));
+        
+        // Scored matches keep the leading slots in score order; the reserved
+        // unknown rows follow them, so an unscored row can never displace a
+        // genuinely scored match.
+        return [
+            ...shuffledTiers.slice(0, scoredSlots),
+            ...reservedUnscored
+        ].slice(0, RECOMMENDATION_LIMIT);
     }, [universities, userProfile, countryWeights]);
     
     const compareUniversities = universities.filter(uni => compareList.includes(uni.id));

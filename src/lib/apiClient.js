@@ -36,11 +36,6 @@ const asObject = (value) => {
   return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
 }
 
-const asNumber = (value, fallback = 0) => {
-  const normalized = typeof value === 'string' ? Number(value.replace(/,/g, '').trim()) : Number(value)
-  return Number.isFinite(normalized) ? normalized : fallback
-}
-
 const asNullableNumber = (value) => {
   if (value === null || value === undefined || value === '') return null
   const normalized = typeof value === 'string' ? Number(value.replace(/,/g, '').trim()) : Number(value)
@@ -82,14 +77,23 @@ const normalizeUniversity = (university) => {
     degree_levels: asArray(row.degree_levels),
     notable_programs: asArray(row.notable_programs),
     preferred_languages: asArray(row.preferred_languages),
-    // FIX (2026-07-26): these three used to fall back to 0 via asNumber(x, 0),
-    // which made every US university with a NULL min_gpa show "GPA 0.0" and
+    // FIX (2026-07-26): these three used to fall back to 0 via an `asNumber(x, 0)`
+    // helper, which made every US university with a NULL min_gpa show "GPA 0.0" and
     // every university with a NULL tuition_min show as "Free". Using
     // asNullableNumber preserves null so EstimatedField / the "Not published"
     // UI branch can do its job instead of a fake zero looking like real data.
+    //
+    // living_cost_estimate was the same defect with a different number: it used
+    // `asNumber(x, 8000)`, so a NULL became the literal 8000 upstream and every
+    // cost surface downstream had a real figure to print with no data behind it
+    // (~1,944 College Scorecard rows). It now preserves null like the others,
+    // which leaves `asNumber` with no call sites — deliberately not reinstated:
+    // defaulting a missing field to a plausible number is the defect, not the fix.
+    // Consumers must null-check both cost fields before doing arithmetic — see
+    // hasCostData() in src/pages/Recommendations.jsx.
     tuition_min: asNullableNumber(row.tuition_min),
     tuition_max: asNullableNumber(row.tuition_max),
-    living_cost_estimate: asNumber(row.living_cost_estimate, 8000),
+    living_cost_estimate: asNullableNumber(row.living_cost_estimate),
     min_gpa: asNullableNumber(row.min_gpa),
     required_ielts: asNullableNumber(row.required_ielts),
     international_students_percent: asNullableNumber(row.international_students_percent),

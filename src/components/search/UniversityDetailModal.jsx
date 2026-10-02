@@ -24,13 +24,24 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
     if (!university) return null;
     
     const chance = calculateChance(university, userGpa, userIelts, userTopik);
-    const totalCost = (university.tuition_min || 0) + (university.living_cost_estimate || 8000);
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix).
     // Also show tuition_max as a range when it differs from tuition_min, instead of
     // dropping that data entirely.
     const hasTuitionMin = university.tuition_min !== null && university.tuition_min !== undefined;
     const hasTuitionMax = university.tuition_max !== null && university.tuition_max !== undefined && university.tuition_max !== university.tuition_min;
+    const hasLivingCost = university.living_cost_estimate !== null && university.living_cost_estimate !== undefined;
+
+    // A total is only a total when both operands are real. The old
+    // `(tuition_min || 0) + (living_cost_estimate || 8000)` printed a confident
+    // figure for every row: a NULL tuition became 0 and a NULL living cost became
+    // 8000, so the ~1,944 College Scorecard rows with neither published a €8,000
+    // "Total Estimated Cost per Year" in the largest type on the page. Same rule
+    // as `hasCostData` in src/pages/Recommendations.jsx — see also the living-cost
+    // tile below, which used the same fabricated 8000.
+    const totalCost = hasTuitionMin && hasLivingCost
+        ? university.tuition_min + university.living_cost_estimate
+        : null;
 
     // Generic US fallbacks (2026-07-26): US universities import (College Scorecard)
     // has no visa_info / min_gpa at all. Rather than a blank "not available", show
@@ -122,7 +133,11 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     <Building2 className="w-4 h-4 text-blue-500 mb-1" />
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.livingCost')}</p>
                                     <p className="font-semibold text-slate-800 text-base truncate">
-                                        €{university.living_cost_estimate?.toLocaleString() || "8,000"}/{t('common.year')}
+                                        {hasLivingCost ? (
+                                            <>€{university.living_cost_estimate.toLocaleString()}/{t('common.year')}</>
+                                        ) : (
+                                            <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                        )}
                                     </p>
                                 </div>
                                 <div className="p-3 bg-white border border-slate-100 rounded-xl">
@@ -155,7 +170,13 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                         <p className="text-sm text-indigo-600 font-medium">{t('university.totalCost')}</p>
                                         <p className="text-xs text-indigo-400 mt-0.5">{t('university.totalCostDesc')}</p>
                                     </div>
-                                    <p className="text-2xl font-bold text-indigo-700">€{totalCost.toLocaleString()}</p>
+                                    <p className="text-2xl font-bold text-indigo-700">
+                                        {totalCost === null ? (
+                                            <span className="text-base text-slate-400 italic font-normal">Not published</span>
+                                        ) : (
+                                            <>€{totalCost.toLocaleString()}</>
+                                        )}
+                                    </p>
                                 </div>
                             </div>
 

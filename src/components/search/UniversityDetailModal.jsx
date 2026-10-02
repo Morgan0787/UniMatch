@@ -16,67 +16,7 @@ import EstimatedField from '@/components/ui/EstimatedField';
 import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { US_GENERIC_VISA_INFO, US_GPA_HOLISTIC_NOTE } from '@/lib/usGenericInfo';
-
-function calculateChance(university, userGpa, userIelts, userTopik) {
-    if (!userGpa) return 'medium';
-    
-    let score = 0;
-    const isKorean = university.country === "South Korea";
-    
-    // GPA score (50% weight for Korean unis with TOPIK, 60% otherwise)
-    const gpaWeight = isKorean && university.topikLevel ? 50 : 60;
-    const gpaDiff = userGpa - university.min_gpa;
-    if (gpaDiff >= 0.3) score += gpaWeight;
-    else if (gpaDiff >= -0.2) score += gpaWeight * 0.67;
-    else score += gpaWeight * 0.33;
-    
-    // Language score (IELTS or TOPIK)
-    if (isKorean && university.topikLevel) {
-        // TOPIK scoring (30% weight)
-        const topikLevels = { "Not taken": 0, "TOPIK 1": 1, "TOPIK 2": 2, "TOPIK 3": 3, "TOPIK 4": 4, "TOPIK 5": 5, "TOPIK 6": 6 };
-        const userLevel = topikLevels[userTopik] || 0;
-        const requiredLevel = parseInt(university.topikLevel.split(' ')[1]) || 0;
-        
-        if (userLevel === 0) {
-            score += 0; // No TOPIK
-        } else if (userLevel >= requiredLevel + 1) {
-            score += 30;
-        } else if (userLevel >= requiredLevel) {
-            score += 25;
-        } else if (userLevel >= requiredLevel - 1) {
-            score += 10;
-        } else {
-            score += 0;
-        }
-        
-        // IELTS for Korean unis (20% weight)
-        if (university.required_ielts) {
-            if (userIelts >= university.required_ielts) score += 20;
-            else if (userIelts >= university.required_ielts - 0.5) score += 10;
-        } else {
-            score += 20;
-        }
-    } else {
-        // Standard IELTS scoring (40% weight)
-        if (university.required_ielts) {
-            if (userIelts === 0) {
-                score += 0;
-            } else if (userIelts >= university.required_ielts) {
-                score += 40;
-            } else if (userIelts >= university.required_ielts - 0.5) {
-                score += 20;
-            } else {
-                score += 0;
-            }
-        } else {
-            score += 40;
-        }
-    }
-    
-    if (score >= 80) return 'high';
-    if (score >= 50) return 'medium';
-    return 'low';
-}
+import { calculateChance, describeMissingChanceData } from '@/lib/matching';
 
 export default function UniversityDetailModal({ university, isOpen, onClose, userGpa, userIelts, userTopik, isSaved, onSave }) {
     const { t } = useLanguage();
@@ -114,7 +54,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl">
                         <div>
                             <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
-                            <ChanceIndicator chance={chance} size="lg" />
+                            <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="lg" />
                             {university.required_ielts && userIelts > 0 && userIelts < university.required_ielts && (
                                 <p className="text-xs text-amber-600 mt-1">
                                     ⚠ {t('university.ieltsBelow')} ({userIelts} / {university.required_ielts})

@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import ProfileBuilder from '@/components/profile/ProfileBuilder';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
 import { useLanguage } from '@/lib/i18n';
+import { calculateChance, describeMissingChanceData } from '@/lib/matching';
 
 export default function Profile() {
     const { t } = useLanguage();
@@ -113,69 +114,6 @@ export default function Profile() {
                 />
             </div>
         );
-    }
-
-    function calculateChance(university) {
-        if (!profile?.gpa) return 'medium';
-
-        let score = 0;
-        const userIelts = profile?.english_proficiency || 0;
-        const userTopik = profile?.topikLevel || "Not taken";
-        const isKorean = university.country === "South Korea";
-
-        // GPA score (50% weight for Korean unis with TOPIK, 60% otherwise)
-        const gpaWeight = isKorean && university.topikLevel ? 50 : 60;
-        const gpaDiff = profile.gpa - university.min_gpa;
-        if (gpaDiff >= 0.3) score += gpaWeight;
-        else if (gpaDiff >= -0.2) score += gpaWeight * 0.67;
-        else score += gpaWeight * 0.33;
-
-        // Language score (IELTS or TOPIK)
-        if (isKorean && university.topikLevel) {
-            // TOPIK scoring (30% weight)
-            const topikLevels = { "Not taken": 0, "TOPIK 1": 1, "TOPIK 2": 2, "TOPIK 3": 3, "TOPIK 4": 4, "TOPIK 5": 5, "TOPIK 6": 6 };
-            const userLevel = topikLevels[userTopik] || 0;
-            const requiredLevel = parseInt(university.topikLevel.split(' ')[1]) || 0;
-
-            if (userLevel === 0) {
-                score += 0;
-            } else if (userLevel >= requiredLevel + 1) {
-                score += 30;
-            } else if (userLevel >= requiredLevel) {
-                score += 25;
-            } else if (userLevel >= requiredLevel - 1) {
-                score += 10;
-            } else {
-                score += 0;
-            }
-
-            // IELTS for Korean unis (20% weight)
-            if (university.required_ielts) {
-                if (userIelts >= university.required_ielts) score += 20;
-                else if (userIelts >= university.required_ielts - 0.5) score += 10;
-            } else {
-                score += 20;
-            }
-        } else {
-            // Standard IELTS scoring (40% weight)
-            if (university.required_ielts) {
-                if (userIelts === 0) {
-                    score += 0;
-                } else if (userIelts >= university.required_ielts) {
-                    score += 40;
-                } else if (userIelts >= university.required_ielts - 0.5) {
-                    score += 20;
-                } else {
-                    score += 0;
-                }
-            } else {
-                score += 40;
-            }
-        }
-
-        if (score >= 80) return 'high';
-        if (score >= 50) return 'medium';
-        return 'low';
     }
 
     return (
@@ -305,7 +243,7 @@ export default function Profile() {
                                                     <span>{uni.language}</span>
                                                 </div>
                                                 <div className="flex items-center gap-4 mt-3">
-                                                    <ChanceIndicator chance={calculateChance(uni)} size="sm" />
+                                                    <ChanceIndicator chance={calculateChance(uni, profile?.gpa, profile?.english_proficiency || 0, profile?.topikLevel || "Not taken")} reason={describeMissingChanceData(uni)?.note} size="sm" />
                                                     <span className="text-sm text-slate-600">
                                                         {uni.tuition_min === 0 ? (
                                                             <span className="text-emerald-600 font-medium">{t('profile.freeTuition')}</span>

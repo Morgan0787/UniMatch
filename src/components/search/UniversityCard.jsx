@@ -9,67 +9,7 @@ import { motion } from 'framer-motion';
 import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { US_GPA_HOLISTIC_NOTE } from '@/lib/usGenericInfo';
-
-function calculateChance(university, userGpa, userIelts, userTopik) {
-    if (!userGpa) return 'medium';
-    
-    let score = 0;
-    const isKorean = university.country === "South Korea";
-    
-    // GPA score (50% weight for Korean unis with TOPIK, 60% otherwise)
-    const gpaWeight = isKorean && university.topikLevel ? 50 : 60;
-    const gpaDiff = userGpa - university.min_gpa;
-    if (gpaDiff >= 0.3) score += gpaWeight;
-    else if (gpaDiff >= -0.2) score += gpaWeight * 0.67;
-    else score += gpaWeight * 0.33;
-    
-    // Language score (IELTS or TOPIK)
-    if (isKorean && university.topikLevel) {
-        // TOPIK scoring (30% weight)
-        const topikLevels = { "Not taken": 0, "TOPIK 1": 1, "TOPIK 2": 2, "TOPIK 3": 3, "TOPIK 4": 4, "TOPIK 5": 5, "TOPIK 6": 6 };
-        const userLevel = topikLevels[userTopik] || 0;
-        const requiredLevel = parseInt(university.topikLevel.split(' ')[1]) || 0;
-        
-        if (userLevel === 0) {
-            score += 0; // No TOPIK
-        } else if (userLevel >= requiredLevel + 1) {
-            score += 30;
-        } else if (userLevel >= requiredLevel) {
-            score += 25;
-        } else if (userLevel >= requiredLevel - 1) {
-            score += 10;
-        } else {
-            score += 0;
-        }
-        
-        // IELTS for Korean unis (20% weight)
-        if (university.required_ielts) {
-            if (userIelts >= university.required_ielts) score += 20;
-            else if (userIelts >= university.required_ielts - 0.5) score += 10;
-        } else {
-            score += 20;
-        }
-    } else {
-        // Standard IELTS scoring (40% weight)
-        if (university.required_ielts) {
-            if (userIelts === 0) {
-                score += 0;
-            } else if (userIelts >= university.required_ielts) {
-                score += 40;
-            } else if (userIelts >= university.required_ielts - 0.5) {
-                score += 20;
-            } else {
-                score += 0;
-            }
-        } else {
-            score += 40;
-        }
-    }
-    
-    if (score >= 80) return 'high';
-    if (score >= 50) return 'medium';
-    return 'low';
-}
+import { calculateChance, describeMissingChanceData } from '@/lib/matching';
 
 export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, onSave, onView, isComparing, onCompareToggle }) {
     const { t } = useLanguage();
@@ -194,7 +134,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
 
                     {/* Chance indicator */}
                     <div className="mb-2">
-                        <ChanceIndicator chance={chance} size="sm" />
+                        <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="sm" />
                     </div>
 
                     {/* Action buttons */}

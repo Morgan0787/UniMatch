@@ -9,6 +9,7 @@
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
+    "check:matching": "node scripts/check-matching.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

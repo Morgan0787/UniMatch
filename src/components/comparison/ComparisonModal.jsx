@@ -14,6 +14,26 @@ import ChanceIndicator from '@/components/ui/ChanceIndicator';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
 import { useLanguage } from '@/lib/i18n';
 
+// These two prompts run with `add_context_from_internet: false`, so the lines
+// below are the model's *entire* factual basis. A raw `null` in that position is
+// an invitation to invent: asked to judge admission chances from "Min GPA: null"
+// the model will produce a confident cutoff, which is the exact failure this
+// product exists to prevent. Every unknown therefore arrives as an explicit
+// "Not published" — the same wording the table below uses — and the model is
+// told not to fill the gap.
+const NOT_PUBLISHED = 'Not published';
+const NO_INFERENCE_NOTE = `Only use the values above. Where a value is "${NOT_PUBLISHED}", say it is not published — do not estimate, infer or guess it.`;
+
+const orNotPublished = (value) => (value === null || value === undefined ? NOT_PUBLISHED : String(value));
+
+const promptTuition = (uni) => (uni.tuition_min === 0
+    ? 'Free'
+    : uni.tuition_min === null || uni.tuition_min === undefined
+        ? NOT_PUBLISHED
+        : `€${uni.tuition_min.toLocaleString()}/year`);
+
+const promptBudget = (value) => (value === null || value === undefined ? NOT_PUBLISHED : `€${value.toLocaleString()}/year`);
+
 export default function ComparisonModal({ universities, isOpen, onClose, onRemove, userProfile }) {
     const { language } = useLanguage();
     const [aiInsights, setAiInsights] = useState(null);
@@ -41,12 +61,14 @@ Compare these universities for international students. Focus on practical aspect
 
 ${universities.map((uni, i) => `
 University ${i + 1}: ${uni.name} (${uni.country})
-- Tuition: €${uni.tuition_min}/year
-- Min GPA: ${uni.min_gpa}
+- Tuition: ${promptTuition(uni)}
+- Min GPA: ${orNotPublished(uni.min_gpa)}
 - IELTS: ${uni.required_ielts || 'Varies'}
 - Language: ${uni.language}
 - Scholarships: ${uni.scholarships_available ? 'Yes' : 'No'}
 `).join('\n')}
+
+${NO_INFERENCE_NOTE}
 
 Provide a brief comparison covering:
 1. Cost advantage (which is most affordable)
@@ -103,19 +125,21 @@ Keep it under 150 words, practical and direct.`;
             const prompt = `${languageInstructions[language]}
 
 Given this student profile:
-- GPA: ${userProfile.gpa}
-- IELTS: ${userProfile.english_proficiency === 0 ? 'No certificate' : userProfile.english_proficiency}
-- Budget: €${userProfile.budget_max}/year
-- Target: ${userProfile.target_degree}
+- GPA: ${orNotPublished(userProfile.gpa)}
+- IELTS: ${userProfile.english_proficiency === 0 ? 'No certificate' : orNotPublished(userProfile.english_proficiency)}
+- Budget: ${promptBudget(userProfile.budget_max)}
+- Target: ${orNotPublished(userProfile.target_degree)}
 - Interests: ${userProfile.interests?.join(', ') || 'Not specified'}
 
 Compare these universities specifically for THIS student:
 ${universities.map((uni, i) => `
 ${i + 1}. ${uni.name}
-- Tuition: €${uni.tuition_min}/year
-- Min GPA: ${uni.min_gpa}
+- Tuition: ${promptTuition(uni)}
+- Min GPA: ${orNotPublished(uni.min_gpa)}
 - IELTS: ${uni.required_ielts || 'Varies'}
 `).join('\n')}
+
+${NO_INFERENCE_NOTE}
 
 Which university is the best match and why? Consider their qualifications, budget, and admission chances. Be direct and specific. Under 200 words.`;
 
@@ -362,8 +386,12 @@ Which university is the best match and why? Consider their qualifications, budge
                                             Your Chance
                                         </td>
                                         {universities.map((uni, i) => {
-                                            // Shared scoring, so the tray cannot disagree with
-                                            // the card it was opened from. Returns 'unknown'
+// Shared scoring, so this cell uses the same function as
+                                            // the card it was opened from. It shares the *inputs* only
+                                            // when the tray was opened from that card's own university —
+                                            // Search.jsx builds the compare list from `universities`
+                                            // while the grid renders `sortedUniversities`, so a row can
+                                            // reach here that the grid never showed. Returns 'unknown'
                                             // when the row has no published GPA to compare.
                                             const chance = calculateChance(uni, userProfile.gpa, userProfile.english_proficiency, userProfile.topikLevel);
 

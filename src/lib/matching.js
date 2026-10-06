@@ -37,6 +37,12 @@
  * shape as the NULL bug, for a different falsy value. That case is not
  * handled here.
  *
+ * The same rule governs the language term when `required_ielts` is NULL: an
+ * unevaluable dimension earns 0, in both the Korean branch (where TOPIK has
+ * already gated the dimension) and the standard branch. The weights, bands and
+ * `>= 80` / `>= 50` cutoffs are unchanged, so a row that clears its GPA cutoff
+ * with an unknown IELTS band now lands on MEDIUM rather than HIGH.
+ *
  * Deliberately imports nothing from React, Supabase, or the `@/` alias so it
  * can be loaded by bare Node (see scripts/check-matching.mjs).
  */
@@ -94,7 +100,15 @@ export function calculateChance(university, userGpa, userIelts, userTopik) {
       if (userIelts >= university.required_ielts) score += 20;
       else if (userIelts >= university.required_ielts - 0.5) score += 10;
     } else {
-      score += 20;
+      // No published IELTS band: an unverifiable award, so the term earns 0.
+      // We cannot assert the student cleared a bar we cannot see, and we equally
+      // cannot assert they failed it — 0 is the absence of an award, not a
+      // verdict. TOPIK is a requirement this row does publish and has already
+      // gated the language dimension above, so nothing is left unassessed.
+      // This also removes an inconsistency: an unknown *student* score earned 10
+      // below, so missing data on our side used to outscore missing data on
+      // theirs. Both unknowns now earn the same 0.
+      score += 0;
     }
   } else {
     // Standard IELTS scoring (40% weight)
@@ -109,7 +123,12 @@ export function calculateChance(university, userGpa, userIelts, userTopik) {
         score += 0;
       }
     } else {
-      score += 40;
+      // No published IELTS band, so the full 40 asserted the student cleared a
+      // requirement we cannot see. Awarding it here gave ~1,944 College
+      // Scorecard rows a confident verdict from absent data. An unevaluable
+      // dimension earns nothing: we cannot claim a pass or a fail against an
+      // invisible bar, and 0 is the absence of an unverifiable award.
+      score += 0;
     }
   }
 

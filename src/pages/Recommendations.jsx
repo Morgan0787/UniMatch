@@ -82,10 +82,16 @@ function calculateMatchScore(university, profile, countryWeights = {}) {
         } else if (profile.english_proficiency >= university.required_ielts - 0.5) {
             score += 8;
         }
-    } else if (!university.required_ielts) {
-        score += 20;
     } else {
-        score += 10;
+        // Either side of this comparison is missing — the university publishes no
+        // IELTS band, or the student has no score — so the term earns 0. It used
+        // to hand out 20 for an unknown requirement and 10 for an unknown student
+        // score, which made missing data on our side worth more than missing data
+        // on theirs, and let a row with no published band collect a full 20
+        // points. An unknown must never score better than a known
+        // shortfall: a student who publishes 5.5 against a published 7.0 gets 0
+        // here too, and neither case is a pass.
+        score += 0;
     }
     
     // Budget Match (18 points)

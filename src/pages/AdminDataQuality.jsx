@@ -314,9 +314,26 @@ export default function AdminDataQuality() {
                     }
                 });
                 
-                // Bonus for realistic values
-                if (uni.tuition_min >= 0 && uni.tuition_min <= 50000) score += 1;
-                if (uni.living_cost_estimate >= 3000 && uni.living_cost_estimate <= 25000) score += 1;
+                // Bonus for realistic values. Both checks require a real value:
+                // `null >= 0` is true in JavaScript, so an unguarded tuition
+                // comparison awards this point to rows that publish no tuition at
+                // all — credit for absent data. The guard mirrors the
+                // null/undefined/'' shape used by the `fields.forEach` loop above,
+                // so a missing value earns nothing.
+                //
+                // Behaviour change, stated rather than left silent. When
+                // `living_cost_estimate` was a fabricated 8000 it fell inside the
+                // 3000-25000 band and earned this point; it is now a real null, so
+                // it earns nothing, and every US row lost that point. That loss
+                // silently changed which duplicate row was kept and which were
+                // deleted. The direction is the intended one — a row publishing no
+                // cost data should rank lower and be likelier to be the one
+                // removed — but it is a change, so it is written down here instead
+                // of left in the diff's wake.
+                if (uni.tuition_min !== null && uni.tuition_min !== undefined && uni.tuition_min !== '' &&
+                    uni.tuition_min >= 0 && uni.tuition_min <= 50000) score += 1;
+                if (uni.living_cost_estimate !== null && uni.living_cost_estimate !== undefined && uni.living_cost_estimate !== '' &&
+                    uni.living_cost_estimate >= 3000 && uni.living_cost_estimate <= 25000) score += 1;
                 
                 return score;
             };
@@ -331,8 +348,25 @@ export default function AdminDataQuality() {
                     score: scoreRecord(uni)
                 }));
                 
-                // Sort by score (highest first)
-                scored.sort((a, b) => b.score - a.score);
+                // Sort by score (highest first), with an explicit tiebreak so the
+                // keep/delete decision is deterministic. `Array.prototype.sort` is
+                // stable in modern engines, which means ties were previously broken
+                // by whatever order the API returned rows in — the same input could
+                // keep a different row after a re-fetch, and this function deletes
+                // the losers. The tiebreak compares ids as strings by code unit
+                // (`<`/`>`, not `localeCompare`, whose ordering depends on the
+                // runtime's ICU data), so the comparison is a total order and does
+                // not vary by environment. It keeps the lowest id, so the winner is
+                // reproducible. Rows with no id at all still tie and fall back to
+                // fetch order, which is the one case this cannot pin.
+                scored.sort((a, b) => {
+                    if (b.score !== a.score) return b.score - a.score;
+                    const idA = String(a.id);
+                    const idB = String(b.id);
+                    if (idA < idB) return -1;
+                    if (idA > idB) return 1;
+                    return 0;
+                });
                 
                 // Keep the best one
                 const toKeep = scored[0];

@@ -7,11 +7,26 @@
  * UniversityDetailModal, ComparisonModal, Search, Profile and Recommendations
  * all import it.
  *
- * `src/pages/Recommendations.jsx` keeps its own `calculateMatchScore` (a
- * weighted 0-100 blend across nine terms, not a verdict) but now returns null
- * under the same two conditions this module returns UNKNOWN, so a student with
- * no GPA sees "Not enough data" everywhere instead of a percentage here and an
- * unknown verdict everywhere else.
+ * This module also owns the second, older admission-scoring encoding:
+ * `calculateMatchScore`, a weighted 0-100 blend that Recommendations renders as
+ * "Good match · 72%" next to the verdict above. It lived inside
+ * `src/pages/Recommendations.jsx` until it moved here, because a `.jsx` page
+ * cannot be loaded by bare Node, which left it with no automated coverage at
+ * all — see scripts/check-matching.mjs, which now asserts it.
+ *
+ * The two encodings are deliberately NOT reconciled: `calculateChance` is a
+ * 100-point verdict scale, `calculateMatchScore` is a percentage-of-maximum
+ * scale whose denominator is a fixed 110 while its two 5-point bonuses sit
+ * outside that total. Their GPA bands (`+0.3`/`-0.2` at weight 60 versus
+ * `+0.5`/`+0.2`/`0`/`-0.2` at weight 25) and IELTS bands (`+0.5`->20, `+0`->16,
+ * `-0.5`->8 versus `+0.5`->40, `-0.5`->20, else 0) therefore still disagree.
+ * Reconciling them would change what students are shown and is out of scope for
+ * a move.
+ *
+ * What they DO share is the null rule: `calculateMatchScore` returns null under
+ * exactly the two conditions `calculateChance` returns UNKNOWN for, so a
+ * student with no GPA, or looking at a university that publishes no cutoff, sees
+ * "Not enough data" on every surface instead of a percentage on this one.
  *
  * NULL SAFETY: the ~1,944 US rows imported via the College Scorecard API carry
  * `min_gpa = NULL` because that source publishes no GPA cutoff. Per
@@ -42,6 +57,13 @@
  * already gated the dimension) and the standard branch. The weights, bands and
  * `>= 80` / `>= 50` cutoffs are unchanged, so a row that clears its GPA cutoff
  * with an unknown IELTS band now lands on MEDIUM rather than HIGH.
+ *
+ * `calculateMatchScore` below extends the same "unknown earns nothing, never a
+ * default" rule to its own unscoreable dimensions (IELTS on either side, cost
+ * data), with two exceptions it documents in place: an absent student budget,
+ * and absent `ranking` / `acceptance_rate` / `international_students_percent`,
+ * each earn a small fixed credit because they are preferences rather than
+ * admission requirements.
  *
  * Deliberately imports nothing from React, Supabase, or the `@/` alias so it
  * can be loaded by bare Node (see scripts/check-matching.mjs).
@@ -150,4 +172,156 @@ export function describeMissingChanceData(university) {
     code: 'no-gpa-published',
     note: "We don't have a published minimum GPA for this university yet, so there's nothing to compare your grades against.",
   };
+}
+
+// Both cost inputs must be present before any cost total may be compared to a
+// student's budget or printed as a figure. `normalizeUniversity`
+// (`apiClient.js`) preserves null for both fields, so an unknown cost arrives
+// here as null and has to be refused rather than defaulted — the old
+// `(tuition_min || 0) + (living_cost_estimate || 8000)` invented both operands.
+export function hasCostData(university) {
+  return university.tuition_min !== null
+      && university.tuition_min !== undefined
+      && university.living_cost_estimate !== null
+      && university.living_cost_estimate !== undefined;
+}
+
+// Returns a 0-100 match score, or null when the row cannot be scored honestly.
+// null is not "0%" and not "we could not find the row": it means either side of
+// the GPA comparison is missing — the university publishes no cutoff, or the
+// student has not given us their GPA — so there is nothing to compare grades
+// against. Returning null is what lets the call site render the shared
+// `unknown` state instead of a misleading percentage, and it is the same rule
+// `calculateChance` applies above ("no verdict is possible").
+export function calculateMatchScore(university, profile, countryWeights = {}) {
+    let score = 0;
+    let maxScore = 0;
+
+    // GPA Match (25 points)
+    maxScore += 25;
+    if (profile.gpa && hasGpaData(university)) {
+        const gpaDiff = profile.gpa - university.min_gpa;
+        if (gpaDiff >= 0.5) score += 25;
+        else if (gpaDiff >= 0.2) score += 21;
+        else if (gpaDiff >= 0) score += 17;
+        else if (gpaDiff >= -0.2) score += 8;
+    }
+    // Either side missing: this term is unscoreable, so it earns nothing. It must
+    // not fall through to `x - null`, which is `x - 0` and handed every all-null
+    // US row full GPA marks. The null return below is what actually surfaces the
+    // gap to the student.
+
+    // IELTS Match (20 points)
+    maxScore += 20;
+    if (university.required_ielts && profile.english_proficiency !== undefined) {
+        if (profile.english_proficiency === 0) {
+            score += 0;
+        } else if (profile.english_proficiency >= university.required_ielts + 0.5) {
+            score += 20;
+        } else if (profile.english_proficiency >= university.required_ielts) {
+            score += 16;
+        } else if (profile.english_proficiency >= university.required_ielts - 0.5) {
+            score += 8;
+        }
+    } else {
+        // Either side of this comparison is missing — the university publishes no
+        // IELTS band, or the student has no score — so the term earns 0. It used
+        // to hand out 20 for an unknown requirement and 10 for an unknown student
+        // score, which made missing data on our side worth more than missing data
+        // on theirs, and let a row with no published band collect a full 20
+        // points. An unknown must never score better than a known
+        // shortfall: a student who publishes 5.5 against a published 7.0 gets 0
+        // here too, and neither case is a pass.
+        score += 0;
+    }
+
+    // Budget Match (18 points)
+    maxScore += 18;
+    if (!profile.budget_max) {
+        // The student has not told us their budget. Neutral credit.
+        score += 9;
+    } else if (hasCostData(university)) {
+        const totalCost = university.tuition_min + university.living_cost_estimate;
+        if (totalCost <= profile.budget_max * 0.8) score += 18;
+        else if (totalCost <= profile.budget_max) score += 14;
+        else if (totalCost <= profile.budget_max * 1.2) score += 7;
+    }
+    // Budget known but cost unknown: the term is unscoreable, so it earns
+    // nothing. The old `(tuition_min || 0) + (living_cost_estimate || 8000)`
+    // invented both operands, which made unknown cost score as the cheapest
+    // possible cost and take the full 18 points.
+
+    // Country/Region Preference (weighted, up to 20 points)
+    maxScore += 20;
+    const countryWeight = countryWeights[university.country] || 50; // Default 50% weight
+    if (profile.preferred_countries?.includes(university.country)) {
+        score += (20 * countryWeight) / 100;
+    } else {
+        score += (5 * countryWeight) / 100;
+    }
+
+    // Degree Level Match (10 points)
+    maxScore += 10;
+    if (profile.target_degree && university.degree_levels?.includes(profile.target_degree)) {
+        score += 10;
+    } else {
+        score += 5;
+    }
+
+    // Ranking (7 points) - better ranking = more points
+    maxScore += 7;
+    if (university.ranking) {
+        if (university.ranking <= 50) score += 7;
+        else if (university.ranking <= 100) score += 5;
+        else if (university.ranking <= 200) score += 3;
+        else score += 1;
+    } else {
+        score += 2;
+    }
+
+    // International Students (5 points) - higher % = more diverse
+    maxScore += 5;
+    if (university.international_students_percent) {
+        if (university.international_students_percent >= 20) score += 5;
+        else if (university.international_students_percent >= 15) score += 4;
+        else if (university.international_students_percent >= 10) score += 3;
+        else score += 2;
+    } else {
+        score += 2;
+    }
+
+    // Acceptance Rate (5 points) - balanced scoring
+    maxScore += 5;
+    if (university.acceptance_rate) {
+        if (university.acceptance_rate >= 60 && university.acceptance_rate <= 80) score += 5; // Sweet spot
+        else if (university.acceptance_rate >= 50 && university.acceptance_rate < 90) score += 4;
+        else score += 2;
+    } else {
+        score += 2;
+    }
+
+    // Bonus: Scholarships (bonus 5 points)
+    if (university.scholarships_available) {
+        score += 5;
+    }
+
+    // Bonus: International Support (bonus 5 points)
+    if (university.international_support?.international_office &&
+        university.international_support?.orientation_program) {
+        score += 5;
+    }
+
+    // A missing GPA cutoff *or* a missing student GPA means the number above is
+    // not a match score: it is the other 9 terms with the single most
+    // admission-relevant term missing. Reporting it as a percentage is how
+    // ~1,944 universities with no data came to score 85-90%, and it is how a
+    // student who never told us their GPA came to read "Good match · 72%" here
+    // while every other surface showed them "Not enough data". Return null and
+    // let the caller show the unknown state.
+    if (!profile.gpa || !hasGpaData(university)) return null;
+
+    // Pre-existing bug found in passing, unrelated to null safety: maxScore
+    // sums to 110 while the two bonuses above can add 10 more, so this ratio
+    // could return a percentage above 100.
+    return Math.min(100, Math.round((score / maxScore) * 100));
 }

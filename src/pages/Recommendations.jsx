@@ -20,7 +20,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from '@/lib/i18n';
-import { VERDICT, calculateMatchScore, describeMissingChanceData, hasCostData, hasGpaData } from '@/lib/matching';
+import { VERDICT, calculateMatchScore, describeMissingChanceData, hasCostData, isGpaFit } from '@/lib/matching';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
 
 // How many universities this page shows.
@@ -198,7 +198,7 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
                     <div className="pt-3 border-t space-y-1">
                         <p className="text-xs font-medium text-slate-700">{t('recommendations.whyRecommended')}</p>
                         <div className="flex flex-wrap gap-1.5">
-                            {profile.gpa && hasGpaData(university) && profile.gpa >= university.min_gpa && (
+                            {isGpaFit(university, profile.gpa) && (
                                 <Badge variant="outline" className="text-xs">
                                     ✓ {t('recommendations.gpaFit')}
                                 </Badge>

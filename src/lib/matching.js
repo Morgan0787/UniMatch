@@ -14,6 +14,19 @@
  * cannot be loaded by bare Node, which left it with no automated coverage at
  * all — see scripts/check-matching.mjs, which now asserts it.
  *
+ * That encoding's country term defaults to a 100% weight, which is the default
+ * Recommendations *displays* (`countryWeights[country] || 100`). The two agree
+ * on purpose: an untouched country used to score at 50% while the UI showed it
+ * at 100%, so the percentage on the card was not the weighting the sliders
+ * describe. The `||` is deliberate too, so a slider at 0 falls back the same way
+ * in the scorer as in the display.
+ *
+ * The module also owns `isGpaFit`, the "GPA fit" badge on a Recommendations
+ * card. That badge and `calculateMatchScore`'s full GPA band are one judgment at
+ * one boundary — the band awards full points at `gpaDiff >= 0`, which is exactly
+ * `studentGpa >= min_gpa` — so they share a single predicate here rather than
+ * each encoding it, and a card cannot claim a fit the score disagrees with.
+ *
  * The two encodings are deliberately NOT reconciled: `calculateChance` is a
  * 100-point verdict scale, `calculateMatchScore` is a percentage-of-maximum
  * scale whose denominator is a fixed 110 while its two 5-point bonuses sit
@@ -80,6 +93,18 @@ export const VERDICT = {
 
 export function hasGpaData(university) {
   return university?.min_gpa !== null && university?.min_gpa !== undefined;
+}
+
+// The "GPA fit" badge on a Recommendations card. `calculateMatchScore` awards its
+// full GPA band at `gpaDiff >= 0`, which is exactly `studentGpa >= min_gpa`, so
+// the badge and the score must agree on that boundary; they therefore share this
+// one predicate rather than each encoding it. Missing on either side is not a
+// fit: there is nothing to compare against, and `0` is what the two scoring
+// entry points above already treat as "no GPA".
+export function isGpaFit(university, studentGpa) {
+  if (!studentGpa) return false;
+  if (!hasGpaData(university)) return false;
+  return studentGpa >= university.min_gpa;
 }
 
 export function calculateChance(university, userGpa, userIelts, userTopik) {
@@ -253,7 +278,12 @@ export function calculateMatchScore(university, profile, countryWeights = {}) {
 
     // Country/Region Preference (weighted, up to 20 points)
     maxScore += 20;
-    const countryWeight = countryWeights[university.country] || 50; // Default 50% weight
+    // Default 100% weight, which is the default Recommendations *displays* for a
+    // country (`countryWeights[country] || 100`): at 50 an untouched country
+    // scored at half weight while the UI showed it at 100, so the percentage on
+    // the card was not the weighting the sliders describe. `||` not `??` on
+    // purpose, so a slider at 0 falls back the same way here as it does there.
+    const countryWeight = countryWeights[university.country] || 100;
     if (profile.preferred_countries?.includes(university.country)) {
         score += (20 * countryWeight) / 100;
     } else {

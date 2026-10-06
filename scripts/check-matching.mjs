@@ -22,6 +22,7 @@ import {
   describeMissingChanceData,
   hasCostData,
   hasGpaData,
+  isGpaFit,
 } from '../src/lib/matching.js';
 
 // A College Scorecard row: no published GPA cutoff, no published IELTS band.
@@ -49,13 +50,15 @@ const KOREA_TOPIK = { country: 'South Korea', topikLevel: 'TOPIK 4', min_gpa: 3.
 //    25 GPA           3.8 - 3.0 = 0.8 >= 0.5
 //  + 20 IELTS         7.5 >= 6.5 + 0.5
 //  + 18 budget        10,000 + 10,000 = 20,000 <= 30,000 * 0.8
-//  + 10 country       preferred, default 50% weight -> 20 * 50 / 100
+//  + 20 country       preferred, default 100% weight -> 20 * 100 / 100
 //  + 10 degree        target_degree is in degree_levels
 //  +  7 ranking       20 <= 50
 //  +  5 intl students 30 >= 20
 //  +  5 acceptance    65 is inside the 60-80 sweet spot
 //  +  5 scholarship bonus + 5 international-support bonus
-//  = 110 / 110 -> 100
+// = 120 / 110 -> 109, clamped to 100 (M10). It overflows the denominator at
+// every weight above 50, so it cannot separate the country weight from the
+// clamp; M13 pins the default on a row that stays under 110.
 const ALL_KNOWN = {
   country: 'Germany',
   min_gpa: 3.0,
@@ -86,8 +89,10 @@ const GOOD_MATCH = { ...ALL_KNOWN, ranking: 80, international_students_percent: 
 
 // A row the student misses on every axis: below the cutoff by 0.8, 2.0 below the
 // published IELTS band, over budget by 2.5x, wrong degree, unranked tail.
-//   0 GPA + 0 IELTS + 0 budget + 10 country (preferred) + 5 degree
-//     + 1 (ranking 500) + 2 (3% intl) + 2 (acceptance 12) = 20 -> 18
+//   0 GPA + 0 IELTS + 0 budget + 20 country (preferred, default 100% weight)
+//     + 5 degree + 1 (ranking 500) + 2 (3% intl) + 2 (acceptance 12) = 30
+//     -> 27.3 -> 27. The country term is the only one this row does earn, so
+// this group also fails if the default weight is not 100.
 const NO_MATCH = {
   ...ALL_KNOWN,
   min_gpa: 3.8,
@@ -244,6 +249,41 @@ test('11. hasGpaData is false for null/undefined and true for a real cutoff', ()
   assert.equal(hasGpaData({ min_gpa: 3.5 }), true);
 });
 
+console.log('isGpaFit');
+
+// The "GPA fit" badge on a Recommendations card. `calculateMatchScore` awards its
+// top GPA band at `gpaDiff >= 0`, i.e. exactly `studentGpa >= min_gpa`, so the
+// badge and the score agree only if they share this predicate.
+
+test('G1. isGpaFit is true when the student GPA meets the published cutoff exactly', () => {
+  assert.equal(isGpaFit(GERMANY, 3.5), true);
+});
+
+test('G2. isGpaFit is false when the student GPA is below the published cutoff', () => {
+  assert.equal(isGpaFit(GERMANY, 3.49), false);
+});
+
+// One behaviour per assertion group: a student with no GPA has nothing to
+// compare, so the badge must not claim a fit. `0` is included because it is
+// what `calculateChance` and `calculateMatchScore` already treat as "no GPA",
+// and because `0 >= 0` would otherwise pass against a `min_gpa` of 0.
+test('G3. isGpaFit is false when the student has no GPA: undefined, null or 0', () => {
+  assert.equal(isGpaFit(GERMANY, undefined), false);
+  assert.equal(isGpaFit(GERMANY, null), false);
+  assert.equal(isGpaFit(GERMANY, 0), false);
+});
+
+// The ~1,944 College Scorecard rows: no published cutoff means there is nothing
+// to compare against, so a strong GPA earns no badge — the same UNKNOWN rule
+// `calculateChance` applies. The control on the same fixture proves the row
+// discriminates: 3.9 clears the published 3.5 and *is* a fit, so this group can
+// only fail for the missing cutoff.
+test('G4. isGpaFit is false when the university publishes no min_gpa, though a real GPA fits the same fixture with one', () => {
+  assert.equal(isGpaFit(GERMANY, 3.9), true);
+  assert.equal(isGpaFit({ ...GERMANY, min_gpa: null }, 3.9), false);
+  assert.equal(isGpaFit({ ...GERMANY, min_gpa: undefined }, 3.9), false);
+});
+
 console.log('describeMissingChanceData');
 
 test('12. a US row with no min_gpa reuses the shared holistic note verbatim', () => {
@@ -270,7 +310,8 @@ test('M1. a university that publishes no min_gpa scores null, while the same row
   assert.equal(calculateMatchScore({ ...ALL_KNOWN, min_gpa: undefined }, STRONG_STUDENT), null);
   // Control on this exact fixture: the row and the student are scorable, so M1
   // discriminates on the missing cutoff rather than on a fixture that can never
-  // score. Same university, same profile, only `min_gpa` supplied -> 110/110.
+  // score. Same university, same profile, only `min_gpa` supplied -> 120 of
+  // 110, clamped to 100 (M10).
   assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT), 100);
 });
 
@@ -285,106 +326,110 @@ test('M2. a student who has not given a GPA scores null, and a GPA of 0 counts a
 
 // Nine of the ten terms contribute on this row (the international-support bonus
 // is the tenth and earns nothing, the row publishes no support object):
-// 25 + 20 + 18 + 10 + 10 + 5 (ranking 80 <= 100) + 3 (12% >= 10)
-//   + 5 (acceptance 65) + 5 (scholarship) = 101 of 110 -> 91.8 -> 92.
-// `null` is not an option here and 0 is not: the assertion names the exact
-// number the terms produce.
-test('M3. a row the student genuinely matches scores 92 (101 of 110)', () => {
-  assert.equal(calculateMatchScore(GOOD_MATCH, STRONG_STUDENT), 92);
+// 25 + 20 + 18 + 20 (preferred, default 100% weight) + 10 + 5 (ranking 80 <=
+// 100) + 3 (12% >= 10) + 5 (acceptance 65) + 5 (scholarship) = 111 of 110 ->
+// 100.9 -> 101, capped at 100 by the M10 clamp.
+// Now that the default weight is 100, a row matching on every term overflows the
+// fixed 110 denominator, so this group pins "matches on everything reads 100"
+// rather than an exact unclamped term sum. `null` and 0 are still not options.
+// The exact per-term numbers that the clamp no longer absorbs live in M5, M6,
+// M7, M8 and M13, all of whose rows stay under 110.
+test('M3. a row the student matches on every term reads 100 (111 of 110, clamped)', () => {
+  assert.equal(calculateMatchScore(GOOD_MATCH, STRONG_STUDENT), 100);
 });
 
-test('M4. a row the student genuinely does not match scores 18 (20 of 110)', () => {
-  assert.equal(calculateMatchScore(NO_MATCH, WEAK_STUDENT), 18);
+test('M4. a row the student genuinely does not match scores 27 (30 of 110)', () => {
+  assert.equal(calculateMatchScore(NO_MATCH, WEAK_STUDENT), 27);
 });
 
 // The audit's case. Same row and student as M1's control, which scores 100 with
 // the full 20 for IELTS. With no published band there is nothing to compare 7.5
-// against, so the term earns 0 and the total is 110 - 20 = 90 of 110.
-//   correct:                      90 / 110 = 81.8 -> 82
-//   unknown band restored to 20: 110 / 110 = 100.0 -> 100
-// 82 and 100 are eighteen points apart, so this pins the award itself rather
-// than a floor that both behaviours clear.
-test('M5. an unpublishped IELTS requirement earns 0 for that term, not a full award (90 of 110, 82)', () => {
-  assert.equal(calculateMatchScore({ ...ALL_KNOWN, required_ielts: null }, STRONG_STUDENT), 82);
-  assert.equal(calculateMatchScore({ ...ALL_KNOWN, required_ielts: undefined }, STRONG_STUDENT), 82);
+// against, so the term earns 0 and the total is 120 - 20 = 100 of 110.
+//   correct:                      100 / 110 = 90.9 -> 91
+//   unknown band restored to 20: 120 / 110 = 109.1 -> clamped to 100
+// 91 and 100 are nine points apart, so this pins the award itself rather than
+// a floor that both behaviours clear.
+test('M5. an unpublishped IELTS requirement earns 0 for that term, not a full award (100 of 110, 91)', () => {
+  assert.equal(calculateMatchScore({ ...ALL_KNOWN, required_ielts: null }, STRONG_STUDENT), 91);
+  assert.equal(calculateMatchScore({ ...ALL_KNOWN, required_ielts: undefined }, STRONG_STUDENT), 91);
 });
 
 // The symmetry M5's comment above used to be violated by: an unknown *student*
 // score used to earn 10 while an unknown *requirement* earned 20, so missing
 // data on our side outscored missing data on theirs. Both now earn 0, taking
-// ALL_KNOWN from 110 to the same 90 of 110 that M5 reaches.
+// ALL_KNOWN from 120 to the same 100 of 110 that M5 reaches.
 // `english_proficiency: null` is a third route to the same 0 that is worth
 // pinning: `null !== undefined` so it enters the comparison branch, and then no
 // comparison against a required band is true, so nothing is added.
-test('M6. an unknown student IELTS earns 0 too, so an unknown never outscores an unknown (90 of 110, 82)', () => {
-  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: undefined }), 82);
-  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: null }), 82);
+test('M6. an unknown student IELTS earns 0 too, so an unknown never outscores an unknown (100 of 110, 91)', () => {
+  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: undefined }), 91);
+  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: null }), 91);
   // A known shortfall must not be worth less than an unknown. 5.5 against the
   // published 6.5 is 1.0 below, below even the -0.5 band, so it earns 0 — the
   // same 0 the unknown above earns.
-  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: 5.5 }), 82);
+  assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, english_proficiency: 5.5 }), 91);
 });
 
-// Budget fixtures sit in France so the country term is the reduced 5 * 50 / 100
-// = 2.5, which keeps this group's numbers clear of the 82 the IELTS groups use.
+// Budget fixtures sit in France so the country term is the reduced 5 * 100 / 100
+// = 5, which keeps this group's numbers clear of the 91 the IELTS groups use.
 // With both cost inputs known the row takes the full 18, and with no budget_max
 // it takes the neutral 9, so the two expectations differ by exactly the budget
 // term.
-//   both cost inputs known, budget 30,000: 25 + 20 + 18 + 2.5 + 10 + 7 + 5 + 5
-//     + 5 + 5 = 102.5 -> 93.2 -> 93
-//   no budget_max:                        25 + 20 +  9 + 2.5 + 10 + 7 + 5 + 5
-//     + 5 + 5 =  93.5 -> 85.0 -> 85
-//   tuition unknown:                      25 + 20 +  0 + 2.5 + 10 + 7 + 5 + 5
-//     + 5 + 5 =  84.5 -> 76.8 -> 77
+//   both cost inputs known, budget 30,000: 25 + 20 + 18 +  5 + 10 + 7 + 5 + 5
+//     + 5 + 5 = 105 -> 95.4 -> 95
+//   no budget_max:                        25 + 20 +  9 +  5 + 10 + 7 + 5 + 5
+//     + 5 + 5 =  96 -> 87.2 -> 87
+//   tuition unknown:                      25 + 20 +  0 +  5 + 10 + 7 + 5 + 5
+//     + 5 + 5 =  87 -> 79.0 -> 79
 const FRENCH = { ...ALL_KNOWN, country: 'France', tuition_min: null, living_cost_estimate: 10000 };
 const FRENCH_PAID = { ...ALL_KNOWN, country: 'France', tuition_min: 10000, living_cost_estimate: 10000 };
 
-test('M7. unknown cost data earns 0 for the budget term instead of scoring against a defaulted total (77)', () => {
-  assert.equal(calculateMatchScore(FRENCH, { ...STRONG_STUDENT, preferred_countries: [] }), 77);
+test('M7. unknown cost data earns 0 for the budget term instead of scoring against a defaulted total (79)', () => {
+  assert.equal(calculateMatchScore(FRENCH, { ...STRONG_STUDENT, preferred_countries: [] }), 79);
   assert.equal(
     calculateMatchScore({ ...ALL_KNOWN, country: 'France', tuition_min: 10000, living_cost_estimate: null },
       { ...STRONG_STUDENT, preferred_countries: [] }),
-    77,
+    79,
   );
   // Control: with both cost inputs present the same row takes the full 18 and
-  // reads 93. The old `(tuition_min || 0) + (living_cost_estimate || 8000)`
+  // reads 95. The old `(tuition_min || 0) + (living_cost_estimate || 8000)`
   // made the two rows above identical to this one — a defaulted 0 + 10,000 or
   // 10,000 + 8,000 total is still under the 24,000 threshold, so all three read
-  // 93 and a missing cost was worth full marks.
-  assert.equal(calculateMatchScore(FRENCH_PAID, { ...STRONG_STUDENT, preferred_countries: [] }), 93);
+  // 95 and a missing cost was worth full marks.
+  assert.equal(calculateMatchScore(FRENCH_PAID, { ...STRONG_STUDENT, preferred_countries: [] }), 95);
 });
 
-test('M8. an unknown student budget earns half credit (9 of 18), not a full award and not zero (85)', () => {
+test('M8. an unknown student budget earns half credit (9 of 18), not a full award and not zero (87)', () => {
   const noBudget = { ...STRONG_STUDENT, budget_max: undefined, preferred_countries: [] };
-  assert.equal(calculateMatchScore(FRENCH_PAID, noBudget), 85);
-  assert.equal(calculateMatchScore(FRENCH_PAID, { ...STRONG_STUDENT, preferred_countries: [] }), 93);
+  assert.equal(calculateMatchScore(FRENCH_PAID, noBudget), 87);
+  assert.equal(calculateMatchScore(FRENCH_PAID, { ...STRONG_STUDENT, preferred_countries: [] }), 95);
 });
 
 // ranking, acceptance_rate and international_students_percent absent. Each
 // awards 2 of its own term rather than nothing, which lowers the percentage
 // instead of inflating it — the opposite of the GPA/IELTS/cost rules, and
 // deliberately so: these are small preferences, not admission requirements.
-//   0 GPA + 0 IELTS + 0 budget + 2.5 country (not preferred, 50% weight) + 5
-//     degree + 2 ranking + 2 intl + 2 acceptance = 13.5 -> 12.3 -> 12
+//   0 GPA + 0 IELTS + 0 budget + 5 country (not preferred, default 100% weight)
+//     + 5 degree + 2 ranking + 2 intl + 2 acceptance = 16 -> 14.5 -> 15
 // The three are asserted together on purpose: a single 1-2 point term out of
 // 110 is under 2% and the rounding absorbs it, so no percentage assertion can
-// isolate one of them. Moving all three to 0 gives 11.5 -> 10 and to 5 gives
-// 16.5 -> 15, both off this number.
-test('M9. absent ranking, acceptance rate and international-student share earn minimal credit (12)', () => {
+// isolate one of them. Moving all three to 0 gives 10 -> 9 and to 5 gives
+// 25 -> 23, both off this number.
+test('M9. absent ranking, acceptance rate and international-student share earn minimal credit (15)', () => {
   const absent = {
     ...NO_MATCH,
     ranking: null,
     international_students_percent: null,
     acceptance_rate: null,
   };
-  assert.equal(calculateMatchScore(absent, { ...WEAK_STUDENT, preferred_countries: [] }), 12);
+  assert.equal(calculateMatchScore(absent, { ...WEAK_STUDENT, preferred_countries: [] }), 15);
   // Control: the same row with all three published scores 1 + 5 + 4 = 10 of
-  // those terms instead of 2 + 2 + 2, so 17.5 -> 15.9 -> 16. The fixture does
+  // those terms instead of 2 + 2 + 2, so 20 -> 18.2 -> 18. The fixture does
   // discriminate.
   assert.equal(
     calculateMatchScore({ ...absent, ranking: 500, international_students_percent: 30, acceptance_rate: 55 },
       { ...WEAK_STUDENT, preferred_countries: [] }),
-    16,
+    18,
   );
 });
 
@@ -395,21 +440,27 @@ test('M9. absent ranking, acceptance rate and international-student share earn m
 //   unclamped:                                            109
 test('M10. the score never exceeds 100 even when every term and both bonuses apply (109 raw, clamped to 100)', () => {
   assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT, { Germany: 100 }), 100);
-  // Same fixture at the default weight is exactly 110/110, so this assertion
-  // cannot pass on the clamp's account alone.
-  assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT), 100);
+  // Same fixture at an explicit 50% weight is exactly 110/110, so this
+  // assertion cannot pass on the clamp's account alone. It cannot use the
+  // default weight any more: that is 100 since M13, which reaches 120/110 and
+  // clamps, so this control would only restate the assertion above.
+  assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT, { Germany: 50 }), 100);
 });
 
 // Country term = 20 * weight / 100 for a preferred country, 5 * weight / 100
-// otherwise, against a default weight of 50 when the caller supplies none.
+// otherwise, against a default weight of 100 when the caller supplies none.
 //   preferred, weight 40:  25 + 20 + 18 +  8 + 10 + 7 + 5 + 5 + 10 = 108 -> 98
 //   not preferred, 40:     25 + 20 + 18 +  2 + 10 + 7 + 5 + 5 + 10 = 102 -> 93
-//   preferred, no weight:                                            110 -> 100
-// 98, 93 and 100 are three different numbers, so the weight and the
-// preferred/non-preferred split are both pinned by exact value. Weights above 50
-// cannot be told apart from each other: 60 already reaches 112/110 = 102 and
-// clamps, which is what M10 pins.
-test('M11. countryWeights scales the country term, and an unweighted country falls back to 50%', () => {
+//   preferred, no weight:  25 + 20 + 18 + 20 + 10 + 7 + 5 + 5 + 10 = 120
+//                          -> 109, clamped to 100
+// 98 and 93 are two different unclamped numbers, so the weight and the
+// preferred/non-preferred split are both pinned by exact value. Weights at or
+// above 50 cannot be told apart from each other on this row: 50 is exactly
+// 110/110, 60 already reaches 112/110 = 102 and clamps, and every weight up to
+// the 100 maximum clamps to the same 100, which is what M10 pins. M13 and M14
+// pin the default and an explicit sub-50 weight on rows that stay under the
+// clamp.
+test('M11. countryWeights scales the country term, and preferred still outscores unpreferred', () => {
   assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT, { Germany: 40 }), 98);
   assert.equal(calculateMatchScore(ALL_KNOWN, STRONG_STUDENT, {}), 100);
   assert.equal(calculateMatchScore(ALL_KNOWN, { ...STRONG_STUDENT, preferred_countries: [] }, { Germany: 40 }), 93);
@@ -420,6 +471,68 @@ test('M12. hasCostData is false when either cost input is missing and true when 
   assert.equal(hasCostData({ tuition_min: 10000, living_cost_estimate: null }), false);
   assert.equal(hasCostData({ tuition_min: undefined, living_cost_estimate: undefined }), false);
   assert.equal(hasCostData({ tuition_min: 0, living_cost_estimate: 0 }), true);
+});
+
+// Country-weight default. The country term is `20 * weight / 100` for a
+// preferred country and `5 * weight / 100` otherwise, against a default weight
+// the scorer applies when the caller supplies none. Recommendations *displays*
+// `countryWeights[country] || 100`, so an untouched country is shown at 100% and
+// must score at 100% too — otherwise the number on the card is not the number
+// the sliders describe.
+//
+// DEFAULT_WEIGHT_ROW is ALL_KNOWN with the three terms that would inflate the
+// total turned down, so the country term stays observable in the printed
+// percentage instead of saturating at 100 through the M10 clamp. Leaving
+// `international_support` in place would put it at 111 of 110 and clamp both
+// sides of the comparison in M13 to 100, which would make that assertion pass at
+// a 50% default too and pin nothing.
+//   25 GPA (3.8 - 3.0 = 0.8 >= 0.5) + 20 IELTS (7.5 >= 7.0)
+//   + 18 budget (20,000 <= 24,000) + 20 country (preferred, weight 100)
+//   + 10 degree + 3 (ranking 200) + 3 (12% >= 10) + 2 (acceptance 12 outside
+//   the 50-90 band) + 5 scholarship + 0 international support
+//   = 106 of 110 -> 96.4 -> 96, so nothing here is clamped.
+const DEFAULT_WEIGHT_ROW = {
+  ...ALL_KNOWN,
+  ranking: 200,
+  international_students_percent: 12,
+  acceptance_rate: 12,
+  international_support: null,
+};
+const TWO_COUNTRY_STUDENT = { ...STRONG_STUDENT, preferred_countries: ['Germany', 'France'] };
+
+test('M13. a country with no entry in countryWeights scores the same as one weighted 100, so the default matches the UI', () => {
+  // Germany has no entry in the weights passed here, so it takes the scorer's
+  // default; France is explicitly 100. The UI renders both at 100%, so the two
+  // universities must score identically — identical profiles, identical terms,
+  // country is the only thing that differs. (In the running page the sliders
+  // seed every preferred country at 100, so the branch where the default really
+  // bites is the unpreferred one; M14 pins that separately. This pair pins the
+  // default *value*, which is the same number either way.)
+  assert.equal(
+    calculateMatchScore(DEFAULT_WEIGHT_ROW, TWO_COUNTRY_STUDENT),
+    calculateMatchScore({ ...DEFAULT_WEIGHT_ROW, country: 'France' }, TWO_COUNTRY_STUDENT, { France: 100 }),
+  );
+  // Both read 96 (106 of 110). At a 50% default the unweighted row reads 87
+  // (96 of 110) while the weighted row stays at 96, so this equality fails on
+  // the old default: it pins the value, not just the shape.
+  assert.equal(calculateMatchScore(DEFAULT_WEIGHT_ROW, TWO_COUNTRY_STUDENT), 96);
+});
+
+test('M14. an explicit non-100 weight is still honoured, and preferred still outscores unpreferred', () => {
+  // Preferred at 40%: country term 20 * 40 / 100 = 8
+  //   25 + 20 + 18 + 8 + 10 + 3 + 3 + 2 + 5 + 0 = 94 of 110 -> 85.4 -> 85
+  assert.equal(calculateMatchScore(DEFAULT_WEIGHT_ROW, TWO_COUNTRY_STUDENT, { Germany: 40 }), 85);
+  // Unpreferred at 40%: country term 5 * 40 / 100 = 2
+  //   25 + 20 + 18 + 2 + 10 + 3 + 3 + 2 + 5 + 0 = 88 of 110 -> 80.0 -> 80
+  const unpreferred = { ...TWO_COUNTRY_STUDENT, preferred_countries: [] };
+  assert.equal(calculateMatchScore(DEFAULT_WEIGHT_ROW, unpreferred, { Germany: 40 }), 80);
+  // Unpreferred on the default weight: 5 * 100 / 100 = 5
+  //   25 + 20 + 18 + 5 + 10 + 3 + 3 + 2 + 5 + 0 = 91 of 110 -> 82.7 -> 83
+  // 83 vs 80 is the default-vs-explicit-40 split on an unpreferred country —
+  // which is the branch the default actually reaches in the running page, since
+  // the sliders seed every *preferred* country at 100 — and 85 vs 80 is the
+  // preferred-vs-unpreferred split at the same explicit weight of 40.
+  assert.equal(calculateMatchScore(DEFAULT_WEIGHT_ROW, unpreferred), 83);
 });
 
 if (failures.length > 0) {

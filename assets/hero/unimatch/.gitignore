@@ -1,0 +1,5 @@
+# Reproducible intermediate output; keep the .blend, previews and web assets.
+renders/
+previews/draft/
+previews/video-frames/
+*.blend1

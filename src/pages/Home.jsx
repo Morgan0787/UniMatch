@@ -1,46 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import * as Dialog from '@radix-ui/react-dialog';
+import { ArrowUpRight, ArrowRight, Globe2, X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Search, Sparkles, Globe2, Shield, Users, ArrowRight, CheckCircle2, Star, TrendingUp, Heart } from 'lucide-react';
-import { motion } from 'framer-motion';
-import OnboardingTour from '@/components/onboarding/OnboardingTour';
-import { useLanguage } from '@/lib/i18n';
+import { useAuth } from '@/lib/AuthContext';
+import HomeGlobe from '@/components/home/HomeGlobe';
+import './Home.css';
+
+function HowMatchingWorks() {
+    return (
+        <Dialog.Root>
+            <Dialog.Trigger className="um-secondary">
+                Как работает подбор <ArrowRight size={17} aria-hidden="true" />
+            </Dialog.Trigger>
+            <Dialog.Portal>
+                <Dialog.Overlay className="um-dialog-overlay" />
+                <Dialog.Content className="um-dialog" lang="ru">
+                    <Dialog.Title>От интереса к выбору</Dialog.Title>
+                    <Dialog.Description>
+                        Начни с поиска. UniMatch поможет сравнить варианты обучения за рубежом.
+                    </Dialog.Description>
+                    <ol className="um-steps">
+                        <li><h3>Задай свои ориентиры</h3><p>Выбери страну, бюджет и уровень обучения. Укажи оценки и результаты языковых экзаменов, если они есть.</p></li>
+                        <li><h3>Посмотри подходящие варианты</h3><p>Изучи требования и стоимость, сравни университеты. Если данных нет, мы обозначаем это в карточке.</p></li>
+                        <li><h3>Спланируй следующий шаг</h3><p>Проверь актуальные условия и сроки на официальном сайте университета. Оценка шансов — ориентир, а не гарантия поступления.</p></li>
+                    </ol>
+                    <Link className="um-primary" to={createPageUrl('Search')}>
+                        Найти университет <ArrowUpRight size={19} aria-hidden="true" />
+                    </Link>
+                    <Dialog.Close className="um-dialog-close" aria-label="Закрыть объяснение">
+                        <X size={21} aria-hidden="true" />
+                    </Dialog.Close>
+                </Dialog.Content>
+            </Dialog.Portal>
+        </Dialog.Root>
+    );
+}
 
 export default function Home() {
-    const { t } = useLanguage();
-    const features = [
-        { icon: Search, title: t('home.featureSearch'), description: t('home.featureSearchDesc') },
-        { icon: TrendingUp, title: t('home.featureChance'), description: t('home.featureChanceDesc') },
-        { icon: Globe2, title: t('home.featureUniversities'), description: t('home.featureUniversitiesDesc') },
-        { icon: Heart, title: t('home.featureMatches'), description: t('home.featureMatchesDesc') }
-    ];
-    const stats = [
-        { value: "400+", label: t('home.statsUniversities') },
-        { value: "50+", label: t('home.statsCountries') },
-        { value: "€0", label: t('home.statsFreeOptions') },
-        { value: "24/7", label: t('home.statsAccess') }
-    ];
-    const testimonials = [
-        { name: "Aziza M.", country: "Uzbekistan", text: "I thought I could only afford expensive US universities. This platform showed me free options in Germany I never knew existed!", university: "TU Munich" },
-        { name: "Rustam K.", country: "Kazakhstan", text: "The chance calculator helped me focus on universities where I actually had a shot. Saved months of research.", university: "Charles University" }
-    ];
-    const affordablePoints = [t('home.affordablePoint1'), t('home.affordablePoint2'), t('home.affordablePoint3'), t('home.affordablePoint4')];
+    const { user } = useAuth();
+    const [chapter, setChapter] = useState(0);
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
-            <OnboardingTour />
-            <section className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-violet-50 to-pink-50" />
-                <div className="absolute inset-0 opacity-40" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
-                <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-20 md:py-32"><motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center"><Badge className="mb-6 bg-indigo-100 text-indigo-700 border-0 px-4 py-1.5"><Sparkles className="w-3.5 h-3.5 mr-1.5" />{t('home.badge')}</Badge><h1 className="text-4xl md:text-6xl font-bold text-slate-900 leading-tight mb-6">{t('home.title')}<span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">{t('home.titleHighlight')}</span></h1><p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">{t('home.subtitle')}</p><div className="flex flex-col sm:flex-row gap-4 justify-center"><Button asChild size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-lg px-8 py-6 rounded-xl shadow-lg shadow-indigo-200"><Link to={createPageUrl("Search")}><Search className="w-5 h-5 mr-2" />{t('home.findMyUniversities')}</Link></Button><Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 rounded-xl border-2"><Link to={createPageUrl("Profile")}>{t('home.buildMyProfile')}<ArrowRight className="w-5 h-5 ml-2" /></Link></Button></div><div className="mt-12 flex items-center justify-center gap-8 text-sm text-slate-500"><div className="flex items-center gap-2"><Shield className="w-4 h-4 text-emerald-500" /><span>{t('home.freeToUse')}</span></div><div className="flex items-center gap-2"><Users className="w-4 h-4 text-indigo-500" /><span>{t('home.studentsHelped')}</span></div></div></motion.div></div>
-            </section>
-            <section className="py-12 bg-white border-y border-slate-100"><div className="max-w-6xl mx-auto px-4 sm:px-6"><div className="grid grid-cols-2 md:grid-cols-4 gap-8">{stats.map((stat, i) => (<motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="text-center"><p className="text-3xl md:text-4xl font-bold text-indigo-600">{stat.value}</p><p className="text-slate-500 mt-1">{stat.label}</p></motion.div>))}</div></div></section>
-            <section className="py-20 md:py-28"><div className="max-w-6xl mx-auto px-4 sm:px-6"><div className="text-center mb-16"><Badge className="mb-4 bg-violet-100 text-violet-700 border-0">{t('home.howItWorks')}</Badge><h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{t('home.howItWorksTitle')}</h2><p className="text-slate-600 max-w-2xl mx-auto">{t('home.howItWorksSubtitle')}</p></div><div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">{features.map((feature, i) => (<motion.div key={feature.title} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}><Card className="p-6 h-full border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white"><div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center mb-4"><feature.icon className="w-6 h-6 text-indigo-600" /></div><h3 className="font-semibold text-slate-800 mb-2">{feature.title}</h3><p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p></Card></motion.div>))}</div></div></section>
-            <section className="py-20 bg-gradient-to-br from-indigo-600 to-violet-700 text-white relative overflow-hidden"><div className="absolute inset-0 opacity-10"><div className="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl" /><div className="absolute bottom-10 right-10 w-60 h-60 bg-white rounded-full blur-3xl" /></div><div className="max-w-6xl mx-auto px-4 sm:px-6 relative"><div className="grid md:grid-cols-2 gap-12 items-center"><div><Badge className="mb-6 bg-white/20 text-white border-0"><Star className="w-3.5 h-3.5 mr-1.5" />{t('home.hiddenGems')}</Badge><h2 className="text-3xl md:text-4xl font-bold mb-6">{t('home.affordableTitle')}</h2><p className="text-indigo-100 text-lg leading-relaxed mb-8">{t('home.affordableSubtitle')}</p><div className="space-y-3">{affordablePoints.map((item, i) => (<div key={i} className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-emerald-300 flex-shrink-0" /><span className="text-indigo-50">{item}</span></div>))}</div></div><div className="grid grid-cols-2 gap-4"><Card className="p-6 bg-white/10 backdrop-blur border-white/20 text-white"><GraduationCap className="w-8 h-8 mb-4 text-indigo-200" /><p className="text-3xl font-bold">€0</p><p className="text-indigo-200 text-sm">{t('home.germanPublicUnis')}</p></Card><Card className="p-6 bg-white/10 backdrop-blur border-white/20 text-white mt-8"><Globe2 className="w-8 h-8 mb-4 text-indigo-200" /><p className="text-3xl font-bold">50+</p><p className="text-indigo-200 text-sm">{t('home.countriesAvailable')}</p></Card><Card className="p-6 bg-white/10 backdrop-blur border-white/20 text-white"><TrendingUp className="w-8 h-8 mb-4 text-indigo-200" /><p className="text-3xl font-bold">85%</p><p className="text-indigo-200 text-sm">{t('home.findAMatch')}</p></Card><Card className="p-6 bg-white/10 backdrop-blur border-white/20 text-white mt-8"><Heart className="w-8 h-8 mb-4 text-indigo-200" /><p className="text-3xl font-bold">{t('home.freeToUse')}</p><p className="text-indigo-200 text-sm">{t('home.platformAccess')}</p></Card></div></div></div></section>
-            <section className="py-20 md:py-28 bg-slate-50"><div className="max-w-6xl mx-auto px-4 sm:px-6"><div className="text-center mb-16"><Badge className="mb-4 bg-emerald-100 text-emerald-700 border-0">{t('home.successStories')}</Badge><h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">{t('home.testimonialTitle')}</h2></div><div className="grid md:grid-cols-2 gap-8">{testimonials.map((testimonial, i) => (<motion.div key={testimonial.name} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}><Card className="p-8 h-full bg-white border-slate-100 hover:shadow-lg transition-all"><div className="flex gap-1 mb-4">{[1,2,3,4,5].map(s => (<Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />))}</div><p className="text-slate-600 leading-relaxed mb-6 text-lg">"{testimonial.text}"</p><div className="flex items-center gap-3"><div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-violet-400 flex items-center justify-center text-white font-semibold">{testimonial.name[0]}</div><div><p className="font-semibold text-slate-800">{testimonial.name}</p><p className="text-sm text-slate-500">{testimonial.country} → {testimonial.university}</p></div></div></Card></motion.div>))}</div></div></section>
-            <section className="py-20"><div className="max-w-4xl mx-auto px-4 sm:px-6 text-center"><h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">{t('home.ctaTitle')}</h2><p className="text-slate-600 text-lg mb-10 max-w-2xl mx-auto">{t('home.ctaSubtitle')}</p><Button asChild size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-lg px-10 py-6 rounded-xl shadow-lg shadow-indigo-200"><Link to={createPageUrl("Search")}><Search className="w-5 h-5 mr-2" />{t('home.startYourSearch')}</Link></Button></div></section>
+        <div className="um-home" lang="ru">
+            <a className="um-skip" href="#um-main">Перейти к содержимому</a>
+            <header className="um-header">
+                <Link className="um-brand" to={createPageUrl('Home')} aria-label="UniMatch — главная">
+                    <svg width="30" height="31" viewBox="0 0 30 31" fill="none" aria-hidden="true">
+                        <path d="M4 4v13a9 9 0 0 0 18 0V4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M11 4v12a3 3 0 0 0 6 0V4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="26" cy="4" r="3" fill="#c64b2c" />
+                    </svg>
+                    <span>UniMatch</span>
+                </Link>
+                <nav className="um-nav" aria-label="Основная навигация">
+                    <Link className="um-catalog-link" to={createPageUrl('Search')}>Университеты</Link>
+                    <Link className="um-account" to={createPageUrl(user ? 'Profile' : 'Login')}>
+                        {user ? 'Мой профиль' : 'Войти'} <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
+                </nav>
+            </header>
+            <main className="um-main" id="um-main" tabIndex={-1}>
+                <div className="um-story">
+                    <section className="um-hero" aria-labelledby="um-title">
+                        <p className="um-origin">Из Центральной Азии —<br />в университеты мира.</p>
+                        <HomeGlobe onChapterChange={setChapter} />
+                        <div className={`um-copy um-copy-intro${chapter === 0 ? ' um-copy-active' : ''}`} aria-hidden={chapter !== 0}>
+                        <h1 id="um-title">Твой университет.<br />Твой новый мир.</h1>
+                        <p className="um-description">Найди, где продолжить свою историю.<br className="um-desktop-break" /> Подбери университет за рубежом под свои<br className="um-desktop-break" /> цели, результаты и бюджет.</p>
+                        <div className="um-actions">
+                            <Link className="um-primary" to={createPageUrl('Search')}>
+                                Найти университет <ArrowUpRight size={20} aria-hidden="true" />
+                            </Link>
+                            <HowMatchingWorks />
+                        </div>
+                        <p className="um-search-note">Для поиска не нужна регистрация</p>
+                        </div>
+                        <div className={`um-copy um-copy-chapter${chapter === 1 ? ' um-copy-active' : ''}`} aria-hidden={chapter !== 1}>
+                            <p className="um-chapter-number">01 / ОРИЕНТИР</p>
+                            <h2>У каждого свой маршрут.</h2>
+                            <p className="um-description">Определи, где и чему хочешь учиться. Начни с направлений, которые тебе близки.</p>
+                        </div>
+                        <div className={`um-copy um-copy-chapter${chapter === 2 ? ' um-copy-active' : ''}`} aria-hidden={chapter !== 2}>
+                            <p className="um-chapter-number">02 / ВЫБОР</p>
+                            <h2>Возможности обретают форму.</h2>
+                            <p className="um-description">Сравни требования, стоимость и условия обучения — в своём темпе.</p>
+                        </div>
+                        <div className={`um-copy um-copy-final${chapter === 3 ? ' um-copy-active' : ''}`} aria-hidden={chapter !== 3}>
+                            <p className="um-chapter-number">03 / ТВОЙ ШАГ</p>
+                            <h2>Будущее начинается с выбора.</h2>
+                            <Link className="um-primary" to={createPageUrl('Search')}>
+                                Найти университет <ArrowUpRight size={20} aria-hidden="true" />
+                            </Link>
+                        </div>
+                        <div className="um-horizon">
+                        <span><Globe2 size={16} strokeWidth={1.4} aria-hidden="true" /> Европа, США и Азия</span>
+                        <span>{String(chapter + 1).padStart(2, '0')} / 04 · Большой мир. Твой выбор.</span>
+                        </div>
+                    </section>
+                </div>
+            </main>
         </div>
     );
 }

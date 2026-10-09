@@ -1,0 +1,198 @@
+[
+  {
+    "reference": "mdx.so",
+    "limit": "page.goto: net::ERR_CERT_AUTHORITY_INVALID at https://mdx.so/\nCall log:\n\u001b[2m  - navigating to \"https://mdx.so/\", waiting until \"domcontentloaded\"\u001b[22m\n"
+  },
+  {
+    "viewport": "1280x720",
+    "state": "atlas",
+    "frame": 47,
+    "cached": 10,
+    "pinTop": 64,
+    "object": {
+      "left": 743.59375,
+      "right": 1096.875,
+      "top": 326.8125,
+      "bottom": 507.3125
+    },
+    "canvasSize": 960
+  },
+  {
+    "viewport": "1280x720",
+    "state": "routes",
+    "frame": 72,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 729.9375,
+      "right": 1133.6875,
+      "top": 188.46875,
+      "bottom": 507.3125
+    },
+    "canvasSize": 960
+  },
+  {
+    "viewport": "1280x720",
+    "state": "end",
+    "frame": 119,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 794.65625,
+      "right": 1045.8125,
+      "top": 284.0625,
+      "bottom": 535.21875
+    },
+    "canvasSize": 960
+  },
+  {
+    "viewport": "1280x720",
+    "state": "reverse",
+    "frame": 47,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 743.59375,
+      "right": 1096.875,
+      "top": 326.8125,
+      "bottom": 507.3125
+    },
+    "canvasSize": 960
+  },
+  {
+    "viewport": "1280x720",
+    "state": "returned",
+    "frame": 0,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 794.65625,
+      "right": 1045.8125,
+      "top": 284.0625,
+      "bottom": 535.21875
+    },
+    "canvasSize": 960
+  },
+  {
+    "viewport": "1280x720",
+    "geometry": {
+      "travel": 2520,
+      "art": {
+        "x": 635.53125,
+        "y": 100,
+        "width": 570,
+        "height": 570
+      },
+      "pinHeight": 656,
+      "innerHeight": 720,
+      "heading": "Find Universities WhereYou Actually Belong",
+      "width": 1280
+    },
+    "requestCount": 47,
+    "errors": []
+  },
+  {
+    "viewport": "390x844",
+    "state": "atlas",
+    "frame": 47,
+    "cached": 11,
+    "pinTop": 64,
+    "object": {
+      "left": 90.69296874999999,
+      "right": 315.565234375,
+      "top": 538.28828125,
+      "bottom": 653.640625
+    },
+    "canvasSize": 560
+  },
+  {
+    "viewport": "390x844",
+    "state": "routes",
+    "frame": 72,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 82.26835937499999,
+      "right": 338.894921875,
+      "top": 450.801953125,
+      "bottom": 653.640625
+    },
+    "canvasSize": 560
+  },
+  {
+    "viewport": "390x844",
+    "state": "end",
+    "frame": 119,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 122.447265625,
+      "right": 283.162890625,
+      "top": 511.0703125,
+      "bottom": 671.7859375
+    },
+    "canvasSize": 560
+  },
+  {
+    "viewport": "390x844",
+    "state": "reverse",
+    "frame": 47,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 90.69296874999999,
+      "right": 315.565234375,
+      "top": 538.28828125,
+      "bottom": 653.640625
+    },
+    "canvasSize": 560
+  },
+  {
+    "viewport": "390x844",
+    "state": "returned",
+    "frame": 0,
+    "cached": 12,
+    "pinTop": 64,
+    "object": {
+      "left": 122.447265625,
+      "right": 283.162890625,
+      "top": 511.0703125,
+      "bottom": 671.7859375
+    },
+    "canvasSize": 560
+  },
+  {
+    "viewport": "390x844",
+    "geometry": {
+      "travel": 2954,
+      "art": {
+        "x": 22,
+        "y": 394.421875,
+        "width": 362.90625,
+        "height": 362.90625
+      },
+      "pinHeight": 780,
+      "innerHeight": 844,
+      "heading": "Find Universities WhereYou Actually Belong",
+      "width": 390
+    },
+    "requestCount": 49,
+    "errors": []
+  },
+  {
+    "reducedMotion": "PASS",
+    "requests": 1
+  },
+  {
+    "slowLoading": "PASS"
+  },
+  {
+    "timeoutRecovery": "PASS without scrolling, first frame delayed beyond 8s"
+  },
+  {
+    "missingFrames": "PASS: poster and skip work"
+  },
+  {
+    "allWebPFramesDecoded": 240
+  }
+]

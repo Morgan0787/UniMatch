@@ -1,0 +1,4 @@
+# Codex delegation is disabled while the OpenCode workflow is selected.
+# This does not change OpenCode or OmniRoute provider settings.
+[agents]
+enabled = false

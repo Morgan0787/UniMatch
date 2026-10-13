@@ -1,6 +1,12 @@
 # UniMatch — Project Context
 
-Paste or attach this file at the start of any new AI chat (Claude, ChatGPT, Gemini) to skip re-explaining the project from scratch.
+This file preserves detailed import provenance and project history. Read relevant sections when a task needs import/schema background; use `docs/agents/context/README.md` to choose current context instead of attaching this entire file to every chat.
+
+## How to read and maintain this history (2026-10-13)
+
+Current product scope and labelled priorities live in `docs/agents/context/PROJECT.md`; active data/product guardrails live in `docs/agents/context/DECISIONS.md`. Setup and usage live in root `README.md`. The undated sections below are inherited historical snapshots, not newly verified statements about the live database, deployment, branch state, or backlog. Where they conflict with confirmed current shared context, treat the historical claim as superseded and link to its replacement after verification.
+
+For import/schema changes, add a dated record with source/evidence, implemented outcome, verification results, and planned or unresolved work separately. Preserve prior records and explicitly mark superseded claims. Follow `docs/agents/context/MAINTENANCE.md`. This documentation change does not reverify the historical counts or feature claims below.
 
 ## What it is
 UniMatch matches Central Asian (primarily Uzbek) students to universities in Europe, US, and Asia based on GPA/IELTS/TOPIK, ranked by realistic admission chance rather than popularity. Built by a solo developer as both a portfolio piece (Babson College application) and a potential business.
@@ -37,7 +43,7 @@ UniMatch matches Central Asian (primarily Uzbek) students to universities in Eur
 - `npm run lint:fix` would clean ~19 unused-import warnings
 - User acquisition plan (IELTS/tutoring centers, Telegram channels, personal SAT-prep network) designed but not yet executed — this is the actual current bottleneck, not more infrastructure
 
-## Working agreements
+## Historical working agreements (use AGENTS.md for current routing)
 - Prefer official/government data sources over LLM web-research where they exist (e.g. College Scorecard for US) — more accurate, no rate limits, no hallucination risk.
 - When an AI can't verify a fact, it should say so explicitly (empty field / "not verified"), not fill in a plausible-sounding number.
 - Long chat threads get expensive to keep running — start a fresh chat per major task phase, using this file to re-establish context.
@@ -77,12 +83,3 @@ Per-university verified data always overrides these when present.
 Point-enrich top 200 US universities (by popularity/affordability) via Gemini research batches,
 same process used for the 24 Korean universities — real min_gpa, campus_life, notable_programs,
 international_support per school. Free tier Gemini, manual batches of ~25.
-
-
-
-
-
-
-
-
-

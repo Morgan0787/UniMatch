@@ -1,0 +1,4 @@
+# Preserve recovery snapshots and archived source bytes for SHA-256 verification.
+# Recognize preserved CRLF endings when checking these historical files.
+docs/agents/legacy-opencode-2026-10-13/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+docs/archive/source/** -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

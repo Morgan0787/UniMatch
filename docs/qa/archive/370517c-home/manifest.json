@@ -1,0 +1,97 @@
+[
+  {
+    "originalPath": "output/playwright/globe-mobile-moving-a.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-mobile-moving-a.png",
+    "sha256": "0195D736C1D28A1EC3C6D15622C79E6155A38997424F895DE73E8759E291D523"
+  },
+  {
+    "originalPath": "output/playwright/globe-mobile-moving-b.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-mobile-moving-b.png",
+    "sha256": "166C3D2ECEF1AE27B399A521873C53F5D0E8AF8227A97B1C45B769AF46D1105A"
+  },
+  {
+    "originalPath": "output/playwright/globe-mobile-paused-a.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-mobile-paused-a.png",
+    "sha256": "2C6CFF9EBC24AD5DBB6BD03576EA3D821ED312EC35388AC0A59B6001B263ED27"
+  },
+  {
+    "originalPath": "output/playwright/globe-mobile-paused-b.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-mobile-paused-b.png",
+    "sha256": "52DC657A7F813F6BA7F469AA16F903116A6F961012DC86775959BF0D16FB0176"
+  },
+  {
+    "originalPath": "output/playwright/globe-motion-a.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-motion-a.png",
+    "sha256": "45D950B002617C0EEDD047B7421001272635F4F5828C571CB4D023088F47DF85"
+  },
+  {
+    "originalPath": "output/playwright/globe-motion-b.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-motion-b.png",
+    "sha256": "A84A789562FDD916BC2E70316AE152ED1E38A44936ABBBF2A09CA836E0CC4C99"
+  },
+  {
+    "originalPath": "output/playwright/globe-paused-a.png",
+    "archivePath": "docs/qa/archive/370517c-home/globe-paused-a.png",
+    "sha256": "F59288C7AFEA63D999FAED1B73942327A99A888C4B93EB0CCDC84544B556BF42"
+  },
+  {
+    "originalPath": "output/playwright/home-3d-desktop.png",
+    "archivePath": "docs/qa/archive/370517c-home/home-3d-desktop.png",
+    "sha256": "ABB269D922AAA67F27677FDCB8FF09E7A6897683AC9B52756A1504114CA77CC3"
+  },
+  {
+    "originalPath": "output/playwright/home-3d-mobile.png",
+    "archivePath": "docs/qa/archive/370517c-home/home-3d-mobile.png",
+    "sha256": "8162A22F7A4458446C9AACDE6DD68A98C297977B6926B804CD22218CD77820A7"
+  },
+  {
+    "originalPath": "output/playwright/home-desktop.png",
+    "archivePath": "docs/qa/archive/370517c-home/home-desktop.png",
+    "sha256": "A1D57A3070ABBDB2A2AB6769E12B0D44A010C1CBC7BB4C882D96D1C9222F25FF"
+  },
+  {
+    "originalPath": "output/playwright/home-mobile.png",
+    "archivePath": "docs/qa/archive/370517c-home/home-mobile.png",
+    "sha256": "8D119D9C0D92E5CD0E53C70D054592E0A427747B4D81D312FA6FB7A373646467"
+  },
+  {
+    "originalPath": "output/playwright/scroll-desktop-cube.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-desktop-cube.png",
+    "sha256": "857135B9DA1EF76776B3B58F2EA8DA85430C49BDE9A51C75AE33590A4D86243F"
+  },
+  {
+    "originalPath": "output/playwright/scroll-desktop-final.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-desktop-final.png",
+    "sha256": "4F089BB1ABD61ACB669A56B0C6654A331C7514C4BE8FFCF76F983875DEC9BE56"
+  },
+  {
+    "originalPath": "output/playwright/scroll-desktop-intro.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-desktop-intro.png",
+    "sha256": "509ED73E753707B9960927FB17209774D171F11D4FEC260B75A2A0F30EA8F23C"
+  },
+  {
+    "originalPath": "output/playwright/scroll-desktop-organic.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-desktop-organic.png",
+    "sha256": "EB0CAAFA84445DB102D7092E969F594A267550365D960CBCA3DE6438B86C23E1"
+  },
+  {
+    "originalPath": "output/playwright/scroll-mobile-cube.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-mobile-cube.png",
+    "sha256": "741EA3D3FC4290A92E3D2584835DD53F67DD4B953E066A877D1A7938970172DD"
+  },
+  {
+    "originalPath": "output/playwright/scroll-mobile-final.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-mobile-final.png",
+    "sha256": "6CA0AE5125E8DC5CC43F6E18D22A02E22CB848A9C643F229CB7BA3BD2D70EF91"
+  },
+  {
+    "originalPath": "output/playwright/scroll-mobile-intro.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-mobile-intro.png",
+    "sha256": "72FBBC17A3FB29EF587A78A3A32088C27E163A4B132EBFA811637D8BFB0F6E8A"
+  },
+  {
+    "originalPath": "output/playwright/scroll-mobile-organic.png",
+    "archivePath": "docs/qa/archive/370517c-home/scroll-mobile-organic.png",
+    "sha256": "426115B74C4DDDDE38731EDAF87DCDA948090AB0560F65EB5C5B713EDA467B6D"
+  }
+]

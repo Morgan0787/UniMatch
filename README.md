@@ -1,6 +1,6 @@
 # UniMatch
 
-![UniMatch — matching engine overview](assets/readme/hero.svg)
+![UniMatch — matching engine overview](hero.svg)
 
 Find universities you can actually get into — not just the ones you dream about. UniMatch compares a student's GPA, IELTS, or TOPIK score against real admission requirements across Europe, the US, and Asia, and ranks results by honest admission chance instead of popularity.
 
@@ -41,3 +41,13 @@ npm run dev
 ## Status
 
 Actively developed, pre-launch solo project. Expect incomplete data coverage and rough edges outside the core search/match flow.
+
+Action status messages appear as in-app notifications, including success confirmations and form errors.
+
+## Agent-assisted development
+
+Historical visual QA screenshots are retained in the [370517c Home archive](docs/qa/archive/370517c-home/README.md), with hashes and restoration instructions. [output/playwright](output/playwright/README.md) remains available for future temporary QA. The [hero previews](assets/hero/unimatch/README.md#files) retain draft/final renders and browser evidence; keep them until their history and baseline value have been reviewed.
+
+Inactive legacy CSS and image-selection source are preserved in the [source archive](docs/archive/source/2026-10-13/README.md), with original paths, hashes and restoration instructions.
+
+Start with [AGENTS.md](AGENTS.md) for task-specific guidance. [Context routing](docs/agents/context/README.md) identifies which documents to read; [documentation maintenance](docs/agents/context/MAINTENANCE.md) defines when to update them. For the Codex/OpenCode profile switch, see the [agent setup guide](docs/agents/README.md).

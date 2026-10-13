@@ -7,6 +7,11 @@ and geometry throughout. No text in frames; no MDX models or art assets used.
 
 ## Files
 
+The `previews/` directory retains draft/final animation previews, inspected key
+renders and browser QA evidence. These files document development and tested
+states; they are not disposable build output or interchangeable duplicates.
+Review their historical and baseline value before moving or removing them.
+
 - `unimatch-light-atlas.blend`: editable Blender 4.3.2 scene with shape keys,
   geometry-node particle instances, keyed weights and named timeline markers.
 - `source/create_scene.py`: deterministic scene construction and render pipeline.

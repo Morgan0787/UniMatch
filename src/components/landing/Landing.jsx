@@ -115,8 +115,8 @@ export default function App() {
         {labels.skip}
       </a>
       <Header language={language} setLanguage={setLanguage} menu={menu} setMenu={setMenu} onMatch={match}/>
-      <main>
-        <section ref={hero} id="home" className="hero" aria-labelledby="hero-title">
+      <main id="home">
+        <section ref={hero} className="hero" aria-labelledby="hero-title">
           <div className="hero-visual">
           <HeroSceneBoundary language={language}>
           <Suspense fallback={<HeroLoadingScreen language={language} />}>

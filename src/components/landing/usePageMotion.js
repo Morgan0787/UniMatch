@@ -13,6 +13,7 @@ export function usePageMotion(root, language, blocked, reduced) {
         const lenis = new Lenis({
             lerp: 0.085,
             smoothWheel: true,
+            respectReducedMotion: false,
             syncTouch: false,
             anchors: { duration: 1.4, offset: -90 },
         });

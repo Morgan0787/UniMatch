@@ -16,6 +16,12 @@ the normal mode. The landing and shared presentation CSS no longer apply the
 old motion-suppression/layout rules when the OS reports `reduce`. This supersedes
 the original reduced-motion behavior documented on 2026-10-16.
 
+Lenis also receives `respectReducedMotion:false`; its own default would otherwise
+continue changing programmatic scrolling on a reduced-motion OS independently
+of Home's React policy. The `#home` anchor is on the stable main container, not
+the pinned hero section, so footer Home links target actual page zero rather
+than the pin's translated end position.
+
 ## Lazy visual ownership
 
 `hero-visual` is a persistent absolute container around the lazy scene and its

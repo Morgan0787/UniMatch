@@ -144,10 +144,6 @@ body[data-unimatch-theme] .unimatch-landing .scene-node {
 body[data-unimatch-theme] .unimatch-landing .scene-node {
   width: max-content; white-space: nowrap;
 }
-@media (prefers-reduced-motion: reduce) {
-  body[data-unimatch-theme] .unimatch-landing .orbit-tag-2 { bottom: 40%; }
-  body[data-unimatch-theme] .unimatch-landing .orbit-tag-3 { bottom: 38%; }
-}
 @supports not (backdrop-filter: blur(1px)) {
   .unimatch-app .product-nav, body[data-unimatch-theme] .product-glass { background: #faf7f0; }
 }
@@ -172,9 +168,4 @@ body[data-unimatch-theme] .catalog-filter-drawer .product-glass { padding: 16px;
   .unimatch-app .essay-page .grid { grid-template-columns: minmax(0,1fr); }
   .unimatch-app .essay-page .grid > div { min-width: 0; }
   .unimatch-app .essay-page .flex.items-center.justify-between { flex-wrap: wrap; gap: 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body[data-unimatch-theme] *, body[data-unimatch-theme] *::before, body[data-unimatch-theme] *::after {
-    scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important;
-  }
 }

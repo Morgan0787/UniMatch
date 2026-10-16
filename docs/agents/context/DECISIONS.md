@@ -63,6 +63,11 @@ Supabase session validation. See the [transfer QA record](../../qa/sites-design-
 
 ## Landing modal scrolling
 
+Home motion policy (user-selected 2026-10-17): always run the scroll story and
+editorial motion regardless of `prefers-reduced-motion`. Keep JS and CSS behavior
+consistent; do not ship a development-only preference override as the fix.
+See the [production motion check](../../qa/production-motion.md).
+
 Shared `DialogContent` must retain `data-lenis-prevent`: Home pauses Lenis while
 a modal is open, and its stopped handler otherwise cancels native wheel events
 inside the portaled university dialog. Keep Radix's background scroll lock.

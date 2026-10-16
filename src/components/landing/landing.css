@@ -2693,44 +2693,6 @@
     right: 4%;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .unimatch-landing {
-    scroll-behavior: auto;
-  }
-  .unimatch-landing, .unimatch-landing *,
-  .unimatch-landing *:before,
-  .unimatch-landing *:after {
-    animation: none !important;
-    transition-duration: 0.01ms !important;
-  }
-  .unimatch-landing .sphere-canvas {
-    display: none;
-  }
-  .unimatch-landing .approach-title {
-    position: relative;
-    left: auto;
-    top: auto;
-    text-align: center;
-    max-width: none;
-    padding: 45px 20px;
-  }
-  .unimatch-landing .approach-stage {
-    min-height: 850px;
-  }
-  .unimatch-landing .approach-center-copy {
-    top: auto;
-    bottom: 55px;
-    transform: translateX(-50%);
-  }
-  .unimatch-landing .hero-content,
-  .unimatch-landing .site-header {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-  .unimatch-landing.lang-ru .approach-center-copy {
-    max-width: 90%;
-  }
-}
 .unimatch-landing .hero-warmth {
   position: absolute;
   top: 50%;
@@ -2749,31 +2711,10 @@
     top: 43%;
   }
 }
-@media (max-width: 600px) and (prefers-reduced-motion: reduce) {
-  .unimatch-landing .approach-center-copy {
-    left: 22px;
-    right: 22px;
-    transform: none;
-  }
-}
 .unimatch-landing .action-label > span {
   height: 100%;
   display: flex;
   align-items: center;
-}
-@media (prefers-reduced-motion: reduce) {
-  .unimatch-landing .action:hover .action-label > span {
-    transform: none;
-  }
-  .unimatch-landing .action-label > span + span {
-    display: none;
-  }
-  .unimatch-landing .action:hover .action-arrow svg:first-child {
-    transform: none;
-  }
-  .unimatch-landing .action-arrow svg + svg {
-    display: none;
-  }
 }
 .unimatch-landing .hero-explorer {
   position: absolute;

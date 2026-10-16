@@ -1,4 +1,5 @@
 import { Component, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { getLandingLabels } from './labels';
 import './hero-scene.css';
 
@@ -9,12 +10,12 @@ export function HeroLoadingScreen({ language }) {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = previous; };
   }, []);
-  return <div className="hero-loading-screen" role="status" aria-live="polite" data-lenis-prevent>
+  return createPortal(<div className="unimatch-landing hero-loader-host"><div className="hero-loading-screen" role="status" aria-live="polite" data-lenis-prevent>
     <span className="hero-loading-brand" aria-hidden="true">UNIMATCH</span>
     <span className="hero-loading-orbit" aria-hidden="true" />
     <p>{copy.building}</p>
     <span className="hero-loading-note">{copy.sceneLoadingNote}</span>
-  </div>;
+  </div></div>, document.body);
 }
 
 // A failed lazy chunk must never remove the page, catalog or navigation.

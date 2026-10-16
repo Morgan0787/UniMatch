@@ -103,7 +103,7 @@ export function usePageMotion(root, language, blocked, reduced) {
             }});
             heroExit.fromTo(".hero-content, .scroll-hint", { autoAlpha: 1, y: 0 }, {
                 autoAlpha: 0, y: -65, ease: "none",
-            }, 0).fromTo(".hero-explorer", { autoAlpha: 1, yPercent: 0 }, {
+            }, 0).fromTo(".hero-visual", { autoAlpha: 1, yPercent: 0 }, {
                 autoAlpha: 0, yPercent: -8, ease: "none",
             }, 0);
             editorialScreens.forEach((screen) => {

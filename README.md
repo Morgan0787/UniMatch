@@ -10,11 +10,13 @@ Most university-search sites are directories: browse, filter, hope. UniMatch inv
 
 ## How it works
 
+Public site: [unimatch-two.vercel.app](https://unimatch-two.vercel.app/).
+
 - **Frontend** — Vite + React + Tailwind, component library via shadcn/ui
 - **Backend** — Supabase (Postgres + Auth), migrated off the original Base44 platform
 - **Core pages** — `Home`, `Search`, `Recommendations`, `Profile`, `Login`, plus internal tools (`AdminDataQuality`, `AdminFeedback`, `EssayChecker`)
 - **Presentation** — actual Sites version-7 landing and shared visual theme, including the interactive particle scene. [Source and QA details](docs/qa/sites-design-port.md).
-- **Scroll presentation** — MDX-inspired post-hero editorial transitions, reversible media/scene motion and a light cream palette, with a static reduced-motion mode. [Browser study and comparison](docs/qa/mdx-motion.md).
+- **Scroll presentation** — MDX-inspired editorial transitions, reversible scene motion and a light cream palette. Per the 2026-10-17 product decision, Home animation runs independently of the OS reduced-motion setting. [Production diagnosis and checks](docs/qa/production-motion.md).
 - **Hero story** — generated relief Earth, subject constellations and a university route controlled by scroll. A loading screen precedes the first frame; the first scroll hides the header/copy and expands the scene. [Implementation, QA and performance limits](docs/qa/hero-particle-story.md).
 
 ## Data quality

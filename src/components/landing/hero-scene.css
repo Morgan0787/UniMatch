@@ -1,4 +1,6 @@
 /* The approved pearl particle story occupies the space above the existing hero copy. */
+.unimatch-landing .hero-visual { position: absolute; inset: 0; }
+.unimatch-landing.hero-loader-host { position: fixed; inset: 0; z-index: 100; min-height: 0; }
 .unimatch-landing .site-header.is-away {
   opacity: 0 !important;
   visibility: hidden !important;
@@ -186,8 +188,4 @@
 }
 @media (max-height: 650px) and (min-width: 761px) {
   .unimatch-landing .pearl-story .scene-instructions { top: 70px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .unimatch-landing .hero-scene-stage { transition: none; }
-  .unimatch-landing .hero-loading-orbit { animation: none; }
 }

@@ -64,6 +64,11 @@ distinguishes observed reference behavior, implementation choices and test limit
 
 ## Hero particle story — 2026-10-16
 
+Published at [unimatch-two.vercel.app](https://unimatch-two.vercel.app/).
+The 2026-10-17 user decision supersedes the original OS-based static mode: Home
+motion is always enabled. A persistent visual wrapper also fixes lazy-loading
+timing for the hero exit tween. See the [production diagnosis](../../qa/production-motion.md).
+
 Home's hero now uses a generated pearl particle story (Earth, subject symbols,
 ribbon and university route). Scrolling reverses the same timeline; the first
 scroll hides the header/copy and expands the scene. The old poster and scene

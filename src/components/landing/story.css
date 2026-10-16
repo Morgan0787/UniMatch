@@ -223,16 +223,12 @@
   }
 }
 
-@media (max-width: 799px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 799px) {
   .unimatch-landing .approach-stage { height: 100svh; min-height: 740px; }
   .unimatch-landing .approach-center-copy {
     top: 40%; bottom: auto; left: 50%; right: auto;
     width: 88%; max-width: 650px; transform: translateX(-50%);
   }
-}
-
-@media (min-width: 800px) and (prefers-reduced-motion: reduce) {
-  .unimatch-landing .approach-title { right: auto; margin-inline: 38px; }
 }
 
 .unimatch-landing .approach-title p,

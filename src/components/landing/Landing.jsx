@@ -1,5 +1,4 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
 import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe2, Sprout, Instagram, Linkedin, ArrowRight, Play, Pause, } from "lucide-react";
 import { Header } from "./Header";
 import { HeroSceneBoundary, HeroLoadingScreen } from './HeroSceneFallback';
@@ -91,7 +90,9 @@ export default function App() {
     const { language, setLanguage } = useLanguage();
     const labels = getLandingLabels(language);
     const [menu, setMenu] = useState(false), [videoAvailable, setVideoAvailable] = useState(false), [videoPaused, setVideoPaused] = useState(false);
-    const root = useRef(null), hero = useRef(null), video = useRef(null), reduced = Boolean(useReducedMotion());
+    const root = useRef(null), hero = useRef(null), video = useRef(null);
+    // Product decision: Home's scroll story runs regardless of OS motion settings.
+    const reduced = false;
     const d = useDiscovery(language), { c, l, saved, filtered, filter, setFilter, onlySaved, setOnlySaved, toggleSave, } = d, p = language === 'uz' ? uzEditorial : editorial[language === "ru" ? "ru" : "en"], ru = language === "ru";
     usePageMotion(root, language, menu || d.quiz || Boolean(d.detail) || Boolean(d.legal), reduced);
     useEffect(() => {
@@ -116,11 +117,13 @@ export default function App() {
       <Header language={language} setLanguage={setLanguage} menu={menu} setMenu={setMenu} onMatch={match}/>
       <main>
         <section ref={hero} id="home" className="hero" aria-labelledby="hero-title">
+          <div className="hero-visual">
           <HeroSceneBoundary language={language}>
           <Suspense fallback={<HeroLoadingScreen language={language} />}>
             <HeroExplorer universities={universities} heroRef={hero} language={language} reduced={reduced} blocked={menu || d.quiz || Boolean(d.detail) || Boolean(d.legal)} onDetail={d.setDetail}/>
           </Suspense>
           </HeroSceneBoundary>
+          </div>
           <div className="hero-soft-light"/>
           <div className="hero-content">
             <div className="hero-copy">

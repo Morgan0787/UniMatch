@@ -18,8 +18,8 @@ the production scene generates its own geometry and does not play MDX frames.
   lazy module loading. It disappears on the first rendered frame. Worker errors
   or a 12-second preparation timeout release the screen; context loss shows a
   retry action while leaving the page and catalog available.
-- Reduced motion keeps a static generated Earth without a hero pin. It does not
-  replace the user's OS preference in production.
+- **Superseded 2026-10-17:** the original OS-based static mode is replaced by the
+  user's explicit always-on Home motion policy. See [production motion QA](production-motion.md).
 - University previews use existing supplied records and open the existing detail
   modal. No university facts, matching rules, auth rules or database schema were
   changed by this scene integration.

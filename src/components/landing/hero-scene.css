@@ -1,0 +1,193 @@
+/* The approved pearl particle story occupies the space above the existing hero copy. */
+.unimatch-landing .site-header.is-away {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none;
+  transform: translateY(-100%) !important;
+}
+.unimatch-landing .hero:has(.pearl-story) { min-height: 100svh; }
+.unimatch-landing .hero-immersed .hero-content,
+.unimatch-landing .hero-immersed .scroll-hint {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none;
+}
+.unimatch-landing .hero-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 28px;
+  text-align: center;
+  color: #665342;
+  background: radial-gradient(ellipse at center, #efdfcb, #faf7ef 65%);
+}
+.unimatch-landing .hero-loading-brand { font-size: 12px; letter-spacing: .28em; }
+.unimatch-landing .hero-loading-screen p { margin: 0; font-size: clamp(18px, 3vw, 25px); line-height: 1.4; }
+.unimatch-landing .hero-loading-note { font-size: 12px; opacity: .8; }
+.unimatch-landing .hero-loading-orbit {
+  width: 52px;
+  height: 52px;
+  border: 1px solid #b4834e44;
+  border-top-color: #ae7950;
+  border-radius: 50%;
+  animation: hero-loading-turn 1.4s linear infinite;
+}
+.unimatch-landing .hero-scene-retry {
+  position: absolute;
+  top: 112px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border: 1px solid #8c7b6555;
+  border-radius: 24px;
+  background: #fff9;
+  color: #594b3e;
+}
+@keyframes hero-loading-turn { to { transform: rotate(360deg); } }
+.unimatch-landing .hero-explorer.pearl-story {
+  background: radial-gradient(ellipse 49% 63% at 51% 43%, #d6d7d7 0%, #e2e3e2 49%, #f3f2ed 82%, #faf7ef 100%);
+  isolation: isolate;
+  transform: translateZ(0);
+}
+.unimatch-landing .hero-explorer.pearl-story::before { display: none; }
+.unimatch-landing .hero-explorer.scene-loading { z-index: 50; }
+.unimatch-landing .hero-scene-stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 240ms ease;
+  contain: layout;
+  isolation: isolate;
+}
+.unimatch-landing .scene-ready .hero-scene-stage { opacity: 1; }
+.unimatch-landing .hero-particle-canvas,
+.unimatch-landing .hero-scene-cores,
+.unimatch-landing .hero-scene-labels,
+.unimatch-landing .hero-scene-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.unimatch-landing .hero-particle-canvas { display: block; pointer-events: none; transform: translateZ(0); }
+.unimatch-landing .hero-scene-cores,
+.unimatch-landing .hero-scene-labels,
+.unimatch-landing .hero-scene-links { pointer-events: none; }
+.unimatch-landing .hero-scene-links { fill: none; stroke: #957047; stroke-width: 0.7; opacity: 0; }
+.unimatch-landing .hero-scene-core {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #f3ad6a99 0%, #f6bc8888 22%, #f6c9a449 49%, #f8d6b900 73%);
+  transform-origin: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.unimatch-landing .hero-subject-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  max-width: 190px;
+  padding: 7px 11px;
+  border: 1px solid #ffffff88;
+  border-radius: 20px;
+  color: #584c40;
+  background: linear-gradient(130deg, #ffffff66, #ffffff0d);
+  box-shadow: inset 0 1px 0 #ffffffaa, inset 0 -1px 4px #ffffff22, 0 4px 14px #6543210c;
+  backdrop-filter: blur(7px) saturate(1.15);
+  -webkit-backdrop-filter: blur(7px) saturate(1.15);
+  font: 400 11px/1.2 Inter, Arial, sans-serif;
+  letter-spacing: 0.015em;
+  text-align: center;
+  text-wrap: balance;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.unimatch-landing button.hero-university-label {
+  min-height: 36px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.unimatch-landing button.hero-university-label:hover { background-color: #fff9ed88; }
+.unimatch-landing .hero-route-dot,
+.unimatch-landing .hero-route-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #fffaf2;
+  box-shadow: 0 0 9px 4px #ffcf9ab0, 0 0 28px 9px #ffd4ab77;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+.unimatch-landing .hero-route-dot { width: 5px; height: 5px; }
+.unimatch-landing .hero-route-dot,
+.unimatch-landing .hero-route-pulse { will-change: transform, opacity; }
+.unimatch-landing .hero-scene-caption {
+  position: absolute;
+  top: 0;
+  bottom: auto;
+  left: 20px;
+  right: 20px;
+  margin: 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.035em;
+  color: #6f6256;
+  pointer-events: none;
+}
+.unimatch-landing .pearl-story .scene-instructions {
+  top: 77px;
+  max-width: calc(100% - 36px);
+  font-size: 9px;
+  line-height: 1.4;
+  text-align: center;
+  white-space: normal;
+  color: #6f6256;
+}
+.unimatch-landing .hero-university-options { display: flex; gap: 6px; margin-top: 12px; }
+.unimatch-landing .hero-university-options button {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 6px;
+  border: 1px solid #8c7b6555;
+  border-radius: 50%;
+  background: transparent;
+  color: #594b3e;
+  font-size: 12px;
+}
+.unimatch-landing .hero-university-options button[aria-pressed="true"] { background: #66513f; color: #fffaf2; }
+@media (max-width: 760px) {
+  .unimatch-landing .hero-subject-label { max-width: 140px; padding: 5px 8px; font-size: 11px; }
+  .unimatch-landing button.hero-university-label { min-height: 36px; }
+  .unimatch-landing .pearl-story .scene-instructions { top: 76px; font-size: 8px; letter-spacing: 0.04em; }
+  .unimatch-landing .hero-scene-caption { font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .unimatch-landing .hero-subject-label { max-width: 126px; padding-inline: 6px; }
+}
+@media (max-height: 650px) and (min-width: 761px) {
+  .unimatch-landing .pearl-story .scene-instructions { top: 70px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .unimatch-landing .hero-scene-stage { transition: none; }
+  .unimatch-landing .hero-loading-orbit { animation: none; }
+}

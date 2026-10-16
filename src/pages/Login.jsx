@@ -216,7 +216,7 @@ export default function Login() {
 
   if (successState) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="login-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md text-center">
           <CardContent className="pt-10 pb-10 space-y-4">
             <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
@@ -234,7 +234,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+    <div className="login-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mx-auto">
@@ -244,7 +244,7 @@ export default function Login() {
           <p className="text-slate-500 text-sm">Sign in to your account</p>
         </div>
 
-        <Card>
+        <Card className="product-glass">
           <CardContent className="pt-6">
             <Tabs defaultValue="password">
               <TabsList className="w-full mb-6">

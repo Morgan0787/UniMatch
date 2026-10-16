@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -53,7 +53,8 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
+                <DialogTitle className="sr-only">{university.name}</DialogTitle>
                 <DialogHeader>
                     <div className="relative h-48 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-lg">
                         <UniversityCover university={university} size="large" />

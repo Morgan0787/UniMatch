@@ -1,0 +1,36 @@
+import { copy } from './content';
+export const uzCopy = {
+  ...copy.en,
+  match: 'Menga mos universitet', explore: 'Universitetlarni ko‘rish',
+  filters: ['Barcha yo‘nalishlar', 'Buyuk Britaniya', 'Yevropa', 'Shimoliy Amerika', 'Osiyo'],
+  cardLink: 'Universitet haqida', saved: 'Saqlangan', save: 'Universitetni saqlash', viewSaved: 'Mening ro‘yxatim',
+  empty: 'Bu yo‘nalishda universitet topilmadi.', all: 'Barcha universitetlar',
+  values: [
+    {title:'Sizdan boshlanadi',text:'Qiziqishlaringiz va maqsadlaringizga mos joyni toping.'},
+    {title:'E’tibor bilan tanlangan',text:'Dasturlar, muhit va hamjamiyatni o‘zingizga mosligini solishtiring.'},
+    {title:'O‘sish uchun imkoniyat',text:'Mos universitetlar ro‘yxati — kelajagingiz sari birinchi qadam.'},
+  ],
+  benefitOne:'O‘z insonlaringizni toping.\nYangi ufqlarni oching.',
+  benefitOneText:'Universitet — darslardan ko‘proq. Bu yangi do‘stlar, fikrlar va o‘zingizga yaqin muhit.',
+  benefitOneLink:'Imkoniyatlarni ko‘rish', benefitTwo:'Kamroq ikkilanish.\nAniqroq yo‘nalish.',
+  benefitTwoText:'GPA, til darajasi va byudjetingiz asosida mos variantlarni toping.', benefitTwoLink:'Boshlash',
+  stats:['GPA, byudjet va til — uch asosiy mezon','yo‘nalish bo‘yicha universitet qidiruvi','kelajak — o‘zingizniki'],
+  footerText:'Universitet tanlashga puxta yondashuv.\nQiziquvchanlar va maqsadlilar uchun.',
+};
+export const uzEditorial = {
+  hero:['Sizga mos kelajak.','O‘sish uchun joy.'],
+  description:'Universitetni ongli tanlang. Qiziqishlaringiz va orzularingizni sizga mos joy bilan bog‘laymiz.',
+  side:['Qayerdadir o‘zingizni uydagidek his qiladigan kampus bor.','Sizni ilhomlantiradigan fan. Sizga tegishli kelajak.'],
+  pills:['QIZIQISHLARINGIZ','SIZNING DUNYONGIZ','KELAJAGINGIZ'],
+  introLabel:'HAR BIR KELAJAK BIRINCHI QADAMDAN BOSHLANADI',
+  intro:['Yangi nigoh.','Imkoniyatlar dunyosi.'],
+  introBody:'To‘g‘ri joy dunyoga va o‘zingizga qarashingizni o‘zgartiradi. Biz birinchi qadamni aniqroq qilishga yordam beramiz.',
+  experienceLabel:'SIZNING YANGI BOBINGIZ', experience:['O‘z insonlaringizni toping.','Yangi ufqlarni oching.'],
+  mediaLabel:'BUTUN DUNYO — SIZNING KAMPUSINGIZ',mediaTitle:'Yangi joy.\nYangi imkoniyatlar.',mediaAction:'YO‘LINGIZNI BOSHLANG',
+  approach:['E’tibor bilan tanlangan.','Sizga mos bo‘lishi uchun.'],approachText:'Sevimli fanlardan hayot tarzigacha — universitetingiz sizga yaqin bo‘lsin.',
+  orbit:['QIZIQISHLARINGIZ','HAMJAMIYATINGIZ','DUNYONGIZ','YANGI BOBINGIZ'],center:['Universitetdan ko‘proq.','Dunyodagi o‘z joyingiz.'],
+  centerBody:'Maqsadlaringiz. Puxta ro‘yxat. O‘zingizga tegishli yo‘lning boshlanishi.',
+  collection:['Sizning dunyongiz.','Sizning imkoniyatlaringiz.'],collectionLabel:'BOSHLASH UCHUN BIR NECHA JOY',viewAll:'UNIVERSITETLARNI KO‘RISH',
+  footerLabel:'HOZIR BOSHLANG',footer:['Yangi bobingiz','sizdan boshlanadi.'],footerBody:'Barcha javoblarni bilish shart emas. Birinchi qadamni qo‘yish kifoya.',
+  footerAction:'O‘Z JOYINGIZNI TOPING',footerPrompt:'To‘g‘ri joy hammasini o‘zgartiradi.',discover:'KASHF ETING',navigation:'NAVIGATSIYA',pause:'Videoni to‘xtatish',play:'Videoni davom ettirish',
+};

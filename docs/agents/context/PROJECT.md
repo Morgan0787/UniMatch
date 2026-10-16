@@ -6,7 +6,7 @@ UniMatch helps Central Asian students find universities in Europe, the US, and A
 
 ## Stack and deployment
 
-- Frontend: Vite, React, Tailwind CSS, shadcn/ui.
+- Frontend: Vite, React, Tailwind CSS, shadcn/ui; the Sites landing uses Three.js/React Three Fiber, GSAP and Lenis.
 - Backend: Supabase Postgres and Supabase Auth; migrated from Base44.
 - Authentication: Google OAuth and email through Supabase Auth.
 - Deployment: Vercel.
@@ -45,7 +45,31 @@ The counts and pipeline state below came from the previous context; they were no
   checks are recorded above and were not repeated for unrelated cleanup.
 - Protected materials and pre-existing edits were retained; no dependency
   reduction, staging, commit, push, live backend writes or paid calls occurred.
-  The [16 deferred candidates](DECISIONS.md#deferred-dependency-candidates) remain.
+  The [deferred candidates](DECISIONS.md#deferred-dependency-candidates) are tracked separately; Three.js became active in the subsequent Sites transfer.
+
+## Sites presentation — 2026-10-15
+
+Actual version-7 Sites source now supplies Home, the interactive particle scene,
+assets and shared product presentation across Search, Profile, Recommendations
+and Login. Main data/matching contracts and protected routes remain. See the
+[transfer and QA record](../../qa/sites-design-port.md) for provenance, integration
+corrections, browser evidence and verification limits. This is a local repository
+change; production publication has not been performed.
+
+The 2026-10-16 post-hero refinement adds whole-heading editorial entrances,
+reversible scene/media transitions and a warm milk/graphite palette. The first
+fragment was compared before extending motion down the page. Reduced motion
+keeps content static; the [MDX study and QA record](../../qa/mdx-motion.md)
+distinguishes observed reference behavior, implementation choices and test limits.
+
+## Hero particle story — 2026-10-16
+
+Home's hero now uses a generated pearl particle story (Earth, subject symbols,
+ribbon and university route). Scrolling reverses the same timeline; the first
+scroll hides the header/copy and expands the scene. The old poster and scene
+buttons are removed, with localized loading/error states instead. See the
+[hero QA record](../../qa/hero-particle-story.md) for source ownership, browser
+checks and measured performance limits; stable 60 FPS is not established.
 
 ## Current priority
 

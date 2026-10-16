@@ -426,9 +426,9 @@ export default function Recommendations() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
+            <div className="product-page-hero bg-gradient-to-br from-indigo-600 to-violet-600 text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="product-hero-heading flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                                 <Sparkles className="w-6 h-6" />

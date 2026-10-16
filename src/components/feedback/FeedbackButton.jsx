@@ -43,7 +43,7 @@ export default function FeedbackButton() {
 
     return (
         <>
-            <Button onClick={() => setIsOpen(true)} className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-indigo-600 hover:bg-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300" size="icon"><MessageSquarePlus className="w-6 h-6" /></Button>
+            <Button aria-label="Send feedback" onClick={() => setIsOpen(true)} className="product-feedback-trigger fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-indigo-600 hover:bg-indigo-700 shadow-lg hover:shadow-xl transition-all duration-300" size="icon"><MessageSquarePlus className="w-6 h-6" /></Button>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader><DialogTitle className="flex items-center gap-2"><MessageSquarePlus className="w-5 h-5 text-indigo-600" />Send Feedback</DialogTitle></DialogHeader>

@@ -85,9 +85,6 @@ export const AuthProvider = ({ children }) => {
         )
         setIsAuthenticated(Boolean(nextUser))
 
-        if (nextUser) {
-          await ensureUserProfile(nextUser)
-        }
       } catch (err) {
         console.warn('Unable to restore session', err)
       } finally {
@@ -101,7 +98,7 @@ export const AuthProvider = ({ children }) => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       const nextUser = nextSession?.user ?? null
 
       setSession(nextSession ?? null)
@@ -120,9 +117,6 @@ export const AuthProvider = ({ children }) => {
       setAuthError(null)
       setIsLoadingAuth(false)
 
-      if (nextUser) {
-        await ensureUserProfile(nextUser)
-      }
     })
 
     return () => {
@@ -130,6 +124,12 @@ export const AuthProvider = ({ children }) => {
       subscription.unsubscribe()
     }
   }, [])
+
+  // Auth callbacks hold Supabase's session lock. Database calls belong outside
+  // that callback so restoring a session cannot deadlock the profile request.
+  useEffect(() => {
+    if (session?.user) void ensureUserProfile(session.user)
+  }, [session?.user])
 
   const logout = async (redirectTo = '/') => {
     try {

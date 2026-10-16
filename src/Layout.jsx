@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useAuth } from '@/lib/AuthContext';
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import '@/styles/product-theme.css';
 
 function LayoutContent({ children, currentPageName }) {
     const { t } = useLanguage();
@@ -30,6 +31,25 @@ function LayoutContent({ children, currentPageName }) {
     ];
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const menuToggle = useRef(null);
+
+    useEffect(() => {
+        document.body.dataset.unimatchTheme = 'warm-glass';
+        return () => { delete document.body.dataset.unimatchTheme; };
+    }, []);
+
+    useEffect(() => { setMobileMenuOpen(false); }, [currentPageName]);
+    useEffect(() => {
+        if (!mobileMenuOpen) return;
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                setMobileMenuOpen(false);
+                menuToggle.current?.focus();
+            }
+        };
+        document.addEventListener('keydown', closeOnEscape);
+        return () => document.removeEventListener('keydown', closeOnEscape);
+    }, [mobileMenuOpen]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -43,9 +63,11 @@ function LayoutContent({ children, currentPageName }) {
         logout();
     };
 
+    if (currentPageName === 'Home') return <>{children}<div className="landing-feedback"><FeedbackButton /></div></>;
+
     return (
-        <div className="min-h-screen bg-slate-50">
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        <div className="unimatch-app min-h-screen bg-slate-50">
+            <nav aria-label="Main navigation" className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
             }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -54,14 +76,15 @@ function LayoutContent({ children, currentPageName }) {
                             <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
                                 <GraduationCap className="w-5 h-5 text-white" />
                             </div>
-                            <span className="font-bold text-xl text-slate-800">UniMatch</span>
+                            <span className="product-wordmark font-bold text-xl text-slate-800">UniMatch</span>
                         </Link>
 
-                        <div className="hidden md:flex items-center gap-1">
+                        <div className="hidden lg:flex items-center gap-1">
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
                                     to={createPageUrl(item.path)}
+                                    aria-current={currentPageName === item.path ? 'page' : undefined}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                                         currentPageName === item.path
                                             ? 'bg-indigo-50 text-indigo-700'
@@ -73,14 +96,14 @@ function LayoutContent({ children, currentPageName }) {
                             ))}
                         </div>
 
-                        <div className="hidden md:flex items-center gap-3">
+                        <div className="hidden lg:flex items-center gap-3">
                             <LanguageSwitcher />
                             {user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="gap-2">
                                             <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                                                {user.full_name?.[0] || user.email[0].toUpperCase()}
+                                                {user.full_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                                             </div>
                                             <span className="max-w-[100px] truncate">{user.full_name || user.email}</span>
                                             <ChevronDown className="w-4 h-4 text-slate-400" />
@@ -141,7 +164,11 @@ function LayoutContent({ children, currentPageName }) {
                         </div>
 
                         <button
-                            className="md:hidden p-2 rounded-lg hover:bg-slate-100"
+                            ref={menuToggle}
+                            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                            aria-expanded={mobileMenuOpen}
+                            aria-controls="product-mobile-menu"
+                            className="lg:hidden p-2 rounded-lg hover:bg-slate-100"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             {mobileMenuOpen ? (
@@ -154,7 +181,7 @@ function LayoutContent({ children, currentPageName }) {
                 </div>
 
                 {mobileMenuOpen && (
-                    <div className="md:hidden bg-white border-t shadow-lg">
+                    <div id="product-mobile-menu" className="product-mobile-menu lg:hidden bg-white border-t shadow-lg">
                         <div className="px-4 py-4 space-y-1">
                             {navItems.map(item => (
                                 <Link
@@ -204,13 +231,13 @@ function LayoutContent({ children, currentPageName }) {
                 )}
             </nav>
 
-            <main className="pt-16">
+            <main className="product-main pt-16">
                 {children}
             </main>
 
             <FeedbackButton />
 
-            <footer className="bg-white border-t border-slate-100 mt-20">
+            <footer className="product-footer bg-white border-t border-slate-100 mt-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
                     <div className="grid md:grid-cols-4 gap-8">
                         <div className="md:col-span-2">

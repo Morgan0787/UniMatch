@@ -119,12 +119,12 @@ export default function Profile() {
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
-            <div className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
+            <div className="product-page-hero bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-                    <div className="flex items-start justify-between">
+                    <div className="product-hero-heading flex items-start justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-2xl font-bold">
-                                {user.full_name?.[0] || user.email[0].toUpperCase()}
+                                {user.full_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold">{user.full_name || t('profile.student')}</h1>

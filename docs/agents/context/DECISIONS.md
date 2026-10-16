@@ -23,6 +23,8 @@
 - So: a green `npm run typecheck` *is* evidence about `src/lib/**` and `src/components/ui/**`; a green `npm run lint` is **not**. Both cover `src/components/search/**`, `src/components/comparison/**` and `src/pages/**`.
 - `react-hooks/exhaustive-deps` is not enabled; only `rules-of-hooks` is registered.
 - There is no test framework (no vitest/jest, no `npm test`, no `*.test.*`). `scripts/check-matching.mjs` is a plain-Node assertion script; run it with `npm run check:matching` (or `node scripts/check-matching.mjs`). It is wired to a package script but nothing runs it automatically in CI, so run it by hand after touching `src/lib/matching.js`.
+- Catalog ordering/filtering/pagination has a separate plain-Node check: `node scripts/check-catalog.mjs`. Run it after changing `src/lib/catalogResults.js`; it checks full-collection filtering, stable ordering, complete pages, null preservation and input immutability.
+- Hero geometry and reversible overlay math have a separate plain-Node check: `node scripts/check-hero-scene.mjs`. It does not measure GPU pixels, scroll integration or display FPS; use the [hero browser QA record](../../qa/hero-particle-story.md) for those limits.
 - Lockfile reproducibility, verified 2026-10-13 on Windows with Node 24.14.0/npm 11.18.0: the pre-existing nested conflict in `package-lock.json` was repaired, preserving all 661 earlier records, and the missing `ws@8.18.3` record was restored from Git `3c68feb` (also matching the installed version). JSON has no duplicate keys, root dependency specifications match `package.json`, and required dependency/peer references and version ranges resolve. An isolated `npm ci --ignore-scripts --no-audit --no-fund` installed 610 packages at their exact locked versions without changing the lockfile; no-emit typecheck and production build passed using that fresh installation. Build used dummy Supabase settings and disabled environment-file loading. Lifecycle scripts and other platforms were not verified; dependency reduction was not performed. The earlier invalid-lock limitation is superseded by this result.
 
 ## Routing utility entrypoints
@@ -33,11 +35,12 @@
 
 ## Deferred dependency candidates
 
-No dependencies were removed during the 2026-10-13 cleanup. These 16 packages
+No dependencies were removed during the 2026-10-13 cleanup. After the 2026-10-15
+Sites transfer activated Three.js, these 15 packages
 remain for a separate decision: `@hello-pangea/dnd`, `@hookform/resolvers`,
 `@radix-ui/react-toast`, `@stripe/react-stripe-js`, `@stripe/stripe-js`,
 `canvas-confetti`, `html2canvas`, `jspdf`, `lodash`, `moment`, `react-hot-toast`,
-`react-leaflet`, `react-markdown`, `react-quill`, `three`, and `zod`.
+`react-leaflet`, `react-markdown`, `react-quill`, and `zod`.
 
 Repository searches found no direct module imports/requires/dynamic package
 strings for them in the examined source, scripts, asset tooling and root configs.
@@ -49,6 +52,21 @@ Stripe's React wrapper peers Stripe JS; jsPDF optionally depends on html2canvas;
 react-quill depends on quilljs with nested lodash 2.x; resolvers peers React Hook
 Form, though the retained form component does not use a resolver. Check these
 relationships and the intended features before any package reduction.
+
+## Supabase auth callbacks
+
+Keep `onAuthStateChange` synchronous and perform profile database calls outside
+its callback. Browser QA on 2026-10-15 reproduced a session-lock deadlock on an
+authenticated reload; moving profile initialization into a React effect restored
+Profile loading. Do not fix this by weakening protected-route checks or bypassing
+Supabase session validation. See the [transfer QA record](../../qa/sites-design-port.md).
+
+## Landing modal scrolling
+
+Shared `DialogContent` must retain `data-lenis-prevent`: Home pauses Lenis while
+a modal is open, and its stopped handler otherwise cancels native wheel events
+inside the portaled university dialog. Keep Radix's background scroll lock.
+See the [release regression check](../../qa/public-release.md).
 
 ## Existing source of truth
 

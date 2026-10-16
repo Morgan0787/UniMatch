@@ -1,0 +1,56 @@
+// Shared UI copy keeps the imported landing consistent across all three locales.
+const labels = {
+  en: {
+    skip: 'Skip to universities', approach: 'Our approach', more: 'Scroll to discover',
+    chapter: 'A NEW CHAPTER AWAITS', mediaAlt: 'Graduates celebrating the beginning of their next chapter',
+    mediaCaption: 'A PLACE YOU’LL MAKE YOUR OWN.', people: 'THE PEOPLE', possibilities: 'THE POSSIBILITIES',
+    destinations: 'Filter destinations', loading: 'Loading universities…', unavailable: 'The catalog is temporarily unavailable.', retry: 'Try again',
+    places: 'A few places to begin. A whole world to discover.', profileChapter: 'YOUR PROFILE. YOUR NEXT CHAPTER.',
+    footerNav: 'Footer navigation', home: 'Home', universities: 'Universities', experience: 'The experience', world: 'A world of possibility.', contact: 'Contact us',
+    language: 'Language', mute: 'Mute soundtrack', sound: 'Play soundtrack', openMenu: 'Open menu', closeMenu: 'Close menu', navigation: 'Navigation',
+    menuTitle: 'Your place\nin the world.', menuIntro: 'A little curiosity. A whole world of possibility.', nextChapter: 'YOUR NEXT CHAPTER', mainNav: 'Main navigation',
+    scene: 'A relief Earth becomes seven fields of study, then a path to a university. Scroll down to advance and up to reverse.', sceneInstructions: 'SCROLL DOWN TO EXPLORE · SCROLL UP TO RETURN', building: 'A world of possibilities is taking shape…', sceneLoadingNote: 'Preparing your journey',
+    sceneSubjects: ['Technology', 'Art', 'Science & education', 'Your university', 'Business', 'Medicine', 'Engineering'],
+    sceneYou: 'You', sceneChapters: ['A world of possibilities.', 'Find your direction.', 'Possibilities become a path.', 'Your path to university.'],
+    sceneReducedInstructions: 'A STILL SCENE · EXPLORE UNIVERSITIES BELOW', sceneUnavailable: 'The animation is unavailable. You can explore universities below.',
+    selectUniversity: 'SELECT A UNIVERSITY TO EXPLORE', sceneUniversities: 'Universities in the 3D scene', explore: 'Explore', shape: 'Scene chapter',
+    shapes: ['Earth', 'Constellation', 'Your path'], left: 'Rotate left', right: 'Rotate right', reset: 'Return to Earth', resume: 'Resume scene motion', pause: 'Pause scene motion', closePreview: 'Close university preview', exploreUniversity: 'Explore university',
+    saveError: 'Could not save. Please try again.',
+  },
+  ru: {
+    skip: 'К университетам', approach: 'Наш подход', more: 'Узнать больше', chapter: 'ОТКРЫТЬ НОВУЮ ГЛАВУ',
+    mediaAlt: 'Выпускники празднуют начало новой главы', mediaCaption: 'МЕСТО, КОТОРОЕ ВЫ СДЕЛАЕТЕ СВОИМ.', people: 'ЛЮДИ', possibilities: 'ВОЗМОЖНОСТИ',
+    destinations: 'Фильтр направлений', loading: 'Загружаем университеты…', unavailable: 'Каталог временно недоступен.', retry: 'Повторить',
+    places: 'Несколько мест для начала. Целый мир для открытий.', profileChapter: 'ВАШ ПРОФИЛЬ. ВАШ НОВЫЙ ПУТЬ.',
+    footerNav: 'Навигация внизу страницы', home: 'Главная', universities: 'Университеты', experience: 'Возможности', world: 'Мир возможностей.', contact: 'Связаться с нами',
+    language: 'Язык', mute: 'Выключить звук', sound: 'Включить звук', openMenu: 'Открыть меню', closeMenu: 'Закрыть меню', navigation: 'Навигация',
+    menuTitle: 'Ваше место\nв мире.', menuIntro: 'Немного любопытства. Целый мир возможностей.', nextChapter: 'ВАША СЛЕДУЮЩАЯ ГЛАВА', mainNav: 'Основное меню',
+    scene: 'Рельефная Земля превращается в семь направлений, затем в путь к университету. Прокрутка вниз продолжает сцену, вверх — возвращает её назад.', sceneInstructions: 'ПРОКРУТИТЕ ВНИЗ — ВПЕРЁД · ВВЕРХ — ОБРАТНО', building: 'Собираем мир возможностей…', sceneLoadingNote: 'Готовим ваше путешествие',
+    sceneSubjects: ['Технологии', 'Искусство', 'Наука и образование', 'Ваш университет', 'Бизнес', 'Медицина', 'Инженерия'],
+    sceneYou: 'Вы', sceneChapters: ['Мир возможностей.', 'Найдите своё направление.', 'Из возможностей складывается путь.', 'Ваш путь к университету.'],
+    sceneReducedInstructions: 'СТАТИЧНАЯ СЦЕНА · УНИВЕРСИТЕТЫ НИЖЕ', sceneUnavailable: 'Анимация недоступна. Университеты можно посмотреть ниже.',
+    selectUniversity: 'ВЫБЕРИТЕ УНИВЕРСИТЕТ ДЛЯ ЗНАКОМСТВА', sceneUniversities: 'Университеты в 3D-сцене', explore: 'Посмотреть', shape: 'Этап сцены',
+    shapes: ['Земля', 'Созвездие', 'Ваш путь'], left: 'Вращать влево', right: 'Вращать вправо', reset: 'Вернуться к Земле', resume: 'Включить движение', pause: 'Остановить движение', closePreview: 'Закрыть выбранный университет', exploreUniversity: 'Узнать об университете',
+    saveError: 'Не удалось сохранить. Попробуйте ещё раз.',
+  },
+  uz: {
+    skip: 'Universitetlarga o‘tish', approach: 'Bizning yondashuv', more: 'Ko‘proq bilish', chapter: 'YANGI BOBNI BOSHLANG',
+    mediaAlt: 'Yangi bosqichni nishonlayotgan bitiruvchilar', mediaCaption: 'O‘ZINGIZGA YAQIN JOY.', people: 'INSONLAR', possibilities: 'IMKONIYATLAR',
+    destinations: 'Yo‘nalishlarni saralash', loading: 'Universitetlar yuklanmoqda…', unavailable: 'Katalog vaqtincha mavjud emas.', retry: 'Qayta urinish',
+    places: 'Boshlash uchun bir necha joy. Kashf etish uchun butun dunyo.', profileChapter: 'PROFILINGIZ. YANGI BOBINGIZ.',
+    footerNav: 'Sahifa oxiridagi navigatsiya', home: 'Bosh sahifa', universities: 'Universitetlar', experience: 'Imkoniyatlar', world: 'Imkoniyatlar dunyosi.', contact: 'Bog‘lanish',
+    language: 'Til', mute: 'Ovozni o‘chirish', sound: 'Musiqani yoqish', openMenu: 'Menyuni ochish', closeMenu: 'Menyuni yopish', navigation: 'Navigatsiya',
+    menuTitle: 'Dunyodagi\no‘z joyingiz.', menuIntro: 'Biroz qiziqish. Butun dunyo imkoniyatlari.', nextChapter: 'SIZNING YANGI BOBINGIZ', mainNav: 'Asosiy menyu',
+    scene: 'Relyefli Yer yettita yo‘nalishga, so‘ng universitetga eltuvchi yo‘lga aylanadi. Pastga aylantirish davom ettiradi, yuqoriga aylantirish ortga qaytaradi.', sceneInstructions: 'PASTGA — OLDINGA · YUQORIGA — ORTGA', building: 'Imkoniyatlar dunyosi shakllanmoqda…', sceneLoadingNote: 'Sayohatingizni tayyorlayapmiz',
+    sceneSubjects: ['Texnologiya', 'San’at', 'Fan va ta’lim', 'Universitetingiz', 'Biznes', 'Tibbiyot', 'Muhandislik'],
+    sceneYou: 'Siz', sceneChapters: ['Imkoniyatlar dunyosi.', 'O‘z yo‘nalishingizni toping.', 'Imkoniyatlardan yo‘l yaraladi.', 'Universitetga eltuvchi yo‘lingiz.'],
+    sceneReducedInstructions: 'HARAKATSIZ SAHNA · UNIVERSITETLAR QUYIDA', sceneUnavailable: 'Animatsiya mavjud emas. Universitetlarni quyida ko‘rishingiz mumkin.',
+    selectUniversity: 'TANISHISH UCHUN UNIVERSITET TANLANG', sceneUniversities: '3D sahnadagi universitetlar', explore: 'Ko‘rish', shape: 'Sahna bosqichi',
+    shapes: ['Yer', 'Yo‘nalishlar', 'Yo‘lingiz'], left: 'Chapga aylantirish', right: 'O‘ngga aylantirish', reset: 'Yerga qaytish', resume: 'Harakatni davom ettirish', pause: 'Harakatni to‘xtatish', closePreview: 'Universitet ko‘rinishini yopish', exploreUniversity: 'Universitet haqida bilish',
+    saveError: 'Saqlab bo‘lmadi. Qayta urinib ko‘ring.',
+  },
+};
+
+export function getLandingLabels(language) {
+  return labels[language] || labels.en;
+}

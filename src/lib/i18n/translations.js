@@ -53,6 +53,7 @@ const en = {
     startYourSearch: 'Start Your Search',
   },
   search: {
+    firstVisitHint: 'Set your GPA and English score below to see universities that match your profile.',
     placeholder: 'Search universities, countries, cities...',
     filters: 'Filters',
     results: 'universities found',
@@ -64,6 +65,9 @@ const en = {
     loading: 'Loading universities...',
   },
   filters: {
+    moreFilters: 'More filters',
+    hideFilters: 'Hide filters',
+    topikHint: 'Only relevant for programs taught in Korean',
     coreFilters: 'Core Filters',
     gpa: 'Your GPA',
     ielts: 'IELTS Score',
@@ -325,6 +329,7 @@ const ru = {
     startYourSearch: 'Начать поиск',
   },
   search: {
+    firstVisitHint: 'Укажите GPA и уровень английского, чтобы увидеть подходящие университеты.',
     placeholder: 'Ищите университеты, страны, города...',
     filters: 'Фильтры',
     results: 'университетов найдено',
@@ -336,6 +341,9 @@ const ru = {
     loading: 'Загружаем университеты...',
   },
   filters: {
+    moreFilters: 'Больше фильтров',
+    hideFilters: 'Скрыть фильтры',
+    topikHint: 'Только для программ на корейском языке',
     coreFilters: 'Основные фильтры',
     gpa: 'Ваш GPA',
     ielts: 'Баллы IELTS',
@@ -597,6 +605,7 @@ const uz = {
     startYourSearch: 'Qidiruvni boshlash',
   },
   search: {
+    firstVisitHint: 'Sizga mos universitetlarni ko‘rish uchun GPA va ingliz tili darajangizni kiriting.',
     placeholder: 'Universitet, davlat yoki shahar qidiring...',
     filters: 'Filtrlar',
     results: 'ta universitet topildi',
@@ -608,6 +617,9 @@ const uz = {
     loading: 'Universitetlar yuklanmoqda...',
   },
   filters: {
+    moreFilters: 'Ko‘proq filtrlar',
+    hideFilters: 'Filtrlarni yashirish',
+    topikHint: 'Faqat koreys tilida o‘qitiladigan dasturlar uchun',
     coreFilters: 'Asosiy filtrlar',
     gpa: 'Sizning GPA',
     ielts: 'IELTS balli',

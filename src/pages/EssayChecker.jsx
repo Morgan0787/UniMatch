@@ -113,7 +113,7 @@ Be encouraging but honest. Focus on helping the student tell their authentic sto
     const charCount = essay.length;
 
     return (
-        <div className="min-h-screen bg-slate-50 py-8">
+        <div className="essay-page min-h-screen bg-slate-50 py-8">
             <div className="max-w-6xl mx-auto px-4 sm:px-6">
                 {/* Header */}
                 <div className="mb-8">

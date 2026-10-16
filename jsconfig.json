@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "gsap": ["./node_modules/gsap/types/index.d.ts"],
+      "gsap/ScrollTrigger": ["./node_modules/gsap/types/scroll-trigger.d.ts"]
     },
     "jsx": "react-jsx",
     "module": "esnext",

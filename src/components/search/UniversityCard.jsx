@@ -28,7 +28,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <Card className="group overflow-hidden border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
+            <Card className="catalog-card product-card group overflow-hidden border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
                 {/* Header with cover */}
                 <div className="relative h-28 overflow-hidden">
                     <UniversityCover university={university} size="small" />

@@ -1,0 +1,1 @@
+{"skipGPU":false,"elapsed":8016.200000000001,"frames":280,"meanMs":28.629285714285718,"medianMs":33.10000000000218,"p95Ms":44,"maxMs":70,"gapsOver50":7,"hidden":false,"minTime":0,"maxTime":13.804,"draws":277,"longTasks":[{"start":30151.29999999702,"duration":51}]}

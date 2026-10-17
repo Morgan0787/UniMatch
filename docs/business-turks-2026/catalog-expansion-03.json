@@ -1,0 +1,4459 @@
+{
+  "schemaVersion": "1.0.0",
+  "task": "DATA-03",
+  "checkedAt": "2026-10-17",
+  "timezone": "Asia/Tashkent",
+  "status": "research_package_for_review_not_imported",
+  "purpose": "Sourced undergraduate programme/route facts for public exploratory survey; not personal admission advice or probability.",
+  "referenceCode": "src/lib/admissions/catalog.js (read only); fields preserve current OPTIONS names plus evidence and native policies.",
+  "evidenceContract": {
+    "sourceResolution": "Every sourceKey/sourceKeys/source refers to sources[key], carrying exact URL, scope and checkedAt. Programme evidence groups bind shared provenance to identity, field, language, route, duration, intake, tuition and requirements. Native policies retain field-level applicability.",
+    "unknowns": "Null/missing/not_checked/partial/inferred are not verified passes. Missing attributes not explicitly collected remain unknown.",
+    "policyResolution": "requirementPolicyId resolves in requirementPolicies; policies are part of the contract, not optional notes.",
+    "dates": "Checked date is retrieval date; feeYear and intakeYear are independent. No automatic year rollover.",
+    "projection": "This is not a drop-in OPTIONS replacement. Integration must preserve native credential routes and scope. Current normalized rule grammar supports grade/ielts/all/any/unknown only; other tests, subjects and point systems remain explicit unevaluated requirements.",
+    "normalizedRules": "languageThreshold applies to degree stage; languageRequirement deliberately incomplete. A known lower IELTS must produce unmet/clarification, even if other fields unknown. Known above-minimum overall without section/date/type proof is not full compliance.",
+    "costs": "Annual, semester and tuition+fees estimates are distinct. comparisonVerified=false until adapter confirms matching currency/period/year/stage and personalised scope; do not silently divide or convert, choose cheapest load, or subtract possible scholarships.",
+    "language": "For UK and Iowa, English medium is an explicitly labelled inference from official English-course/admission context; explicit programme medium statement not collected. Else provenance scope says programme or university level.",
+    "taxonomy": "Fields are survey routing suggestions, not a world classification. Debrecen mapping to computer_engineering is explicitly inferred from its engineering curriculum; keep exact degree name.",
+    "credentialScopeKeys": "Normalized credential strings in rule.scope use the credential IDs in requirementPolicies (e.g. professional_college_diploma). Adapter must map user credential explicitly; never treat a missing or different credential as met."
+  },
+  "discoveryPolicy": {
+    "groupBy": "institutionId",
+    "requestedResultCount": [
+      4,
+      5
+    ],
+    "requestedTopCount": 3,
+    "countMeaning": "Different universities after filters, never several degrees of one university counted as separate choices.",
+    "minimumCoverageNotPromised": true,
+    "highlySelective": {
+      "ifVerifiedHighlySelective": "exclude_from_general_fallback_for_weak_or_incomplete_profile; only separate aspiration context if explicitly requested",
+      "unknownSelectivity": "not easy, standard or guaranteed; exploration with warning, no fabricated probability",
+      "avoidBrandBasedInference": true,
+      "sourceRequiredForAnyClassification": true
+    },
+    "knownInputs": "Evaluate all known academic/language inputs in their real scales and applicability. Missing credential/scale does not erase an observed shortfall or become a pass. Preserve alternatives: grade shortfall is not final rejection where a verified SAT/ACT alternative remains possible.",
+    "knownUnmet": "Do not present as suitable/top3. If retained for learning, separate as needs_preparation_or_clarification with precise shortfall and source.",
+    "foundation": "Separate route/section requiring explicit interest; unknown preference never grants direct eligibility or hides preparation time/fee. Degree tuition and IELTS must not be copied onto foundation.",
+    "incompleteProfile": "Only relevant programme discovery with explicit unknowns; exclude proven credential contradictions for the selected direct route. No institutional-brand-first default.",
+    "top3Meaning": "Explain preference/evidence order among eligible exploration candidates; no admission likelihood, no forced three when coverage insufficient."
+  },
+  "coverage": {
+    "newInstitutions": 9,
+    "carriedInstitutions": 3,
+    "totalDistinctInstitutions": 12,
+    "totalProgrammes": 14,
+    "newInstitutionByRegion": {
+      "UK": 5,
+      "USA": 1,
+      "Europe": 2,
+      "South Korea": 1
+    },
+    "allInstitutionByRegion": {
+      "UK": 5,
+      "USA": 2,
+      "Europe": 3,
+      "South Korea": 2
+    },
+    "ukComputerScienceInstitutions": 5,
+    "ukConfirmedDirectOrdinaryUzbekGrade11Institutions": 0,
+    "ukDegreeCandidatesWithKnownIELTS55Shortfall": 7,
+    "fullyVerifiedPersonalPlans": 0,
+    "limitations": [
+      "UK5 are exploratory institutions, not5 confirmed direct Grade11 paths",
+      "USA/continentalEurope/Korea each below4-5 distinct institutions",
+      "IT and Software Engineering each only1 institution in this package",
+      "Dated intakes/fees and selectivity not fully calibrated",
+      "No live DB count or presence asserted"
+    ]
+  },
+  "institutions": [
+    {
+      "id": "gb-university-of-hertfordshire",
+      "name": "University of Hertfordshire",
+      "programmeDeliveryCountries": [
+        "United Kingdom"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "herts-it"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "gb-coventry-university",
+      "name": "Coventry University",
+      "programmeDeliveryCountries": [
+        "United Kingdom"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "cov-cs"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "gb-university-of-west-of-england",
+      "name": "University of the West of England, Bristol",
+      "programmeDeliveryCountries": [
+        "United Kingdom"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "uwe-cs"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "gb-nottingham-trent-university",
+      "name": "Nottingham Trent University",
+      "programmeDeliveryCountries": [
+        "United Kingdom"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "ntu-cs"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "gb-university-of-portsmouth",
+      "name": "University of Portsmouth",
+      "programmeDeliveryCountries": [
+        "United Kingdom"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "port-cs"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "us-iowa-state-university",
+      "name": "Iowa State University",
+      "programmeDeliveryCountries": [
+        "United States"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "iowa-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "hu-university-of-debrecen",
+      "name": "University of Debrecen",
+      "programmeDeliveryCountries": [
+        "Hungary"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "deb-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "hu-university-of-pecs",
+      "name": "University of Pécs",
+      "programmeDeliveryCountries": [
+        "Hungary"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "pecs-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "kr-woosong-university",
+      "name": "Woosong University — SolBridge International School of Business",
+      "programmeDeliveryCountries": [
+        "South Korea"
+      ],
+      "batchOrigin": "new_DATA03",
+      "identitySourceKeys": [
+        "sol-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "fi-turku-university-of-applied-sciences",
+      "name": "Turku University of Applied Sciences",
+      "programmeDeliveryCountries": [
+        "Finland"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "identitySourceKeys": [
+        "turku-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "us-arizona-state-university",
+      "name": "Arizona State University",
+      "programmeDeliveryCountries": [
+        "United States"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "identitySourceKeys": [
+        "asu-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    },
+    {
+      "id": "us-stony-brook-university",
+      "name": "Stony Brook University — SUNY Korea",
+      "programmeDeliveryCountries": [
+        "South Korea"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "identitySourceKeys": [
+        "suny-program"
+      ],
+      "institutionCountUnit": "university_not_programme_or_school",
+      "selectivity": {
+        "highlySelective": null,
+        "status": "not_calibrated",
+        "acceptanceRate": null,
+        "notes": "No evidence-backed easy/safe/guaranteed label; intensity unknown even where selection process is documented."
+      }
+    }
+  ],
+  "sources": {
+    "herts-cs": {
+      "key": "herts-cs",
+      "url": "https://www.herts.ac.uk/courses/undergraduate/computer-science",
+      "title": "Hertfordshire Computer Science",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc identity, 2027 intake, degree tuition and English requirement; excludes foundation cost.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "herts-it": {
+      "key": "herts-it",
+      "url": "https://www.herts.ac.uk/courses/undergraduate/information-technology",
+      "title": "Hertfordshire Information Technology",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc identity, 2027 intake, degree tuition and English requirement.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "herts-uz": {
+      "key": "herts-uz",
+      "url": "https://www.herts.ac.uk/international/guidance-for-your-region/europe-and-central-asia/uzbekistan",
+      "title": "Hertfordshire Uzbekistan",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Country-specific qualification routes and IELTS; general rules, individual course exceptions possible.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "cov-business": {
+      "key": "cov-business",
+      "url": "https://www.coventry.ac.uk/course-structure/ug/fbl/business-management-ba-hons/?term=2027-28",
+      "title": "Coventry Business Management",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BA, 2027 entry, qualification alternatives, IELTS; 2027 fees TBC, 2026 fee reference.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "cov-cs": {
+      "key": "cov-cs",
+      "url": "https://www.coventry.ac.uk/course-structure/ug/eec/computer-science-mscibsc-hons/?term=2027-28",
+      "title": "Coventry Computer Science",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc branch only; 2027 entry, native qualification alternatives, IELTS and fee status. Do not use MSci requirements.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "cov-uz": {
+      "key": "cov-uz",
+      "url": "https://www.coventry.ac.uk/international-students-hub/entry-requirements/",
+      "title": "Coventry international entry: Uzbekistan",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Uzbekistan subsection: specialised secondary diploma plus recognised foundation; individual course requirements additional.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "uwe-cs": {
+      "key": "uwe-cs",
+      "url": "https://courses.uwe.ac.uk/G400/2027/computer-science",
+      "title": "UWE Computer Science 2027",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc, 112 tariff, IELTS 6/5.5 and international degree fee 17500 GBP.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "uwe-uz": {
+      "key": "uwe-uz",
+      "url": "https://www.uwe.ac.uk/courses/international-study/country-or-region/uzbekistan",
+      "title": "UWE Uzbekistan",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Professional College diploma 85%; foundation/IY1 possibilities. No direct ordinary Grade-11 attestation rule established.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "ntu-cs": {
+      "key": "ntu-cs",
+      "url": "https://www.ntu.ac.uk/course/science-and-technology/ug/bsc-hons-computer-science?year=2027",
+      "title": "NTU Computer Science 2027",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "International standard offer 120 tariff incl relevant A-level-equivalent C, September 2027, guide fee 18400 GBP.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "ntu-english": {
+      "key": "ntu-english",
+      "url": "https://www.ntu.ac.uk/international/your-application/entry-requirements/english-language-requirements",
+      "title": "NTU English language",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Student-visa Bachelors, School of Science and Technology: IELTS 6.5, each 5.5; alternatives exist.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "ntu-foundation": {
+      "key": "ntu-foundation",
+      "url": "https://www.ntu.ac.uk/international/your-application/entry-requirements/foundation-courses",
+      "title": "NTU international foundation",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "NTIC/Kaplan Computing preparation exists; does not establish Uzbekistan entry, price or individual progression.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "ntu-country": {
+      "key": "ntu-country",
+      "url": "https://www.ntu.ac.uk/international/your-country",
+      "title": "NTU country guidance",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Central Asia advisor listed; numeric Uzbekistan equivalency not found in reviewed material.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "port-cs": {
+      "key": "port-cs",
+      "url": "https://www.port.ac.uk/study/courses/undergraduate/bsc-meng-computer-science",
+      "title": "Portsmouth Computer Science",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc branch September 2027: 104-120 tariff / BBB-BBC / IB24, relevant subject, IELTS6/5.5; fees pending.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "port-foundation": {
+      "key": "port-foundation",
+      "url": "https://www.port.ac.uk/study/courses/undergraduate/beng-hons-engineering-and-technology-with-foundation-year",
+      "title": "Portsmouth Engineering and Technology foundation",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "September 2027, 56-64 tariff including one A level/equivalent, IELTS5.5 each5.5; CS among progression degrees.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "port-country": {
+      "key": "port-country",
+      "url": "https://www.port.ac.uk/study/international-students/your-country",
+      "title": "Portsmouth country finder",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Country finder inspected; no specific Uzbekistan equivalency established.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "iowa-program": {
+      "key": "iowa-program",
+      "url": "https://catalog.iastate.edu/collegeofengineering/computerengineering/",
+      "title": "Iowa State Computer Engineering",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Undergraduate curriculum leading to Bachelor of Science; separate from Computer Science and Software Engineering.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "iowa-admission": {
+      "key": "iowa-admission",
+      "url": "https://www.iastate.edu/admission-and-aid/admissions/international-admissions/international-first-year-requirements",
+      "title": "Iowa State international first-year",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "GPA3/4 or SAT1200/ACT25 replacing GPA requirement; required core subjects remain.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "iowa-english": {
+      "key": "iowa-english",
+      "url": "https://www.iastate.edu/admission-and-aid/admissions/international-admissions/english-proficiency-requirement",
+      "title": "Iowa State English",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "IELTS6 each5.5, DET105, PTE48; TOEFL versions/date; no IELTS OSR or MyBest.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "iowa-cost": {
+      "key": "iowa-cost",
+      "url": "https://isso.dso.iastate.edu/resources/students_scholars/expense-worksheet/undergraduate-expenses",
+      "title": "Iowa State 2026-2027 expenses",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Most-majors tuition+fees estimate33547 USD/9-month academic year; engineering actual rate unconfirmed.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "iowa-calendar": {
+      "key": "iowa-calendar",
+      "url": "https://www.iastate.edu/admission-and-aid/admissions/international-students/international-undergraduate-application-information",
+      "title": "Iowa international application",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Rolling admission; recommendation to apply 6-8 weeks ahead, not a guaranteed final deadline.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "deb-program": {
+      "key": "deb-program",
+      "url": "https://edu.unideb.hu/p/computer-science-engineering-bsc",
+      "title": "Debrecen Computer Science Engineering",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc English B2, high-school certificate, English test/interview, written+oral maths/physics, 7000USD/year; September recurring, year unspecified.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "pecs-program": {
+      "key": "pecs-program",
+      "url": "https://international.pte.hu/study-programs/bsc-business-administration-and-management",
+      "title": "Pecs Business Administration and Management",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Diploma granting HE access, B2 certificate<=2 years, maths test>=50%, ranked interview process; application fee100EUR.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "pecs-english": {
+      "key": "pecs-english",
+      "url": "https://ktk.pte.hu/en/applicants/admission/application-guide/language-proficiency-requirements-university-of-pecs",
+      "title": "Pecs FBE language requirements",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "IELTS6 each5.5; DET115; language alternatives. No conversion from arbitrary school grades.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "pecs-fees": {
+      "key": "pecs-fees",
+      "url": "https://international.pte.hu/admission/fees",
+      "title": "Pecs published fees",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "English BSc Business, 7 semesters, non-EU tuition2750EUR/semester; application fee150EUR conflicts with programme page100EUR.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "sol-program": {
+      "key": "sol-program",
+      "url": "https://solbridge.ac.kr/story/Bachelor-of-Business-Administration/",
+      "title": "Woosong SolBridge BBA",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Current programme: 4 years, English, 120 credits, Spring/Fall recurring; no dated2027 deadline.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "sol-admission": {
+      "key": "sol-admission",
+      "url": "https://www.solbridge.ac.kr/story/page/index.jsp?code=solbridge_n070101",
+      "title": "SolBridge international freshman admission",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Individual selective screening, English test proof, school diploma/transcript; numeric English cutoff and Grade11 acceptance not published in inspected page.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "sol-cost": {
+      "key": "sol-cost",
+      "url": "https://www.solbridge.ac.kr/story/page/index.jsp?code=solbridge_n070102a",
+      "title": "SolBridge BBA costs Fall2026/Spring2027",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Annual tuition10494-12592USD depending on intersessions; 12592 in full-year schedule, extra costs separate; estimate subject to change.",
+      "verificationMethod": "opened_official_page_DATA03"
+    },
+    "turku-program": {
+      "key": "turku-program",
+      "url": "https://www.turkuamk.fi/en/studies/information-and-communications-technology-software-engineering/",
+      "title": "Turku Software Engineering",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "English BEng,4 years,240ECTS",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "turku-route": {
+      "key": "turku-route",
+      "url": "https://www.turkuamk.fi/en/education/guide-for-applicants/separate-applications/",
+      "title": "Turku separate admission",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "August2027, Uzbekistan country list, certificate+interview; exact credential/places unknown",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "turku-language": {
+      "key": "turku-language",
+      "url": "https://www.turkuamk.fi/en/education/guide-for-applicants/",
+      "title": "Turku applicant guide",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "IELTS6; alternative language tests",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "turku-tuition": {
+      "key": "turku-tuition",
+      "url": "https://www.turkuamk.fi/en/education/guide-for-applicants/tuition-fees-and-scholarships/",
+      "title": "Turku fees",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "12000EUR/year for startsJanuary2026or later",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "asu-program": {
+      "key": "asu-program",
+      "url": "https://degrees.asu.edu/bachelors/major/ASU00/ESCSEBS/computer-science",
+      "title": "ASU Computer Science",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "TempeBS; program-specific first-year alternatives, IELTS6.5",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "asu-first-year": {
+      "key": "asu-first-year",
+      "url": "https://admission.asu.edu/apply/international/first-year",
+      "title": "ASU international first-year",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Uzbekistan dynamic country block explicitly recognises current complete-secondary certificate; average4/5 or75/100. CSspring2027 not established",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "asu-cost": {
+      "key": "asu-cost",
+      "url": "https://admission.asu.edu/cost-aid/international",
+      "title": "ASU international cost",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Base tuition39062USD2026-27; not full CS quote",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "asu-language": {
+      "key": "asu-language",
+      "url": "https://goglobal.asu.edu/international/academic-info",
+      "title": "ASU academic information",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "University-level English medium, exchange context",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "suny-program": {
+      "key": "suny-program",
+      "url": "https://cs.sunykorea.ac.kr/cs/html/sub03/030201.html",
+      "title": "SUNY Korea CS",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "BSc and mandatory NewYorkyear",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "suny-language": {
+      "key": "suny-language",
+      "url": "https://cs.sunykorea.ac.kr/cs/html/sub01/0103.html",
+      "title": "SUNY Korea CS medium",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Explicit English delivery",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "suny-entry": {
+      "key": "suny-entry",
+      "url": "https://www.sunykorea.ac.kr/adm/html/sub02/02010103.html",
+      "title": "SUNY Korea SBU documents",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "IELTS6.5, other exams; Grade9-12 transcript; UzbekGrade11 equivalence unresolved",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "suny-intake": {
+      "key": "suny-intake",
+      "url": "https://www.sunykorea.ac.kr/adm/html/sub02/02030101.html",
+      "title": "SBU 2027 timeline",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "Fall2027 opensOctober19; prioritiesDec16/March18,finalJune24",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    },
+    "suny-cost": {
+      "key": "suny-cost",
+      "url": "https://www.sunykorea.ac.kr/adm/html/sub01/0103.html",
+      "title": "SUNY Korea costs",
+      "checkedAt": "2026-10-17",
+      "checkedTimezone": "Asia/Tashkent",
+      "scope": "23550USD/year, fee-year unknown, not guaranteed2027",
+      "verificationMethod": "DATA02_evidence_reviewed_locally_not_reopened_DATA03"
+    }
+  },
+  "requirementPolicies": {
+    "herts-uz": {
+      "applicantCategory": "Uzbekistan-issued qualification; international first-year",
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "herts-uz"
+        ],
+        "scope": "General country guidance; programme-specific exceptions and individual review remain.",
+        "checkedAt": "2026-10-17"
+      },
+      "routes": [
+        {
+          "path": "direct",
+          "credentials": [
+            "academic_lyceum_diploma"
+          ],
+          "academic": {
+            "kind": "published_gpa",
+            "minimum": 4,
+            "scaleMaximum": null,
+            "scaleStatus": "not_stated",
+            "additional": [
+              "Pass in high-school mathematics"
+            ]
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 6,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "herts-uz",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "herts-uz"
+            ],
+            "scope": "Year1 Academic Lyceum route; do not interpret4 as4/4.",
+            "checkedAt": "2026-10-17"
+          }
+        },
+        {
+          "path": "direct",
+          "credentials": [
+            "professional_college_diploma"
+          ],
+          "academic": {
+            "publishedText": "GPA4.0/minimum60% or above",
+            "operator": "ambiguous_published_alternative",
+            "minimumGpa": 4,
+            "gpaScaleMaximum": null,
+            "minimumPercent": 60,
+            "automaticComparisonAllowed": false,
+            "additional": [
+              "Pass in high-school mathematics"
+            ]
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 6,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "herts-uz",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "herts-uz"
+            ],
+            "scope": "Year1 Professional College; published notation needs clarification.",
+            "checkedAt": "2026-10-17"
+          }
+        },
+        {
+          "path": "foundation",
+          "credentials": [
+            "orta_malumot_togrisida_shahodatnoma"
+          ],
+          "academic": {
+            "minimum": null,
+            "status": "not_published_in_reviewed_country_row"
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 4.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "herts-uz",
+            "sections": {
+              "listening": 4,
+              "reading": 4,
+              "writing": 4,
+              "speaking": 4
+            }
+          },
+          "tuition": null,
+          "progressionCriteria": null,
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "herts-uz"
+            ],
+            "scope": "Foundation guidance only; no automatic degree admission.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Precise modern Grade11 certificate equivalence",
+        "Foundation price/cohort/progression",
+        "Any subject-specific assessment"
+      ]
+    },
+    "cov-uz": {
+      "applicantCategory": "Uzbekistan specialised secondary diploma",
+      "routes": [
+        {
+          "path": "foundation",
+          "credentials": [
+            "specialised_secondary_shahodatnoma"
+          ],
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "published_gpa",
+                "minimum": 4.5,
+                "scaleMaximum": null
+              },
+              {
+                "kind": "key_subject_grade",
+                "minimum": 4,
+                "scaleMaximum": null
+              },
+              {
+                "kind": "recognised_foundation",
+                "required": true
+              }
+            ]
+          },
+          "foundationEntryRequirements": null,
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "cov-uz"
+            ],
+            "scope": "Requirements for entering degree after foundation;4.5 is not foundation entry cutoff.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Exact modern Grade11 mapping",
+        "Foundation admission language/price/intake/progression",
+        "Scales for country grades"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "cov-uz"
+        ],
+        "scope": "Do not label ordinary Uzbek school certificate as direct degree entry.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "uwe-uz": {
+      "applicantCategory": "Uzbekistan-issued qualification",
+      "routes": [
+        {
+          "path": "direct",
+          "credentials": [
+            "professional_college_diploma"
+          ],
+          "academic": {
+            "kind": "percent",
+            "minimum": 85,
+            "scaleMaximum": 100
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "uwe-uz"
+            ],
+            "scope": "Country minimum; programme qualifications additional.",
+            "checkedAt": "2026-10-17"
+          }
+        },
+        {
+          "path": "foundation",
+          "credentials": null,
+          "academic": null,
+          "language": null,
+          "tuition": null,
+          "progressionCriteria": null,
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "uwe-uz"
+            ],
+            "scope": "Foundation/IY1 offered where degree criteria not met; individual Uzbek certificate admission not established.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Direct ordinary Grade11 eligibility",
+        "Foundation eligibility/fee/English criteria"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "uwe-uz"
+        ],
+        "scope": "Undergraduate Professional College rule and distinct preparation routes.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "ntu-route": {
+      "applicantCategory": "International first-year",
+      "routes": [
+        {
+          "path": "direct",
+          "credentials": [
+            "recognised_A_level_equivalent"
+          ],
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "UCAS_tariff",
+                "minimum": 120
+              },
+              {
+                "kind": "qualification_count",
+                "minimum": 2,
+                "level": "A-level-equivalent"
+              },
+              {
+                "kind": "subject_grade",
+                "subjectsAnyOf": [
+                  "IT",
+                  "Mathematics",
+                  "Science"
+                ],
+                "minimum": "C"
+              }
+            ]
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "ntu-cs"
+            ],
+            "scope": "International standard offer;112 contextual UK offer not substituted.",
+            "checkedAt": "2026-10-17"
+          }
+        },
+        {
+          "path": "foundation",
+          "provider": "Nottingham Trent International College / Kaplan",
+          "academic": null,
+          "language": null,
+          "tuition": null,
+          "progressionCriteria": null,
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "ntu-foundation"
+            ],
+            "scope": "Computing foundation exists; country-specific admission not verified.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Uzbekistan school equivalence",
+        "Foundation entry conditions/cohort/price"
+      ],
+      "evidence": {
+        "status": "partial",
+        "sourceKeys": [
+          "ntu-country",
+          "ntu-foundation"
+        ],
+        "scope": "Inspected guidance does not establish a numeric Uzbekistan direct rule.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "port-route": {
+      "applicantCategory": "International BSc; exclude MEng criteria",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "any",
+            "rules": [
+              {
+                "kind": "UCAS_tariff_range",
+                "minimum": 104,
+                "maximum": 120,
+                "additional": [
+                  "Two A levels/equivalent",
+                  "Relevant subject"
+                ]
+              },
+              {
+                "kind": "A_levels_typical_range",
+                "grades": [
+                  "BBB",
+                  "BBC"
+                ]
+              },
+              {
+                "kind": "IB_total",
+                "minimum": 24
+              }
+            ]
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "port-cs"
+            ],
+            "scope": "BSc September2027; subject equivalence still required.",
+            "checkedAt": "2026-10-17"
+          }
+        },
+        {
+          "path": "foundation",
+          "provider": "University of Portsmouth Engineering and Technology with Foundation Year",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "UCAS_tariff_range",
+                "minimum": 56,
+                "maximum": 64
+              },
+              {
+                "kind": "A_level_or_equivalent_count",
+                "minimum": 1
+              }
+            ]
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 5.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "port-foundation",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          },
+          "tuition": null,
+          "progressionTargets": [
+            "Computer Science BSc"
+          ],
+          "progressionCriteria": null,
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "port-foundation"
+            ],
+            "scope": "Published integrated preparation and CS progression; no Uzbek equivalency verified.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Uzbekistan school equivalence for either route",
+        "Foundation tuition",
+        "Remaining subject/GCSE equivalence"
+      ],
+      "evidence": {
+        "status": "partial",
+        "sourceKeys": [
+          "port-cs",
+          "port-foundation",
+          "port-country"
+        ],
+        "scope": "Country applicability incomplete.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "iowa-route": {
+      "applicantCategory": "International first-year",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "operator": "any",
+                "rules": [
+                  {
+                    "kind": "GPA",
+                    "minimum": 3,
+                    "scaleMaximum": 4,
+                    "equivalence": "University-assessed"
+                  },
+                  {
+                    "kind": "SAT_total",
+                    "minimum": 1200
+                  },
+                  {
+                    "kind": "ACT_composite",
+                    "minimum": 25
+                  }
+                ]
+              },
+              {
+                "kind": "core_subjects",
+                "requirements": {
+                  "native_language_or_english_years": 4,
+                  "science_years": 3,
+                  "laboratory_science_years": 2,
+                  "math_years": 3,
+                  "social_studies_years": 2
+                },
+                "notes": [
+                  "Math includes algebra and geometry"
+                ]
+              }
+            ]
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "iowa-admission"
+            ],
+            "scope": "SAT/ACT optional; score alternatives meet GPA only, not all subject conditions.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Uzbekistan country equivalence (linked official Box document failed to open)",
+        "Personal subject coverage",
+        "Programme start term"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "iowa-admission"
+        ],
+        "scope": "General international first-year requirements; country match pending.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "deb-route": {
+      "applicantCategory": "International first-year applicant",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "high_school_certificate",
+                "required": true
+              },
+              {
+                "kind": "English_placement_and_oral_exam",
+                "required": true
+              },
+              {
+                "kind": "Mathematics_exam",
+                "parts": [
+                  "written",
+                  "oral"
+                ],
+                "required": true
+              },
+              {
+                "kind": "Physics_exam",
+                "parts": [
+                  "written",
+                  "oral"
+                ],
+                "required": true
+              }
+            ]
+          },
+          "language": {
+            "CEFR": "B2",
+            "ieltsMinimum": null,
+            "notes": [
+              "No IELTS-to-CEFR conversion supplied; numeric IELTS waiver not established"
+            ]
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "deb-program"
+            ],
+            "scope": "Current programme rules; historical brochures' IELTS5.5 not reused.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Exact Uzbek certificate recognition",
+        "Dated intake/deadline/fee year",
+        "Whether English certificate exempts placement"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "deb-program"
+        ],
+        "scope": "Direct general school route, personal recognition pending.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "pecs-route": {
+      "applicantCategory": "Non-Hungarian/non-dual-Hungarian first-year applicant",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "school_diploma",
+                "condition": "Must entitle holder to higher education"
+              },
+              {
+                "kind": "mathematics_admission_test",
+                "minimumPercent": 50
+              },
+              {
+                "kind": "admission_interview",
+                "required": true
+              }
+            ],
+            "ranking": {
+              "schoolResults": "Last2years GPA weighted in point system; no universal minimum asserted",
+              "schoolPointsMaximum": 50,
+              "mathPointsMaximum": 20,
+              "interviewPointsMaximum": 30
+            }
+          },
+          "language": {
+            "CEFR": "B2",
+            "certificateValidityYears": 2,
+            "anyOf": [
+              {
+                "test": "IELTS",
+                "minimum": 6,
+                "minimumEach": 5.5
+              },
+              {
+                "test": "DET",
+                "minimum": 115
+              }
+            ],
+            "sourceKey": "pecs-english"
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "pecs-program",
+              "pecs-english"
+            ],
+            "scope": "Ranked admissions; meeting language/maths minima is not an offer.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Individual Uzbek diploma equivalence",
+        "Dated cohort/deadline",
+        "Application fee conflict100 vs150EUR"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "pecs-program",
+          "pecs-fees"
+        ],
+        "scope": "Do not interpret scoring bands as a made-up GPA cutoff.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "sol-route": {
+      "applicantCategory": "International BBA freshman; Woosong University",
+      "routes": [
+        {
+          "path": "unknown",
+          "academic": {
+            "kind": "school_diploma_and_transcript",
+            "numericCutoff": null
+          },
+          "language": {
+            "testProofRequired": true,
+            "ieltsMinimum": null,
+            "toeflMinimum": null
+          },
+          "documents": [
+            "Passport",
+            "Parents identification",
+            "Birth/family certificate",
+            "School diploma/transcript",
+            "One recommendation"
+          ],
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "sol-admission"
+            ],
+            "scope": "Freshman document list; country equivalence and numeric English cutoff absent in reviewed page.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "UzbekGrade11 equivalence",
+        "Current numeric English cutoff",
+        "Dated2027 admission deadline"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "sol-admission"
+        ],
+        "scope": "Individual selective review; not a low-selectivity classification.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "turku-route": {
+      "applicantCategory": "Non-EU/EEA international; Uzbekistan-issued secondary education",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "kind": "school_qualification",
+                "condition": "Grants access to university in awarding country"
+              },
+              {
+                "kind": "country_list",
+                "includes": [
+                  "Uzbekistan"
+                ]
+              },
+              {
+                "kind": "online_interview",
+                "required": true
+              }
+            ]
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 6,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "turku-language"
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "turku-route",
+              "turku-language"
+            ],
+            "scope": "August2027 separate application, not rolling/joint or Open UAS.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Personal diploma",
+        "Seats"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "turku-route"
+        ],
+        "scope": "DATA02; not externally reopened DATA03",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "asu-route": {
+      "applicantCategory": "International first-year; Uzbekistan issued modern complete-secondary certificate",
+      "routes": [
+        {
+          "path": "direct",
+          "academic": {
+            "operator": "all",
+            "rules": [
+              {
+                "operator": "any",
+                "rules": [
+                  {
+                    "kind": "country_average",
+                    "minimum": 4,
+                    "scaleMaximum": 5
+                  },
+                  {
+                    "kind": "country_average",
+                    "minimum": 75,
+                    "scaleMaximum": 100
+                  }
+                ]
+              },
+              {
+                "kind": "required_subjects",
+                "mathYears": 4,
+                "laboratoryScienceYears": 3
+              },
+              {
+                "kind": "CS_program_aptitude",
+                "operator": "any",
+                "alternatives": [
+                  "SAT1210",
+                  "ACT24",
+                  "CompetencyGPA3/4",
+                  "ClassTop25%"
+                ],
+                "additional": "No math/science competency deficiency"
+              }
+            ]
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 6.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "asu-program"
+          },
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "asu-first-year",
+              "asu-program"
+            ],
+            "scope": "Country equivalency from dynamic Uzbekistan block read in DATA02; no personal guarantee.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "CS Spring2027 programme availability",
+        "Current program semester fee",
+        "Student subject verification"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "asu-first-year",
+          "asu-program"
+        ],
+        "scope": "General country and programme conditions kept together, not alternative to all requirements.",
+        "checkedAt": "2026-10-17"
+      }
+    },
+    "suny-route": {
+      "applicantCategory": "International SBU first-year at Korea campus",
+      "routes": [
+        {
+          "path": "unknown",
+          "academic": {
+            "kind": "school_transcript",
+            "grades": "9-12 requested",
+            "GpaMinimum": null
+          },
+          "language": {
+            "type": "ielts",
+            "minimum": 6.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "suny-entry"
+          },
+          "additional": [
+            "Required one year at New York campus"
+          ],
+          "evidence": {
+            "status": "verified",
+            "sourceKeys": [
+              "suny-entry",
+              "suny-program"
+            ],
+            "scope": "No Uzbekistan Grade11 equivalency established.",
+            "checkedAt": "2026-10-17"
+          }
+        }
+      ],
+      "missing": [
+        "Grade11 recognition",
+        "2027 tuition",
+        "New York year cost"
+      ],
+      "evidence": {
+        "status": "verified",
+        "sourceKeys": [
+          "suny-entry"
+        ],
+        "scope": "No cross-university Korean admission inference.",
+        "checkedAt": "2026-10-17"
+      }
+    }
+  },
+  "programmes": [
+    {
+      "id": "gb-herts-computer-science",
+      "institutionId": "gb-university-of-hertfordshire",
+      "university": "University of Hertfordshire",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Computer Science BSc (Hons)",
+      "field": "computer_science",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years full-time; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September 2027",
+      "requirementPolicyId": "herts-uz",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "herts-cs",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": 17970,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "herts-cs",
+        "status": "verified",
+        "comparisonVerified": false
+      },
+      "nativeProgrammeRequirements": {
+        "typicalQualifications": {
+          "UCAS": [
+            120,
+            128
+          ],
+          "A_levels": [
+            "BBB",
+            "ABB"
+          ],
+          "IB": "120-128 UCAS points; minimum2 HL at4+"
+        },
+        "applicability": "Recognised qualifications; no automatic conversion of Uzbek grades",
+        "evidence": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Programme typical entry, additional to applicable credential route.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "missing": [
+        "Ordinary modern Grade11 recognition/foundation mapping",
+        "Foundation cohort/fees/progression",
+        "Application deadline",
+        "Personal credential and maths",
+        "Actual seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "DEGREE_TUITION_EXCLUDES_FOUNDATION"
+      ],
+      "language": "English",
+      "languageSourceKey": "herts-cs",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "herts-uz",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "herts-uz"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "herts-cs",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "herts-cs"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "herts-uz"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "herts-uz",
+            "herts-cs"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "herts-uz"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-cs"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "herts-uz",
+            "herts-cs"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-herts-information-technology",
+      "institutionId": "gb-university-of-hertfordshire",
+      "university": "University of Hertfordshire",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Information Technology BSc (Hons)",
+      "field": "it",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years full-time; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September 2027",
+      "requirementPolicyId": "herts-uz",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "herts-it",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": 17970,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "herts-it",
+        "status": "verified",
+        "comparisonVerified": false
+      },
+      "nativeProgrammeRequirements": {
+        "typicalQualifications": {
+          "UCAS": 112,
+          "A_levels": "BBC",
+          "GCSE": "English and Mathematics4/C"
+        },
+        "applicability": "Recognised qualifications; published IB wording not converted",
+        "evidence": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Programme typical qualifications, not a Uzbek school equivalency.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "missing": [
+        "Ordinary Grade11 route",
+        "Foundation cost/criteria",
+        "Application deadline",
+        "Personal credential and subject match",
+        "Actual seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "DEGREE_TUITION_EXCLUDES_FOUNDATION"
+      ],
+      "language": "English",
+      "languageSourceKey": "herts-it",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "herts-uz",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "herts-uz"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "herts-it",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "herts-it"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "herts-uz"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "herts-uz",
+            "herts-it"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "herts-uz"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "herts-it"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "herts-uz",
+            "herts-it"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-coventry-business-management",
+      "institutionId": "gb-coventry-university",
+      "university": "Coventry University",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Business Management BA (Hons)",
+      "field": "business",
+      "degree": "BA (Hons)",
+      "durationText": "3 years degree stage; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September2027 degree entry; other2027/28 starts also listed",
+      "entryPath": "foundation",
+      "requirementPolicyId": "cov-uz",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "cov-business",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": null,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "cov-business",
+        "status": "not_published_in_reviewed_source",
+        "comparisonVerified": false
+      },
+      "publishedCostReferences": [
+        {
+          "amount": 17600,
+          "currency": "GBP",
+          "period": "year",
+          "feeYear": "2026/27",
+          "scope": "tuition",
+          "stage": "degree",
+          "source": "cov-business",
+          "status": "verified",
+          "comparisonVerified": false,
+          "applicable": false,
+          "usage": "historical_degree_stage_reference_only"
+        }
+      ],
+      "nativeProgrammeRequirements": {
+        "typicalQualifications": {
+          "UCAS": 112,
+          "A_levels": "BBC",
+          "IB_total": 28,
+          "GCSE": "Maths and English4/C"
+        },
+        "evidence": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Degree-stage alternatives; not foundation entry conditions.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "missing": [
+        "2027/28 degree tuition TBC",
+        "Foundation intake/entry/English/price/progression",
+        "School qualification equivalence",
+        "Actual seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "FOUNDATION_NOT_AUTOMATIC",
+        "DEGREE_IELTS_IS_NOT_FOUNDATION_IELTS",
+        "HISTORICAL_PRICE_NOT_CURRENT"
+      ],
+      "language": "English",
+      "languageSourceKey": "cov-business",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "routeSourceKey": "cov-uz",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "cov-uz"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "cov-business",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "cov-business"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "cov-uz"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "cov-uz",
+            "cov-business"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-uz"
+          ],
+          "scope": "Published Uzbekistan specialised-secondary route requires recognised foundation; current Grade11 equivalence still needs assessment.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Degree-course start listing only; does not establish preparation cohort.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "not_published_in_reviewed_source",
+          "sourceKeys": [
+            "cov-business"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "cov-uz",
+            "cov-business"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-coventry-computer-science",
+      "institutionId": "gb-coventry-university",
+      "university": "Coventry University",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Computer Science BSc (Hons)",
+      "field": "computer_science",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years degree stage; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September2027 degree entry; other2027/28 starts also listed",
+      "entryPath": "foundation",
+      "requirementPolicyId": "cov-uz",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "cov-cs",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": null,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "cov-cs",
+        "status": "not_published_in_reviewed_source",
+        "comparisonVerified": false
+      },
+      "publishedCostReferences": [
+        {
+          "amount": 20800,
+          "currency": "GBP",
+          "period": "year",
+          "feeYear": "2026/27",
+          "scope": "tuition",
+          "stage": "degree",
+          "source": "cov-cs",
+          "status": "verified",
+          "comparisonVerified": false,
+          "applicable": false,
+          "usage": "historical_degree_stage_reference_only"
+        }
+      ],
+      "nativeProgrammeRequirements": {
+        "typicalQualifications": {
+          "UCAS": 120,
+          "A_levels": "BBB with relevant STEM/design subject",
+          "IB_total": 29,
+          "IB_subject": "One relevant STEM/design subject at HL",
+          "GCSE": "Maths and English4/C"
+        },
+        "evidence": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Degree-stage alternatives; not foundation entry conditions.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "missing": [
+        "2027/28 degree tuition TBC",
+        "Foundation intake/entry/English/price/progression",
+        "School qualification equivalence",
+        "Actual seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "FOUNDATION_NOT_AUTOMATIC",
+        "DEGREE_IELTS_IS_NOT_FOUNDATION_IELTS",
+        "HISTORICAL_PRICE_NOT_CURRENT"
+      ],
+      "language": "English",
+      "languageSourceKey": "cov-cs",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "routeSourceKey": "cov-uz",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "cov-uz"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "cov-cs",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "cov-cs"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "cov-uz"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "cov-uz",
+            "cov-cs"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-uz"
+          ],
+          "scope": "Published Uzbekistan specialised-secondary route requires recognised foundation; current Grade11 equivalence still needs assessment.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Degree-course start listing only; does not establish preparation cohort.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "not_published_in_reviewed_source",
+          "sourceKeys": [
+            "cov-cs"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "cov-uz",
+            "cov-cs"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-uwe-computer-science",
+      "institutionId": "gb-university-of-west-of-england",
+      "university": "University of the West of England, Bristol",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Computer Science BSc (Hons)",
+      "field": "computer_science",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years degree stage; optional placement not included",
+      "intakeYear": 2027,
+      "intakeText": "September2027",
+      "requirementPolicyId": "uwe-uz",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "uwe-cs",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": 17500,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "uwe-cs",
+        "status": "verified",
+        "comparisonVerified": false,
+        "periodStatus": "inferred_from_annual_course_fee_context"
+      },
+      "nativeProgrammeRequirements": {
+        "typicalUCAS": 112,
+        "additional": "No specific A-level subjects; general qualification conditions still apply",
+        "evidence": {
+          "status": "verified",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Native programme qualification requirements.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "missing": [
+        "Direct ordinary Grade11 eligibility",
+        "Foundation cohort/requirements/cost",
+        "Personal diploma/subject equivalence",
+        "Deadline and seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "COLLEGE_85_PERCENT_NOT_GENERAL_SCHOOL_CUTOFF"
+      ],
+      "language": "English",
+      "languageSourceKey": "uwe-cs",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "uwe-uz",
+      "academicRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "sourceKey": "uwe-uz",
+        "children": [
+          {
+            "type": "grade",
+            "minimum": 85,
+            "scale": "100",
+            "verified": true,
+            "applicable": true,
+            "scope": {
+              "schoolCountry": "Uzbekistan",
+              "credential": "professional_college_diploma"
+            },
+            "sourceKey": "uwe-uz"
+          },
+          {
+            "type": "unknown",
+            "verified": false,
+            "applicable": false,
+            "sourceKey": "uwe-cs"
+          }
+        ]
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "uwe-cs",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "uwe-cs"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "uwe-uz"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "uwe-uz",
+            "uwe-cs"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "uwe-uz"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "partial",
+          "sourceKeys": [
+            "uwe-cs"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "uwe-uz",
+            "uwe-cs"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-ntu-computer-science",
+      "institutionId": "gb-nottingham-trent-university",
+      "university": "Nottingham Trent University",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Computer Science BSc (Hons)",
+      "field": "computer_science",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years full-time; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September 2027",
+      "requirementPolicyId": "ntu-route",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6.5,
+        "sourceKey": "ntu-english",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": 18400,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "ntu-cs",
+        "status": "verified",
+        "comparisonVerified": false,
+        "qualifier": "Published as a guide; later study-year increases possible"
+      },
+      "missing": [
+        "Uzbekistan certificate equivalence",
+        "Foundation cohort/English/cost/progression",
+        "Deadline",
+        "Actual seats"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "STANDARD_120_NOT_CONTEXTUAL_112",
+        "DEGREE_TUITION_EXCLUDES_NTIC"
+      ],
+      "language": "English",
+      "languageSourceKey": "ntu-english",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "ntu-country",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "ntu-country"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6.5,
+            "sourceKey": "ntu-english",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "ntu-english"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "ntu-country"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "ntu-country",
+            "ntu-english"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "ntu-cs"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "ntu-cs"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "ntu-english"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "ntu-country"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "ntu-cs"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "ntu-cs"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "ntu-cs"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "ntu-country",
+            "ntu-english"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "gb-portsmouth-computer-science",
+      "institutionId": "gb-university-of-portsmouth",
+      "university": "University of Portsmouth",
+      "country": "United Kingdom",
+      "region": "UK",
+      "name": "Computer Science BSc (Hons)",
+      "field": "computer_science",
+      "degree": "BSc (Hons)",
+      "durationText": "3 years full-time; preparation excluded",
+      "intakeYear": 2027,
+      "intakeText": "September 2027",
+      "requirementPolicyId": "port-route",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "port-cs",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": null,
+        "currency": "GBP",
+        "period": "year",
+        "feeYear": "2027/28",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "port-cs",
+        "status": "not_published_in_reviewed_source",
+        "comparisonVerified": false
+      },
+      "missing": [
+        "2027 degree fee TBC",
+        "Uzbekistan qualification equivalence",
+        "Foundation fee/personal applicability",
+        "GCSE/subject equivalence",
+        "Application deadline/places"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "BSC_NOT_MENG_RULES",
+        "FOUNDATION_55_NOT_DIRECT_DEGREE_60"
+      ],
+      "language": "English",
+      "languageSourceKey": "port-cs",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "port-country",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "port-country"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "port-cs",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "port-cs"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "port-country"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "port-country",
+            "port-cs"
+          ],
+          "basis": "Publicly advertised undergraduate course with native qualification and language conditions recorded. Useful for programme discovery; Uzbekistan direct-route fit and selection intensity remain qualified. No brand-derived safety claim.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "port-country"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "verified",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "not_published_in_reviewed_source",
+          "sourceKeys": [
+            "port-cs"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "port-country",
+            "port-cs"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "us-iowa-state-computer-engineering",
+      "institutionId": "us-iowa-state-university",
+      "university": "Iowa State University",
+      "country": "United States",
+      "region": "USA",
+      "name": "Computer Engineering, Bachelor of Science",
+      "field": "computer_engineering",
+      "degree": "BS",
+      "durationText": null,
+      "intakeYear": null,
+      "intakeText": "International rolling admission; programme-specific start year/term unconfirmed",
+      "requirementPolicyId": "iowa-route",
+      "entryPath": "direct",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "iowa-english",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "academicRequirement": {
+        "type": "any",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "sourceKey": "iowa-admission",
+        "children": [
+          {
+            "type": "grade",
+            "minimum": 3,
+            "scale": "4",
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "iowa-admission"
+          },
+          {
+            "type": "unknown",
+            "verified": false,
+            "applicable": false,
+            "sourceKey": "iowa-admission"
+          }
+        ]
+      },
+      "tuition": {
+        "amount": null,
+        "currency": "USD",
+        "period": "year",
+        "feeYear": "2026/27",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "iowa-cost",
+        "status": "programme_tuition_unknown",
+        "comparisonVerified": false
+      },
+      "publishedCostReferences": [
+        {
+          "amount": 33547,
+          "currency": "USD",
+          "period": "academic_year_9_months",
+          "feeYear": "2026/27",
+          "scope": "tuition_and_fees",
+          "source": "iowa-cost",
+          "status": "verified_general_estimate",
+          "applicable": false,
+          "notes": [
+            "Most majors category; Computer Engineering rate unconfirmed",
+            "Not tuition-only"
+          ]
+        }
+      ],
+      "missing": [
+        "Uzbekistan diploma/grade equivalence",
+        "Programme term/year",
+        "Actual engineering tuition and mandatory fee breakdown",
+        "School core subjects"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "GPA_OR_SAT_ACT_PLUS_CORE_SUBJECTS",
+        "MOST_MAJORS_COST_NOT_ENGINEERING_QUOTE"
+      ],
+      "language": "English",
+      "languageSourceKey": "iowa-english",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "routeSourceKey": "iowa-admission",
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "iowa-english",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "iowa-english"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "iowa-admission"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "iowa-admission",
+            "iowa-english"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "iowa-program"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "iowa-program"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "inferred",
+          "sourceKeys": [
+            "iowa-english"
+          ],
+          "scope": "English-medium inferred from English programme/admission context; explicit medium label was not separately located.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "iowa-admission"
+          ],
+          "scope": "General international direct first-year; Uzbekistan equivalence remains unknown.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "unknown",
+          "sourceKeys": [
+            "iowa-program"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "partial",
+          "sourceKeys": [
+            "iowa-calendar"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "programme_tuition_unknown",
+          "sourceKeys": [
+            "iowa-cost"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "iowa-admission",
+            "iowa-english"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "hu-debrecen-computer-science-engineering",
+      "institutionId": "hu-university-of-debrecen",
+      "university": "University of Debrecen",
+      "country": "Hungary",
+      "region": "Europe",
+      "name": "Computer Science Engineering, BSc",
+      "field": "computer_engineering",
+      "degree": "BSc",
+      "durationText": "3.5 years /7 semesters /210 ECTS",
+      "intakeYear": null,
+      "intakeText": "September each year; dated2027 cohort not confirmed",
+      "requirementPolicyId": "deb-route",
+      "entryPath": "direct",
+      "tuition": {
+        "amount": 7000,
+        "currency": "USD",
+        "period": "year",
+        "feeYear": null,
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "deb-program",
+        "status": "verified",
+        "comparisonVerified": false,
+        "qualifier": "Published programme rate with unspecified fee year; cannot assume2027"
+      },
+      "missing": [
+        "Exact Uzbekistan school recognition",
+        "2027 intake/deadline/fee year",
+        "Numeric IELTS rule or waiver not established",
+        "Programme additional fees"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "B2_NOT_AUTOMATIC_IELTS_CONVERSION",
+        "WRITTEN_AND_ORAL_MATH_PHYSICS_REQUIRED",
+        "FIELD_MAPPING_INFERRED"
+      ],
+      "language": "English",
+      "languageSourceKey": "deb-program",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "routeSourceKey": "deb-program",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "deb-program"
+      },
+      "languageRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "deb-program"
+      },
+      "languageThreshold": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "deb-program"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Programme/country qualification review; degree entry not guaranteed",
+        "sourceKeys": [
+          "deb-program"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "deb-program",
+            "deb-program"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "inferred",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Routing taxonomy based on programme engineering approach, architectures and embedded-systems curriculum; exact degree title retained, not asserted equivalent to every Computer Engineering degree.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Programme explicitly states all courses taught in English.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "High-school certificate plus entrance exams; precise Uzbek credential eligibility pending.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "partial",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "deb-program"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "deb-program",
+            "deb-program"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "hu-pecs-business-administration",
+      "institutionId": "hu-university-of-pecs",
+      "university": "University of Pécs",
+      "country": "Hungary",
+      "region": "Europe",
+      "name": "Business Administration and Management, BSc",
+      "field": "business",
+      "degree": "BSc",
+      "durationText": "3.5 years /7 semesters",
+      "intakeYear": null,
+      "intakeText": "Programme active; dated cohort not confirmed",
+      "requirementPolicyId": "pecs-route",
+      "entryPath": "direct",
+      "languageThreshold": {
+        "type": "ielts",
+        "verified": true,
+        "applicable": true,
+        "minimum": 6,
+        "sourceKey": "pecs-english",
+        "sections": {
+          "listening": 5.5,
+          "reading": 5.5,
+          "writing": 5.5,
+          "speaking": 5.5
+        }
+      },
+      "tuition": {
+        "amount": 2750,
+        "currency": "EUR",
+        "period": "semester",
+        "feeYear": null,
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "pecs-fees",
+        "status": "verified",
+        "comparisonVerified": false,
+        "qualifier": "Non-EU rate; fee year not specified; no invented annual total"
+      },
+      "selectionProcess": "Ranked school results, mathematics admission test and professional interview",
+      "missing": [
+        "Individual diploma recognition",
+        "Dated cohort/deadline/fee year",
+        "Application fee conflict100EUR programme vs150EUR fee table",
+        "Full additional costs"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "SEMESTER_FEE_NOT_ANNUAL",
+        "MATH_TEST_BELOW_50_REJECTED",
+        "GPA_SCORING_BANDS_NOT_ADMISSION_CUTOFF",
+        "APPLICATION_FEE_CONFLICT"
+      ],
+      "language": "English",
+      "languageSourceKey": "pecs-fees",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "routeSourceKey": "pecs-program",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "pecs-program"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "verified": true,
+            "applicable": true,
+            "minimum": 6,
+            "sourceKey": "pecs-english",
+            "sections": {
+              "listening": 5.5,
+              "reading": 5.5,
+              "writing": 5.5,
+              "speaking": 5.5
+            }
+          }
+        ],
+        "sourceKey": "pecs-english"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Ranked school results, mathematics admission test and professional interview",
+        "sourceKeys": [
+          "pecs-program"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "pecs-program",
+            "pecs-fees"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "pecs-program"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "pecs-program"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "pecs-fees"
+          ],
+          "scope": "Official fee table lists English instruction for this programme.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "pecs-program"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "pecs-program"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "unknown",
+          "sourceKeys": [
+            "pecs-program"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "pecs-fees"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "pecs-program",
+            "pecs-english"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "kr-woosong-solbridge-bba",
+      "institutionId": "kr-woosong-university",
+      "university": "Woosong University — SolBridge International School of Business",
+      "country": "South Korea",
+      "region": "South Korea",
+      "name": "Bachelor of Business Administration (SolBridge)",
+      "field": "business",
+      "degree": "BBA",
+      "durationText": "4 years /120 credits",
+      "intakeYear": null,
+      "intakeText": "Spring and Fall recurring; dated2027 admission not confirmed",
+      "requirementPolicyId": "sol-route",
+      "tuition": {
+        "amount": null,
+        "currency": "USD",
+        "period": "year",
+        "feeYear": "Fall2026/Spring2027",
+        "scope": "tuition",
+        "stage": "degree",
+        "source": "sol-cost",
+        "status": "study_load_dependent_range",
+        "comparisonVerified": false
+      },
+      "publishedCostReferences": [
+        {
+          "amount": 12592,
+          "minimum": 10494,
+          "maximum": 12592,
+          "currency": "USD",
+          "period": "year",
+          "feeYear": "Fall2026/Spring2027",
+          "scope": "tuition",
+          "source": "sol-cost",
+          "status": "verified_estimate_range",
+          "applicable": false,
+          "load": "12592 includes winter and summer intersessions",
+          "notes": [
+            "Lower end excludes intersessions",
+            "Not guaranteed future tariff",
+            "No cheapest-option affordability assumption"
+          ]
+        }
+      ],
+      "selectionProcess": "Official page explicitly says selective individual review; intensity/acceptance rate not established",
+      "missing": [
+        "UzbekGrade11 recognition",
+        "Current numeric IELTS/TOEFL cutoff",
+        "Dated2027 deadline/cohort",
+        "Individual study-load tariff",
+        "Scholarship eligibility"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ADMISSION_ELIGIBILITY_INCOMPLETE",
+        "COMPETITIVENESS_UNKNOWN",
+        "NO_FULL_COST_ESTIMATE",
+        "SCHOOL_NOT_A_SEPARATE_UNIVERSITY",
+        "OLD_BBA_ADMISSIONS_2021_PAGE_NOT_USED_FOR_CURRENT_THRESHOLDS",
+        "SELECTIVE_REVIEW_IS_NOT_QUANTIFIED_HIGH_SELECTIVITY"
+      ],
+      "language": "English",
+      "languageSourceKey": "sol-program",
+      "level": "Bachelor",
+      "entryPath": "unknown",
+      "eligibilityComplete": false,
+      "routeSourceKey": "sol-admission",
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "sol-admission"
+      },
+      "languageRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "sol-program"
+      },
+      "languageThreshold": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "sol-program"
+      },
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "selectionProcess": "Official page explicitly says selective individual review; intensity/acceptance rate not established",
+        "sourceKeys": [
+          "sol-admission"
+        ],
+        "basis": "No quantitative or programme-specific evidence establishing extremely selective admission was collected. Unknown is not easy or standard."
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "basis": "Verified programme and published admission route/requirements; no claim of admission suitability",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "missingInputs": "retain_unknown_without_positive_credit",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "top3": "Comparative exploration priority only, never admission probability",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "sol-admission",
+            "sol-program"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "sol-program"
+          ],
+          "scope": "Official programme identity, degree and institution; geographic region is a routing classification.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "sol-program"
+          ],
+          "scope": "Programme title supports named field; not a popularity or selectivity ranking.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "sol-program"
+          ],
+          "scope": "Current programme expressly lists English.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "sol-admission"
+          ],
+          "scope": "For ordinary Uzbekistan Grade11 diploma, individual route not conclusively established.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "sol-program"
+          ],
+          "scope": "Programme duration only; excludes any separately required preparation.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "partial",
+          "sourceKeys": [
+            "sol-program"
+          ],
+          "scope": "Published cohort/recurring intake; availability of seats not checked.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "study_load_dependent_range",
+          "sourceKeys": [
+            "sol-cost"
+          ],
+          "scope": "Published amount with its own currency/period/year; total living cost and foundation fee not implied.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "sol-admission",
+            "sol-program"
+          ],
+          "scope": "Native/scoped rules and explicit gaps; no scale conversion or unconditional equivalence.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "batchOrigin": "new_DATA03",
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "turku-se-software-engineering",
+      "institutionId": "fi-turku-university-of-applied-sciences",
+      "university": "Turku University of Applied Sciences",
+      "country": "Finland",
+      "region": "Europe",
+      "name": "Information and Communications Technology, Software Engineering",
+      "field": "software_engineering",
+      "degree": "Bachelor of Engineering",
+      "language": "English",
+      "languageSourceKey": "turku-program",
+      "programSourceKey": "turku-program",
+      "routeSourceKey": "turku-route",
+      "requirementPolicyId": "turku-route",
+      "entryPath": "direct",
+      "durationText": "4 years /240 ECTS",
+      "intakeYear": 2027,
+      "intakeText": "August2027; separate application",
+      "languageThreshold": {
+        "type": "ielts",
+        "minimum": 6,
+        "verified": true,
+        "applicable": true,
+        "sourceKey": "turku-language"
+      },
+      "tuition": {
+        "amount": 12000,
+        "currency": "EUR",
+        "period": "year",
+        "scope": "tuition",
+        "stage": "degree",
+        "feeYear": "2027/28 under starts2026or later rule",
+        "source": "turku-tuition",
+        "status": "verified",
+        "comparisonVerified": false
+      },
+      "missing": [
+        "Personal credential",
+        "Seats",
+        "Full costs"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "TURKU_PLACES_UNKNOWN",
+        "BUDGET_COVERS_TUITION_ONLY"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "degreeStage": "undergraduate",
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "sourceKeys": [
+          "turku-route"
+        ],
+        "selectionProcess": "Selection intensity not calibrated",
+        "basis": "DATA02 programme facts; no quantified admission chances"
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "turku-route",
+            "turku-program"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "turku-route"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "minimum": 6,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "turku-language"
+          }
+        ],
+        "sourceKey": "turku-program"
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "turku-program"
+          ],
+          "scope": "Programme and institution DATA02 evidence reviewed locally.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "turku-program"
+          ],
+          "scope": "Exact programme field.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "turku-program"
+          ],
+          "scope": "Official language evidence DATA02.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "turku-route"
+          ],
+          "scope": "Country/programme route; unresolved student recognition remains.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "turku-program"
+          ],
+          "scope": "Published programme scope; DATA02.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "partial",
+          "sourceKeys": [
+            "turku-route"
+          ],
+          "scope": "Specified cohort not necessarily confirmed at programme level.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "turku-tuition"
+          ],
+          "scope": "Amount applies only to its stated fee year and scope.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "turku-route",
+            "turku-program"
+          ],
+          "scope": "Scoped native rules; incomplete.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": "2027-03-15",
+        "kind": "latest_possible_application",
+        "status": "verified_published",
+        "sourceKey": "turku-route",
+        "scope": "August2027 separate application; may close earlier when places filled",
+        "timezone": null
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "asu-tempe-computer-science",
+      "institutionId": "us-arizona-state-university",
+      "university": "Arizona State University",
+      "country": "United States",
+      "region": "USA",
+      "name": "Computer Science, BS (Tempe)",
+      "field": "computer_science",
+      "degree": "BS",
+      "language": "English",
+      "languageSourceKey": "asu-language",
+      "languageEvidenceScope": "University-level language statement for exchange; not a separate CS declaration.",
+      "programSourceKey": "asu-program",
+      "routeSourceKey": "asu-first-year",
+      "requirementPolicyId": "asu-route",
+      "entryPath": "direct",
+      "durationText": "120 credits",
+      "intakeYear": null,
+      "intakeText": "Spring2027 CS availability unconfirmed",
+      "languageThreshold": {
+        "type": "ielts",
+        "minimum": 6.5,
+        "verified": true,
+        "applicable": true,
+        "sourceKey": "asu-program"
+      },
+      "academicRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "sourceKey": "asu-first-year",
+        "children": [
+          {
+            "type": "any",
+            "verified": true,
+            "applicable": true,
+            "complete": true,
+            "sourceKey": "asu-first-year",
+            "children": [
+              {
+                "type": "grade",
+                "minimum": 4,
+                "scale": "5",
+                "verified": true,
+                "applicable": true,
+                "scope": {
+                  "schoolCountry": "Uzbekistan",
+                  "credential": "certificate_complete_general_secondary"
+                },
+                "sourceKey": "asu-first-year"
+              },
+              {
+                "type": "grade",
+                "minimum": 75,
+                "scale": "100",
+                "verified": true,
+                "applicable": true,
+                "scope": {
+                  "schoolCountry": "Uzbekistan",
+                  "credential": "certificate_complete_general_secondary"
+                },
+                "sourceKey": "asu-first-year"
+              }
+            ]
+          },
+          {
+            "type": "unknown",
+            "verified": false,
+            "applicable": false,
+            "sourceKey": "asu-program"
+          }
+        ]
+      },
+      "tuition": {
+        "amount": 39062,
+        "currency": "USD",
+        "period": "year",
+        "scope": "tuition",
+        "stage": "degree",
+        "feeYear": "2026/27",
+        "source": "asu-cost",
+        "status": "verified_general_base_estimate",
+        "comparisonVerified": false,
+        "applicable": false
+      },
+      "missing": [
+        "CS term availability",
+        "Exact program/term bill",
+        "Personal subject coverage",
+        "Scholarship eligibility"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "ASU_SPRING_CS_INTAKE_UNCONFIRMED",
+        "ASU_BASE_TUITION_SCOPE"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "degreeStage": "undergraduate",
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "sourceKeys": [
+          "asu-first-year"
+        ],
+        "selectionProcess": "Selection intensity not calibrated",
+        "basis": "DATA02 programme facts; no quantified admission chances"
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "asu-first-year",
+            "asu-language"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "minimum": 6.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "asu-program"
+          }
+        ],
+        "sourceKey": "asu-language"
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "asu-program"
+          ],
+          "scope": "Programme and institution DATA02 evidence reviewed locally.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "asu-program"
+          ],
+          "scope": "Exact programme field.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "asu-language"
+          ],
+          "scope": "University-level language statement for exchange; not a separate CS declaration.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "asu-first-year"
+          ],
+          "scope": "Country/programme route; unresolved student recognition remains.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "asu-program"
+          ],
+          "scope": "Published programme scope; DATA02.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "unknown",
+          "sourceKeys": [
+            "asu-first-year"
+          ],
+          "scope": "Specified cohort not necessarily confirmed at programme level.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "asu-cost"
+          ],
+          "scope": "Amount applies only to its stated fee year and scope.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "asu-first-year",
+            "asu-language"
+          ],
+          "scope": "Scoped native rules; incomplete.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": null,
+        "status": "not_checked_for_programme_and_route",
+        "notes": "No shared UCAS/final deadline inferred. Programme, foundation, funding and visa dates differ."
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    },
+    {
+      "id": "kr-suny-korea-computer-science",
+      "institutionId": "us-stony-brook-university",
+      "university": "Stony Brook University — SUNY Korea",
+      "country": "South Korea",
+      "region": "South Korea",
+      "name": "Computer Science, Bachelor of Science (SUNY Korea)",
+      "field": "computer_science",
+      "degree": "BS",
+      "language": "English",
+      "languageSourceKey": "suny-language",
+      "programSourceKey": "suny-program",
+      "routeSourceKey": "suny-entry",
+      "requirementPolicyId": "suny-route",
+      "entryPath": "unknown",
+      "durationText": "Includes required1year New York; full duration not separately established",
+      "intakeYear": 2027,
+      "intakeText": "Fall2027 timeline published; programme seats not checked",
+      "intakeSourceKey": "suny-intake",
+      "languageThreshold": {
+        "type": "ielts",
+        "minimum": 6.5,
+        "verified": true,
+        "applicable": true,
+        "sourceKey": "suny-entry"
+      },
+      "tuition": {
+        "amount": 23550,
+        "currency": "USD",
+        "period": "year",
+        "scope": "tuition",
+        "stage": "Korea_degree_stage",
+        "feeYear": null,
+        "source": "suny-cost",
+        "status": "published_undated_reference",
+        "applicable": false,
+        "comparisonVerified": false
+      },
+      "missing": [
+        "UzbekGrade11 equivalence",
+        "Dated tuition2027",
+        "New York year tuition/living/entry conditions"
+      ],
+      "notes": [
+        "PERSONAL_CREDENTIAL_UNKNOWN",
+        "MANDATORY_US_YEAR",
+        "UNDATED_TUITION_NOT_CURRENT_QUOTE"
+      ],
+      "batchOrigin": "carry_forward_DATA02",
+      "level": "Bachelor",
+      "eligibilityComplete": false,
+      "degreeStage": "undergraduate",
+      "competitiveness": {
+        "category": "unknown",
+        "highlySelective": null,
+        "acceptanceRate": null,
+        "sourceKeys": [
+          "suny-entry"
+        ],
+        "selectionProcess": "Selection intensity not calibrated",
+        "basis": "DATA02 programme facts; no quantified admission chances"
+      },
+      "discovery": {
+        "use": "conditional_exploration_only",
+        "automaticDirectEntry": false,
+        "foundationNeedsExplicitChoice": true,
+        "knownUnmetSelectedRoute": "must_not_label_suitable_or_promote_to_top3",
+        "highlySelectiveEvidence": "not_established_in_reviewed_sources",
+        "starterSetDecision": {
+          "status": "provisional_exploration",
+          "sourceKeys": [
+            "suny-entry",
+            "suny-language"
+          ],
+          "basis": "Official undergraduate programme plus documented general entry conditions. Individual credential/term and competitive decision remain unresolved; no admission-probability or easy-entry assertion.",
+          "highlySelectiveExclusion": "If subsequently supported by official programme-level competition evidence, remove from ordinary weak/incomplete-profile fallback; current highlySelective value is unknown."
+        }
+      },
+      "academicRequirement": {
+        "type": "unknown",
+        "verified": false,
+        "applicable": false,
+        "sourceKey": "suny-entry"
+      },
+      "languageRequirement": {
+        "type": "all",
+        "verified": true,
+        "applicable": true,
+        "complete": false,
+        "children": [
+          {
+            "type": "ielts",
+            "minimum": 6.5,
+            "verified": true,
+            "applicable": true,
+            "sourceKey": "suny-entry"
+          }
+        ],
+        "sourceKey": "suny-language"
+      },
+      "evidence": {
+        "identity": {
+          "status": "verified",
+          "sourceKeys": [
+            "suny-program"
+          ],
+          "scope": "Programme and institution DATA02 evidence reviewed locally.",
+          "checkedAt": "2026-10-17"
+        },
+        "field": {
+          "status": "verified",
+          "sourceKeys": [
+            "suny-program"
+          ],
+          "scope": "Exact programme field.",
+          "checkedAt": "2026-10-17"
+        },
+        "language": {
+          "status": "verified",
+          "sourceKeys": [
+            "suny-language"
+          ],
+          "scope": "Official language evidence DATA02.",
+          "checkedAt": "2026-10-17"
+        },
+        "entryPath": {
+          "status": "partial",
+          "sourceKeys": [
+            "suny-entry"
+          ],
+          "scope": "Country/programme route; unresolved student recognition remains.",
+          "checkedAt": "2026-10-17"
+        },
+        "duration": {
+          "status": "verified",
+          "sourceKeys": [
+            "suny-program"
+          ],
+          "scope": "Published programme scope; DATA02.",
+          "checkedAt": "2026-10-17"
+        },
+        "intake": {
+          "status": "partial",
+          "sourceKeys": [
+            "suny-intake"
+          ],
+          "scope": "Specified cohort not necessarily confirmed at programme level.",
+          "checkedAt": "2026-10-17"
+        },
+        "tuition": {
+          "status": "verified",
+          "sourceKeys": [
+            "suny-cost"
+          ],
+          "scope": "Amount applies only to its stated fee year and scope.",
+          "checkedAt": "2026-10-17"
+        },
+        "requirements": {
+          "status": "partial",
+          "sourceKeys": [
+            "suny-entry",
+            "suny-language"
+          ],
+          "scope": "Scoped native rules; incomplete.",
+          "checkedAt": "2026-10-17"
+        }
+      },
+      "scholarships": {
+        "status": "not_assessed_for_individual",
+        "guaranteedAmount": null,
+        "maySubtractFromBaseBudget": false
+      },
+      "deadline": {
+        "value": "2027-06-24",
+        "kind": "final_application",
+        "status": "verified_published",
+        "sourceKey": "suny-intake",
+        "scope": "Fall2027 SBU; recommended non-Korean priority2027-03-18; seats not verified",
+        "timezone": null
+      },
+      "languageRequirementScope": {
+        "stage": "degree",
+        "routeSpecific": true,
+        "notes": "Do not apply this degree threshold as a foundation threshold or assume a waiver."
+      }
+    }
+  ],
+  "validationScenarios": [
+    {
+      "id": "uk-unknown",
+      "answers": {
+        "regions": [
+          "UK"
+        ],
+        "field": "computer_science",
+        "exam": "",
+        "grade": "",
+        "budget": ""
+      },
+      "expected": "At most5 distinct programme-discovery institutions; unknown credential/language/fees warnings. No verified direct Grade11 fit and no forced top3."
+    },
+    {
+      "id": "uk-ielts55",
+      "answers": {
+        "regions": [
+          "UK"
+        ],
+        "exam": "IELTS",
+        "score": 5.5
+      },
+      "expected": "All7 UK degree rows below published degree IELTS minimum. Do not label suitable. Portsmouth foundation5.5 is separate, requires components/academic recognition/explicit pathway choice."
+    },
+    {
+      "id": "herts-two-programmes",
+      "expected": "Herts CS and IT share one institutionId and count as one university."
+    },
+    {
+      "id": "iowa-weak-grades",
+      "answers": {
+        "grade": 2.8,
+        "scale": "4"
+      },
+      "expected": "Grade shortfall retained; GPA-only alternative may be unmet but SAT/ACT unknown makes overall incomplete. No easy/safe label."
+    },
+    {
+      "id": "foundation-unknown",
+      "expected": "Coventry Uzbekistan foundation-dependent route cannot be relabelled direct; no hidden foundation in ordinary degree results."
+    },
+    {
+      "id": "cost-periods",
+      "expected": "Pecs2750EUR/semester !=2750EUR/year; Iowa33547USD is most-majors tuition+fees reference, not engineering tuition; SolBridge load range not guaranteed cheapest year."
+    },
+    {
+      "id": "uwe-known-college-grade",
+      "answers": {
+        "grade": 80,
+        "scale": "100",
+        "schoolCountry": "Uzbekistan",
+        "credential": "professional_college_diploma"
+      },
+      "expected": "Published85% country requirement unmet. Same80/100 with missing/different credential remains unknown, never met."
+    }
+  ]
+}

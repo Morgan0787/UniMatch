@@ -1,0 +1,201 @@
+const en = {
+  eyebrow: 'YOUR NEXT CHAPTER', title: 'Find a place to begin.', subtitle: 'Bachelor’s studies after school', you: 'You',
+  steps: ['Direction', 'Preparation', 'Budget'], stepTitles: ['What would you like to study?', 'What do you already know?', 'Your annual tuition budget'],
+  stepIntros: ['Choose an interest and any regions. Our researched coverage is still limited.', 'Enter only what you know. Grades and their original scale are optional.', 'Tuition for one academic year, excluding living costs and other fees.'],
+  field: 'Field of study', regions: 'Where would you consider studying?', any: 'Not sure yet',
+  fields: { business: 'Business', it: 'Information Technology (IT)', computer_engineering: 'Computer Engineering', software_engineering: 'Software Engineering', computer_science: 'Computer Science', other: 'Another field' },
+  regionNames: { Europe: 'Europe', USA: 'United States', 'South Korea': 'South Korea', UK: 'United Kingdom', Canada: 'Canada' },
+  regionHint: 'You can choose several. A visible region does not mean we have researched programmes there.',
+  exam: 'Language exam', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Not taken yet' }, score: 'Your score',
+  examHint: 'Different TOEFL scales and language waivers need a separate check. A score alone does not confirm eligibility.',
+  gradesToggle: 'Add grades — optional', grade: 'Average grade', scale: 'Original grading scale', scales: { '4': 'Out of 4', '5': 'Out of 5', '100': 'Out of 100' }, gradeHint: 'We keep your original scale. We do not invent GPA equivalents.',
+  budget: 'Tuition budget per academic year', currency: 'Currency', scholarship: 'Do you need a scholarship?', scholarships: { required: 'Essential', preferred: 'Would help', not_required: 'Not required' },
+  budgetHint: 'Scholarships are not deducted from the published price. We do not convert currencies without a verified rate.',
+  back: 'Back', next: 'Continue', show: 'Show options', skip: 'Not sure — skip this step', edit: 'Edit answers', editFields: 'Change direction', reset: 'Clear answers', resetConfirm: 'Clear the temporary answers in this tab?',
+  temporary: 'Answers stay in this tab for up to two hours. Account saving and syncing are not available yet.', restored: 'Your temporary answers were restored in this tab.',
+  expired: 'The previous draft expired or could not be read. You can start again.', storageError: 'This tab cannot keep a draft right now. You can continue, but your answers may be lost on reload. Clear answers to start a new draft.',
+  errors: 'Check the highlighted fields. Incomplete information can be left unknown.', invalid: 'Enter a valid value in the displayed scale. Leave it blank if you do not know.',
+  resultsTitle: 'A starting point, not an admission promise.', resultsIntro: 'Two researched candidates: Software Engineering in Finland and Computer Science in the USA. This is a limited selection, not a complete catalogue.',
+  unknown: 'Eligibility needs clarification', unmet: 'A published condition needs attention', met: 'Published threshold reached', unknownShort: 'Unknown',
+  noResults: 'Our researched selection does not cover these preferences yet.', noResultsBody: 'This does not mean there are no suitable programmes. Change your direction or regions, or leave preferences open. We will not replace IT, Business or Computer Engineering with Computer Science.',
+  sources: 'Requirements, limits and official sources', checked: 'Sources checked', scope: 'Scope', tuition: 'Published annual tuition', baseOnly: 'Base tuition only, not a programme bill or total budget.', living: 'Living costs, other fees and personal eligibility still need checking.',
+  nextStep: 'Your next step', official: 'Check the official admissions route', noDeadline: 'Intake availability and current places must be verified. Dates are not a guarantee of an available place.',
+  refine: 'Refine the result — optional', refineIntro: 'These details help identify what must be checked. They do not automatically confirm your school document or a place.',
+  schoolCountry: 'Country of school education', credential: 'Name of school qualification', startYear: 'Desired start year', language: 'Preferred teaching language', examDate: 'Exam date', languages: { English: 'English', Korean: 'Korean', other: 'Another language' }, apply: 'Apply details', applied: 'Details updated. Eligibility and missing information have been recalculated.',
+  country: 'Country', programme: 'Programme', intake: 'Intake / route', incomplete: 'Individual qualification, selection and availability remain unconfirmed.',
+  reasons: {
+    FIELD_MATCH: 'The researched field matches your chosen direction.', FIELD_UNSPECIFIED: 'Your direction is open; these are examples of the researched coverage.', REGION_MATCH: 'This candidate is in a selected region.', REGION_UNSPECIFIED: 'You have not restricted the region.',
+    PERSONAL_CREDENTIAL_UNKNOWN: 'The university must check your exact school qualification and academic preparation.', TURKU_PLACES_UNKNOWN: 'Available places and the selection interview still need confirmation.', ASU_SPRING_CS_INTAKE_UNCONFIRMED: 'Spring 2027 entry for this exact Computer Science programme is not confirmed.',
+    LANGUAGE_TEST_UNSPECIFIED: 'Language evidence is not provided. Accepted alternatives and exemptions need checking.', LANGUAGE_SCALE_UNKNOWN: 'We cannot compare this exam or scale using the confirmed fields.', LANGUAGE_SCORE_MISSING: 'Your exam score is unknown.', LANGUAGE_BELOW_PUBLISHED_THRESHOLD: 'Your IELTS score is below the published threshold. Alternatives or exemptions need checking.', LANGUAGE_TEST_DATE_MISSING: 'The exam date and certificate validity need checking.', LANGUAGE_WAIVER_UNKNOWN: 'A published IELTS threshold alone does not settle validity, alternatives or exemption rules.',
+    BUDGET_MISSING: 'Your tuition budget is unknown.', BUDGET_CURRENCY_UNKNOWN: 'The budget currency is unknown.', BUDGET_CURRENCY_MISMATCH: 'The currencies differ; no conversion has been assumed.', BUDGET_BELOW_PUBLISHED_TUITION: 'Your budget is below the published tuition amount in the same currency.', BUDGET_COVERS_TUITION_ONLY: 'Your amount covers the published tuition figure only; other fees and applicability remain unconfirmed.', ADMISSION_ELIGIBILITY_INCOMPLETE: 'These facts do not establish that all admission requirements are met.',
+  },
+  notes: { TURKU_TUITION_SCOPE: 'EUR 12,000 per academic year for non-EU/EEA/Swiss students under the published rule for starts from January 2026.', ASU_BASE_TUITION_SCOPE: 'USD 39,062 is 2026–27 general international undergraduate base tuition, not a Spring 2027 CS bill.' },
+};
+
+const ru = {
+  ...en, eyebrow: 'ВАША СЛЕДУЮЩАЯ ГЛАВА', title: 'Найти своё место в мире.', subtitle: 'Бакалавриат после школы', you: 'Вы',
+  steps: ['Направление', 'Подготовка', 'Бюджет'], stepTitles: ['Что хотите изучать?', 'Что уже известно о подготовке?', 'Ваш годовой бюджет на обучение'],
+  stepIntros: ['Выберите направление и регионы. Проверенное покрытие пока ограничено.', 'Укажите только известное. Оценки с исходной шкалой — по желанию.', 'Обучение за один учебный год, без проживания и прочих сборов.'],
+  field: 'Направление', regions: 'Где рассматриваете учёбу?', any: 'Пока не знаю',
+  fields: { business: 'Бизнес', it: 'Информационные технологии (IT)', computer_engineering: 'Компьютерная инженерия', software_engineering: 'Программная инженерия', computer_science: 'Компьютерные науки (Computer Science)', other: 'Другое направление' },
+  regionNames: { Europe: 'Европа', USA: 'США', 'South Korea': 'Южная Корея', UK: 'Великобритания', Canada: 'Канада' },
+  regionHint: 'Можно несколько. Наличие региона в списке не означает, что программы там уже проверены.',
+  exam: 'Языковой экзамен', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Ещё не сдавал(а)' }, score: 'Ваш балл', examHint: 'Разные шкалы TOEFL и освобождение от экзамена требуют отдельной проверки. Одного балла недостаточно для допуска.',
+  gradesToggle: 'Добавить оценки — необязательно', grade: 'Средняя оценка', scale: 'Исходная шкала', scales: { '4': 'Из 4', '5': 'Из 5', '100': 'Из 100' }, gradeHint: 'Сохраняем исходную шкалу. Не придумываем эквивалент GPA.',
+  budget: 'Бюджет на обучение за учебный год', currency: 'Валюта', scholarship: 'Нужна стипендия?', scholarships: { required: 'Без неё не смогу', preferred: 'Будет полезна', not_required: 'Не обязательна' }, budgetHint: 'Стипендию не вычитаем из цены. Без проверенного курса валюты не пересчитываем.',
+  back: 'Назад', next: 'Продолжить', show: 'Показать варианты', skip: 'Пока не знаю — пропустить', edit: 'Изменить ответы', editFields: 'Изменить направление', reset: 'Сбросить ответы', resetConfirm: 'Удалить временные ответы в этой вкладке?',
+  temporary: 'Ответы временно хранятся в этой вкладке до двух часов. Сохранение в аккаунт и синхронизация пока недоступны.', restored: 'Временные ответы восстановлены в этой вкладке.', expired: 'Предыдущий черновик истёк или не прочитан. Можно начать заново.', storageError: 'Сейчас черновик не сохраняется в этой вкладке. Можно продолжить, но при обновлении ответы могут потеряться. Для нового черновика сбросьте ответы.',
+  errors: 'Проверьте отмеченные поля. Неполные сведения можно оставить неизвестными.', invalid: 'Введите корректное значение в указанной шкале. Если не знаете — оставьте поле пустым.',
+  resultsTitle: 'Начало выбора, а не обещание поступления.', resultsIntro: 'Два исследованных кандидата: Software Engineering в Финляндии и Computer Science в США. Это ограниченная подборка, а не полный каталог.',
+  unknown: 'Допустимость поступления нужно уточнить', unmet: 'Есть условие, требующее внимания', met: 'Опубликованный порог достигнут', unknownShort: 'Неизвестно',
+  noResults: 'В проверенной подборке пока нет вариантов под эти предпочтения.', noResultsBody: 'Это не означает, что подходящих программ не существует. Измените направление или регионы либо оставьте предпочтения открытыми. Мы не подменяем IT, бизнес или компьютерную инженерию программой Computer Science.',
+  sources: 'Условия, ограничения и официальные источники', checked: 'Дата проверки источников', scope: 'Область применимости', tuition: 'Опубликованная годовая стоимость обучения', baseOnly: 'Только базовое обучение: это не счёт программы и не полный бюджет.', living: 'Проживание, прочие сборы и индивидуальную допустимость ещё нужно проверить.',
+  nextStep: 'Следующий шаг', official: 'Проверить официальный порядок поступления', noDeadline: 'Набор и наличие мест нужно уточнить. Даты не гарантируют свободное место.',
+  refine: 'Уточнить подбор — необязательно', refineIntro: 'Эти сведения помогут понять, что проверить. Они не подтверждают автоматически признание документа или наличие места.',
+  schoolCountry: 'Страна школьного образования', credential: 'Название школьного документа', startYear: 'Желаемый год начала', language: 'Предпочитаемый язык обучения', examDate: 'Дата экзамена', languages: { English: 'Английский', Korean: 'Корейский', other: 'Другой язык' }, apply: 'Применить уточнения', applied: 'Уточнения применены. Условия и пробелы пересчитаны.',
+  country: 'Страна', programme: 'Программа', intake: 'Набор / маршрут', incomplete: 'Индивидуальный документ, отбор и наличие мест ещё не подтверждены.',
+  reasons: {
+    FIELD_MATCH: 'Исследованная программа соответствует выбранному направлению.', FIELD_UNSPECIFIED: 'Направление не выбрано: показываем примеры проверенного охвата.', REGION_MATCH: 'Кандидат находится в выбранном регионе.', REGION_UNSPECIFIED: 'Регион не ограничен.',
+    PERSONAL_CREDENTIAL_UNKNOWN: 'Вуз должен проверить ваш конкретный школьный документ и академическую подготовку.', TURKU_PLACES_UNKNOWN: 'Наличие мест и прохождение отборочного интервью ещё нужно подтвердить.', ASU_SPRING_CS_INTAKE_UNCONFIRMED: 'Набор Spring 2027 именно на эту программу Computer Science не подтверждён.',
+    LANGUAGE_TEST_UNSPECIFIED: 'Языковых данных нет. Альтернативы и освобождения нужно проверить.', LANGUAGE_SCALE_UNKNOWN: 'Этот экзамен или шкалу нельзя сопоставить по подтверждённым полям.', LANGUAGE_SCORE_MISSING: 'Балл экзамена неизвестен.', LANGUAGE_BELOW_PUBLISHED_THRESHOLD: 'Ваш IELTS ниже опубликованного порога. Альтернативы и освобождения нужно проверить.', LANGUAGE_TEST_DATE_MISSING: 'Дату экзамена и срок действия сертификата нужно проверить.', LANGUAGE_WAIVER_UNKNOWN: 'Один порог IELTS не подтверждает срок действия, альтернативы и правила освобождения.',
+    BUDGET_MISSING: 'Бюджет на обучение неизвестен.', BUDGET_CURRENCY_UNKNOWN: 'Валюта бюджета неизвестна.', BUDGET_CURRENCY_MISMATCH: 'Валюты различаются: пересчёт не выполнялся.', BUDGET_BELOW_PUBLISHED_TUITION: 'Ваш бюджет ниже опубликованной стоимости обучения в той же валюте.', BUDGET_COVERS_TUITION_ONLY: 'Сумма покрывает только опубликованную стоимость обучения; прочие сборы и применимость ещё не подтверждены.', ADMISSION_ELIGIBILITY_INCOMPLETE: 'Эти сведения не подтверждают выполнение всех требований поступления.',
+  },
+  notes: { TURKU_TUITION_SCOPE: '12 000 EUR за учебный год для non-EU/EEA/Swiss по опубликованному правилу для стартов с января 2026.', ASU_BASE_TUITION_SCOPE: '39 062 USD — общая базовая стоимость international undergraduate 2026–27, а не счёт CS на Spring 2027.' },
+};
+
+const uz = {
+  ...en, eyebrow: 'KEYINGI QADAMINGIZ', title: 'O‘z yo‘lingizni toping.', subtitle: 'Maktabdan keyin bakalavriat', you: 'Siz',
+  steps: ['Yo‘nalish', 'Tayyorgarlik', 'Budjet'], stepTitles: ['Nimani o‘rganmoqchisiz?', 'Tayyorgarligingiz haqida nimalar ma’lum?', 'Bir yillik o‘qish budjetingiz'],
+  stepIntros: ['Yo‘nalish va hududlarni tanlang. Tekshirilgan dasturlar qamrovi hozircha cheklangan.', 'Faqat bilganingizni kiriting. Baho va uning asl shkalasi ixtiyoriy.', 'Bir o‘quv yilining o‘qish haqi, yashash va boshqa to‘lovlarsiz.'],
+  field: 'Ta’lim yo‘nalishi', regions: 'Qayerda o‘qishni istaysiz?', any: 'Hali bilmayman', fields: { business: 'Biznes', it: 'Axborot texnologiyalari (IT)', computer_engineering: 'Kompyuter muhandisligi', software_engineering: 'Dasturiy injiniring', computer_science: 'Kompyuter fanlari (Computer Science)', other: 'Boshqa yo‘nalish' },
+  regionNames: { Europe: 'Yevropa', USA: 'AQSh', 'South Korea': 'Janubiy Koreya', UK: 'Buyuk Britaniya', Canada: 'Kanada' }, regionHint: 'Bir nechtasini tanlash mumkin. Hudud ro‘yxatda bo‘lishi u yerdagi dasturlar tekshirilganini anglatmaydi.',
+  exam: 'Til imtihoni', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Hali topshirmaganman' }, score: 'Natijangiz', examHint: 'TOEFL shkalalari va imtihondan ozod qilish qoidalari alohida tekshiriladi. Faqat ball qabul shartlari bajarilganini bildirmaydi.',
+  gradesToggle: 'Baholarni qo‘shish — ixtiyoriy', grade: 'O‘rtacha baho', scale: 'Asl baholash shkalasi', scales: { '4': '4 ballik', '5': '5 ballik', '100': '100 ballik' }, gradeHint: 'Asl shkalani saqlaymiz. GPA ekvivalentini taxmin qilmaymiz.',
+  budget: 'Bir o‘quv yilining o‘qish budjeti', currency: 'Valuta', scholarship: 'Stipendiya kerakmi?', scholarships: { required: 'Stipendiyasiz o‘qiy olmayman', preferred: 'Foydali bo‘lardi', not_required: 'Shart emas' }, budgetHint: 'Stipendiya narxdan ayrilmaydi. Tekshirilgan kurssiz valuta o‘girilmaydi.',
+  back: 'Orqaga', next: 'Davom etish', show: 'Variantlarni ko‘rish', skip: 'Hali bilmayman — o‘tkazish', edit: 'Javoblarni o‘zgartirish', editFields: 'Yo‘nalishni o‘zgartirish', reset: 'Javoblarni tozalash', resetConfirm: 'Shu oynadagi vaqtinchalik javoblar o‘chirilsinmi?',
+  temporary: 'Javoblar shu oynada ikki soatgacha saqlanadi. Hisobga saqlash va sinxronlash hozircha mavjud emas.', restored: 'Vaqtinchalik javoblar shu oynada tiklandi.', expired: 'Oldingi qoralama eskirgan yoki o‘qilmadi. Qayta boshlashingiz mumkin.', storageError: 'Qoralama bu oynada saqlanmayapti. Davom etish mumkin, ammo yangilanganda javoblar yo‘qolishi mumkin. Yangi qoralama uchun javoblarni tozalang.',
+  errors: 'Belgilangan maydonlarni tekshiring. To‘liq bo‘lmagan ma’lumot noma’lum qolishi mumkin.', invalid: 'Ko‘rsatilgan shkalada to‘g‘ri qiymat kiriting. Bilmasangiz, bo‘sh qoldiring.',
+  resultsTitle: 'Tanlovning boshlanishi, qabul va’dasi emas.', resultsIntro: 'Ikki o‘rganilgan nomzod: Finlandiyada Software Engineering va AQShda Computer Science. Bu cheklangan tanlov, to‘liq katalog emas.', unknown: 'Qabulga moslik aniqlashtirilishi kerak', unmet: 'E’lon qilingan shartga e’tibor kerak', met: 'E’lon qilingan chegara bajarilgan', unknownShort: 'Noma’lum',
+  noResults: 'Tekshirilgan tanlovda bu istaklarga mos variantlar hozircha yo‘q.', noResultsBody: 'Bu mos dasturlar umuman yo‘q degani emas. Yo‘nalish yoki hududlarni o‘zgartiring yoki istaklarni ochiq qoldiring. IT, biznes va kompyuter muhandisligini Computer Science bilan almashtirmaymiz.',
+  sources: 'Shartlar, cheklovlar va rasmiy manbalar', checked: 'Manbalar tekshirilgan sana', scope: 'Qo‘llanish sohasi', tuition: 'E’lon qilingan yillik o‘qish haqi', baseOnly: 'Faqat bazaviy o‘qish haqi, dastur hisobi yoki to‘liq budjet emas.', living: 'Yashash, boshqa to‘lovlar va shaxsiy moslik hali tekshirilishi kerak.', nextStep: 'Keyingi qadam', official: 'Rasmiy qabul tartibini tekshirish', noDeadline: 'Qabul davri va bo‘sh o‘rinlarni aniqlashtiring. Sanalar bo‘sh o‘rinni kafolatlamaydi.',
+  refine: 'Tanlovni aniqlashtirish — ixtiyoriy', refineIntro: 'Bu ma’lumotlar nimani tekshirishni ko‘rsatadi. Hujjatingiz yoki joy borligini avtomatik tasdiqlamaydi.', schoolCountry: 'Maktab ta’limi olingan davlat', credential: 'Maktab hujjatining nomi', startYear: 'O‘qishni boshlash yili', language: 'Istalgan ta’lim tili', examDate: 'Imtihon sanasi', languages: { English: 'Inglizcha', Korean: 'Koreyscha', other: 'Boshqa til' }, apply: 'Aniqliklarni qo‘llash', applied: 'Aniqliklar qo‘llandi. Shartlar va noma’lum ma’lumotlar qayta hisoblandi.', country: 'Davlat', programme: 'Dastur', intake: 'Qabul davri / yo‘li', incomplete: 'Shaxsiy hujjat, tanlov va bo‘sh joylar hali tasdiqlanmagan.',
+  reasons: {
+    FIELD_MATCH: 'O‘rganilgan dastur tanlangan yo‘nalishga mos.', FIELD_UNSPECIFIED: 'Yo‘nalish ochiq: tekshirilgan qamrovdan misollar ko‘rsatilmoqda.', REGION_MATCH: 'Nomzod tanlangan hududda.', REGION_UNSPECIFIED: 'Hudud cheklanmagan.', PERSONAL_CREDENTIAL_UNKNOWN: 'Universitet aniq maktab hujjatingiz va akademik tayyorgarligingizni tekshirishi kerak.', TURKU_PLACES_UNKNOWN: 'Bo‘sh joylar va tanlov suhbati hali tasdiqlanishi kerak.', ASU_SPRING_CS_INTAKE_UNCONFIRMED: 'Aynan shu Computer Science dasturining Spring 2027 qabuli tasdiqlanmagan.', LANGUAGE_TEST_UNSPECIFIED: 'Til bo‘yicha dalil yo‘q. Muqobil variantlar va istisnolar tekshirilishi kerak.', LANGUAGE_SCALE_UNKNOWN: 'Bu imtihon yoki shkala tasdiqlangan ma’lumotlarga ko‘ra taqqoslanmaydi.', LANGUAGE_SCORE_MISSING: 'Imtihon balli noma’lum.', LANGUAGE_BELOW_PUBLISHED_THRESHOLD: 'IELTS natijangiz e’lon qilingan chegaradan past. Muqobil yoki istisno shartlarni tekshiring.', LANGUAGE_TEST_DATE_MISSING: 'Imtihon sanasi va sertifikat amal qilish muddati tekshirilishi kerak.', LANGUAGE_WAIVER_UNKNOWN: 'IELTS chegarasining o‘zi amal muddati, muqobil imtihon va istisnolarni tasdiqlamaydi.', BUDGET_MISSING: 'O‘qish budjeti noma’lum.', BUDGET_CURRENCY_UNKNOWN: 'Budjet valutasi noma’lum.', BUDGET_CURRENCY_MISMATCH: 'Valutalar farq qiladi; kurs taxmin qilinmagan.', BUDGET_BELOW_PUBLISHED_TUITION: 'Budjetingiz shu valutadagi e’lon qilingan o‘qish haqidan past.', BUDGET_COVERS_TUITION_ONLY: 'Mablag‘ faqat e’lon qilingan o‘qish haqini qoplaydi; boshqa to‘lovlar va qo‘llanish sohasi tasdiqlanmagan.', ADMISSION_ELIGIBILITY_INCOMPLETE: 'Bu ma’lumotlar barcha qabul shartlari bajarilganini tasdiqlamaydi.',
+  },
+  notes: { TURKU_TUITION_SCOPE: '2026-yil yanvaridan boshlanadigan o‘qishlar uchun e’lon qilingan qoida: non-EU/EEA/Swiss talabalarga yiliga 12 000 EUR.', ASU_BASE_TUITION_SCOPE: '39 062 USD — 2026–27 xalqaro bakalavrlar uchun umumiy bazaviy o‘qish haqi, Spring 2027 CS hisobi emas.' },
+};
+
+Object.assign(en.reasons, {
+  SCHOLARSHIP_ELIGIBILITY_UNKNOWN: 'Scholarship eligibility and award are unconfirmed. The published tuition has not been reduced.',
+  GRADE_REQUIREMENTS_UNKNOWN: 'Full academic eligibility is not established. Grades are not converted without a verified rule.',
+  START_YEAR_MISMATCH: 'The researched intake is August 2027 and differs from your desired year.',
+  TEACHING_LANGUAGE_MISMATCH: 'This programme is taught in English, which differs from your language preference.',
+  EXAM_VALIDITY_UNKNOWN: 'Certificate validity and accepted test conditions have not been fully assessed.',
+  LANGUAGE_THRESHOLD_REACHED: 'Your IELTS Academic score reaches the published overall threshold. This is only one part of the conditions.',
+});
+Object.assign(ru.reasons, {
+  SCHOLARSHIP_ELIGIBILITY_UNKNOWN: 'Допустимость и получение стипендии не подтверждены. Опубликованная стоимость обучения не уменьшена.',
+  GRADE_REQUIREMENTS_UNKNOWN: 'Полное соответствие академическим условиям программы не установлено. Оценки не пересчитываются без проверенного правила.',
+  START_YEAR_MISMATCH: 'Исследованный набор — август 2027; он отличается от желаемого года.',
+  TEACHING_LANGUAGE_MISMATCH: 'Программа преподаётся на английском, что отличается от выбранного языка.',
+  EXAM_VALIDITY_UNKNOWN: 'Срок действия сертификата и условия принятия экзамена полностью не проверены.',
+  LANGUAGE_THRESHOLD_REACHED: 'Ваш общий IELTS Academic достигает опубликованного порога. Это только часть условий.',
+});
+Object.assign(uz.reasons, {
+  SCHOLARSHIP_ELIGIBILITY_UNKNOWN: 'Stipendiyaga moslik va uni olish tasdiqlanmagan. E’lon qilingan o‘qish haqi kamaytirilmagan.',
+  GRADE_REQUIREMENTS_UNKNOWN: 'Akademik talablarga to‘liq moslik aniqlanmagan. Tasdiqlangan qoidasiz baholar o‘girilmaydi.',
+  START_YEAR_MISMATCH: 'O‘rganilgan qabul — 2027-yil avgust; istalgan yilingizdan farq qiladi.',
+  TEACHING_LANGUAGE_MISMATCH: 'Dastur ingliz tilida, bu siz tanlagan tildan farq qiladi.',
+  EXAM_VALIDITY_UNKNOWN: 'Sertifikat amal muddati va imtihonni qabul qilish shartlari to‘liq tekshirilmagan.',
+  LANGUAGE_THRESHOLD_REACHED: 'IELTS Academic umumiy ballingiz e’lon qilingan chegaraga yetadi. Bu shartlarning faqat bir qismi.',
+});
+
+const sourceScopes = {
+  en: {
+    'asu-language': 'English instruction at ASU university level, from information for exchange. Not a separate CS programme declaration.',
+    'turku-program': 'Programme identity, degree, campus, duration and English teaching.',
+    'turku-route': 'Direct August 2027 route; Uzbekistan is listed for certificate and interview selection. Individual document and places need checking.',
+    'turku-language': 'IELTS Academic overall 6.0; accepted certificates and validity still need checking.',
+    'turku-tuition': 'Non-EU/EEA/Swiss tuition per academic year for starts from January 2026. Other costs excluded.',
+    'asu-program': 'CS BS at Tempe, 120 credits, programme rules and IELTS overall 6.5; Spring 2027 availability not confirmed.',
+    'asu-first-year': 'General international first-year requirements and calendar, not confirmation of this CS intake.',
+    'asu-cost': '2026–27 general international undergraduate base tuition, 12 credits/semester. Not a CS quote or total budget.',
+  },
+  ru: {
+    'asu-language': 'Английский на уровне ASU по информации для exchange. Не отдельная языковая декларация CS.',
+    'turku-program': 'Название программы, степень, кампус, длительность и обучение на английском.',
+    'turku-route': 'Прямой маршрут August 2027; Узбекистан в списке отбора по документу и интервью. Конкретный документ и места нужно проверить.',
+    'turku-language': 'IELTS Academic overall 6.0; принятые сертификаты и срок действия ещё нужно проверить.',
+    'turku-tuition': 'Обучение non-EU/EEA/Swiss за учебный год для стартов с января 2026. Другие расходы не включены.',
+    'asu-program': 'CS BS в Tempe, 120 credits, правила программы и IELTS overall 6.5; наличие набора Spring 2027 не подтверждено.',
+    'asu-first-year': 'Общие международные правила first-year и календарь, а не подтверждение этого набора CS.',
+    'asu-cost': 'Общая базовая стоимость international undergraduate 2026–27, 12 credits/semester. Не счёт CS и не полный бюджет.',
+  },
+  uz: {
+    'asu-language': 'ASU miqyosida inglizcha ta’lim, exchange ma’lumotidan. Alohida CS dasturi bayonoti emas.',
+    'turku-program': 'Dastur nomi, daraja, kampus, davomiylik va ingliz tilida o‘qitish.',
+    'turku-route': 'August 2027 to‘g‘ridan to‘g‘ri yo‘l; O‘zbekiston hujjat va suhbat tanlovi ro‘yxatida. Aniq hujjat va joylar tekshiriladi.',
+    'turku-language': 'IELTS Academic overall 6.0; qabul qilinadigan sertifikatlar va amal muddati aniqlashtiriladi.',
+    'turku-tuition': '2026-yil yanvaridan boshlanadigan ta’lim uchun non-EU/EEA/Swiss yillik o‘qish haqi. Boshqa xarajatlar kiritilmagan.',
+    'asu-program': 'Tempe CS BS, 120 credits, dastur shartlari va IELTS overall 6.5; Spring 2027 qabuli tasdiqlanmagan.',
+    'asu-first-year': 'Xalqaro birinchi kurs uchun umumiy qoidalar va taqvim, aynan CS qabuli tasdig‘i emas.',
+    'asu-cost': '2026–27 umumiy bazaviy xalqaro bakalavr o‘qish haqi, 12 credits/semester. CS hisobi yoki to‘liq budjet emas.',
+  },
+};
+
+const selectionCopy = {
+  en: {
+    publishedCost: 'Published tuition reference', periods: { year: 'year', semester: 'semester' }, entryUnknown: 'Direct entry with your qualification is not established.', entryConditional: 'The published entry route still needs verification for your qualification.', publishedGaps: 'Unresolved points in the source research',
+    resultsIntro: 'A researched selection of real programmes. Region and subject preferences are kept; unknown conditions remain visible. This is not a complete catalogue.',
+    coverage: '{shown} different institutions shown. Fewer than five means the researched coverage is limited; we do not fill gaps with another region or invented programmes.',
+    topBadge: 'Among the best matches to known criteria', topExplanation: 'Up to three candidates are highlighted using comparable academic and language evidence and your preferences. This is not confirmation of full eligibility or admission.',
+    exploreExplanation: 'Options to explore, not a personal top ranking. The available answers or published conditions are insufficient to justify a top three.',
+    attention: 'After improvement or clarification', alternativesTitle: 'Conditions to improve or clarify first', alternativesExplanation: 'These are separate from the main options. A published requirement, route threshold or budget needs attention; this does not constitute a final admissions decision.',
+    noResultsBody: 'No researched option covers this combination yet. Edit your subject or regions, or leave preferences open. We never change these choices silently just to fill five places.',
+  },
+  ru: {
+    publishedCost: 'Опубликованный ориентир стоимости', periods: { year: 'год', semester: 'семестр' }, entryUnknown: 'Прямое поступление с вашим документом не подтверждено.', entryConditional: 'Опубликованный путь поступления ещё нужно проверить для вашего документа.', publishedGaps: 'Пробелы в исследованных источниках',
+    resultsIntro: 'Исследованная подборка реальных программ. Выбранные регион и направление сохраняются, неизвестные условия отмечены. Это не полный каталог.',
+    coverage: 'Показано различных вузов: {shown}. Если их меньше пяти, проверенного охвата не хватает; другой регион или вымышленные программы не подставляются.',
+    topBadge: 'Среди наиболее соответствующих известным критериям', topExplanation: 'До трёх вариантов выделены по сопоставимым академическим и языковым данным и вашим предпочтениям. Это не подтверждение полного допуска или поступления.',
+    exploreExplanation: 'Варианты для изучения, а не персональный топ. Ответов или опубликованных условий пока недостаточно для обоснованной тройки.',
+    attention: 'После улучшения или уточнения', alternativesTitle: 'Сначала улучшить или уточнить условия', alternativesExplanation: 'Эти варианты отделены от основной выдачи. Опубликованное условие, порог одного из путей или бюджет требуют внимания; это не окончательное решение о приёме.',
+    noResultsBody: 'В исследованной подборке пока нет варианта под это сочетание. Измените направление или регионы либо оставьте предпочтения открытыми. Мы не меняем выбор скрыто ради пяти карточек.',
+  },
+  uz: {
+    publishedCost: 'E’lon qilingan o‘qish haqi', periods: { year: 'yil', semester: 'semestr' }, entryUnknown: 'Hujjatingiz bilan to‘g‘ridan-to‘g‘ri kirish tasdiqlanmagan.', entryConditional: 'E’lon qilingan kirish yo‘li hujjatingiz uchun tekshirilishi kerak.', publishedGaps: 'O‘rganilgan manbalardagi ochiq masalalar',
+    resultsIntro: 'Haqiqiy dasturlarning o‘rganilgan tanlovi. Tanlangan hudud va yo‘nalish saqlanadi, noma’lum shartlar ko‘rsatiladi. Bu to‘liq katalog emas.',
+    coverage: 'Ko‘rsatilgan turli universitetlar: {shown}. Beshdan kam bo‘lsa, tekshirilgan qamrov cheklangan; boshqa hudud yoki o‘ylab topilgan dastur bilan to‘ldirmaymiz.',
+    topBadge: 'Ma’lum mezonlarga eng mos variantlardan', topExplanation: 'Uchtagacha variant taqqoslanadigan akademik va til dalillari hamda istaklaringizga ko‘ra ajratilgan. Bu to‘liq moslik yoki qabul tasdig‘i emas.',
+    exploreExplanation: 'O‘rganish uchun variantlar, shaxsiy reyting emas. Asosli uchlik uchun javoblar yoki e’lon qilingan shartlar yetarli emas.',
+    attention: 'Yaxshilash yoki aniqlashtirishdan so‘ng', alternativesTitle: 'Avval shartlarni yaxshilash yoki aniqlashtirish', alternativesExplanation: 'Bu variantlar asosiy tanlovdan ajratilgan. Shart, yo‘llardan birining chegarasi yoki budjet e’tibor talab qiladi; bu yakuniy qabul qarori emas.',
+    noResultsBody: 'O‘rganilgan tanlovda bu birikmaga mos variant hozircha yo‘q. Yo‘nalish yoki hududlarni o‘zgartiring yoki ochiq qoldiring. Besh kartochka uchun tanlovni yashirin o‘zgartirmaymiz.',
+  },
+};
+
+const requirementCopy = {
+  en: {
+    FIELD_ROUTING_INFERRED: 'The subject grouping is an inferred catalogue mapping; the official programme title is shown unchanged.', TEACHING_LANGUAGE_UNCONFIRMED: 'The teaching language has not been fully verified for this programme.',
+    ACADEMIC_MET: 'The documented academic criteria we could compare are met; this is not an admission decision.', ACADEMIC_UNMET: 'A verified applicable academic requirement is not met.', ACADEMIC_UNKNOWN: 'Academic applicability or comparable evidence is incomplete.',
+    LANGUAGE_MET: 'The documented language condition is met in the evaluated scope.', LANGUAGE_UNMET: 'A verified applicable language requirement is not met.', LANGUAGE_UNKNOWN: 'The complete language route, alternatives or applicability need clarification.',
+    REQUIREMENT_UNKNOWN: 'Part of the requirement or its complete logic is unknown.', REQUIREMENT_SCOPE_UNKNOWN: 'The published condition is not yet confirmed for your qualification or intended intake.', GRADE_SCALE_UNKNOWN: 'The original grading scales cannot be compared without a verified rule.', GRADE_DATA_UNKNOWN: 'Comparable grade information is missing.', GRADE_THRESHOLD_MET: 'Your grade meets the published threshold in the same scale and scope.', GRADE_THRESHOLD_BELOW: 'Your grade is below the published threshold in the same scale and scope.', EXAM_UNKNOWN: 'The relevant exam result is unknown or not comparable.', IELTS_THRESHOLD_MET: 'Your overall IELTS Academic meets the published threshold for this route.', IELTS_THRESHOLD_BELOW: 'Your overall IELTS Academic is below the published threshold for this route.', LANGUAGE_SECTIONS_UNKNOWN: 'Required section scores have not been supplied or assessed.', EXAM_DATE_UNKNOWN: 'Certificate validity needs dates and a confirmed rule.', EXAM_DATE_INVALID: 'The exam date cannot support a valid comparison.', EXAM_EXPIRED: 'The certificate is outside the published validity period for the checked date.', COMPETITIVENESS_UNKNOWN: 'Competitiveness is not established. Meeting minima does not make this an easy or safe option.', TUITION_SCOPE_UNKNOWN: 'Annual tuition applicable to your category and intake is not established.',
+  },
+  ru: {
+    FIELD_ROUTING_INFERRED: 'Группа направления определена по содержанию; официальное название программы сохранено.', TEACHING_LANGUAGE_UNCONFIRMED: 'Язык обучения этой программы полностью не подтверждён.',
+    ACADEMIC_MET: 'Сопоставленные опубликованные академические критерии выполнены; это не решение о зачислении.', ACADEMIC_UNMET: 'Проверенное применимое академическое условие не выполнено.', ACADEMIC_UNKNOWN: 'Применимость академических условий или сопоставимые данные неполны.',
+    LANGUAGE_MET: 'Опубликованное языковое условие выполнено в проверенной области.', LANGUAGE_UNMET: 'Проверенное применимое языковое условие не выполнено.', LANGUAGE_UNKNOWN: 'Полный языковой маршрут, альтернативы или применимость нужно уточнить.',
+    REQUIREMENT_UNKNOWN: 'Часть условия или его полная логика неизвестны.', REQUIREMENT_SCOPE_UNKNOWN: 'Условие пока не подтверждено для вашего документа или желаемого набора.', GRADE_SCALE_UNKNOWN: 'Исходные шкалы оценок нельзя сопоставить без проверенного правила.', GRADE_DATA_UNKNOWN: 'Сопоставимые сведения об оценках отсутствуют.', GRADE_THRESHOLD_MET: 'Оценка достигает опубликованного порога в той же шкале и области применения.', GRADE_THRESHOLD_BELOW: 'Оценка ниже опубликованного порога в той же шкале и области применения.', EXAM_UNKNOWN: 'Результат нужного экзамена неизвестен или несопоставим.', IELTS_THRESHOLD_MET: 'Общий IELTS Academic достигает опубликованного порога этого пути.', IELTS_THRESHOLD_BELOW: 'Общий IELTS Academic ниже опубликованного порога этого пути.', LANGUAGE_SECTIONS_UNKNOWN: 'Необходимые баллы по секциям не указаны или не оценены.', EXAM_DATE_UNKNOWN: 'Для срока действия сертификата нужны даты и подтверждённое правило.', EXAM_DATE_INVALID: 'Дата экзамена не позволяет выполнить корректное сравнение.', EXAM_EXPIRED: 'Сертификат вне опубликованного срока действия на проверяемую дату.', COMPETITIVENESS_UNKNOWN: 'Конкурсность не установлена. Соблюдение минимумов не делает вариант лёгким или безопасным.', TUITION_SCOPE_UNKNOWN: 'Применимая годовая стоимость обучения для вашей категории и набора не установлена.',
+  },
+  uz: {
+    FIELD_ROUTING_INFERRED: 'Yo‘nalish guruhi mazmun asosida belgilangan; rasmiy dastur nomi saqlangan.', TEACHING_LANGUAGE_UNCONFIRMED: 'Bu dasturning ta’lim tili to‘liq tasdiqlanmagan.',
+    ACADEMIC_MET: 'Taqqoslangan akademik mezonlar bajarilgan; bu qabul qarori emas.', ACADEMIC_UNMET: 'Tasdiqlangan va qo‘llanadigan akademik shart bajarilmagan.', ACADEMIC_UNKNOWN: 'Akademik shartlar qo‘llanishi yoki taqqoslanadigan ma’lumotlar to‘liq emas.',
+    LANGUAGE_MET: 'Baholangan doirada e’lon qilingan til sharti bajarilgan.', LANGUAGE_UNMET: 'Tasdiqlangan va qo‘llanadigan til sharti bajarilmagan.', LANGUAGE_UNKNOWN: 'To‘liq til yo‘li, muqobil variantlar yoki qo‘llanishi aniqlashtiriladi.',
+    REQUIREMENT_UNKNOWN: 'Shartning bir qismi yoki to‘liq mantiqi noma’lum.', REQUIREMENT_SCOPE_UNKNOWN: 'Shart hujjatingiz yoki istalgan qabul davri uchun hali tasdiqlanmagan.', GRADE_SCALE_UNKNOWN: 'Asl baholash shkalalari tasdiqlangan qoidasiz taqqoslanmaydi.', GRADE_DATA_UNKNOWN: 'Taqqoslanadigan baho ma’lumoti yo‘q.', GRADE_THRESHOLD_MET: 'Baho bir xil shkala va doiradagi e’lon qilingan chegaraga yetadi.', GRADE_THRESHOLD_BELOW: 'Baho bir xil shkala va doiradagi chegaradan past.', EXAM_UNKNOWN: 'Kerakli imtihon natijasi noma’lum yoki taqqoslanmaydi.', IELTS_THRESHOLD_MET: 'IELTS Academic umumiy balli shu yo‘l chegarasiga yetadi.', IELTS_THRESHOLD_BELOW: 'IELTS Academic umumiy balli shu yo‘l chegarasidan past.', LANGUAGE_SECTIONS_UNKNOWN: 'Kerakli bo‘lim ballari kiritilmagan yoki baholanmagan.', EXAM_DATE_UNKNOWN: 'Sertifikat amal muddati uchun sanalar va tasdiqlangan qoida kerak.', EXAM_DATE_INVALID: 'Imtihon sanasi to‘g‘ri taqqoslashga imkon bermaydi.', EXAM_EXPIRED: 'Tekshirilayotgan sanada sertifikatning e’lon qilingan muddati o‘tgan.', COMPETITIVENESS_UNKNOWN: 'Tanlov darajasi aniqlanmagan. Minimumlar bajarilishi variantni oson yoki xavfsiz qilmaydi.', TUITION_SCOPE_UNKNOWN: 'Toifangiz va qabul davringizga tegishli yillik o‘qish haqi aniqlanmagan.',
+  },
+};
+
+export const admissionCopy = {
+  en: { ...en, ...selectionCopy.en, reasons: { ...en.reasons, ...requirementCopy.en }, sourceScopes: sourceScopes.en },
+  ru: { ...ru, ...selectionCopy.ru, reasons: { ...ru.reasons, ...requirementCopy.ru }, sourceScopes: sourceScopes.ru },
+  uz: { ...uz, ...selectionCopy.uz, reasons: { ...uz.reasons, ...requirementCopy.uz }, sourceScopes: sourceScopes.uz },
+};

@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
+import AdmissionsSurvey from './pages/AdmissionsSurvey';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -17,6 +18,7 @@ export const PAGES = {
     "Profile": Profile,
     "Recommendations": Recommendations,
     "Search": Search,
+    "AdmissionsSurvey": AdmissionsSurvey,
 }
 
 export const pagesConfig = {

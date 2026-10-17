@@ -1,0 +1,61 @@
+name: Cloud quality checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '24.14.0'
+          package-manager-cache: false
+      - name: Record tested source snapshot
+        run: node scripts/ci/snapshot.mjs output/ci/source-snapshot.json
+      - name: Install locked application dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Admissions checks
+        run: npm run check:admissions
+      - name: Legacy matching and catalogue checks
+        run: |
+          npm run check:matching
+          node scripts/check-catalog.mjs
+      - name: Isolated production build
+        run: node scripts/ci/build.mjs
+      - name: Install locked smoke tooling
+        run: npm ci --prefix scripts/ci --ignore-scripts --no-audit --no-fund
+      - name: Install Chromium on hosted runner only
+        run: node scripts/ci/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Smoke built application
+        timeout-minutes: 4
+        run: |
+          node scripts/ci/preview.mjs > output/ci/preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          node scripts/ci/smoke.mjs
+      - name: Upload report and failure diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: quality-${{ github.sha }}-${{ github.run_attempt }}
+          path: output/ci/
+          if-no-files-found: warn
+          retention-days: 3

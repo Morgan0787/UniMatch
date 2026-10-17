@@ -2,6 +2,11 @@ name: Cloud quality checks
 
 on:
   push:
+    paths-ignore:
+      - docs/business-turks-2026/ux-05/**
+      - scripts/ci/ux-*.mjs
+      - scripts/ci/ux-prototype-contract.json
+      - .github/workflows/ux-prototype.yml
   pull_request:
   workflow_dispatch:
 

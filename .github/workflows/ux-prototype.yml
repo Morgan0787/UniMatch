@@ -1,0 +1,51 @@
+name: UX-05 prototype QA
+
+on:
+  push:
+    branches: [codex/cloud-checks-01]
+    paths:
+      - docs/business-turks-2026/ux-05/**
+      - scripts/ci/ux-*.mjs
+      - scripts/ci/ux-prototype-contract.json
+      - .github/workflows/ux-prototype.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ux05-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prototype:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '24.14.0'
+          package-manager-cache: false
+      - name: Install locked browser tooling on runner
+        run: npm ci --prefix scripts/ci --ignore-scripts --no-audit --no-fund
+      - name: Install Chromium on runner
+        run: node scripts/ci/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Check standalone prototype
+        timeout-minutes: 4
+        run: |
+          mkdir -p output/ux05-qa
+          node scripts/ci/ux-static-server.mjs > output/ux05-qa/server.log 2>&1 &
+          prototype_pid=$!
+          trap 'kill "$prototype_pid" 2>/dev/null || true' EXIT
+          node scripts/ci/ux-prototype-smoke.mjs
+      - name: Upload review screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: ux05-${{ github.sha }}-${{ github.run_attempt }}
+          path: output/ux05-qa/
+          retention-days: 3
+          if-no-files-found: warn

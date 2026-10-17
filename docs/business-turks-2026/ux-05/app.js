@@ -1,5 +1,6 @@
 'use strict';
 (() => {
+ document.documentElement.dataset.uxRevision = 'ux05-r2';
  const screenNode = document.getElementById('screen');
  const experience = document.getElementById('experience');
  const qaScreen = document.getElementById('qa-screen');
@@ -28,7 +29,7 @@
   experience.dataset.phase = phase;
   const index = view === 'results' ? 3 : step;
   document.getElementById('story-label').textContent = ['Из интереса — в направление','Ваша отправная точка','Планы, которые вам по силам','От ответов — к следующему шагу'][index];
-  document.getElementById('story-title').innerHTML = ['Не просто вуз.<br> Ваше место<br> в мире.','У каждого<br> свой путь.<br> И свой старт.','Большие планы.<br> Понятные<br> ориентиры.','Возможности.<br> С понятными<br> условиями.'][index];
+  document.getElementById('story-title').innerHTML = `<span class="story-title-desktop">${['Не просто вуз.<br> Ваше место<br> в мире.','У каждого<br> свой путь.<br> И свой старт.','Большие планы.<br> Понятные<br> ориентиры.','От интересов — к выбору.'][index]}</span><span class="story-title-mobile">${['Ваше место в мире.','Ваша отправная точка.','Большие планы. Ясный бюджет.','От интереса к выбору.'][index]}</span>`;
   document.getElementById('story-description').textContent = ['Начните с того, что увлекает. Остальное найдём по пути.','Не нужно иметь все ответы. Расскажите только то, что знаете.','Учёба должна вписываться в ваши возможности. Без скрытых обещаний.','Изучите требования и пробелы, прежде чем выбирать программу.'][index];
   document.getElementById('story-marker').textContent = index === 3 ? '↗' : String(index+1).padStart(2,'0');
   const value = index === 0 ? answers.field : index === 1 ? [answers.exam, answers.score].filter(Boolean).join(' · ') : index === 2 ? [answers.budget,answers.currency].filter(Boolean).join(' ') : 'Уточнить. Сравнить. Решить.';

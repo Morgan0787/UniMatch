@@ -32,6 +32,46 @@ async function geometry(page, label) {
   report.checks.push({ label, ...result });
 }
 
+async function storyContainment(page, label, width) {
+  if (width > 390) return;
+  const box = await page.evaluate(() => {
+    const story = document.querySelector('.story');
+    const title = document.getElementById('story-title');
+    if (!story || !title) return null;
+    const bounds = element => {
+      const r = element.getBoundingClientRect();
+      return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height };
+    };
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    return {
+      story: bounds(story), title: bounds(title),
+      textRects: [...range.getClientRects()].filter(r => r.width > 0 && r.height > 0).map(r => ({ left: r.left, right: r.right, top: r.top, bottom: r.bottom })),
+      clientHeight: title.clientHeight, scrollHeight: title.scrollHeight,
+      clientWidth: title.clientWidth, scrollWidth: title.scrollWidth,
+    };
+  });
+  assert.ok(box && box.textRects.length, `${label}: visible story title missing`);
+  report.checks.push({ label: `${label}-story-containment`, ...box });
+  // Story includes decorative SVG that may intentionally extend beyond its box;
+  // inspect title/text only, rather than flagging decorative overflow as a bug.
+  const tolerance = 1;
+  assert.ok(box.scrollHeight <= box.clientHeight + tolerance && box.scrollWidth <= box.clientWidth + tolerance, `${label}: story title content overflows its own box`);
+  const contained = rect => rect.left >= box.story.left - tolerance && rect.right <= box.story.right + tolerance && rect.top >= box.story.top - tolerance && rect.bottom <= box.story.bottom + tolerance;
+  assert.ok(contained(box.title) && box.textRects.every(contained), `${label}: story title is clipped by story panel`);
+}
+
+async function headingFocus(page, label) {
+  const state = await page.locator('#question-title').evaluate(element => ({
+    focused: document.activeElement === element,
+    tag: element.tagName,
+    outline: getComputedStyle(element).outline,
+    outlineOffset: getComputedStyle(element).outlineOffset,
+  }));
+  assert.ok(state.focused, `${label}: programmatic heading focus transfer missing`);
+  report.checks.push({ label: `${label}-programmatic-heading-focus`, ...state, visualTreatment: 'review screenshot separately from interactive keyboard focus' });
+}
+
 async function screenshot(page, name, fullPage = true) {
   await page.screenshot({ path: path.join(output, `${name}.png`), fullPage, animations: 'disabled' });
   report.screenshots.push(`${name}.png`);
@@ -71,10 +111,14 @@ async function scenario(width, height, reduced, contract) {
   try {
     await page.goto(url);
     await page.evaluate(() => document.fonts.ready);
+    const revision = await page.evaluate(() => document.documentElement.dataset.uxRevision);
+    assert.equal(revision, 'ux05-r2', 'Expected current designer revision');
+    report.prototypeRevision = revision;
     await stage(page, contract.steps[0], 'First render / step1');
     await geometry(page, `${prefix}-step1`);
     await screenshot(page, `${prefix}-step1`);
     await screenshot(page, `${prefix}-step1-viewport`, false);
+    await storyContainment(page, `${prefix}-step1`, width);
     await setup(page, contract.step1Setup);
     const next = await visible(page, contract.next, 'step1 next');
     let keyboardReachedNext = false;
@@ -90,12 +134,20 @@ async function scenario(width, height, reduced, contract) {
       return { tag: element.tagName, text: element.textContent.trim(), outline: css.outline, boxShadow: css.boxShadow, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, viewportHeight: innerHeight, focused: element.matches(':focus') };
     });
     assert.ok(focus.focused && focus.left >= 0 && focus.right <= width && focus.top >= 0 && focus.bottom <= focus.viewportHeight, 'Keyboard target must be focused and visible');
+    const keyboardIndicator = await next.evaluate(element => {
+      const css = getComputedStyle(element);
+      return { focusVisible: element.matches(':focus-visible'), outlineWidth: Number.parseFloat(css.outlineWidth), outlineStyle: css.outlineStyle, outlineColor: css.outlineColor };
+    });
+    assert.ok(keyboardIndicator.focusVisible && keyboardIndicator.outlineWidth >= 2 && keyboardIndicator.outlineStyle !== 'none' && keyboardIndicator.outlineColor !== 'rgba(0, 0, 0, 0)', 'Keyboard control requires a visible focus indicator');
+    report.checks.push({ label: `${prefix}-interactive-keyboard-focus`, ...keyboardIndicator });
     report.focus.push({ prefix, ...focus });
     await screenshot(page, `${prefix}-keyboard-focus`, false);
     await page.keyboard.press('Enter');
     await stage(page, contract.steps[1], 'Keyboard advance / step2');
     await geometry(page, `${prefix}-step2`);
     await screenshot(page, `${prefix}-step2`);
+    await headingFocus(page, `${prefix}-step2`);
+    await storyContainment(page, `${prefix}-step2`, width);
     await (await visible(page, contract.back, 'step2 back')).click();
     await stage(page, contract.steps[0], 'Back restores step1');
     assert.ok(await page.locator('input[name="field"][value="Computer Science"]').isChecked(), 'Back must preserve selected subject');
@@ -105,6 +157,8 @@ async function scenario(width, height, reduced, contract) {
     await stage(page, contract.steps[2], 'Skip reaches step3');
     await geometry(page, `${prefix}-step3`);
     await screenshot(page, `${prefix}-step3`);
+    await headingFocus(page, `${prefix}-step3`);
+    await storyContainment(page, `${prefix}-step3`, width);
     await (await visible(page, contract.back, 'step3 back')).click();
     await stage(page, contract.steps[1], 'Back to language');
     await page.locator('[name="exam"]').selectOption('IELTS Academic');
@@ -124,6 +178,12 @@ async function scenario(width, height, reduced, contract) {
     await geometry(page, `${prefix}-results`);
     await screenshot(page, `${prefix}-results`);
     await screenshot(page, `${prefix}-results-viewport`, false);
+    const layout = await page.locator('.program-list').first().evaluate(element => ({ display: getComputedStyle(element).display, columns: getComputedStyle(element).gridTemplateColumns.split(' ').filter(Boolean) }));
+    assert.equal(layout.display, 'grid');
+    assert.equal(layout.columns.length, width >= 761 ? 2 : 1, 'Current results layout must use two desktop / one mobile card columns');
+    report.checks.push({ label: `${prefix}-results-layout`, ...layout });
+    await headingFocus(page, `${prefix}-results`);
+    await storyContainment(page, `${prefix}-results`, width);
     await (await visible(page, contract.detailsButton, 'first card details')).click();
     await stage(page, contract.detailsPanel, 'Details open');
     await screenshot(page, `${prefix}-details`);

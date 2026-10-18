@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { withPublicProgrammeFacts } from '@/lib/admissions/universityCatalog.js'
 
 const TABLE_MAP = {
   University: import.meta.env.VITE_TABLE_UNIVERSITY || 'universities',
@@ -61,7 +62,7 @@ const asBoolean = (value) => {
 
 const normalizeUniversity = (university) => {
   const row = university && typeof university === 'object' ? university : {}
-  return {
+  return withPublicProgrammeFacts({
     ...row,
     id: row.id ?? null,
     name: asString(row.name, 'Unknown university'),
@@ -101,7 +102,7 @@ const normalizeUniversity = (university) => {
     campus_life: asObject(row.campus_life),
     admission_requirements: asObject(row.admission_requirements),
     international_support: asObject(row.international_support),
-  }
+  })
 }
 
 const normalizeEntityResult = (entityName, data) => {

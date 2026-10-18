@@ -10,9 +10,11 @@ import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { US_GPA_HOLISTIC_NOTE } from '@/lib/usGenericInfo';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
+import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
 
-export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, onSave, onView, isComparing, onCompareToggle }) {
-    const { t } = useLanguage();
+export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView, isComparing, onCompareToggle }) {
+    const { t, language } = useLanguage();
+    const hasAdmissionCatalog = university.admissionCatalog !== undefined;
     const chance = calculateChance(university, userGpa, userIelts, userTopik);
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix),
@@ -36,6 +38,9 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                         <Button
                             variant="ghost"
                             size="icon"
+                            aria-label={`${t(isSaved ? 'university.saved' : 'university.save')}: ${university.name}`}
+                            aria-pressed={Boolean(isSaved)}
+                            disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
                             className="bg-white/90 hover:bg-white shadow-sm"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -49,7 +54,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                             )}
                         </Button>
                     </div>
-                    {university.scholarships_available && (
+                    {!hasAdmissionCatalog && university.scholarships_available && (
                         <div className="absolute top-3 left-3">
                             <Badge className="bg-emerald-500 text-white border-0 shadow-sm">
                                 <Award className="w-3 h-3 mr-1" />
@@ -73,6 +78,9 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
 
                     {/* Quick stats */}
                     <div className="space-y-1.5 py-2 border-y border-slate-100">
+                        {hasAdmissionCatalog ? (
+                            <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} compact />
+                        ) : <>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
                                 <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.tuition')}</p>
@@ -117,10 +125,11 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                                 )}
                             </div>
                         ) : null}
+                        </>}
                     </div>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1">
+                    {!hasAdmissionCatalog && <div className="flex flex-wrap gap-1">
                         <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-normal text-[10px] px-1.5 py-0.5">
                             <Globe className="w-2.5 h-2.5 mr-1" />
                             {university.language}
@@ -130,12 +139,12 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                                 {deg}
                             </Badge>
                         ))}
-                    </div>
+                    </div>}
 
                     {/* Chance indicator */}
-                    <div className="mb-2">
+                    {!hasAdmissionCatalog && <div className="mb-2">
                         <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="sm" />
-                    </div>
+                    </div>}
 
                     {/* Action buttons */}
                     <div className="space-y-1.5 mt-auto">

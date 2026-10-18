@@ -10,6 +10,7 @@
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
     "check:matching": "node scripts/check-matching.mjs",
+    "check:admissions": "node scripts/check-public-admission-catalog.mjs && node scripts/check-public-admission-loader.mjs && node scripts/check-admission-fact-presentation.mjs && node scripts/check-admission-draft.mjs && node scripts/check-admission-requirements.mjs && node scripts/check-admission-selection.mjs && node scripts/check-admission-engine.mjs && node scripts/check-admission-favorites.mjs && node scripts/check-admission-baseline-mapping.mjs && node scripts/check-admission-research-mapping.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

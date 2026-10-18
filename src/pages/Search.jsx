@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback, useDeferredValue } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useDeferredValue, useRef } from 'react';
 import { apiClient } from '@/lib/apiClient';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/lib/AuthContext';
+import { admissionFavoriteRepository } from '@/lib/admissions/favoriteRepository';
+import { canonicalFavoriteIds, serializeFavoriteWrite, writeAdmissionFavorite } from '@/lib/admissions/favorites';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +53,17 @@ const loadSavedFilters = () => {
 
 export default function Search() {
     const { t, language } = useLanguage();
+    const { session } = useAuth();
+    const queryClient = useQueryClient();
+    const ownerId = session?.user?.id || null;
+    const ownerEmail = session?.user?.email || null;
+    const ownerKey = JSON.stringify([ownerId, ownerEmail]);
+    const ownerRef = useRef(ownerKey);
+    ownerRef.current = ownerKey;
+    const savePending = useRef(false);
+    const [savedOwner, setSavedOwner] = useState(null);
+    const [saveError, setSaveError] = useState(false);
+    const [savingPublished, setSavingPublished] = useState(false);
     const editorial = {
         en: { title: 'Your world. Your possibilities.', intro: 'Explore universities at your own pace. Bring your grades, budget and interests into focus.', hint: 'Set your GPA and language scores to explore your admission chances.' },
         ru: { title: 'Ваш мир. Ваши возможности.', intro: 'Исследуйте университеты в своём темпе. Учитывайте оценки, бюджет и то, что вам интересно.', hint: 'Укажите GPA и уровень языка, чтобы оценить шансы поступления.' },
@@ -81,7 +95,25 @@ export default function Search() {
         }
     }, [filters.gpa, filters.ielts]);
     const { data: universities = [], isLoading } = useQuery({ queryKey: ['universities'], queryFn: () => apiClient.entities.University.list() });
-    useEffect(() => { const loadProfile = async () => { try { const profile = await apiClient.entities.StudentProfile.filter({ created_by: (await apiClient.auth.me()).email }); if (profile.length > 0) { const currentProfile = profile[0] && typeof profile[0] === 'object' ? profile[0] : {}; setUserProfile(currentProfile); setSavedUniversities(Array.isArray(currentProfile.saved_universities) ? currentProfile.saved_universities : []); setFilters(f => normalizeFilters({ ...f, gpa: currentProfile.gpa ?? f.gpa, ielts: currentProfile.english_proficiency ?? f.ielts, budget: currentProfile.budget_max ?? f.budget, topikLevel: currentProfile.topikLevel ?? f.topikLevel })); } } catch (e) {} }; loadProfile(); }, []);
+    useEffect(() => {
+        let active = true;
+        setSavedUniversities([]); setSavedOwner(null); setUserProfile(null); setSaveError(false);
+        if (!ownerId || !ownerEmail) return () => { active = false; };
+        apiClient.entities.StudentProfile.filter({ created_by: ownerEmail }).then(profiles => {
+            if (!active || profiles.length !== 1) return;
+            const currentProfile = profiles[0];
+            setUserProfile(currentProfile);
+            setSavedUniversities(Array.isArray(currentProfile.saved_universities) ? currentProfile.saved_universities : []);
+            setSavedOwner(ownerKey);
+            setFilters(f => normalizeFilters({ ...f, gpa: currentProfile.gpa ?? f.gpa, ielts: currentProfile.english_proficiency ?? f.ielts, budget: currentProfile.budget_max ?? f.budget, topikLevel: currentProfile.topikLevel ?? f.topikLevel }));
+        }).catch(() => {});
+        return () => { active = false; };
+    }, [ownerId, ownerEmail, ownerKey]);
+    const registry = useMemo(() => universities.map(row => row.admissionCatalog?.identity).filter(Boolean), [universities]);
+    const currentSaved = savedOwner === ownerKey ? savedUniversities : [];
+    const isUniversitySaved = university => university?.admissionCatalog?.identity
+        ? canonicalFavoriteIds(currentSaved, registry).includes(university.admissionCatalog.identity.institutionId)
+        : currentSaved.includes(university?.id);
 
     const sortedUniversities = useMemo(() => selectCatalogResults(universities, filters, deferredQuery), [universities, filters, deferredQuery]);
     const resultKey = useMemo(() => JSON.stringify([filters, deferredQuery]), [filters, deferredQuery]);
@@ -97,6 +129,21 @@ export default function Search() {
     };
 
     const handleSave = useCallback(async (universityId) => {
+        const published = universities.find(row => row.id === universityId)?.admissionCatalog;
+        if (published) {
+            if (published.status !== 'valid' || !published.identity || savePending.current) return;
+            if (!ownerId || !ownerEmail) { await apiClient.auth.redirectToLogin('/Search'); return; }
+            savePending.current = true; setSavingPublished(true); setSaveError(false);
+            try {
+                const owner = { id: ownerId, email: ownerEmail };
+                const remove = canonicalFavoriteIds(currentSaved, registry).includes(published.identity.institutionId);
+                const profile = await serializeFavoriteWrite(ownerId, () => writeAdmissionFavorite(admissionFavoriteRepository(owner), owner, published.identity.institutionId, remove, registry));
+                if (ownerRef.current === ownerKey) { setSavedUniversities(profile.saved_universities); setSavedOwner(ownerKey); }
+                await queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
+            } catch { if (ownerRef.current === ownerKey) setSaveError(true); }
+            finally { savePending.current = false; setSavingPublished(false); }
+            return;
+        }
         try {
             const newSaved = savedUniversities.includes(universityId) ? savedUniversities.filter(id => id !== universityId) : [...savedUniversities, universityId];
             setSavedUniversities(newSaved);
@@ -104,7 +151,7 @@ export default function Search() {
             const profiles = await apiClient.entities.StudentProfile.filter({ created_by: user.email });
             if (profiles.length > 0) await apiClient.entities.StudentProfile.update(profiles[0].id, { saved_universities: newSaved });
         } catch (e) {}
-    }, [savedUniversities]);
+    }, [savedUniversities, universities, ownerId, ownerEmail, ownerKey, currentSaved, registry, queryClient]);
 
     const resetFilters = useCallback(() => { setFilters(DEFAULT_FILTERS); setSearchQuery(''); }, []);
     const handleCompareToggle = useCallback((universityId) => setCompareList(prev => prev.includes(universityId) ? prev.filter(id => id !== universityId) : prev.length < 3 ? [...prev, universityId] : prev), []);
@@ -128,14 +175,15 @@ export default function Search() {
                     </div>
                 </div>
             )}
+            {saveError && <p role="alert" className="max-w-7xl mx-auto px-4 py-2 text-sm text-red-700">{{en: 'The save could not be confirmed. Please retry.', ru: 'Сохранение не подтверждено. Повторите попытку.', uz: 'Saqlash tasdiqlanmadi. Qayta urinib ko‘ring.'}[language]}</p>}
             <div className="catalog-toolbar bg-white border-b border-slate-100 sticky top-0 z-40"><div className="max-w-7xl mx-auto px-4 sm:px-6 py-4"><div className="flex flex-col md:flex-row gap-4 items-center"><div className="relative flex-1 w-full"><SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" /><Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-4 py-6 text-lg bg-slate-50 border-slate-200 rounded-xl focus:bg-white" />{searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>}</div><Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}><SheetTrigger asChild><Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-indigo-600 text-white ml-1">{activeFilterCount}</Badge>}</Button></SheetTrigger><SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen"><SheetTitle className="sr-only">{t('search.filters')}</SheetTitle><div className="flex-1 overflow-y-auto p-4 pt-10"><FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} /></div><div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({sortedUniversities.length})</Button></div></SheetContent></Sheet></div><div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4"><p className="text-slate-600"><span className="font-semibold text-slate-800">{sortedUniversities.length}</span> {t('search.results')}</p><div className="flex flex-wrap items-center gap-3">{compareList.length > 0 && <Button onClick={() => setShowComparison(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}<div className="flex gap-2 items-center text-sm text-slate-500"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-indigo-100 text-indigo-700">{filters.gpa?.toFixed(1)}</Badge></div></div></div></div></div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6"><div className="flex gap-8"><main id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="flex-1 min-w-0">{isLoading ? <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100"><Skeleton className="h-32" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div> : sortedUniversities.length === 0 ? <div className="text-center py-20"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-slate-400" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{t('search.noResults')}</h3><p className="text-slate-500 mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" onClick={resetFilters}>{t('search.resetFilters')}</Button></div> : <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{pageInfo.rows.map((university) => <UniversityCard key={university.id} university={university} userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={savedUniversities.includes(university.id)} onSave={handleSave} onView={setSelectedUniversity} isComparing={compareList.includes(university.id)} onCompareToggle={handleCompareToggle} />)}</div>}</main></div></div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6"><div className="flex gap-8"><main id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="flex-1 min-w-0">{isLoading ? <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100"><Skeleton className="h-32" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div> : sortedUniversities.length === 0 ? <div className="text-center py-20"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-slate-400" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{t('search.noResults')}</h3><p className="text-slate-500 mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" onClick={resetFilters}>{t('search.resetFilters')}</Button></div> : <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{pageInfo.rows.map((university) => <UniversityCard key={university.id} university={university} userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversitySaved(university)} saveDisabled={savingPublished} onSave={handleSave} onView={setSelectedUniversity} isComparing={compareList.includes(university.id)} onCompareToggle={handleCompareToggle} />)}</div>}</main></div></div>
             {!isLoading && sortedUniversities.length > 0 && <nav aria-label={pagingLabels[2]} className="catalog-pagination max-w-7xl mx-auto px-4 sm:px-6 pb-8 flex flex-wrap items-center justify-center gap-4">
                 <Button variant="outline" disabled={pageInfo.page === 1} onClick={() => changePage(pageInfo.page - 1)}>{pagingLabels[0]}</Button>
                 <span aria-live="polite">{pageInfo.start}–{pageInfo.end} / {sortedUniversities.length} · {pageInfo.page} / {pageInfo.pages}</span>
                 <Button variant="outline" disabled={pageInfo.page === pageInfo.pages} onClick={() => changePage(pageInfo.page + 1)}>{pagingLabels[1]}</Button>
             </nav>}
-            <UniversityDetailModal university={selectedUniversity} isOpen={!!selectedUniversity} onClose={() => setSelectedUniversity(null)} userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={selectedUniversity && savedUniversities.includes(selectedUniversity.id)} onSave={handleSave} />
+            <UniversityDetailModal university={selectedUniversity} isOpen={!!selectedUniversity} onClose={() => setSelectedUniversity(null)} userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversitySaved(selectedUniversity)} saveDisabled={savingPublished} onSave={handleSave} />
             <ComparisonModal universities={compareUniversities} isOpen={showComparison} onClose={() => setShowComparison(false)} onRemove={handleRemoveFromCompare} userProfile={userProfile} />
         </div>
     );

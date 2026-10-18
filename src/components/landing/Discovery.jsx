@@ -70,7 +70,7 @@ export function useDiscovery(language) {
     filter, setFilter, onlySaved: false,
     setOnlySaved: next => { if (next) navigate('/Profile'); }, toggleSave, detail, setDetail,
     quiz: false, legal: null, setLegal: () => {},
-    openQuiz: () => navigate('/Recommendations'),
+    openQuiz: () => navigate('/AdmissionsSurvey'),
     isLoading: query.isLoading, isError: query.isError, refetch: () => query.refetch(),
     notice, isSaving: mutation.isPending,
     userProfile: currentProfile,

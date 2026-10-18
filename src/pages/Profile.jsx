@@ -16,27 +16,39 @@ import { toast } from 'sonner';
 import ProfileBuilder from '@/components/profile/ProfileBuilder';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
 import { useLanguage } from '@/lib/i18n';
+import { admissionCopy } from '@/components/admissions/copy';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
+import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
+import usePublicAdmissionsCatalog from '@/components/admissions/usePublicAdmissionsCatalog';
+import CatalogStatus from '@/components/admissions/CatalogStatus';
+import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
+import { serializeFavoriteWrite } from '@/lib/admissions/favorites';
+import InstitutionMedia, { InstitutionLinks } from '@/components/admissions/InstitutionMedia';
+import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites';
+import '@/components/admissions/admissions.css';
 
 export default function Profile() {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const admissionText = admissionCopy[language] || admissionCopy.en;
     const queryClient = useQueryClient();
+    const catalogQuery = usePublicAdmissionsCatalog();
+    const catalog = catalogQuery.catalog;
     const [showProfileBuilder, setShowProfileBuilder] = useState(false);
 
-    // Check auth
-    const { data: user, isLoading: userLoading } = useQuery({
-        queryKey: ['currentUser'],
-        queryFn: () => apiClient.auth.me(),
-    });
+    // Follow the active session so a cached user cannot survive an account switch.
+    const { session, isLoadingAuth: userLoading } = useAuth();
+    const user = session?.user || null;
 
     // Get student profile
     const { data: profiles = [], isLoading: profileLoading } = useQuery({
-        queryKey: ['studentProfile', user?.email],
+        queryKey: ['studentProfile', user?.id, user?.email],
         queryFn: () => apiClient.entities.StudentProfile.filter({ created_by: user?.email }),
         enabled: !!user?.email,
     });
 
     const profile = profiles[0];
+    const favorites = useAdmissionFavorites({ answers: {}, view: 'survey', step: 0, catalog, catalogReady: catalogQuery.canSave, refreshCatalog: catalogQuery.refresh });
 
     // Get saved universities
     const { data: universities = [] } = useQuery({
@@ -44,9 +56,20 @@ export default function Profile() {
         queryFn: () => apiClient.entities.University.list(),
     });
 
-    const savedUniversities = universities.filter(uni => 
-        profile?.saved_universities?.includes(uni.id)
+    const savedUniversities = universities.filter(uni =>
+        Array.isArray(profile?.saved_universities) && profile.saved_universities.includes(uni.id)
+        && !catalog.institutions.some(institution => institution.id === uni.id)
     );
+    const admissionFavorites = favorites.savedIds.map(institutionId => {
+        const institution = catalog.institutions.find(row => row.institutionId === institutionId);
+        if (!institution) return null;
+        const option = catalog.options.find(candidate => candidate.institutionId === institutionId)
+          || { id: `identity-${institutionId}`, institutionId, liveId: institution.id, university: institution.name, country: institution.country, region: institution.region, media: institution.media };
+        return { institutionId, option, institution };
+    }).filter(Boolean);
+    const unresolvedSaved = [...new Set((Array.isArray(profile?.saved_universities) ? profile.saved_universities : []).filter(id => typeof id === 'string'
+      && !universities.some(uni => uni.id === id)
+      && !catalog.institutions.some(row => [row.id, ...row.legacyFavoriteKeys].some(key => key.toLowerCase() === id.toLowerCase()))))];
 
     // Mutations
     const saveProfileMutation = useMutation({
@@ -65,13 +88,46 @@ export default function Profile() {
     });
 
     const removeSavedMutation = useMutation({
-        mutationFn: async (universityId) => {
-            const newSaved = (profile?.saved_universities || []).filter(id => id !== universityId);
-            return apiClient.entities.StudentProfile.update(profile.id, { saved_universities: newSaved });
-        },
+        mutationFn: (universityId) => serializeFavoriteWrite(user?.id, async () => {
+            const { data, error } = await supabase.auth.getSession();
+            if (error) throw error;
+            if (!data.session?.user?.id || data.session.user.id !== user?.id || !data.session.user.email) {
+                throw new Error('Your signed-in account changed. Reload and retry.');
+            }
+            const ownedProfiles = await apiClient.entities.StudentProfile.filter({ created_by: data.session.user.email });
+            if (ownedProfiles.length !== 1 || ownedProfiles[0].id !== profile?.id) {
+                throw new Error('Your profile could not be selected safely.');
+            }
+            const current = ownedProfiles[0].saved_universities;
+            if (current != null && !Array.isArray(current)) throw new Error('The saved list has an unexpected format.');
+            const newSaved = (current || []).filter(id => id !== universityId);
+            const beforeWrite = await supabase.auth.getSession();
+            if (beforeWrite.error) throw beforeWrite.error;
+            if (beforeWrite.data.session?.user?.id !== user?.id
+                || beforeWrite.data.session?.user?.email !== data.session.user.email) {
+                throw new Error('Your signed-in account changed. Reload and retry.');
+            }
+            const updated = await apiClient.entities.StudentProfile.update(profile.id, { saved_universities: newSaved });
+            if (!Array.isArray(updated?.saved_universities) || updated.saved_universities.includes(universityId)) {
+                throw new Error('The save could not be confirmed. Please retry.');
+            }
+            const confirmed = await apiClient.entities.StudentProfile.filter({ id: profile.id });
+            const afterWrite = await supabase.auth.getSession();
+            if (afterWrite.error) throw afterWrite.error;
+            if (afterWrite.data.session?.user?.id !== user?.id
+                || afterWrite.data.session?.user?.email !== data.session.user.email) {
+                throw new Error('Your signed-in account changed. Reload and retry.');
+            }
+            if (confirmed.length !== 1 || !Array.isArray(confirmed[0].saved_universities)
+                || confirmed[0].saved_universities.includes(universityId)) {
+                throw new Error('The save could not be confirmed. Please retry.');
+            }
+            return confirmed[0];
+        }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
         },
+        onError: error => toast.error(error?.message || 'Saved universities could not be updated.'),
     });
 
     if (userLoading || profileLoading) {
@@ -161,7 +217,7 @@ export default function Profile() {
                             <p className="text-indigo-100 text-xs sm:text-sm">{t('profile.maxBudget')}</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                            <p className="text-2xl sm:text-3xl font-bold">{savedUniversities.length}</p>
+                            <p className="text-2xl sm:text-3xl font-bold">{savedUniversities.length + admissionFavorites.length}</p>
                             <p className="text-indigo-100 text-xs sm:text-sm">{t('profile.savedUnis')}</p>
                         </div>
                     </div>
@@ -209,7 +265,11 @@ export default function Profile() {
                     </TabsList>
 
                     <TabsContent value="saved">
-                        {savedUniversities.length === 0 ? (
+                        <CatalogStatus query={catalogQuery} c={admissionText} />
+                        {favorites.loading && <p role="status" className="text-sm text-slate-500">{admissionText.saveLoading}</p>}
+                        {favorites.error && <p role="alert" className="text-sm text-red-600">{admissionText[favorites.error] || admissionText.saveError} <button type="button" className="underline" onClick={() => void favorites.retry()}>{admissionText.saveRetry}</button></p>}
+                        {favorites.notice && <p role="status" className="text-sm text-emerald-700">{admissionText[favorites.notice]}</p>}
+                        {favorites.loading && !favorites.pendingId ? <div aria-hidden="true" className="min-h-12" /> : savedUniversities.length === 0 && admissionFavorites.length === 0 && unresolvedSaved.length === 0 ? (
                             <Card className="text-center p-12">
                                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <Bookmark className="w-8 h-8 text-slate-400" />
@@ -227,6 +287,26 @@ export default function Profile() {
                             </Card>
                         ) : (
                             <div className="space-y-4">
+                                {admissionFavorites.map(({ institutionId, option, institution }) => {
+                                    return <Card key={institutionId} className="overflow-hidden hover:shadow-md transition-shadow">
+                                        <div className="flex flex-col sm:flex-row sm:items-start gap-5 p-5 sm:p-6">
+                                            <div className="w-full min-w-0 sm:w-64 sm:flex-shrink-0">
+                                                <InstitutionMedia option={option} c={admissionText} />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-xs uppercase tracking-wide text-indigo-700">{admissionText.savedInstitution}</p>
+                                                <h3 className="font-semibold text-slate-800">{option.university}</h3>
+                                                <p className="text-sm text-slate-500 mt-1">{option.country} · {admissionText.regionNames?.[option.region] || option.region}</p>
+                                                <div className="mt-4"><PublishedProgrammeFacts admissionCatalog={{ status: 'valid', programmes: institution.programmes, sources: institution.sources }} language={language} compact expandable /></div>
+                                                <InstitutionLinks option={option} c={admissionText} />
+                                            </div>
+                                            <Button variant="ghost" size="sm" className="text-slate-400 hover:text-red-500" disabled={favorites.loading || !favorites.canSave || removeSavedMutation.isPending} aria-busy={favorites.pendingId === institutionId} onClick={() => void favorites.requestSave(option, false)} aria-label={`${favorites.pendingId ===institutionId ? admissionText.removing : admissionText.removeSaved}: ${option.university}`}>
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </Card>;
+                                })}
+                                {unresolvedSaved.map(key => <Card key={key} className="p-6"><p>{admissionText.savedDetailsMissing}</p><Button variant="ghost" disabled={removeSavedMutation.isPending} onClick={() => removeSavedMutation.mutate(key)}>{admissionText.removeSaved}</Button></Card>)}
                                 {savedUniversities.map(uni => (
                                     <Card key={uni.id} className="overflow-hidden hover:shadow-md transition-shadow">
                                         <div className="flex items-center gap-6 p-6">
@@ -242,7 +322,7 @@ export default function Profile() {
                                                     <Globe className="w-3.5 h-3.5" />
                                                     <span>{uni.language}</span>
                                                 </div>
-                                                <div className="flex items-center gap-4 mt-3">
+                                                {uni.admissionCatalog ? <div className="mt-3"><PublishedProgrammeFacts admissionCatalog={uni.admissionCatalog} language={language} compact expandable /></div> : <div className="flex items-center gap-4 mt-3">
                                                     <ChanceIndicator chance={calculateChance(uni, profile?.gpa, profile?.english_proficiency || 0, profile?.topikLevel || "Not taken")} reason={describeMissingChanceData(uni)?.note} size="sm" />
                                                     <span className="text-sm text-slate-600">
                                                         {uni.tuition_min === 0 ? (
@@ -256,7 +336,7 @@ export default function Profile() {
                                                             <>€{uni.tuition_min.toLocaleString()}/{t('common.year')}</>
                                                         )}
                                                     </span>
-                                                </div>
+                                                </div>}
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 {uni.website && (
@@ -270,6 +350,7 @@ export default function Profile() {
                                                     variant="ghost" 
                                                     size="sm"
                                                     className="text-slate-400 hover:text-red-500"
+                                                    disabled={favorites.loading || removeSavedMutation.isPending}
                                                     onClick={() => removeSavedMutation.mutate(uni.id)}
                                                 >
                                                     <Trash2 className="w-4 h-4" />

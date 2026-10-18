@@ -33,10 +33,21 @@ const getFriendlyAuthError = (error) => {
   return 'We could not complete that request. Please try again.'
 }
 
+function safeInternalReturn(value) {
+  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.startsWith('/\\')) return '/'
+  try {
+    const parsed = new URL(value, window.location.origin)
+    if (parsed.origin !== window.location.origin) return '/'
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`
+  } catch {
+    return '/'
+  }
+}
+
 export default function Login() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const redirectTo = searchParams.get('redirect_to') || '/'
+  const redirectTo = safeInternalReturn(searchParams.get('redirect_to'))
 
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -134,7 +145,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: `${window.location.origin}/Login?redirect_to=${encodeURIComponent(redirectTo)}`,
         },
       })
 

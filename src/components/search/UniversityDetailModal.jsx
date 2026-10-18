@@ -17,13 +17,15 @@ import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { US_GENERIC_VISA_INFO, US_GPA_HOLISTIC_NOTE } from '@/lib/usGenericInfo';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
+import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
 
-export default function UniversityDetailModal({ university, isOpen, onClose, userGpa, userIelts, userTopik, isSaved, onSave }) {
-    const { t } = useLanguage();
+export default function UniversityDetailModal({ university, isOpen, onClose, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave }) {
+    const { t, language } = useLanguage();
     
     if (!university) return null;
     
     const chance = calculateChance(university, userGpa, userIelts, userTopik);
+    const hasAdmissionCatalog = university.admissionCatalog !== undefined;
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix).
     // Also show tuition_max as a range when it differs from tuition_min, instead of
@@ -65,6 +67,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                     {/* Chance and Actions */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl">
                         <div>
+                            {!hasAdmissionCatalog && <>
                             <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
                             <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="lg" />
                             {university.required_ielts && userIelts > 0 && userIelts < university.required_ielts && (
@@ -91,11 +94,14 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     )}
                                 </>
                             )}
+                            </>}
                             </div>
                                 <div className="flex flex-wrap gap-2">
                             <Button
                                 variant="outline"
                                 onClick={() => onSave(university.id)}
+                                aria-pressed={Boolean(isSaved)}
+                                disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
                                 className={isSaved ? "border-indigo-200 bg-indigo-50" : ""}
                             >
                                 {isSaved ? (
@@ -115,6 +121,9 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                         </div>
                     </div>
 
+                    {hasAdmissionCatalog && <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} />}
+
+                    {!hasAdmissionCatalog && <>
                     {/* Key Stats Grid */}
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
                                 <div className="p-3 bg-white border border-slate-100 rounded-xl">
@@ -180,6 +189,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     </p>
                                 </div>
                             </div>
+                    </>}
 
                             {/* Description */}
                             {university.description && (
@@ -196,6 +206,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                 </Card>
                             )}
 
+                            {!hasAdmissionCatalog && <>
                             {/* Quick Info */}
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <Card>
@@ -280,6 +291,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     </CardContent>
                                 </Card>
                             </div>
+                            </>}
 
                             <Separator className="my-6" />
 
@@ -555,6 +567,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                         </CollapsibleContent>
                     </Collapsible>
 
+                    {!hasAdmissionCatalog && <>
                     <Separator className="my-6" />
 
                     {/* Scholarships */}
@@ -614,6 +627,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                             )}
                         </CollapsibleContent>
                     </Collapsible>
+                    </>}
                 </div>
             </DialogContent>
         </Dialog>

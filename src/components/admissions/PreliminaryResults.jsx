@@ -13,11 +13,13 @@ function Reason({ reason, option, c }) {
 
 function CandidateCard({ row, c, language, favorites, alternative = false }) {
   const { option, reasons, isTop } = row;
-  const mainReason = reasons.find(reason => reason.status === 'unmet' && !['ACADEMIC_UNMET', 'LANGUAGE_UNMET'].includes(reason.code)) || reasons.find(reason => reason.status === 'unmet') || reasons.find(reason => reason.code === 'ASU_SPRING_CS_INTAKE_UNCONFIRMED') || reasons.find(reason => reason.code === 'PERSONAL_CREDENTIAL_UNKNOWN') || reasons.find(reason => reason.status === 'unknown');
+  const mainReason = reasons.find(reason => reason.status === 'unmet' && !['ACADEMIC_UNMET', 'LANGUAGE_UNMET'].includes(reason.code)) || reasons.find(reason => reason.status === 'unmet') || reasons.find(reason => reason.code === 'LANGUAGE_SECTIONS_UNKNOWN') || reasons.find(reason => reason.code === 'ASU_SPRING_CS_INTAKE_UNCONFIRMED') || reasons.find(reason => reason.code === 'PERSONAL_CREDENTIAL_UNKNOWN') || reasons.find(reason => reason.status === 'unknown');
   const knownReason = reasons.find(reason => reason.status === 'met' && ['FIELD_MATCH', 'REGION_MATCH'].includes(reason.code));
   const route = option.sources.find(source => source.key === option.routeSourceKey || source.key.endsWith('route') || source.key === 'asu-first-year') || option.sources[0];
   const tuition = option.tuition;
   const tuitionFact = option.facts?.tuition ? describePublicFact(option.facts.tuition, language, 'tuition') : null;
+  const languageReference = option.publishedLanguageReference && reasons.some(reason => ['LANGUAGE_BELOW_PUBLISHED_THRESHOLD', 'LANGUAGE_THRESHOLD_REACHED'].includes(reason.code))
+    ? describePublicFact(option.facts.languageThreshold, language, 'rule') : null;
   const saved = favorites.savedIds.includes(option.institutionId);
   const pending = favorites.pendingId === option.institutionId;
   return <article className="admission-candidate" data-institution={option.institutionId || option.university} data-top={Boolean(isTop)}>
@@ -27,6 +29,7 @@ function CandidateCard({ row, c, language, favorites, alternative = false }) {
     <p className={`admission-status ${alternative ? 'admission-status-attention' : ''}`}>{alternative ? c.attention : c.unknown}</p>
     {knownReason && <p className="admission-known-reason">{c.cardReasons[knownReason.code]}</p>}
     <p className="admission-key-reason">{mainReason ? c.cardReasons[mainReason.code] || c.reasons[mainReason.code] || c.incomplete : c.incomplete}</p>
+    {languageReference && <p className="admission-language-reference">{c.languageReference}: {languageReference.value}. {languageReference.notice} {c.languageReferenceLimit}</p>}
     <InstitutionMedia option={option} c={c} />
     <dl className="admission-facts">
       <div><dt>{c.publishedCost}</dt><dd>{tuitionFact ? tuitionFact.value : tuition?.amount != null ? `${tuition.amount.toLocaleString(language)} ${tuition.currency} / ${c.periods[tuition.period] || c.unknownShort}` : c.unknownShort}{!tuitionFact && tuition?.feeYear && <small> · {tuition.feeYear}</small>}{tuitionFact?.notice && <small className="block">{tuitionFact.notice}</small>}</dd></div>

@@ -143,6 +143,39 @@ function normalizedRule(fact, sources, targetIntakeYear) {
   gate(copy);
   return scopeConflict ? { type: 'unknown', verified: false, applicable: false } : copy;
 }
+
+/** A published overall-score reference is not an executable eligibility rule.
+ * The survey explores bachelor entry after school; other applicant/route scopes
+ * cannot be inferred. Historical references retain their own season.
+ * @param {any} fact @param {Record<string, any>} sources @param {number} targetIntakeYear
+ */
+function publishedLanguageReference(fact, sources, targetIntakeYear) {
+  if (!fact || !['current_verified', 'published_unconfirmed', 'historical_reference'].includes(fact.status)
+    || fact.applicability === 'not_applicable') return null;
+  const historical = fact.status === 'historical_reference';
+  const value = historical ? fact.historical?.value : fact.value;
+  const sourceIds = historical ? fact.historical?.sourceIds : fact.sourceIds;
+  if (value?.type !== 'ielts' || !validRule(value, sources) || !Array.isArray(sourceIds)
+    || !sourceIds.length || !ruleSourcesIncluded(value, sourceIds)
+    || !sourceIds.every(key => hasSource(sources, key))
+    || typeof value.minimum !== 'number' || !Number.isFinite(value.minimum) || value.minimum < 0 || value.minimum > 9
+    || (value.scope != null && !object(value.scope))) return null;
+  const scopes = [fact.scope, value.scope || {}];
+  if (value.scope?.programmeId != null && value.scope.programmeId !== fact.scope.programmeId) return null;
+  if (scopes.some(scope => (scope.studentCategory != null && scope.studentCategory !== 'international_freshman')
+    || (scope.route != null && scope.route !== 'direct'))) return null;
+  for (const key of ['schoolCountry', 'credential', 'intakeYear']) {
+    if (fact.scope[key] != null && value.scope?.[key] != null && fact.scope[key] !== value.scope[key]) return null;
+  }
+  if (!historical && scopes.some(scope => scope.intakeYear != null && scope.intakeYear !== targetIntakeYear)) return null;
+  if (fact.status === 'current_verified' && (fact.applicability !== 'confirmed' || fact.scope.intakeYear !== targetIntakeYear)) return null;
+  return {
+    minimum: value.minimum, sectionsRequired: object(value.sections) && Object.keys(value.sections).length > 0,
+    sourceKey: value.sourceKey, status: fact.status,
+    season: historical ? fact.historical.referenceSeason : fact.season,
+    scopes: structuredClone(scopes),
+  };
+}
 /** @param {any} row */
 function parseRow(row) {
   const cat = row?.catalog;
@@ -253,6 +286,7 @@ function makeOption(programme, institution, sources, surveyRegion, targetIntakeY
       : { type: 'unknown', verified: false, applicable: false },
     languageRequirement: normalizedRule(f.languageRequirement, sources, targetIntakeYear),
     languageThreshold: normalizedRule(f.languageThreshold, sources, targetIntakeYear),
+    publishedLanguageReference: publishedLanguageReference(f.languageThreshold, sources, targetIntakeYear),
     requirementPolicy: null,
     competitiveness: { ...(object(comp) ? comp : {}), category: isExtreme ? 'extremely_selective' : 'unknown' },
     discoveryPolicy: discovery?.use === 'ambitious_only' ? 'ambitious_only' : discovery?.use === 'explore' ? 'explore' : 'unreviewed',

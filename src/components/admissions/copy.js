@@ -205,8 +205,23 @@ const productCopy = {
   },
 };
 
+const languageReferenceCopy = {
+  en: { languageReference: 'Compared IELTS reference', languageReferenceLimit: 'The overall score alone does not confirm section scores, certificate validity, alternative routes or personal admission eligibility.', reasons: {
+    LANGUAGE_REFERENCE_UNCONFIRMED: 'This published IELTS reference is not confirmed for your intake.',
+    LANGUAGE_REFERENCE_HISTORICAL: 'This is a prior-season IELTS reference; current applicability is unconfirmed.',
+  } },
+  ru: { languageReference: 'Сравнённый ориентир IELTS', languageReferenceLimit: 'Один общий балл не подтверждает секции, срок действия сертификата, альтернативные пути или персональный допуск.', reasons: {
+    LANGUAGE_REFERENCE_UNCONFIRMED: 'Применимость этого опубликованного ориентира IELTS к вашему набору не подтверждена.',
+    LANGUAGE_REFERENCE_HISTORICAL: 'Это ориентир IELTS прошлого сезона; текущая применимость не подтверждена.',
+  } },
+  uz: { languageReference: 'Taqqoslangan IELTS ko‘rsatkichi', languageReferenceLimit: 'Umumiy ballning o‘zi bo‘lim ballari, sertifikat muddati, muqobil yo‘llar yoki shaxsiy qabulga muvofiqlikni tasdiqlamaydi.', reasons: {
+    LANGUAGE_REFERENCE_UNCONFIRMED: 'Bu e’lon qilingan IELTS ko‘rsatkichi sizning qabul davringiz uchun tasdiqlanmagan.',
+    LANGUAGE_REFERENCE_HISTORICAL: 'Bu oldingi mavsum IELTS ko‘rsatkichi; joriy qo‘llanishi tasdiqlanmagan.',
+  } },
+};
+
 export const admissionCopy = {
-  en: { ...en, ...selectionCopy.en, ...productCopy.en, ...polishCopy.en, locale: 'en', reasons: { ...en.reasons, ...requirementCopy.en }, sourceScopes: {} },
-  ru: { ...ru, ...selectionCopy.ru, ...productCopy.ru, ...polishCopy.ru, locale: 'ru', reasons: { ...ru.reasons, ...requirementCopy.ru }, sourceScopes: {} },
-  uz: { ...uz, ...selectionCopy.uz, ...productCopy.uz, ...polishCopy.uz, locale: 'uz', reasons: { ...uz.reasons, ...requirementCopy.uz }, sourceScopes: {} },
+  en: { ...en, ...selectionCopy.en, ...productCopy.en, ...polishCopy.en, ...languageReferenceCopy.en, locale: 'en', reasons: { ...en.reasons, ...requirementCopy.en, ...languageReferenceCopy.en.reasons }, sourceScopes: {} },
+  ru: { ...ru, ...selectionCopy.ru, ...productCopy.ru, ...polishCopy.ru, ...languageReferenceCopy.ru, locale: 'ru', reasons: { ...ru.reasons, ...requirementCopy.ru, ...languageReferenceCopy.ru.reasons }, sourceScopes: {} },
+  uz: { ...uz, ...selectionCopy.uz, ...productCopy.uz, ...polishCopy.uz, ...languageReferenceCopy.uz, locale: 'uz', reasons: { ...uz.reasons, ...requirementCopy.uz, ...languageReferenceCopy.uz.reasons }, sourceScopes: {} },
 };

@@ -8,6 +8,24 @@ function numberOrNull(value) {
   return Number.isFinite(number) ? number : null;
 }
 
+/** Compare only the published overall score, without granting applicability.
+ * Country/credential constraints remain gates even for historical references.
+ * @param {any} reference @param {Record<string, any>} answers
+ */
+function comparePublishedLanguage(reference, answers) {
+  const score = numberOrNull(answers.score);
+  if (!reference || answers.exam !== 'IELTS' || score === null || score < 0 || score > 9) return null;
+  const normalized = value => typeof value === 'string' ? value.trim().toLowerCase() : null;
+  for (const scope of reference.scopes) {
+    for (const key of ['schoolCountry', 'credential']) {
+      if (scope[key] != null && normalized(scope[key]) !== normalized(answers[key])) return null;
+    }
+    if (reference.status !== 'historical_reference' && scope.intakeYear != null
+      && numberOrNull(answers.startYear) !== scope.intakeYear) return null;
+  }
+  return { below: score < reference.minimum, sectionsUnknown: reference.sectionsRequired };
+}
+
 /**
  * Evaluate only normalized, source-scoped data. An admission decision is never
  * inferred from preference matches, absent values or institution reputation.
@@ -33,15 +51,24 @@ export function evaluateCandidate(option, answers) {
     }
   }
 
+  const reference = comparePublishedLanguage(option.publishedLanguageReference, answers);
   const threshold = evaluateRequirement(option.languageThreshold, answers);
   if (threshold.codes.includes('IELTS_THRESHOLD_BELOW')) add('LANGUAGE_BELOW_PUBLISHED_THRESHOLD', 'unmet', threshold.sourceKeys[0]);
   if (threshold.codes.includes('IELTS_THRESHOLD_MET')) add('LANGUAGE_THRESHOLD_REACHED', 'met', threshold.sourceKeys[0]);
+  if (reference) {
+    const evidence = option.publishedLanguageReference;
+    add(reference.below ? 'LANGUAGE_BELOW_PUBLISHED_THRESHOLD' : 'LANGUAGE_THRESHOLD_REACHED', reference.below ? 'unmet' : 'met', evidence.sourceKey);
+    if (reference.sectionsUnknown) add('LANGUAGE_SECTIONS_UNKNOWN', 'unknown', evidence.sourceKey);
+    if (evidence.status === 'published_unconfirmed') add('LANGUAGE_REFERENCE_UNCONFIRMED', 'unknown', evidence.sourceKey);
+    if (evidence.status === 'historical_reference') add('LANGUAGE_REFERENCE_HISTORICAL', 'unknown', evidence.sourceKey);
+  }
   if (!answers.exam || answers.exam === 'not_taken') add('LANGUAGE_TEST_UNSPECIFIED');
   else if (answers.exam !== 'IELTS') add('LANGUAGE_SCALE_UNKNOWN');
   else if (numberOrNull(answers.score) === null) add('LANGUAGE_SCORE_MISSING');
   if (answers.exam && answers.exam !== 'not_taken' && language.status === 'unknown') add('EXAM_VALIDITY_UNKNOWN');
 
   let requiresClarification = (language.status !== 'met' && threshold.codes.includes('IELTS_THRESHOLD_BELOW'))
+    || (language.status !== 'met' && reference?.below === true)
     || (academic.status !== 'met' && academic.codes.includes('GRADE_THRESHOLD_BELOW'));
   if (option.fieldVerified === false) add('FIELD_ROUTING_INFERRED');
   if (option.languageVerified === false) add('TEACHING_LANGUAGE_UNCONFIRMED');

@@ -1,5 +1,6 @@
 import { evaluateRequirement } from './requirements.js';
 import { academicContext } from './nativeAcademic.js';
+import { comparePublishedAcademic } from './academicReference.js';
 
 /** @param {unknown} value */
 function numberOrNull(value) {
@@ -14,7 +15,7 @@ function numberOrNull(value) {
  */
 function comparePublishedLanguage(reference, answers) {
   const score = numberOrNull(answers.score);
-  if (!reference || answers.exam !== 'IELTS' || score === null || score < 0 || score > 9) return null;
+  if (!reference || answers.exam !== 'IELTS') return null;
   const normalized = value => typeof value === 'string' ? value.trim().toLowerCase() : null;
   for (const scope of reference.scopes) {
     for (const key of ['schoolCountry', 'credential']) {
@@ -23,7 +24,25 @@ function comparePublishedLanguage(reference, answers) {
     if (reference.status !== 'historical_reference' && scope.intakeYear != null
       && numberOrNull(answers.startYear) !== scope.intakeYear) return null;
   }
-  return { below: score < reference.minimum, sectionsUnknown: reference.sectionsRequired };
+  const validOverall = score !== null && score >= 0 && score <= 9;
+  const sectionKeys = reference.sections && Object.keys(reference.sections);
+  let sectionsUnknown = reference.sectionsUnknown === true;
+  let sectionBelow = false;
+  if (reference.sectionsRequired && !sectionsUnknown) {
+    if (!sectionKeys?.length) sectionsUnknown = true;
+    else {
+      for (const section of sectionKeys) {
+        const sectionScore = numberOrNull(answers[section]);
+        if (sectionScore === null || sectionScore < 0 || sectionScore > 9 || Math.round(sectionScore * 2) !== sectionScore * 2) {
+          sectionsUnknown = true;
+        } else if (sectionScore < reference.sections[section]) {
+          sectionBelow = true;
+        }
+      }
+    }
+  }
+  if (!validOverall && !reference.sectionsRequired) return null;
+  return { below: validOverall ? score < reference.minimum : null, sectionBelow, sectionsUnknown };
 }
 
 /**
@@ -41,6 +60,12 @@ export function evaluateCandidate(option, answers) {
   add('PERSONAL_CREDENTIAL_UNKNOWN', 'unknown', option.routeSourceKey);
   const context = academicContext(option, answers);
   const academic = evaluateRequirement(context.rule, context.answers);
+  const academicReferences = comparePublishedAcademic(option.publishedAcademicReference, context.answers);
+  for (const reference of academicReferences) {
+    add(reference.below ? 'ACADEMIC_REFERENCE_BELOW' : 'ACADEMIC_REFERENCE_REACHED', reference.below ? 'unmet' : 'unknown', reference.sourceKey);
+    if (reference.status === 'published_unconfirmed') add('ACADEMIC_REFERENCE_UNCONFIRMED', 'unknown', reference.sourceKey);
+    if (reference.status === 'historical_reference') add('ACADEMIC_REFERENCE_HISTORICAL', 'unknown', reference.sourceKey);
+  }
   const language = evaluateRequirement(option.languageRequirement, answers);
   add(`ACADEMIC_${academic.status.toUpperCase()}`, academic.status, academic.sourceKeys[0]);
   add(`LANGUAGE_${language.status.toUpperCase()}`, language.status, language.sourceKeys[0]);
@@ -57,7 +82,10 @@ export function evaluateCandidate(option, answers) {
   if (threshold.codes.includes('IELTS_THRESHOLD_MET')) add('LANGUAGE_THRESHOLD_REACHED', 'met', threshold.sourceKeys[0]);
   if (reference) {
     const evidence = option.publishedLanguageReference;
-    add(reference.below ? 'LANGUAGE_BELOW_PUBLISHED_THRESHOLD' : 'LANGUAGE_THRESHOLD_REACHED', reference.below ? 'unmet' : 'met', evidence.sourceKey);
+    if (reference.below !== null) {
+      add(reference.below ? 'LANGUAGE_BELOW_PUBLISHED_THRESHOLD' : 'LANGUAGE_THRESHOLD_REACHED', reference.below ? 'unmet' : 'met', evidence.sourceKey);
+    }
+    if (reference.sectionBelow) add('IELTS_SECTION_THRESHOLD_BELOW', 'unmet', evidence.sourceKey);
     if (reference.sectionsUnknown) add('LANGUAGE_SECTIONS_UNKNOWN', 'unknown', evidence.sourceKey);
     if (evidence.status === 'published_unconfirmed') add('LANGUAGE_REFERENCE_UNCONFIRMED', 'unknown', evidence.sourceKey);
     if (evidence.status === 'historical_reference') add('LANGUAGE_REFERENCE_HISTORICAL', 'unknown', evidence.sourceKey);
@@ -68,8 +96,11 @@ export function evaluateCandidate(option, answers) {
   if (answers.exam && answers.exam !== 'not_taken' && language.status === 'unknown') add('EXAM_VALIDITY_UNKNOWN');
 
   let requiresClarification = (language.status !== 'met' && threshold.codes.includes('IELTS_THRESHOLD_BELOW'))
+    || threshold.codes.includes('IELTS_SECTION_THRESHOLD_BELOW')
     || (language.status !== 'met' && reference?.below === true)
-    || (academic.status !== 'met' && academic.codes.includes('GRADE_THRESHOLD_BELOW'));
+    || reference?.sectionBelow === true
+    || (academic.status !== 'met' && academic.codes.includes('GRADE_THRESHOLD_BELOW'))
+    || academicReferences.some(reference => reference.below);
   if (option.fieldVerified === false) add('FIELD_ROUTING_INFERRED');
   if (option.languageVerified === false) add('TEACHING_LANGUAGE_UNCONFIRMED');
   if (answers.language && option.language && answers.language !== option.language && option.languageVerified !== false) {
@@ -108,7 +139,7 @@ export function evaluateCandidate(option, answers) {
     + Number(answers.language && answers.language === option.language && option.languageVerified !== false)
     + Number(answers.startYear && Number(answers.startYear) === option.intakeYear);
   return {
-    option, outcome: 'unknown', reasons, requirementStatus,
+    option, outcome: 'unknown', reasons, requirementStatus, academicReferences,
     academicStatus: academic.status, languageStatus: language.status, budgetStatus, requiresClarification,
     requiresAlternativePath: context.blockedByCredential,
     preferenceMatches,

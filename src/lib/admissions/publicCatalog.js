@@ -1,4 +1,5 @@
 import { institutionIdFromFavorite } from './favoriteKeys.js';
+import { publishedAcademicReference } from './academicReference.js';
 
 const REGIONS = new Set(['Europe', 'USA', 'South Korea', 'UK', 'Canada']);
 const FIELDS = new Set(['business', 'it', 'computer_engineering', 'software_engineering', 'computer_science']);
@@ -169,8 +170,18 @@ function publishedLanguageReference(fact, sources, targetIntakeYear) {
   }
   if (!historical && scopes.some(scope => scope.intakeYear != null && scope.intakeYear !== targetIntakeYear)) return null;
   if (fact.status === 'current_verified' && (fact.applicability !== 'confirmed' || fact.scope.intakeYear !== targetIntakeYear)) return null;
+  const sectionsDeclared = value.sections !== undefined && value.sections !== null;
+  const sectionsRequired = sectionsDeclared && (!object(value.sections) || Object.keys(value.sections).length > 0);
+  const sectionKeys = ['listening', 'reading', 'writing', 'speaking'];
+  const validSections = !sectionsDeclared || object(value.sections)
+    && Object.entries(value.sections).every(([key, minimum]) => sectionKeys.includes(key)
+      && typeof minimum === 'number' && Number.isFinite(minimum) && minimum >= 0 && minimum <= 9
+      && Math.round(minimum * 2) === minimum * 2);
   return {
-    minimum: value.minimum, sectionsRequired: object(value.sections) && Object.keys(value.sections).length > 0,
+    minimum: value.minimum,
+    sections: validSections && sectionsRequired ? structuredClone(value.sections) : null,
+    sectionsRequired,
+    sectionsUnknown: sectionsRequired && !validSections,
     sourceKey: value.sourceKey, status: fact.status,
     season: historical ? fact.historical.referenceSeason : fact.season,
     scopes: structuredClone(scopes),
@@ -287,6 +298,7 @@ function makeOption(programme, institution, sources, surveyRegion, targetIntakeY
     languageRequirement: normalizedRule(f.languageRequirement, sources, targetIntakeYear),
     languageThreshold: normalizedRule(f.languageThreshold, sources, targetIntakeYear),
     publishedLanguageReference: publishedLanguageReference(f.languageThreshold, sources, targetIntakeYear),
+    publishedAcademicReference: f.requirementPolicy === null ? publishedAcademicReference(f.academicRequirement, sources, targetIntakeYear) : null,
     requirementPolicy: null,
     competitiveness: { ...(object(comp) ? comp : {}), category: isExtreme ? 'extremely_selective' : 'unknown' },
     discoveryPolicy: discovery?.use === 'ambitious_only' ? 'ambitious_only' : discovery?.use === 'explore' ? 'explore' : 'unreviewed',

@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import { comparisonFact, comparisonProgrammes, comparisonSources, comparisonUniversity } from '../src/lib/comparisonPresentation.js';
+
+const fact = value => ({ status: 'current_verified', applicability: 'confirmed', value, sourceIds: ['official'], scope: { intakeYear: 2027 } });
+const programme = { id: 'cs', name: fact('Computer Science'), tuition: fact({ amount: 17970, currency: 'GBP', period: 'year', feeYear: '2027/28' }) };
+const university = { id: 'uuid', tuition_min: 999, admissionCatalog: { status: 'valid', programmes: [programme], sources: { official: { key: 'official', url: 'https://example.edu/fees' } } } };
+assert.equal(comparisonProgrammes(university)[0], programme);
+const tuition = comparisonFact(programme, 'tuition', 'tuition');
+assert.match(tuition.value, /17970 GBP/);
+assert.match(tuition.value, /2027\/28/);
+assert.match(tuition.detail, /2027/);
+assert.equal(comparisonSources(university, tuition).length, 1);
+assert.equal(comparisonProgrammes({ ...university, admissionCatalog: { ...university.admissionCatalog, status: 'invalid' } }).length, 0);
+assert.equal(comparisonFact(null, 'tuition', 'tuition').value, 'Unknown');
+assert.equal(comparisonFact({ tuition: { status: 'unknown', value: 999 } }, 'tuition', 'tuition').value, 'Unknown');
+assert.match(comparisonFact({ tuition: { status: 'historical_reference', historical: { value: { amount: 20, currency: 'EUR', period: 'credit_hour' }, referenceSeason: '2025/26' } } }, 'tuition', 'tuition').notice, /2025\/26/);
+assert.equal(comparisonSources({ admissionCatalog: { sources: { official: { url: 'javascript:alert(1)' } } } }, tuition).length, 0);
+const selected = comparisonUniversity({ id: 'cs', institutionId: 'uuid', university: 'Example', country: 'UK', facts: programme, sources: [{ key: 'official', url: 'https://example.edu' }] });
+assert.equal(selected.id, 'uuid');
+assert.equal(comparisonProgrammes(selected)[0].id, 'cs');
+console.log('Comparison presentation: canonical programme, currency/period/season, unknowns, provenance and survey identity checks passed.');

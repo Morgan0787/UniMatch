@@ -1,415 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { apiClient } from '@/lib/apiClient';
-import { invokeAI } from '@/lib/aiService';
-import { 
-    X, Sparkles, Lock, TrendingUp, DollarSign, Globe, 
-    GraduationCap, Award, CheckCircle2, AlertCircle
-} from 'lucide-react';
-import ChanceIndicator from '@/components/ui/ChanceIndicator';
-import { calculateChance, describeMissingChanceData } from '@/lib/matching';
+import { useEffect, useRef, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/i18n';
+import { invokeAI } from '@/lib/aiService';
+import { COMPARISON_FIELDS, comparisonFact, comparisonProgrammes, comparisonSources } from '@/lib/comparisonPresentation';
 
-// These two prompts run with `add_context_from_internet: false`, so the lines
-// below are the model's *entire* factual basis. A raw `null` in that position is
-// an invitation to invent: asked to judge admission chances from "Min GPA: null"
-// the model will produce a confident cutoff, which is the exact failure this
-// product exists to prevent. Every unknown therefore arrives as an explicit
-// "Not published" — the same wording the table below uses — and the model is
-// told not to fill the gap.
-const NOT_PUBLISHED = 'Not published';
-const NO_INFERENCE_NOTE = `Only use the values above. Where a value is "${NOT_PUBLISHED}", say it is not published — do not estimate, infer or guess it.`;
+const COPY = {
+  en: { title: 'Compare universities', intro: 'Choose a programme at each university. Fees and requirements apply to that programme and published season; they do not confirm admission.', remove: 'Remove', empty: 'No validated programme details yet. Check the university’s official website.', select: 'Choose a programme', degree: 'Degree', teachingLanguage: 'Teaching language', tuition: 'Tuition', intake: 'Intake', deadline: 'Application deadline', academicRequirement: 'Academic requirement', languageRequirement: 'Language requirement', source: 'Official source', ai: 'Explain these differences with AI', loading: 'Preparing explanation…', error: 'The AI explanation is unavailable. You can still compare the published facts above. Try again later.', summary: 'AI explanation', save: 'To keep a university, use Save on its card. Your saved universities are in My Profile.', less: 'Add another university to compare.' },
+  ru: { title: 'Сравнение вузов', intro: 'Выберите программу в каждом вузе. Стоимость и требования относятся к этой программе и указанному сезону; они не подтверждают поступление.', remove: 'Убрать', empty: 'Проверенных сведений о программах пока нет. Уточните условия на официальном сайте вуза.', select: 'Выберите программу', degree: 'Степень', teachingLanguage: 'Язык обучения', tuition: 'Стоимость обучения', intake: 'Набор', deadline: 'Срок подачи заявки', academicRequirement: 'Академические требования', languageRequirement: 'Требования к языку', source: 'Официальный источник', ai: 'Объяснить различия с помощью ИИ', loading: 'Готовим объяснение…', error: 'Объяснение ИИ сейчас недоступно. Данные выше можно сравнить самостоятельно. Попробуйте позже.', summary: 'Объяснение ИИ', save: 'Чтобы сохранить вуз, нажмите «Сохранить» на его карточке. Сохранённые вузы находятся в профиле.', less: 'Добавьте ещё один вуз для сравнения.' },
+  uz: { title: 'Universitetlarni taqqoslash', intro: 'Har bir universitetda dastur tanlang. Narx va talablar shu dastur va ko‘rsatilgan mavsumga tegishli; ular qabulni tasdiqlamaydi.', remove: 'Olib tashlash', empty: 'Tekshirilgan dastur tafsilotlari hali yo‘q. Universitetning rasmiy saytida tekshiring.', select: 'Dastur tanlang', degree: 'Daraja', teachingLanguage: 'Ta’lim tili', tuition: 'O‘qish haqi', intake: 'Qabul davri', deadline: 'Ariza muddati', academicRequirement: 'Akademik talab', languageRequirement: 'Til talabi', source: 'Rasmiy manba', ai: 'Farqlarni AI bilan tushuntirish', loading: 'Izoh tayyorlanmoqda…', error: 'AI izohi hozir mavjud emas. Yuqoridagi ma’lumotlarni taqqoslashingiz mumkin. Keyinroq urinib ko‘ring.', summary: 'AI izohi', save: 'Universitetni saqlash uchun kartadagi Saqlash tugmasini bosing. Saqlanganlar profilingizda.', less: 'Taqqoslash uchun yana universitet qo‘shing.' },
+};
 
-const orNotPublished = (value) => (value === null || value === undefined ? NOT_PUBLISHED : String(value));
-
-const promptTuition = (uni) => (uni.tuition_min === 0
-    ? 'Free'
-    : uni.tuition_min === null || uni.tuition_min === undefined
-        ? NOT_PUBLISHED
-        : `€${uni.tuition_min.toLocaleString()}/year`);
-
-const promptBudget = (value) => (value === null || value === undefined ? NOT_PUBLISHED : `€${value.toLocaleString()}/year`);
-
-export default function ComparisonModal({ universities, isOpen, onClose, onRemove, userProfile }) {
-    const { language } = useLanguage();
-    const [aiInsights, setAiInsights] = useState(null);
-    const [isLoadingAI, setIsLoadingAI] = useState(false);
-    const [showLoginGate, setShowLoginGate] = useState(false);
-
-    useEffect(() => {
-        if (isOpen && universities.length >= 2) {
-            generateComparison();
-        }
-    }, [isOpen, universities]);
-
-    const generateComparison = async () => {
-        setIsLoadingAI(true);
-        try {
-            const languageInstructions = {
-                en: 'Respond ONLY in English.',
-                ru: 'Отвечай ТОЛЬКО на русском языке. Весь текст должен быть на русском.',
-                uz: 'Faqat o\'zbek tilida javob bering. Barcha matn o\'zbek tilida bo\'lishi kerak.'
-            };
-
-            const prompt = `${languageInstructions[language]}
-
-Compare these universities for international students. Focus on practical aspects:
-
-${universities.map((uni, i) => `
-University ${i + 1}: ${uni.name} (${uni.country})
-- Tuition: ${promptTuition(uni)}
-- Min GPA: ${orNotPublished(uni.min_gpa)}
-- IELTS: ${uni.required_ielts || 'Varies'}
-- Language: ${uni.language}
-- Scholarships: ${uni.scholarships_available ? 'Yes' : 'No'}
-`).join('\n')}
-
-${NO_INFERENCE_NOTE}
-
-Provide a brief comparison covering:
-1. Cost advantage (which is most affordable)
-2. Academic requirements (which is easier to get into)
-3. Language of instruction
-4. Scholarship opportunities
-5. Overall best value
-
-Keep it under 150 words, practical and direct.`;
-
-            const result = await invokeAI({
-                prompt: prompt,
-                add_context_from_internet: false
-            });
-
-            setAiInsights(result);
-        } catch (e) {
-            console.error('Failed to generate comparison:', e);
-        } finally {
-            setIsLoadingAI(false);
-        }
-    };
-
-    const handlePersonalizedAction = async (action) => {
-        try {
-            const isAuth = await apiClient.auth.isAuthenticated();
-            if (!isAuth || !userProfile) {
-                setShowLoginGate(true);
-                return;
-            }
-            
-            // Handle personalized actions
-            if (action === 'personalized') {
-                generatePersonalizedComparison();
-            } else if (action === 'chances') {
-                calculatePersonalizedChances();
-            } else if (action === 'save') {
-                saveComparison();
-            }
-        } catch (e) {
-            setShowLoginGate(true);
-        }
-    };
-
-    const generatePersonalizedComparison = async () => {
-        setIsLoadingAI(true);
-        try {
-            const languageInstructions = {
-                en: 'Respond ONLY in English.',
-                ru: 'Отвечай ТОЛЬКО на русском языке. Весь текст должен быть на русском.',
-                uz: 'Faqat o\'zbek tilida javob bering. Barcha matn o\'zbek tilida bo\'lishi kerak.'
-            };
-
-            const prompt = `${languageInstructions[language]}
-
-Given this student profile:
-- GPA: ${orNotPublished(userProfile.gpa)}
-- IELTS: ${userProfile.english_proficiency === 0 ? 'No certificate' : orNotPublished(userProfile.english_proficiency)}
-- Budget: ${promptBudget(userProfile.budget_max)}
-- Target: ${orNotPublished(userProfile.target_degree)}
-- Interests: ${userProfile.interests?.join(', ') || 'Not specified'}
-
-Compare these universities specifically for THIS student:
-${universities.map((uni, i) => `
-${i + 1}. ${uni.name}
-- Tuition: ${promptTuition(uni)}
-- Min GPA: ${orNotPublished(uni.min_gpa)}
-- IELTS: ${uni.required_ielts || 'Varies'}
-`).join('\n')}
-
-${NO_INFERENCE_NOTE}
-
-Which university is the best match and why? Consider their qualifications, budget, and admission chances. Be direct and specific. Under 200 words.`;
-
-            const result = await invokeAI({
-                prompt: prompt,
-                add_context_from_internet: false
-            });
-
-            setAiInsights(result);
-        } catch (e) {
-            console.error('Failed to generate personalized comparison:', e);
-        } finally {
-            setIsLoadingAI(false);
-        }
-    };
-
-    const calculatePersonalizedChances = () => {
-        // Already calculated in the comparison table
-        setShowLoginGate(false);
-    };
-
-    const saveComparison = async () => {
-        try {
-            const user = await apiClient.auth.me();
-            alert('Comparison saved! (Feature coming soon)');
-        } catch (e) {
-            setShowLoginGate(true);
-        }
-    };
-
-    const handleLoginRedirect = () => {
-        apiClient.auth.redirectToLogin();
-    };
-
-    if (universities.length === 0) return null;
-
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                    <DialogTitle className="text-2xl flex items-center gap-2">
-                        <GraduationCap className="w-6 h-6 text-indigo-600" />
-                        Compare Universities
-                        <Badge variant="secondary" className="ml-2">{universities.length} selected</Badge>
-                    </DialogTitle>
-                </DialogHeader>
-
-                <div className="space-y-6">
-                    {/* AI Insights */}
-                    <Card className="bg-gradient-to-br from-indigo-50 to-violet-50 border-indigo-100">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Sparkles className="w-5 h-5 text-indigo-600" />
-                                AI Comparison Insights
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {isLoadingAI ? (
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-full" />
-                                    <Skeleton className="h-4 w-full" />
-                                    <Skeleton className="h-4 w-3/4" />
-                                </div>
-                            ) : aiInsights ? (
-                                <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">{aiInsights}</p>
-                            ) : (
-                                <p className="text-slate-500">Generating comparison...</p>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Personalized Actions */}
-                    <div className="flex flex-wrap gap-3">
-                        <Button 
-                            variant="outline" 
-                            onClick={() => handlePersonalizedAction('personalized')}
-                            className="gap-2"
-                        >
-                            {!userProfile ? <Lock className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
-                            Which is better for me?
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            onClick={() => handlePersonalizedAction('chances')}
-                            className="gap-2"
-                        >
-                            {!userProfile ? <Lock className="w-4 h-4" /> : <TrendingUp className="w-4 h-4" />}
-                            Calculate my chances
-                        </Button>
-                        <Button 
-                            variant="outline" 
-                            onClick={() => handlePersonalizedAction('save')}
-                            className="gap-2"
-                        >
-                            <Lock className="w-4 h-4" />
-                            Save comparison
-                        </Button>
-                    </div>
-
-                    {/* Login Gate Message */}
-                    {showLoginGate && (
-                        <Card className="bg-indigo-50 border-indigo-200">
-                            <CardContent className="pt-6">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <Lock className="w-5 h-5 text-indigo-600" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-semibold text-slate-800 mb-1">
-                                            Create a free profile to get personalized insights
-                                        </h4>
-                                        <p className="text-sm text-slate-600 mb-4">
-                                            Get a personalized comparison based on your GPA, IELTS, budget and goals. It takes less than 2 minutes.
-                                        </p>
-                                        <div className="flex gap-2">
-                                            <Button onClick={handleLoginRedirect} className="bg-indigo-600 hover:bg-indigo-700">
-                                                Create Free Profile
-                                            </Button>
-                                            <Button variant="ghost" onClick={() => setShowLoginGate(false)}>
-                                                Maybe later
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {/* Comparison Table */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr className="border-b-2 border-slate-200">
-                                    <th className="text-left p-4 font-semibold text-slate-700 bg-slate-50">Criteria</th>
-                                    {universities.map((uni, i) => (
-                                        <th key={i} className="p-4 bg-slate-50 relative">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="absolute top-2 right-2 h-6 w-6"
-                                                onClick={() => onRemove(uni.id)}
-                                            >
-                                                <X className="w-4 h-4" />
-                                            </Button>
-                                            <div className="pr-8">
-                                                <p className="font-semibold text-slate-800 text-sm">{uni.name}</p>
-                                                <p className="text-xs text-slate-500">{uni.city}, {uni.country}</p>
-                                            </div>
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* Tuition */}
-                                <tr className="border-b border-slate-100 hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                        <DollarSign className="w-4 h-4 text-slate-400" />
-                                        Tuition/year
-                                    </td>
-                                    {universities.map((uni, i) => (
-                                        <td key={i} className="p-4 text-center">
-                                            <p className="font-semibold text-slate-800">
-                                                {uni.tuition_min === 0 ? (
-                                                    <span className="text-emerald-600">Free</span>
-                                                ) : uni.tuition_min === null || uni.tuition_min === undefined ? (
-                                                    <span className="text-slate-400 italic font-normal text-sm">Not published</span>
-                                                ) : (
-                                                    `€${uni.tuition_min.toLocaleString()}`
-                                                )}
-                                            </p>
-                                        </td>
-                                    ))}
-                                </tr>
-
-                                {/* Min GPA */}
-                                <tr className="border-b border-slate-100 hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                        <TrendingUp className="w-4 h-4 text-slate-400" />
-                                        Min GPA
-                                    </td>
-                                    {universities.map((uni, i) => (
-                                        <td key={i} className="p-4 text-center">
-                                            <p className="font-semibold text-slate-800">
-                                                {uni.min_gpa === null || uni.min_gpa === undefined ? (
-                                                    <span className="text-slate-400 italic font-normal text-sm">Not published</span>
-                                                ) : (
-                                                    uni.min_gpa.toFixed(1)
-                                                )}
-                                            </p>
-                                        </td>
-                                    ))}
-                                </tr>
-
-                                {/* IELTS */}
-                                <tr className="border-b border-slate-100 hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                        <Globe className="w-4 h-4 text-slate-400" />
-                                        IELTS
-                                    </td>
-                                    {universities.map((uni, i) => (
-                                        <td key={i} className="p-4 text-center">
-                                            <p className="font-semibold text-slate-800">
-                                                {uni.required_ielts ? `${uni.required_ielts}+` : <span className="text-slate-400">Varies</span>}
-                                            </p>
-                                        </td>
-                                    ))}
-                                </tr>
-
-                                {/* Language */}
-                                <tr className="border-b border-slate-100 hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                        <Globe className="w-4 h-4 text-slate-400" />
-                                        Language
-                                    </td>
-                                    {universities.map((uni, i) => (
-                                        <td key={i} className="p-4 text-center">
-                                            <Badge variant="secondary">{uni.language}</Badge>
-                                        </td>
-                                    ))}
-                                </tr>
-
-                                {/* Scholarships */}
-                                <tr className="border-b border-slate-100 hover:bg-slate-50">
-                                    <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                        <Award className="w-4 h-4 text-slate-400" />
-                                        Scholarships
-                                    </td>
-                                    {universities.map((uni, i) => (
-                                        <td key={i} className="p-4 text-center">
-                                            {uni.scholarships_available ? (
-                                                <CheckCircle2 className="w-5 h-5 text-emerald-500 mx-auto" />
-                                            ) : (
-                                                <AlertCircle className="w-5 h-5 text-slate-300 mx-auto" />
-                                            )}
-                                        </td>
-                                    ))}
-                                </tr>
-
-                                {/* Your Admission Chance (if profile exists) */}
-                                {userProfile && (
-                                    <tr className="border-b border-slate-100 hover:bg-slate-50 bg-indigo-50/50">
-                                        <td className="p-4 font-medium text-slate-700 flex items-center gap-2">
-                                            <Sparkles className="w-4 h-4 text-indigo-600" />
-                                            Your Chance
-                                        </td>
-                                        {universities.map((uni, i) => {
-// Shared scoring, so this cell uses the same function as
-                                            // the card it was opened from. It shares the *inputs* only
-                                            // when the tray was opened from that card's own university —
-                                            // Search.jsx builds the compare list from `universities`
-                                            // while the grid renders `sortedUniversities`, so a row can
-                                            // reach here that the grid never showed. Returns 'unknown'
-                                            // when the row has no published GPA to compare.
-                                            const chance = calculateChance(uni, userProfile.gpa, userProfile.english_proficiency, userProfile.topikLevel);
-
-                                            return (
-                                                <td key={i} className="p-4 text-center">
-                                                    <div className="flex justify-center">
-                                                        <ChanceIndicator chance={chance} reason={describeMissingChanceData(uni)?.note} size="sm" />
-                                                    </div>
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </DialogContent>
-        </Dialog>
-    );
+/** @param {{universities: any[], isOpen: boolean, onClose: () => void, onRemove: (id: any) => void, userProfile?: any}} props */
+export default function ComparisonModal({ universities, isOpen, onClose, onRemove }) {
+  const { language } = useLanguage();
+  const c = COPY[language] || COPY.en;
+  const [selection, setSelection] = useState({});
+  const [insights, setInsights] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const request = useRef(0);
+  const signature = JSON.stringify([isOpen, language, universities, selection]);
+  useEffect(() => { request.current += 1; setInsights(''); setError(false); setLoading(false); }, [signature]);
+  useEffect(() => () => { request.current += 1; }, []);
+  const columns = universities.map(university => {
+    const programmes = comparisonProgrammes(university);
+    const programme = programmes.find(item => item.id === selection[university.id]) || programmes[0];
+    return { university, programmes, programme, facts: COMPARISON_FIELDS.map(([key, kind]) => ({ key, ...comparisonFact(programme, key, kind, language) })) };
+  });
+  async function explain() {
+    const id = ++request.current;
+    setLoading(true); setError(false);
+    try {
+      const facts = columns.map(({ university, programme, facts: rows }) => ({ university: university.name, programme: comparisonFact(programme, 'name', 'text', language).value, facts: rows.map(({ key, value, notice, detail }) => ({ label: c[key], value, notice, detail })) }));
+      const result = await invokeAI({ prompt: `In ${language}, briefly explain these published programme facts: ${JSON.stringify(facts)}. Use only these facts. Preserve unknowns, currencies, periods, seasons and applicability warnings. Do not estimate admission chances, invent requirements or declare a best/easiest university. Under 150 words.`, add_context_from_internet: false });
+      if (id !== request.current) return;
+      if (typeof result !== 'string' || !result.trim()) throw new Error('Empty explanation');
+      setInsights(result);
+    } catch { if (id === request.current) setError(true); }
+    finally { if (id === request.current) setLoading(false); }
+  }
+  return <Dialog open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
+    <DialogContent className="w-[calc(100%_-_1.5rem)] max-w-6xl max-h-[90dvh] overflow-y-auto rounded-2xl p-4 sm:p-6">
+      <DialogHeader className="pr-6"><DialogTitle>{c.title}</DialogTitle><DialogDescription>{c.intro}</DialogDescription></DialogHeader>
+      {universities.length < 2 && <p role="status" className="text-sm text-slate-600">{c.less}</p>}
+      <div className={`grid items-start gap-4 ${columns.length === 1 ? '' : columns.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-2 xl:grid-cols-3'}`}>
+        {columns.map(({ university, programmes, programme, facts }) => <section key={university.id} className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white/70">
+          <div className="border-b border-slate-200 p-4 space-y-3">
+            <div className="flex items-start justify-between gap-3"><div><h3 className="font-semibold text-slate-900">{university.name}</h3><p className="text-sm text-slate-500">{university.country}</p></div><Button variant="ghost" size="sm" aria-label={`${c.remove}: ${university.name}`} onClick={() => onRemove(university.id)}>{c.remove}</Button></div>
+            {programmes.length > 1 ? <label className="block text-sm font-medium">{c.select}<select className="mt-1 w-full rounded-lg border p-2 text-sm" value={programme?.id || ''} onChange={event => setSelection(previous => ({ ...previous, [university.id]: event.target.value }))}>{programmes.map(item => <option key={item.id} value={item.id}>{comparisonFact(item, 'name', 'text', language).value}</option>)}</select></label> : programme && <p className="text-sm font-medium text-slate-700">{comparisonFact(programme, 'name', 'text', language).value}</p>}
+          </div>
+          {!programme ? <p className="p-4 text-sm text-slate-600">{c.empty}</p> : <dl className="divide-y divide-slate-100">{facts.map(fact => <div key={fact.key} className="p-4 break-words"><dt className="text-xs font-medium text-slate-500">{c[fact.key]}</dt><dd className="mt-1 text-sm text-slate-900">{fact.value}</dd>{fact.notice && <dd className="mt-1 text-xs text-amber-800">{fact.notice}</dd>}{(fact.detail || comparisonSources(university, fact).length > 0) && <dd className="mt-2"><details className="text-xs text-slate-600"><summary className="cursor-pointer text-teal-800">{language === 'ru' ? 'Источники и применимость' : language === 'uz' ? 'Manbalar va qo‘llanish doirasi' : 'Sources and scope'}</summary>{fact.detail && <p className="mt-2">{fact.detail}</p>}{comparisonSources(university, fact).map(source => <p key={source.key || source.url} className="mt-1"><a className="underline text-teal-800" href={source.url} target="_blank" rel="noopener noreferrer">{c.source}</a></p>)}</details></dd>}</div>)}</dl>}
+        </section>)}
+      </div>
+      <p className="text-sm text-slate-600">{c.save}</p>
+      {columns.length >= 2 && columns.every(column => column.programme) && <Button variant="outline" disabled={loading} onClick={explain}>{loading ? c.loading : c.ai}</Button>}
+      {error && <p role="alert" className="text-sm text-amber-800">{c.error}</p>}
+      {insights && <section aria-label={c.summary} className="rounded-xl bg-teal-50 p-4"><h3 className="font-semibold">{c.summary}</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{insights}</p></section>}
+    </DialogContent>
+  </Dialog>;
 }

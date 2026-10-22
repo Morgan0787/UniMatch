@@ -56,8 +56,8 @@ export default function AdmissionsSurvey() {
   }, [step, view]);
 
   const update = (name, value) => {
-    setAnswers(previous => ({ ...previous, [name]: value, ...(name === 'exam' ? { score: '', examDate: '' } : {}) }));
-    setErrors(previous => ({ ...previous, [name]: undefined }));
+    setAnswers(previous => ({ ...previous, [name]: value, ...(name === 'exam' ? { score: '', examDate: '', listening: '', reading: '', writing: '', speaking: '' } : {}) }));
+    setErrors(previous => ({ ...previous, [name]: undefined, ...(name === 'exam' ? { listening: undefined, reading: undefined, writing: undefined, speaking: undefined } : {}) }));
   };
   const showErrors = nextErrors => {
     setErrors(nextErrors);
@@ -66,7 +66,7 @@ export default function AdmissionsSurvey() {
   };
   const advance = () => {
     const allErrors = validateAnswers(answers);
-    const currentKeys = step === 0 ? ['field', 'regions'] : step === 1 ? ['exam', 'score', 'grade', 'scale'] : ['budget', 'currency', 'scholarship'];
+    const currentKeys = step === 0 ? ['field', 'regions', 'language'] : step === 1 ? ['exam', 'score', 'grade', 'scale', 'schoolCountry', 'credential'] : ['budget', 'currency', 'scholarship'];
     const relevant = Object.fromEntries(Object.entries(allErrors).filter(([key]) => currentKeys.includes(key)));
     if (Object.keys(relevant).length) { showErrors(relevant); return; }
     setErrors({});
@@ -74,7 +74,7 @@ export default function AdmissionsSurvey() {
     else setView('results');
   };
   const skip = () => {
-    const cleared = step === 0 ? { field: '', regions: [] } : step === 1 ? { exam: '', score: '', grade: '', scale: '', examDate: '' } : { budget: '', currency: '', scholarship: '' };
+    const cleared = step === 0 ? { field: '', regions: [], language: '' } : step === 1 ? { exam: '', score: '', listening: '', reading: '', writing: '', speaking: '', grade: '', scale: '', schoolCountry: '', credential: '', examDate: '' } : { budget: '', currency: '', scholarship: '' };
     setAnswers(previous => ({ ...previous, ...cleared })); setErrors({});
     if (step < 2) setStep(previous => /** @type {0|1|2} */ (previous + 1)); else setView('results');
   };

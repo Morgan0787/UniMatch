@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import { adaptPublicCatalog } from '../src/lib/admissions/publicCatalog.js';
+import { evaluateCandidate } from '../src/lib/admissions/candidate.js';
 import { evaluateRequirement } from '../src/lib/admissions/requirements.js';
+import { selectPreliminaryResults } from '../src/lib/admissions/selectResults.js';
 import { FAVORITE_KEYS } from '../src/lib/admissions/favoriteKeys.js';
-import { publicAdmissionCatalogRow, publicCatalogFact } from './fixtures/publicAdmissionCatalog.mjs';
+import { publicAdmissionCatalogRow, publicCatalogFact, publicCatalogSource } from './fixtures/publicAdmissionCatalog.mjs';
 
 const legacy = { id: 'legacy', name: 'Legacy', catalog: null };
 const malformed = publicAdmissionCatalogRow({ id: '00000000-0000-4000-8000-000000000002' });
@@ -158,4 +160,60 @@ assert.equal(campusAdapted.options[0].facts.tuition.value.feeYear, null, 'no inv
 campus.catalog.programmes[0].location.status = 'published_unconfirmed';
 assert.equal(adaptPublicCatalog([campus]).options[0].country, 'United States', 'unconfirmed campus cannot change routing');
 
+// Published IELTS section minima flow from the public adapter into candidate alternatives.
+const sectionLanguage = publicCatalogFact({
+  type: 'ielts', minimum: 6, sections: { listening: 7, reading: 6 }, sourceKey: publicCatalogSource.key,
+});
+const sectionOption = adaptPublicCatalog([publicAdmissionCatalogRow({ languageFact: sectionLanguage })]).options[0];
+assert.deepEqual(sectionOption.publishedLanguageReference.sections, { listening: 7, reading: 6 });
+const sectionAnswers = {
+  field: 'computer_science', regions: ['Europe'], exam: 'IELTS', score: '6.5',
+  listening: '6.5', reading: '6', writing: '', speaking: '', startYear: '2027',
+  schoolCountry: 'Uzbekistan', credential: 'academic_lyceum_diploma',
+};
+const belowSections = evaluateCandidate(sectionOption, sectionAnswers);
+assert.equal(belowSections.requirementStatus, 'unknown', 'section minima cannot promote overall admission eligibility');
+assert.ok(belowSections.requiresClarification);
+assert.ok(belowSections.reasons.some(reason => reason.code === 'IELTS_SECTION_THRESHOLD_BELOW'));
+const belowSelection = selectPreliminaryResults([belowSections], sectionAnswers);
+assert.equal(belowSelection.alternatives.length, 1, 'known-low section is shown as a clarification alternative');
+
+const missingSections = evaluateCandidate(sectionOption, { ...sectionAnswers, listening: '' });
+assert.equal(missingSections.requirementStatus, 'unknown');
+assert.ok(missingSections.reasons.some(reason => reason.code === 'LANGUAGE_SECTIONS_UNKNOWN'));
+assert.ok(!missingSections.reasons.some(reason => reason.code === 'IELTS_SECTION_THRESHOLD_BELOW'));
+
+const allSections = evaluateCandidate(sectionOption, { ...sectionAnswers, listening: '7', reading: '6.5' });
+assert.equal(allSections.requirementStatus, 'unknown');
+assert.ok(!allSections.reasons.some(reason => reason.code === 'LANGUAGE_SECTIONS_UNKNOWN'));
+assert.ok(!allSections.reasons.some(reason => reason.code === 'IELTS_SECTION_THRESHOLD_BELOW'));
+
+const unconfirmedSections = publicCatalogFact(sectionLanguage.value, 'published_unconfirmed', { applicability: 'unconfirmed' });
+const unconfirmedSectionOption = adaptPublicCatalog([publicAdmissionCatalogRow({ languageFact: unconfirmedSections })]).options[0];
+const unconfirmedLow = evaluateCandidate(unconfirmedSectionOption, sectionAnswers);
+assert.equal(unconfirmedLow.requirementStatus, 'unknown', 'unconfirmed IELTS evidence remains unknown eligibility');
+assert.ok(unconfirmedLow.reasons.some(reason => reason.code === 'LANGUAGE_REFERENCE_UNCONFIRMED'));
+assert.ok(unconfirmedLow.reasons.some(reason => reason.code === 'IELTS_SECTION_THRESHOLD_BELOW'));
+
+const academicRow = publicAdmissionCatalogRow({ rule: {
+  type: 'grade', minimum: 85, scale: '100', sourceKey: publicCatalogSource.key,
+  scope: { schoolCountry: 'Uzbekistan', credential: 'professional_college_diploma', intakeYear: 2027 },
+} });
+academicRow.catalog.programmes[0].academicRequirement.status = 'published_unconfirmed';
+academicRow.catalog.programmes[0].academicRequirement.applicability = 'unconfirmed';
+const academicOption = adaptPublicCatalog([academicRow]).options[0];
+assert.ok(academicOption.publishedAcademicReference);
+const academicAnswers = { ...sectionAnswers, grade: '80', scale: '100', schoolCountry: 'Uzbekistan', credential: 'Professional college diploma', startYear: '2027' };
+const academicLow = evaluateCandidate(academicOption, academicAnswers);
+assert.equal(academicLow.academicReferences.length, 1, 'legacy credential label is normalized');
+assert.ok(academicLow.reasons.some(reason => reason.code === 'ACADEMIC_REFERENCE_BELOW'));
+assert.equal(academicLow.requiresClarification, true);
+assert.equal(academicLow.academicStatus, 'unknown');
+const academicHigh = evaluateCandidate(academicOption, { ...academicAnswers, grade: '90' });
+assert.ok(academicHigh.reasons.some(reason => reason.code === 'ACADEMIC_REFERENCE_REACHED'));
+assert.equal(academicHigh.academicStatus, 'unknown', 'reaching a reference never grants eligibility');
+for (const overrides of [{ credential: '' }, { schoolCountry: 'other' }, { credential: 'academic_lyceum_diploma' }, { scale: '5', grade: '4' }]) {
+  assert.equal(evaluateCandidate(academicOption, { ...academicAnswers, ...overrides }).academicReferences.length, 0);
+}
+assert.equal(academicOption.eligibilityComplete, false);
 console.log('Public admission catalog checks passed.');

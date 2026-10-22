@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { RefineAnswers } from './SurveyFields';
+import ComparisonModal from '@/components/comparison/ComparisonModal';
+import { comparisonUniversity } from '@/lib/comparisonPresentation';
 import InstitutionMedia, { InstitutionLinks } from './InstitutionMedia';
 import { describePublicFact } from '@/lib/admissions/factPresentation.js';
 import PublishedProgrammeFacts from './PublishedProgrammeFacts';
@@ -11,13 +14,14 @@ function Reason({ reason, option, c }) {
   </li>;
 }
 
-function CandidateCard({ row, c, language, favorites, alternative = false }) {
+function CandidateCard({ row, c, language, favorites, compared, onCompare, compareDisabled, alternative = false }) {
   const { option, reasons, isTop } = row;
   const mainReason = reasons.find(reason => reason.status === 'unmet' && !['ACADEMIC_UNMET', 'LANGUAGE_UNMET'].includes(reason.code)) || reasons.find(reason => reason.status === 'unmet') || reasons.find(reason => reason.code === 'LANGUAGE_SECTIONS_UNKNOWN') || reasons.find(reason => reason.code === 'ASU_SPRING_CS_INTAKE_UNCONFIRMED') || reasons.find(reason => reason.code === 'PERSONAL_CREDENTIAL_UNKNOWN') || reasons.find(reason => reason.status === 'unknown');
   const knownReason = reasons.find(reason => reason.status === 'met' && ['FIELD_MATCH', 'REGION_MATCH'].includes(reason.code));
   const route = option.sources.find(source => source.key === option.routeSourceKey || source.key.endsWith('route') || source.key === 'asu-first-year') || option.sources[0];
   const tuition = option.tuition;
   const tuitionFact = option.facts?.tuition ? describePublicFact(option.facts.tuition, language, 'tuition') : null;
+  const teachingLanguage = describePublicFact(option.facts?.teachingLanguage, language, 'text');
   const languageReference = option.publishedLanguageReference && reasons.some(reason => ['LANGUAGE_BELOW_PUBLISHED_THRESHOLD', 'LANGUAGE_THRESHOLD_REACHED'].includes(reason.code))
     ? describePublicFact(option.facts.languageThreshold, language, 'rule') : null;
   const saved = favorites.savedIds.includes(option.institutionId);
@@ -30,13 +34,16 @@ function CandidateCard({ row, c, language, favorites, alternative = false }) {
     {knownReason && <p className="admission-known-reason">{c.cardReasons[knownReason.code]}</p>}
     <p className="admission-key-reason">{mainReason ? c.cardReasons[mainReason.code] || c.reasons[mainReason.code] || c.incomplete : c.incomplete}</p>
     {languageReference && <p className="admission-language-reference">{c.languageReference}: {languageReference.value}. {languageReference.notice} {c.languageReferenceLimit}</p>}
+    {row.academicReferences?.length > 0 && <p className="admission-language-reference">{c.academicReference}: {[...new Set(row.academicReferences.map(reference => `${reference.minimum}/${reference.scale}${reference.season ? ` (${reference.season})` : ''}`))].join(', ')}. {c.academicReferenceLimit}</p>}
     <InstitutionMedia option={option} c={c} />
     <dl className="admission-facts">
+      <div><dt>{{en:'Teaching language',ru:'Язык обучения',uz:'Ta’lim tili'}[language] || 'Teaching language'}</dt><dd>{c.languages[teachingLanguage.value] || teachingLanguage.value}{teachingLanguage.notice && <small className="block">{teachingLanguage.notice}</small>}</dd></div>
       <div><dt>{c.publishedCost}</dt><dd>{tuitionFact ? tuitionFact.value : tuition?.amount != null ? `${tuition.amount.toLocaleString(language)} ${tuition.currency} / ${c.periods[tuition.period] || c.unknownShort}` : c.unknownShort}{!tuitionFact && tuition?.feeYear && <small> · {tuition.feeYear}</small>}{tuitionFact?.notice && <small className="block">{tuitionFact.notice}</small>}</dd></div>
       <div><dt>{c.intake}</dt><dd>{option.intakeText || c.unknownShort}</dd></div>
     </dl>
     <div className="admission-card-actions">
       <InstitutionLinks option={option} c={c} />
+      <button type="button" className="admission-button admission-secondary" aria-pressed={compared} disabled={compareDisabled && !compared} onClick={() => onCompare(option)}>{compared ? ({en:'Remove from comparison',ru:'Убрать из сравнения',uz:'Taqqoslashdan olib tashlash'}[language]) : ({en:'Compare',ru:'Сравнить',uz:'Taqqoslash'}[language])}</button>
       <button type="button" className="admission-button admission-secondary" aria-pressed={saved} aria-label={`${saved ? c.removeSaved : c.save}: ${option.university}`} aria-busy={pending} disabled={favorites.loading || !favorites.canSave} onClick={() => favorites.requestSave(option)}>{pending ? (saved ? c.removing : c.saving) : saved ? c.removeSaved : c.save}</button>
     </div>
     <details>
@@ -45,11 +52,9 @@ function CandidateCard({ row, c, language, favorites, alternative = false }) {
       <p>{c.living}</p>
       <ul className="admission-reasons">{reasons.map(reason => <Reason key={reason.code} reason={reason} option={option} c={c} />)}</ul>
       {option.facts && <PublishedProgrammeFacts admissionCatalog={{ status: 'valid', programmes: [{ id: option.id, ...option.facts }], sources: Object.fromEntries(option.sources.map(source => [source.key, source])) }} language={language} />}
-      {option.missing?.length > 0 && <><h3>{c.publishedGaps}</h3><ul>{option.missing.map(gap => <li key={gap}>{gap}</li>)}</ul></>}
       <div className="admission-source-list">{option.sources.map(source => <div key={source.key}>
         <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title} ↗</a>
         <p>{c.checked}: <time dateTime={source.checkedAt}>{source.checkedAt}</time></p>
-        <p>{c.scope}: {c.sourceScopes[source.key] || source.scope}</p>
       </div>)}</div>
       <div className="admission-next-step"><h3>{c.nextStep}</h3><p>{c.noDeadline}</p>{route && <a href={route.url} target="_blank" rel="noopener noreferrer">{c.official} ↗</a>}</div>
     </details>
@@ -57,11 +62,19 @@ function CandidateCard({ row, c, language, favorites, alternative = false }) {
 }
 
 export default function PreliminaryResults({ evaluation, answers, onEdit, onApply, errors, c, language, favorites, catalogEmpty = false }) {
+  const [compared, setCompared] = useState([]);
+  const [comparisonOpen, setComparisonOpen] = useState(false);
+  const compareCopy = {en:'Compare selected',ru:'Сравнить выбранные',uz:'Tanlanganlarni taqqoslash'}[language] || 'Compare selected';
+  const toggleCompare = option => setCompared(previous => previous.some(item => item.id === option.institutionId)
+    ? previous.filter(item => item.id !== option.institutionId)
+    : previous.length < 3 ? [...previous, comparisonUniversity(option)] : previous);
+  const compareProps = option => ({ compared: compared.some(item => item.id === option.institutionId), onCompare: toggleCompare, compareDisabled: compared.length >= 3 });
   const alternatives = evaluation.alternatives || [];
   const shown = evaluation.results.length + alternatives.length;
   return <>
     <div className="admission-results-heading">
       <p className="admission-hint">{c.resultsLead}</p>
+      {compared.length > 0 && <button type="button" className="admission-button" disabled={compared.length < 2} onClick={() => setComparisonOpen(true)}>{compareCopy} ({compared.length}/3)</button>}
       <button type="button" className="admission-button admission-secondary" onClick={onEdit}>{c.edit}</button>
     </div>
     <details className="admission-coverage"><summary>{c.coverageSummary.replace('{shown}', String(shown))}</summary><p>{c.resultsIntro}</p><p>{evaluation.mode === 'ranked' ? c.topExplanation : c.exploreExplanation}</p><p>{c.coverage.replace('{shown}', String(shown))}</p></details>
@@ -73,12 +86,14 @@ export default function PreliminaryResults({ evaluation, answers, onEdit, onAppl
       <button type="button" className="admission-button" onClick={onEdit}>{c.editFields}</button>
     </section>}
     <div className="admission-candidates">
-      {evaluation.results.map(row => <CandidateCard key={row.option.id} row={row} c={c} language={language} favorites={favorites} />)}
+      {evaluation.results.map(row => <CandidateCard key={row.option.id} row={row} c={c} language={language} favorites={favorites} {...compareProps(row.option)} />)}
     </div>
     {alternatives.length > 0 && <section className="admission-alternatives" aria-labelledby="admission-alternatives-title">
       <h2 id="admission-alternatives-title">{c.alternativesTitle}</h2><p className="admission-hint">{c.alternativesExplanation}</p>
-      <div className="admission-candidates">{alternatives.map(row => <CandidateCard key={row.option.id} row={row} c={c} language={language} favorites={favorites} alternative />)}</div>
+      <div className="admission-candidates">{alternatives.map(row => <CandidateCard key={row.option.id} row={row} c={c} language={language} favorites={favorites} {...compareProps(row.option)} alternative />)}</div>
     </section>}
-    <RefineAnswers answers={answers} onApply={onApply} c={c} errors={errors} />
+    {compared.length > 0 && <button type="button" className="admission-button" disabled={compared.length < 2} onClick={() => setComparisonOpen(true)}>{compareCopy} ({compared.length}/3)</button>}
+    <ComparisonModal universities={compared} isOpen={comparisonOpen} onClose={() => setComparisonOpen(false)} onRemove={id => setCompared(previous => previous.filter(item => item.id !== id))} />
+    <RefineAnswers answers={answers} onApply={next => { setCompared([]); setComparisonOpen(false); onApply(next); }} c={c} errors={errors} />
   </>;
 }

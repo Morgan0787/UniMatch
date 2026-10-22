@@ -13,8 +13,20 @@ export function AnswerField({ name, label, value, onChange, options = null, erro
   </div>;
 }
 
+function QualificationFields({ answers, field, c }) {
+  // Preserve names from older drafts instead of silently reclassifying a document.
+  const credentials = { ...c.credentials };
+  const countries = { ...c.schoolCountries };
+  if (answers.credential && !Object.hasOwn(credentials, answers.credential)) credentials[answers.credential] = answers.credential;
+  if (answers.schoolCountry && !Object.hasOwn(countries, answers.schoolCountry)) countries[answers.schoolCountry] = answers.schoolCountry;
+  return <>
+    <div className="admission-pair">{field('schoolCountry', c.schoolCountry, { options: countries })}{field('credential', c.credential, { options: credentials })}</div>
+    <p className="admission-hint">{c.qualificationHint}</p>
+  </>;
+}
+
 export default function SurveyFields({ step, answers, onChange, errors, c }) {
-  const [gradesOpen, setGradesOpen] = useState(Boolean(answers.grade || answers.scale));
+  const [gradesOpen, setGradesOpen] = useState(Boolean(answers.grade || answers.scale || answers.schoolCountry || answers.credential));
   const field = (name, label, extras = {}) => <AnswerField name={name} label={label} value={answers[name]} onChange={onChange} error={errors[name]} c={c} {...extras} />;
   if (step === 0) return <div className="admission-fields">
     <fieldset className="admission-fieldset admission-fieldset-directions">
@@ -32,6 +44,7 @@ export default function SurveyFields({ step, answers, onChange, errors, c }) {
         </label>
       </div>
     </fieldset>
+    {field('language', c.language, { options: c.languages })}
     <fieldset aria-describedby="admission-region-hint"><legend>{c.regions}</legend><div className="admission-regions">
       {Object.entries(c.regionNames).map(([region, label]) => <label className="admission-choice" key={region}>
         <input type="checkbox" checked={answers.regions.includes(region)} onChange={event => onChange('regions', event.target.checked ? [...answers.regions, region] : answers.regions.filter(item => item !== region))} />
@@ -45,6 +58,7 @@ export default function SurveyFields({ step, answers, onChange, errors, c }) {
     <p className="admission-hint">{c.examHint}</p>
     <details open={gradesOpen} onToggle={event => setGradesOpen(event.currentTarget.open)}>
       <summary>{c.gradesToggle}</summary>
+      <QualificationFields answers={answers} field={field} c={c} />
       <div className="admission-pair">{field('grade', c.grade, { type: 'number', min: 0, max: answers.scale ? Number(answers.scale) : undefined, step: 'any' })}{field('scale', c.scale, { options: c.scales })}</div>
       <p className="admission-hint">{c.gradeHint}</p>
     </details>
@@ -71,7 +85,17 @@ export function RefineAnswers({ answers, onApply, c, errors }) {
       if (!accepted) requestAnimationFrame(() => form.current?.querySelector('[aria-invalid="true"]')?.focus());
     }}>
       <div className="admission-fields">
-        <div className="admission-pair">{field('schoolCountry', c.schoolCountry)}{field('credential', c.credential, { hint: !answers.credential ? c.credentialPriority : undefined })}</div>
+        {answers.exam === 'IELTS' && <fieldset className="admission-fieldset">
+          <legend>{c.ieltsSections}</legend>
+          <p className="admission-hint">{c.ieltsSectionsHint}</p>
+          <div className="admission-pair">
+            {field('listening', c.ieltsListening, { type: 'number', min: 0, max: 9, step: 0.5 })}
+            {field('reading', c.ieltsReading, { type: 'number', min: 0, max: 9, step: 0.5 })}
+            {field('writing', c.ieltsWriting, { type: 'number', min: 0, max: 9, step: 0.5 })}
+            {field('speaking', c.ieltsSpeaking, { type: 'number', min: 0, max: 9, step: 0.5 })}
+          </div>
+        </fieldset>}
+        <QualificationFields answers={refinement} field={field} c={c} />
         <div className="admission-pair">{field('startYear', c.startYear, { type: 'number', min: 2000, max: 9999, step: 1 })}{field('language', c.language, { options: c.languages })}</div>
         {answers.exam && answers.exam !== 'not_taken' && field('examDate', c.examDate, { type: 'date' })}
       </div>

@@ -10,7 +10,7 @@ const GRADE_SCALES = new Set(['', '4', '5', '100']);
 /** @returns {Record<string, string|string[]>} */
 export function emptyAnswers() {
   return {
-    field: '', regions: [], exam: '', score: '', grade: '', scale: '', budget: '', currency: '',
+    field: '', regions: [], exam: '', score: '', listening: '', reading: '', writing: '', speaking: '', grade: '', scale: '', budget: '', currency: '',
     scholarship: '', schoolCountry: '', credential: '', startYear: '', language: '', examDate: '',
   };
 }
@@ -41,8 +41,20 @@ export function validateAnswers(answers) {
       else if (key === 'grade' && (parsed > 100 || (answers.scale && parsed > Number(answers.scale)))) errors.grade = 'grade_invalid';
     }
   }
+  for (const key of ['listening', 'reading', 'writing', 'speaking']) {
+    const value = answers[key];
+    if (value !== '' && value != null) {
+      const parsed = numeric(value);
+      if (answers.exam !== 'IELTS' || parsed === null || parsed < 0 || parsed > 9 || Math.round(parsed * 2) !== parsed * 2) {
+        errors[key] = `${key}_invalid`;
+      }
+    }
+  }
   if (typeof answers.scale !== 'string' || !GRADE_SCALES.has(answers.scale)) errors.scale = 'scale_invalid';
   if (typeof answers.currency !== 'string' || !CURRENCIES.has(answers.currency)) errors.currency = 'currency_invalid';
+  for (const key of ['schoolCountry', 'credential']) {
+    if (answers[key] != null && (typeof answers[key] !== 'string' || answers[key].length > 200)) errors[key] = `${key}_invalid`;
+  }
   if (!['', 'required', 'preferred', 'not_required'].includes(answers.scholarship)) errors.scholarship = 'scholarship_invalid';
   if (answers.startYear !== '' && answers.startYear != null) {
     const year = numeric(answers.startYear);

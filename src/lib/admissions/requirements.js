@@ -173,19 +173,10 @@ function evaluateIelts(node, answers, sourceKeys) {
 
   const score = numeric(answers.score);
   const minimum = numeric(node.minimum);
-  if (
-    score === null
-    || score < 0
-    || score > 9
-    || Math.round(score * 2) !== score * 2
-    || minimum === null
-    || minimum < 0
-    || minimum > 9
-  ) return result('unknown', ['EXAM_UNKNOWN'], sourceKeys);
-
-  const codes = [];
-  const below = score < minimum;
-  codes.push(below ? 'IELTS_THRESHOLD_BELOW' : 'IELTS_THRESHOLD_MET');
+  const validMinimum = minimum !== null && minimum >= 0 && minimum <= 9;
+  const missingOverall = answers.score === '' || answers.score == null;
+  const validScore = score !== null && score >= 0 && score <= 9 && Math.round(score * 2) === score * 2;
+  if (!validMinimum || (!missingOverall && !validScore)) return result('unknown', ['EXAM_UNKNOWN'], sourceKeys);
 
   if (
     node.sections !== undefined
@@ -193,10 +184,36 @@ function evaluateIelts(node, answers, sourceKeys) {
     && (typeof node.sections !== 'object' || Array.isArray(node.sections))
   ) return result('unknown', ['LANGUAGE_SECTIONS_UNKNOWN'], sourceKeys);
   const sectionKeys = node.sections ? Object.keys(node.sections) : [];
+  let hasUnknownSection = false;
+  let hasBelowSection = false;
   if (sectionKeys.length > 0) {
-    if (below) return result('unmet', codes, sourceKeys);
-    return result('unknown', ['LANGUAGE_SECTIONS_UNKNOWN', ...codes], sourceKeys);
+    for (const section of sectionKeys) {
+      const sectionMinimum = numeric(node.sections[section]);
+      const sectionScore = numeric(answers[section]);
+      const validSectionMinimum = sectionMinimum !== null && sectionMinimum >= 0 && sectionMinimum <= 9
+        && Math.round(sectionMinimum * 2) === sectionMinimum * 2;
+      const validScore = sectionScore !== null && sectionScore >= 0 && sectionScore <= 9
+        && Math.round(sectionScore * 2) === sectionScore * 2;
+      if (!validSectionMinimum || !['listening', 'reading', 'writing', 'speaking'].includes(section) || !validScore) {
+        hasUnknownSection = true;
+      } else if (sectionScore < sectionMinimum) {
+        hasBelowSection = true;
+      }
+    }
   }
+
+  // A verified section below its own published minimum is enough to establish
+  // unmet even when the overall IELTS score is blank. Do not imply the overall
+  // threshold was met when it is unknown.
+  if (hasBelowSection && missingOverall) return result('unmet', ['IELTS_SECTION_THRESHOLD_BELOW'], sourceKeys);
+  if (missingOverall) return result('unknown', ['EXAM_UNKNOWN', ...(sectionKeys.length ? ['LANGUAGE_SECTIONS_UNKNOWN'] : [])], sourceKeys);
+
+  const codes = [];
+  const below = score < minimum;
+  codes.push(below ? 'IELTS_THRESHOLD_BELOW' : 'IELTS_THRESHOLD_MET');
+  if (hasBelowSection) return result('unmet', [...codes, 'IELTS_SECTION_THRESHOLD_BELOW'], sourceKeys);
+  if (below) return result('unmet', codes, sourceKeys);
+  if (hasUnknownSection) return result('unknown', ['LANGUAGE_SECTIONS_UNKNOWN', ...codes], sourceKeys);
 
   let hasDateUnknown = false;
   if (node.requiresDate === true && !answers.examDate) {

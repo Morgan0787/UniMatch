@@ -15,7 +15,18 @@ import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeF
 export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView, isComparing, onCompareToggle }) {
     const { t, language } = useLanguage();
     const hasAdmissionCatalog = university.admissionCatalog !== undefined;
-    const chance = calculateChance(university, userGpa, userIelts, userTopik);
+    const chance = userGpa == null ? 'unknown' : calculateChance(university, userGpa, userIelts, userTopik);
+    const requiredTopik = university.country === 'South Korea' && university.topikLevel
+        ? Number.parseInt(university.topikLevel.match(/\d+/)?.[0] || '', 10)
+        : null;
+    const userTopikNumber = Number.parseInt(userTopik?.match(/\d+/)?.[0] || '', 10);
+    const unmetMandatoryLanguage = (Number.isFinite(requiredTopik) && (!Number.isFinite(userTopikNumber) || userTopikNumber < requiredTopik))
+        || (Number.isFinite(university.required_ielts) && university.required_ielts > 0 && (userIelts == null || userIelts < university.required_ielts));
+    const languagePreparedLabel = {
+        en: 'Language requirement not met yet. Check the required score before applying.',
+        ru: 'Языковое требование пока не выполнено. Проверьте нужный результат перед подачей заявки.',
+        uz: 'Til talabi hali bajarilmagan. Ariza topshirishdan oldin kerakli natijani tekshiring.',
+    }[language] || 'Language requirement not met yet. Check the required score before applying.';
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix),
     // and we also show the tuition_max range when it differs from the min instead of
@@ -72,7 +83,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                         </h3>
                         <div className="flex items-center gap-1 mt-1 text-slate-500 text-xs">
                             <MapPin className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{university.city}, {university.country}</span>
+                            <span className="truncate">{[university.city, university.country].filter(Boolean).join(', ')}</span>
                         </div>
                     </div>
 
@@ -143,7 +154,9 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
 
                     {/* Chance indicator */}
                     {!hasAdmissionCatalog && <div className="mb-2">
-                        <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="sm" />
+                        {unmetMandatoryLanguage
+                            ? <p className="text-xs text-amber-700" role="status">{languagePreparedLabel}</p>
+                            : <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="sm" />}
                     </div>}
 
                     {/* Action buttons */}

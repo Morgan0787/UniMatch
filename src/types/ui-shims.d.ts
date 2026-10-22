@@ -36,6 +36,7 @@ declare module "@/components/ui/dialog" {
   export const DialogContent: any;
   export const DialogHeader: any;
   export const DialogTitle: any;
+  export const DialogDescription: any;
   export const DialogFooter: any;
 }
 

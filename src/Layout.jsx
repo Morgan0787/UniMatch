@@ -8,6 +8,7 @@ import {
     Home, Bookmark, ChevronDown, Sparkles, ShieldCheck, Database
 } from 'lucide-react';
 import FeedbackButton from '@/components/feedback/FeedbackButton';
+import HelpDialog from '@/components/HelpDialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -30,6 +31,7 @@ function LayoutContent({ children, currentPageName }) {
         { name: t('nav.myProfile'), path: 'Profile', icon: User },
     ];
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [helpOpen, setHelpOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const menuToggle = useRef(null);
 
@@ -265,9 +267,9 @@ function LayoutContent({ children, currentPageName }) {
                         <div>
                             <h4 className="font-semibold text-slate-800 mb-4">{t('footer.support')}</h4>
                             <div className="space-y-2">
-                                <a href="#" className="block text-slate-500 hover:text-indigo-600 transition-colors">
+                                <button type="button" onClick={() => setHelpOpen(true)} className="block text-slate-500 hover:text-indigo-600 transition-colors">
                                     {t('footer.helpCenter')}
-                                </a>
+                                </button>
                                 <div>
                                     <p className="text-slate-800 font-medium mb-2">{t('footer.contactUs')}</p>
                                     <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer" className="block text-slate-500 hover:text-indigo-600 transition-colors text-sm">
@@ -291,6 +293,7 @@ function LayoutContent({ children, currentPageName }) {
                     </div>
                 </div>
             </footer>
+            <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
         </div>
     );
 }

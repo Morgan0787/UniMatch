@@ -24,7 +24,11 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
     
     if (!university) return null;
     
-    const chance = calculateChance(university, userGpa, userIelts, userTopik);
+    const chance = userGpa == null ? 'unknown' : calculateChance(university, userGpa, userIelts, userTopik);
+    const requiredTopik = university.country === 'South Korea' ? Number.parseInt(university.topikLevel?.match(/\d+/)?.[0] || '', 10) : null;
+    const suppliedTopik = Number.parseInt(userTopik?.match(/\d+/)?.[0] || '', 10);
+    const languageUnmet = (Number.isFinite(requiredTopik) && (!Number.isFinite(suppliedTopik) || suppliedTopik < requiredTopik))
+      || (Number.isFinite(university.required_ielts) && university.required_ielts > 0 && (userIelts == null || userIelts < university.required_ielts));
     const hasAdmissionCatalog = university.admissionCatalog !== undefined;
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix).
@@ -69,7 +73,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                         <div>
                             {!hasAdmissionCatalog && <>
                             <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
-                            <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="lg" />
+                            {languageUnmet ? <p className="text-sm text-amber-800">{{en:'Language requirement not met yet. Check the required score before applying.',ru:'Языковое требование пока не выполнено. Проверьте нужный результат перед подачей.',uz:'Til talabi hali bajarilmagan. Kerakli natijani tekshiring.'}[language]}</p> : <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="lg" />}
                             {university.required_ielts && userIelts > 0 && userIelts < university.required_ielts && (
                                 <p className="text-xs text-amber-600 mt-1">
                                     ⚠ {t('university.ieltsBelow')} ({userIelts} / {university.required_ielts})

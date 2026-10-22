@@ -22,6 +22,10 @@ const blankAnswers = {
   regions: [],
   exam: '',
   score: '',
+  listening: '',
+  reading: '',
+  writing: '',
+  speaking: '',
   grade: '',
   scale: '',
   budget: '',
@@ -34,7 +38,17 @@ const blankAnswers = {
   examDate: '',
 };
 const sampleDraft = {
-  answers: { ...blankAnswers, field: 'Engineering', regions: ['Canada', 'Germany'] },
+  answers: {
+    ...blankAnswers,
+    field: 'Engineering',
+    regions: ['Canada', 'Germany'],
+    exam: 'IELTS',
+    score: '6.5',
+    listening: '7',
+    reading: '6.5',
+    writing: '6',
+    speaking: '6.5',
+  },
   step: 2,
   view: 'results',
 };
@@ -50,6 +64,18 @@ const t0 = 1_900_000_000_000;
     view: 'results',
     status: 'restored',
   });
+}
+
+// IELTS component scores are persisted as bounded, trimmed optional answers.
+{
+  const storage = new MemoryStorage();
+  const answers = { ...sampleDraft.answers, listening: ' 7.5 ', reading: '' };
+  assert.equal(saveDraft(storage, { ...sampleDraft, answers }, t0), true);
+  const restored = loadDraft(storage, t0 + 1);
+  assert.equal(restored.answers.listening, '7.5');
+  assert.equal(restored.answers.reading, '');
+  assert.equal(restored.answers.writing, '6');
+  assert.equal(restored.answers.speaking, '6.5');
 }
 
 // Expiry occurs exactly at the TTL, and expiration removes only this key.

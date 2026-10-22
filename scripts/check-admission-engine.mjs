@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { emptyAnswers, evaluateAnswers } from '../src/lib/admissions/evaluate.js';
+import { emptyAnswers, evaluateAnswers, validateAnswers } from '../src/lib/admissions/evaluate.js';
 import { admissionCopy } from '../src/components/admissions/copy.js';
 
 // Deliberately synthetic fixtures; none belongs to the production catalogue.
@@ -16,6 +16,14 @@ const candidate = (institutionId, extra = {}) => ({
   ...extra,
 });
 const enough = { ...emptyAnswers(), field: 'it', regions: ['UK'], grade: '3.5', scale: '4', exam: 'IELTS', score: '6.5', budget: '20000', currency: 'GBP' };
+assert.ok(validateAnswers({ ...enough, schoolCountry: {} }).schoolCountry);
+assert.ok(validateAnswers({ ...enough, credential: 'x'.repeat(201) }).credential);
+for (const copy of Object.values(admissionCopy)) {
+  for (const code of ['ACADEMIC_REFERENCE_BELOW', 'ACADEMIC_REFERENCE_REACHED', 'ACADEMIC_REFERENCE_UNCONFIRMED', 'ACADEMIC_REFERENCE_HISTORICAL']) assert.ok(copy.reasons[code]);
+}
+assert.deepEqual(validateAnswers({ ...enough, listening: '7.5', reading: '6', writing: '', speaking: '6.5' }), {});
+assert.equal(validateAnswers({ ...enough, listening: '6.25' }).listening, 'listening_invalid');
+assert.equal(validateAnswers({ ...enough, listening: '6.5', exam: 'TOEFL' }).listening, 'listening_invalid');
 const catalogue = Array.from({ length: 6 }, (_, index) => candidate(`fixture-${index}`));
 let result = evaluateAnswers(enough, catalogue);
 assert.equal(result.results.length, 5);

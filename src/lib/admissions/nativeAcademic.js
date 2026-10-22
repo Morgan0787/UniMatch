@@ -17,9 +17,9 @@ function canonicalCredential(value) {
  */
 export function academicContext(option, answers) {
   const policy = option.requirementPolicy;
-  if (!policy) return { rule: option.academicRequirement, answers, blockedByCredential: false };
   const credential = canonicalCredential(answers.credential);
   const normalized = { ...answers, credential };
+  if (!policy) return { rule: option.academicRequirement, answers: normalized, blockedByCredential: false };
   const routes = Array.isArray(policy.routes) ? policy.routes : [];
   const countrySpecific = /Uzbekistan/i.test(policy.applicantCategory || '');
   const countryKnown = String(answers.schoolCountry || '').trim().toLowerCase() === 'uzbekistan';

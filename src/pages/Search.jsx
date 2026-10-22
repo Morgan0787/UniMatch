@@ -17,7 +17,7 @@ import ComparisonModal from '@/components/comparison/ComparisonModal';
 import { useLanguage } from '@/lib/i18n';
 import { selectCatalogResults, getCatalogPage } from '@/lib/catalogResults';
 
-const DEFAULT_FILTERS = { gpa: 3.0, ielts: 0, topikLevel: "Not taken", budget: 15000, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
+const DEFAULT_FILTERS = { gpa: null, ielts: null, topikLevel: null, budget: null, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
 
 const toNumber = (value, fallback) => {
     const normalized = typeof value === 'string' ? Number(value.replace(/,/g, '').trim()) : Number(value);
@@ -27,10 +27,10 @@ const toNumber = (value, fallback) => {
 const normalizeFilters = (value = {}) => ({
     ...DEFAULT_FILTERS,
     ...(value && typeof value === 'object' ? value : {}),
-    gpa: toNumber(value?.gpa, DEFAULT_FILTERS.gpa),
-    ielts: toNumber(value?.ielts, DEFAULT_FILTERS.ielts),
-    budget: toNumber(value?.budget, DEFAULT_FILTERS.budget),
-    topikLevel: typeof value?.topikLevel === 'string' && value.topikLevel ? value.topikLevel : DEFAULT_FILTERS.topikLevel,
+    gpa: value?.gpa == null || value.gpa === '' ? null : toNumber(value.gpa, null),
+    ielts: value?.ielts == null || value.ielts === '' ? null : toNumber(value.ielts, null),
+    budget: value?.budget == null || value.budget === '' ? null : toNumber(value.budget, null),
+    topikLevel: typeof value?.topikLevel === 'string' && value.topikLevel ? value.topikLevel : null,
     region: typeof value?.region === 'string' && value.region !== 'all' ? value.region : DEFAULT_FILTERS.region,
     country: typeof value?.country === 'string' && value.country !== 'all' ? value.country : DEFAULT_FILTERS.country,
     languages: Array.isArray(value?.languages) ? value.languages.filter(Boolean) : DEFAULT_FILTERS.languages,
@@ -65,10 +65,10 @@ export default function Search() {
     const [saveError, setSaveError] = useState(false);
     const [savingPublished, setSavingPublished] = useState(false);
     const editorial = {
-        en: { title: 'Your world. Your possibilities.', intro: 'Explore universities at your own pace. Bring your grades, budget and interests into focus.', hint: 'Set your GPA and language scores to explore your admission chances.' },
-        ru: { title: 'Ваш мир. Ваши возможности.', intro: 'Исследуйте университеты в своём темпе. Учитывайте оценки, бюджет и то, что вам интересно.', hint: 'Укажите GPA и уровень языка, чтобы оценить шансы поступления.' },
-        uz: { title: 'Sizning dunyongiz. Sizning imkoniyatlaringiz.', intro: 'Universitetlarni o‘z sur’atingizda o‘rganing. Baholar, byudjet va qiziqishlaringizni hisobga oling.', hint: 'Imkoniyatlarni baholash uchun GPA va til darajangizni kiriting.' },
-    }[language] || { title: 'Your world. Your possibilities.', intro: '', hint: 'Set your GPA and language scores.' };
+        en: { title: 'Your world. Your possibilities.', intro: 'Explore universities at your own pace. Bring your grades, budget and interests into focus.', hint: 'Add your GPA and language scores to see a personal chance estimate.' },
+        ru: { title: 'Ваш мир. Ваши возможности.', intro: 'Исследуйте университеты в своём темпе. Учитывайте оценки, бюджет и то, что вам интересно.', hint: 'Добавьте GPA и результаты языковых тестов, чтобы увидеть персональную оценку шансов.' },
+        uz: { title: 'Sizning dunyongiz. Sizning imkoniyatlaringiz.', intro: 'Universitetlarni o‘z sur’atingizda o‘rganing. Baholar, byudjet va qiziqishlaringizni hisobga oling.', hint: 'Shaxsiy imkoniyat bahosini ko‘rish uchun GPA va til imtihoni natijalarini kiriting.' },
+    }[language] || { title: 'Your world. Your possibilities.', intro: '', hint: 'Add your GPA and language scores to see a personal chance estimate.' };
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState(loadSavedFilters);
     const deferredQuery = useDeferredValue(searchQuery);
@@ -90,7 +90,7 @@ export default function Search() {
 
     useEffect(() => { localStorage.setItem('uniAdmitFilters', JSON.stringify(filters)); }, [filters]);
     useEffect(() => {
-        if (showFirstVisitHint && (filters.gpa !== DEFAULT_FILTERS.gpa || filters.ielts !== DEFAULT_FILTERS.ielts)) {
+        if (showFirstVisitHint && (filters.gpa != null || filters.ielts != null)) {
             dismissHint();
         }
     }, [filters.gpa, filters.ielts]);
@@ -159,6 +159,7 @@ export default function Search() {
     const compareUniversities = useMemo(() => universities.filter(uni => compareList.includes(uni.id)), [universities, compareList]);
     const activeFilterCount = Object.entries(filters).filter(([key, value]) => Array.isArray(value) ? value.length > 0 : value !== DEFAULT_FILTERS[key]).length;
     const filterDoneLabel = { en: 'Show results', ru: 'Показать результаты', uz: 'Natijalarni ko‘rsatish' }[language] || 'Show results';
+    const unsetLabel = { en: 'Not set', ru: 'Не указано', uz: 'Kiritilmagan' }[language] || 'Not set';
 
     return (
         <div className="catalog-page min-h-screen bg-slate-50">
@@ -176,7 +177,7 @@ export default function Search() {
                 </div>
             )}
             {saveError && <p role="alert" className="max-w-7xl mx-auto px-4 py-2 text-sm text-red-700">{{en: 'The save could not be confirmed. Please retry.', ru: 'Сохранение не подтверждено. Повторите попытку.', uz: 'Saqlash tasdiqlanmadi. Qayta urinib ko‘ring.'}[language]}</p>}
-            <div className="catalog-toolbar bg-white border-b border-slate-100 sticky top-0 z-40"><div className="max-w-7xl mx-auto px-4 sm:px-6 py-4"><div className="flex flex-col md:flex-row gap-4 items-center"><div className="relative flex-1 w-full"><SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" /><Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-4 py-6 text-lg bg-slate-50 border-slate-200 rounded-xl focus:bg-white" />{searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>}</div><Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}><SheetTrigger asChild><Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-indigo-600 text-white ml-1">{activeFilterCount}</Badge>}</Button></SheetTrigger><SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen"><SheetTitle className="sr-only">{t('search.filters')}</SheetTitle><div className="flex-1 overflow-y-auto p-4 pt-10"><FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} /></div><div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({sortedUniversities.length})</Button></div></SheetContent></Sheet></div><div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4"><p className="text-slate-600"><span className="font-semibold text-slate-800">{sortedUniversities.length}</span> {t('search.results')}</p><div className="flex flex-wrap items-center gap-3">{compareList.length > 0 && <Button onClick={() => setShowComparison(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}<div className="flex gap-2 items-center text-sm text-slate-500"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-indigo-100 text-indigo-700">{filters.gpa?.toFixed(1)}</Badge></div></div></div></div></div>
+            <div className="catalog-toolbar bg-white border-b border-slate-100 sticky top-0 z-40"><div className="max-w-7xl mx-auto px-4 sm:px-6 py-4"><div className="flex flex-col md:flex-row gap-4 items-center"><div className="relative flex-1 w-full"><SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" /><Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-4 py-6 text-lg bg-slate-50 border-slate-200 rounded-xl focus:bg-white" />{searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>}</div><Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}><SheetTrigger asChild><Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-indigo-600 text-white ml-1">{activeFilterCount}</Badge>}</Button></SheetTrigger><SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen"><SheetTitle className="sr-only">{t('search.filters')}</SheetTitle><div className="flex-1 overflow-y-auto p-4 pt-10"><FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} /></div><div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({sortedUniversities.length})</Button></div></SheetContent></Sheet></div><div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4"><p className="text-slate-600"><span className="font-semibold text-slate-800">{sortedUniversities.length}</span> {t('search.results')}</p><div className="flex flex-wrap items-center gap-3">{compareList.length > 0 && <Button onClick={() => setShowComparison(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}<div className="flex gap-2 items-center text-sm text-slate-500"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-indigo-100 text-indigo-700">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div></div></div></div></div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6"><div className="flex gap-8"><main id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="flex-1 min-w-0">{isLoading ? <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100"><Skeleton className="h-32" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div> : sortedUniversities.length === 0 ? <div className="text-center py-20"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-slate-400" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{t('search.noResults')}</h3><p className="text-slate-500 mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" onClick={resetFilters}>{t('search.resetFilters')}</Button></div> : <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">{pageInfo.rows.map((university) => <UniversityCard key={university.id} university={university} userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversitySaved(university)} saveDisabled={savingPublished} onSave={handleSave} onView={setSelectedUniversity} isComparing={compareList.includes(university.id)} onCompareToggle={handleCompareToggle} />)}</div>}</main></div></div>
             {!isLoading && sortedUniversities.length > 0 && <nav aria-label={pagingLabels[2]} className="catalog-pagination max-w-7xl mx-auto px-4 sm:px-6 pb-8 flex flex-wrap items-center justify-center gap-4">
                 <Button variant="outline" disabled={pageInfo.page === 1} onClick={() => changePage(pageInfo.page - 1)}>{pagingLabels[0]}</Button>

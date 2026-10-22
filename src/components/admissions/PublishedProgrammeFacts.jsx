@@ -74,15 +74,16 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
               {factFor(programme, 'location') && <Fact label={extra.location} fact={factFor(programme, 'location')} language={language} kind="location" />}
               <Fact label={extra.intake} fact={factFor(programme, 'intake')} language={language} kind="intake" />
               <Fact label={labels.teaching} fact={factFor(programme, 'teachingLanguage')} language={language} />
+              <Fact label={labels.deadline} fact={factFor(programme, 'deadline')} language={language} kind="deadline" />
+              <Fact label={labels.tuition} fact={factFor(programme, 'tuition')} language={language} kind="tuition" />
+              </>}
+            </dl>
+            {!compact && <details className="text-sm"><summary className="cursor-pointer text-teal-800 underline underline-offset-2">{extra.notes}</summary><dl className="mt-3 grid sm:grid-cols-2 gap-3">
               <Fact label={labels.academic} fact={factFor(programme, 'academicRequirement')} language={language} kind="rule" />
               <Fact label={labels.language} fact={factFor(programme, 'languageRequirement')} language={language} kind="rule" />
               <Fact label={labels.languageLevel} fact={factFor(programme, 'languageThreshold')} language={language} kind="rule" />
-              <Fact label={labels.deadline} fact={factFor(programme, 'deadline')} language={language} kind="deadline" />
-              <Fact label={labels.tuition} fact={factFor(programme, 'tuition')} language={language} kind="tuition" />
               {(Array.isArray(programme.costReferences) ? programme.costReferences : []).map((reference, index) => <CostReference key={`${programme.id}-cost-${index}`} label={quoteLabel(reference, labels.costReference)} fact={reference} language={language} labels={labels} />)}
-              {(Array.isArray(programme.publicNotes) ? programme.publicNotes : []).map((note,index) => <Fact key={`${programme.id}-note-${index}`} label={extra.notes} fact={note} language={language} />)}
-              </>}
-            </dl>
+            </dl></details>}
           </article>
         );
       })}
@@ -93,7 +94,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
       {!compact && sources.length > 0 && <div className="text-xs text-slate-600">
         <p className="font-medium mb-1">{labels.sources}</p>
         <ul className="flex flex-wrap gap-x-3 gap-y-1">
-          {sources.map(source => <li key={source.key}><a className="underline underline-offset-2 text-indigo-700" href={sourceUrl(source)} target="_blank" rel="noopener noreferrer">{source.title || source.key}<span className="sr-only"> (opens in a new tab)</span></a><p className="mt-0.5 text-slate-500">{source.scope}</p></li>)}
+          {sources.map(source => <li key={source.key}><a className="underline underline-offset-2 text-indigo-700" href={sourceUrl(source)} target="_blank" rel="noopener noreferrer">{source.title || labels.sources}</a></li>)}
         </ul>
       </div>}
     </section>

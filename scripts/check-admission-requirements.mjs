@@ -4,6 +4,10 @@ import { evaluateRequirement } from '../src/lib/admissions/requirements.js';
 const answers = {
   exam: 'IELTS',
   score: '6.5',
+  listening: '6.5',
+  reading: '6.5',
+  writing: '6.5',
+  speaking: '6.5',
   examDate: '2025-02-28',
   grade: '3.5',
   scale: '4',
@@ -46,7 +50,17 @@ const verified = { verified: true, applicable: true };
   const ielts = { ...verified, type: 'ielts', minimum: 6, sourceKey: 'fixture-ielts' };
   assert.equal(evaluateRequirement(ielts, answers).status, 'met');
   assert.equal(evaluateRequirement({ ...ielts, minimum: 7 }, answers).status, 'unmet');
-  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 5 } }, answers).codes[0], 'LANGUAGE_SECTIONS_UNKNOWN');
+  assert.ok(evaluateRequirement({ ...ielts, sections: { listening: 7 } }, { ...answers, listening: '' }).codes.includes('LANGUAGE_SECTIONS_UNKNOWN'));
+  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 7, reading: 6 } }, answers).status, 'unmet');
+  assert.ok(evaluateRequirement({ ...ielts, sections: { listening: 7, reading: 6 } }, answers).codes.includes('IELTS_SECTION_THRESHOLD_BELOW'));
+  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 6, reading: 6 } }, answers).status, 'met');
+  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 6, reading: 6 } }, { ...answers, reading: '' }).status, 'unknown');
+  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 7, reading: 6 } }, { ...answers, reading: '' }).status, 'unmet');
+  const missingOverallLowSection = evaluateRequirement({ ...ielts, sections: { listening: 7, reading: 6 } }, { ...answers, score: '' });
+  assert.equal(missingOverallLowSection.status, 'unmet');
+  assert.ok(missingOverallLowSection.codes.includes('IELTS_SECTION_THRESHOLD_BELOW'));
+  assert.ok(!missingOverallLowSection.codes.includes('IELTS_THRESHOLD_MET'));
+  assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 6, reading: 6 } }, { ...answers, score: '' }).status, 'unknown');
   assert.equal(evaluateRequirement({ ...ielts, sections: { listening: 5 }, minimum: 7 }, answers).status, 'unmet');
   assert.equal(evaluateRequirement(ielts, { ...answers, exam: '' }).codes[0], 'EXAM_UNKNOWN');
   assert.equal(evaluateRequirement({ ...ielts, requiresDate: true }, { ...answers, examDate: '' }).codes.includes('EXAM_DATE_UNKNOWN'), true);

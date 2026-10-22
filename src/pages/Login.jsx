@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Mail, Lock, GraduationCap, Chrome } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useLanguage } from '@/lib/i18n'
+import { loginText, loginEmailNotice } from '@/lib/loginCopy'
 
 const getFriendlyAuthError = (error) => {
   if (!error) return 'Something went wrong. Please try again.'
@@ -45,6 +47,8 @@ function safeInternalReturn(value) {
 }
 
 export default function Login() {
+  const { language } = useLanguage()
+  const l = text => loginText(text, language)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const redirectTo = safeInternalReturn(searchParams.get('redirect_to'))
@@ -130,7 +134,7 @@ export default function Login() {
         navigate(redirectTo, { replace: true })
       }
     } catch (err) {
-      setError(getFriendlyAuthError(err))
+      setError(l(getFriendlyAuthError(err)))
     } finally {
       setLoading(false)
     }
@@ -153,7 +157,7 @@ export default function Login() {
         throw error
       }
     } catch (err) {
-      setError(getFriendlyAuthError(err))
+      setError(l(getFriendlyAuthError(err)))
       setLoading(false)
     }
   }
@@ -177,11 +181,11 @@ export default function Login() {
       }
 
       setSuccessState({
-        title: 'Check your email',
-        message: `We sent a sign-in link to ${email}. Click it to continue.`,
+        title: l('Check your email'),
+        message: loginEmailNotice(email, language),
       })
     } catch (err) {
-      setError(getFriendlyAuthError(err))
+      setError(l(getFriendlyAuthError(err)))
     } finally {
       setLoading(false)
     }
@@ -214,12 +218,12 @@ export default function Login() {
         navigate(redirectTo, { replace: true })
       } else {
         setSuccessState({
-          title: 'Verify your email',
-          message: `We sent a confirmation email to ${email}. Please open it to verify your account.`,
+          title: l('Verify your email'),
+          message: loginEmailNotice(email, language, true),
         })
       }
     } catch (err) {
-      setError(getFriendlyAuthError(err))
+      setError(l(getFriendlyAuthError(err)))
     } finally {
       setLoading(false)
     }
@@ -236,7 +240,7 @@ export default function Login() {
             <h2 className="text-xl font-semibold text-slate-800">{successState.title}</h2>
             <p className="text-slate-500 text-sm">{successState.message}</p>
             <Button variant="ghost" size="sm" onClick={() => setSuccessState(null)}>
-              Use a different method
+              {l("Use a different method")}
             </Button>
           </CardContent>
         </Card>
@@ -252,22 +256,24 @@ export default function Login() {
             <GraduationCap className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-slate-800">UniMatch</h1>
-          <p className="text-slate-500 text-sm">Sign in to your account</p>
+          <p className="text-slate-500 text-sm">{l("Sign in to your account")}</p>
         </div>
 
+        {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-teal-900">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
+        <button type="button" className="text-sm text-teal-800 underline" onClick={() => navigate(redirectTo)}>{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
         <Card className="product-glass">
           <CardContent className="pt-6">
             <Tabs defaultValue="password">
               <TabsList className="w-full mb-6">
-                <TabsTrigger value="password" className="flex-1">Password</TabsTrigger>
-                <TabsTrigger value="magic" className="flex-1">Magic Link</TabsTrigger>
-                <TabsTrigger value="signup" className="flex-1">Sign Up</TabsTrigger>
+                <TabsTrigger value="password" className="flex-1">{l("Password")}</TabsTrigger>
+                <TabsTrigger value="magic" className="flex-1">{l("Magic Link")}</TabsTrigger>
+                <TabsTrigger value="signup" className="flex-1">{l("Sign Up")}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="password">
                 <form onSubmit={handlePasswordLogin} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="email-pw">Email</Label>
+                    <Label htmlFor="email-pw">{l("Email")}</Label>
                     <Input
                       id="email-pw"
                       type="email"
@@ -278,7 +284,7 @@ export default function Login() {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">{l("Password")}</Label>
                     <Input
                       id="password"
                       type="password"
@@ -291,11 +297,11 @@ export default function Login() {
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
                   <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Chrome className="w-4 h-4 mr-2" />}
-                    Continue with Google
+                    {l("Continue with Google")}
                   </Button>
                   <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
-                    Sign In
+                    {l("Sign In")}
                   </Button>
                 </form>
               </TabsContent>
@@ -303,7 +309,7 @@ export default function Login() {
               <TabsContent value="magic">
                 <form onSubmit={handleMagicLink} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="email-magic">Email</Label>
+                    <Label htmlFor="email-magic">{l("Email")}</Label>
                     <Input
                       id="email-magic"
                       type="email"
@@ -316,26 +322,26 @@ export default function Login() {
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
                   <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Mail className="w-4 h-4 mr-2" />}
-                    Send Magic Link
+                    {l("Send Magic Link")}
                   </Button>
-                  <p className="text-xs text-center text-slate-400">We'll email you a passwordless sign-in link.</p>
+                  <p className="text-xs text-center text-slate-400">{l("We'll email you a passwordless sign-in link.")}</p>
                 </form>
               </TabsContent>
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="full-name">Full name</Label>
+                    <Label htmlFor="full-name">{l("Full name")}</Label>
                     <Input
                       id="full-name"
                       type="text"
-                      placeholder="Your name"
+                      placeholder={l("Your name")}
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="email-su">Email</Label>
+                    <Label htmlFor="email-su">{l("Email")}</Label>
                     <Input
                       id="email-su"
                       type="email"
@@ -346,11 +352,11 @@ export default function Login() {
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="password-su">Password</Label>
+                    <Label htmlFor="password-su">{l("Password")}</Label>
                     <Input
                       id="password-su"
                       type="password"
-                      placeholder="At least 6 characters"
+                      placeholder={l("At least 6 characters")}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -360,11 +366,11 @@ export default function Login() {
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
                   <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Chrome className="w-4 h-4 mr-2" />}
-                    Continue with Google
+                    {l("Continue with Google")}
                   </Button>
                   <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
                     {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                    Create Account
+                    {l("Create Account")}
                   </Button>
                 </form>
               </TabsContent>

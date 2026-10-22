@@ -9,6 +9,7 @@ const en = {
   regionNames: { Europe: 'Europe', USA: 'United States', 'South Korea': 'South Korea', UK: 'United Kingdom', Canada: 'Canada' },
   regionHint: 'You can choose several. A visible region does not mean we have researched programmes there.',
   exam: 'Language exam', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Not taken yet' }, score: 'Your score',
+  ieltsSections: 'IELTS section scores — optional', ieltsSectionsHint: 'Leave unknown sections blank. Section scores help compare published minimums; they do not confirm eligibility.', ieltsListening: 'Listening', ieltsReading: 'Reading', ieltsWriting: 'Writing', ieltsSpeaking: 'Speaking',
   examHint: 'Different TOEFL scales and language waivers need a separate check. A score alone does not confirm eligibility.',
   gradesToggle: 'Add grades — optional', grade: 'Average grade', scale: 'Original grading scale', scales: { '4': 'Out of 4', '5': 'Out of 5', '100': 'Out of 100' }, gradeHint: 'We keep your original scale. We do not invent GPA equivalents.',
   budget: 'Tuition budget per academic year', currency: 'Currency', scholarship: 'Do you need a scholarship?', scholarships: { required: 'Essential', preferred: 'Would help', not_required: 'Not required' },
@@ -43,6 +44,7 @@ const ru = {
   regionNames: { Europe: 'Европа', USA: 'США', 'South Korea': 'Южная Корея', UK: 'Великобритания', Canada: 'Канада' },
   regionHint: 'Можно несколько. Наличие региона в списке не означает, что программы там уже проверены.',
   exam: 'Языковой экзамен', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Ещё не сдавал(а)' }, score: 'Ваш балл', examHint: 'Разные шкалы TOEFL и освобождение от экзамена требуют отдельной проверки. Одного балла недостаточно для допуска.',
+  ieltsSections: 'Баллы IELTS по секциям — необязательно', ieltsSectionsHint: 'Неизвестные секции можно оставить пустыми. Баллы помогают сравнить опубликованные минимумы, но не подтверждают допуск.', ieltsListening: 'Аудирование', ieltsReading: 'Чтение', ieltsWriting: 'Письмо', ieltsSpeaking: 'Говорение',
   gradesToggle: 'Добавить оценки — необязательно', grade: 'Средняя оценка', scale: 'Исходная шкала', scales: { '4': 'Из 4', '5': 'Из 5', '100': 'Из 100' }, gradeHint: 'Сохраняем исходную шкалу. Не придумываем эквивалент GPA.',
   budget: 'Бюджет на обучение за учебный год', currency: 'Валюта', scholarship: 'Нужна стипендия?', scholarships: { required: 'Без неё не смогу', preferred: 'Будет полезна', not_required: 'Не обязательна' }, budgetHint: 'Стипендию не вычитаем из цены. Без проверенного курса валюты не пересчитываем.',
   back: 'Назад', next: 'Продолжить', show: 'Показать варианты', skip: 'Пока не знаю — пропустить', edit: 'Изменить ответы', editFields: 'Изменить направление', reset: 'Сбросить ответы', resetConfirm: 'Удалить временные ответы в этой вкладке?',
@@ -72,6 +74,7 @@ const uz = {
   field: 'Ta’lim yo‘nalishi', regions: 'Qayerda o‘qishni istaysiz?', any: 'Hali bilmayman', fields: { business: 'Biznes', it: 'Axborot texnologiyalari (IT)', computer_engineering: 'Kompyuter muhandisligi', software_engineering: 'Dasturiy injiniring', computer_science: 'Kompyuter fanlari (Computer Science)', other: 'Boshqa yo‘nalish' },
   regionNames: { Europe: 'Yevropa', USA: 'AQSh', 'South Korea': 'Janubiy Koreya', UK: 'Buyuk Britaniya', Canada: 'Kanada' }, regionHint: 'Bir nechtasini tanlash mumkin. Hudud ro‘yxatda bo‘lishi u yerdagi dasturlar tekshirilganini anglatmaydi.',
   exam: 'Til imtihoni', exams: { IELTS: 'IELTS Academic', TOEFL: 'TOEFL iBT', TOPIK: 'TOPIK', not_taken: 'Hali topshirmaganman' }, score: 'Natijangiz', examHint: 'TOEFL shkalalari va imtihondan ozod qilish qoidalari alohida tekshiriladi. Faqat ball qabul shartlari bajarilganini bildirmaydi.',
+  ieltsSections: 'IELTS bo‘lim ballari — ixtiyoriy', ieltsSectionsHint: 'Noma’lum bo‘limlarni bo‘sh qoldiring. Ballar e’lon qilingan minimumlarni taqqoslashga yordam beradi, ammo qabulga moslikni tasdiqlamaydi.', ieltsListening: 'Tinglab tushunish', ieltsReading: 'O‘qish', ieltsWriting: 'Yozish', ieltsSpeaking: 'Gapirish',
   gradesToggle: 'Baholarni qo‘shish — ixtiyoriy', grade: 'O‘rtacha baho', scale: 'Asl baholash shkalasi', scales: { '4': '4 ballik', '5': '5 ballik', '100': '100 ballik' }, gradeHint: 'Asl shkalani saqlaymiz. GPA ekvivalentini taxmin qilmaymiz.',
   budget: 'Bir o‘quv yilining o‘qish budjeti', currency: 'Valuta', scholarship: 'Stipendiya kerakmi?', scholarships: { required: 'Stipendiyasiz o‘qiy olmayman', preferred: 'Foydali bo‘lardi', not_required: 'Shart emas' }, budgetHint: 'Stipendiya narxdan ayrilmaydi. Tekshirilgan kurssiz valuta o‘girilmaydi.',
   back: 'Orqaga', next: 'Davom etish', show: 'Variantlarni ko‘rish', skip: 'Hali bilmayman — o‘tkazish', edit: 'Javoblarni o‘zgartirish', editFields: 'Yo‘nalishni o‘zgartirish', reset: 'Javoblarni tozalash', resetConfirm: 'Shu oynadagi vaqtinchalik javoblar o‘chirilsinmi?',
@@ -94,6 +97,7 @@ Object.assign(en.reasons, {
   TEACHING_LANGUAGE_MISMATCH: 'This programme is taught in English, which differs from your language preference.',
   EXAM_VALIDITY_UNKNOWN: 'Certificate validity and accepted test conditions have not been fully assessed.',
   LANGUAGE_THRESHOLD_REACHED: 'Your IELTS Academic score reaches the published overall threshold. This is only one part of the conditions.',
+  IELTS_SECTION_THRESHOLD_BELOW: 'At least one supplied IELTS section score is below its published minimum.',
 });
 Object.assign(ru.reasons, {
   SCHOLARSHIP_ELIGIBILITY_UNKNOWN: 'Допустимость и получение стипендии не подтверждены. Опубликованная стоимость обучения не уменьшена.',
@@ -102,6 +106,7 @@ Object.assign(ru.reasons, {
   TEACHING_LANGUAGE_MISMATCH: 'Программа преподаётся на английском, что отличается от выбранного языка.',
   EXAM_VALIDITY_UNKNOWN: 'Срок действия сертификата и условия принятия экзамена полностью не проверены.',
   LANGUAGE_THRESHOLD_REACHED: 'Ваш общий IELTS Academic достигает опубликованного порога. Это только часть условий.',
+  IELTS_SECTION_THRESHOLD_BELOW: 'Как минимум один указанный балл IELTS ниже опубликованного минимума.',
 });
 Object.assign(uz.reasons, {
   SCHOLARSHIP_ELIGIBILITY_UNKNOWN: 'Stipendiyaga moslik va uni olish tasdiqlanmagan. E’lon qilingan o‘qish haqi kamaytirilmagan.',
@@ -110,6 +115,7 @@ Object.assign(uz.reasons, {
   TEACHING_LANGUAGE_MISMATCH: 'Dastur ingliz tilida, bu siz tanlagan tildan farq qiladi.',
   EXAM_VALIDITY_UNKNOWN: 'Sertifikat amal muddati va imtihonni qabul qilish shartlari to‘liq tekshirilmagan.',
   LANGUAGE_THRESHOLD_REACHED: 'IELTS Academic umumiy ballingiz e’lon qilingan chegaraga yetadi. Bu shartlarning faqat bir qismi.',
+  IELTS_SECTION_THRESHOLD_BELOW: 'Kiritilgan IELTS bo‘lim ballaridan kamida bittasi e’lon qilingan minimumdan past.',
 });
 
 const selectionCopy = {
@@ -162,6 +168,10 @@ const requirementCopy = {
     REQUIREMENT_UNKNOWN: 'Shartning bir qismi yoki to‘liq mantiqi noma’lum.', REQUIREMENT_SCOPE_UNKNOWN: 'Shart hujjatingiz yoki istalgan qabul davri uchun hali tasdiqlanmagan.', GRADE_SCALE_UNKNOWN: 'Asl baholash shkalalari tasdiqlangan qoidasiz taqqoslanmaydi.', GRADE_DATA_UNKNOWN: 'Taqqoslanadigan baho ma’lumoti yo‘q.', GRADE_THRESHOLD_MET: 'Baho bir xil shkala va doiradagi e’lon qilingan chegaraga yetadi.', GRADE_THRESHOLD_BELOW: 'Baho bir xil shkala va doiradagi chegaradan past.', EXAM_UNKNOWN: 'Kerakli imtihon natijasi noma’lum yoki taqqoslanmaydi.', IELTS_THRESHOLD_MET: 'IELTS Academic umumiy balli shu yo‘l chegarasiga yetadi.', IELTS_THRESHOLD_BELOW: 'IELTS Academic umumiy balli shu yo‘l chegarasidan past.', LANGUAGE_SECTIONS_UNKNOWN: 'Kerakli bo‘lim ballari kiritilmagan yoki baholanmagan.', EXAM_DATE_UNKNOWN: 'Sertifikat amal muddati uchun sanalar va tasdiqlangan qoida kerak.', EXAM_DATE_INVALID: 'Imtihon sanasi to‘g‘ri taqqoslashga imkon bermaydi.', EXAM_EXPIRED: 'Tekshirilayotgan sanada sertifikatning e’lon qilingan muddati o‘tgan.', COMPETITIVENESS_UNKNOWN: 'Tanlov darajasi aniqlanmagan. Minimumlar bajarilishi variantni oson yoki xavfsiz qilmaydi.', TUITION_SCOPE_UNKNOWN: 'Toifangiz va qabul davringizga tegishli yillik o‘qish haqi aniqlanmagan.',
   },
 };
+
+Object.assign(requirementCopy.en, { IELTS_SECTION_THRESHOLD_BELOW: en.reasons.IELTS_SECTION_THRESHOLD_BELOW });
+Object.assign(requirementCopy.ru, { IELTS_SECTION_THRESHOLD_BELOW: ru.reasons.IELTS_SECTION_THRESHOLD_BELOW });
+Object.assign(requirementCopy.uz, { IELTS_SECTION_THRESHOLD_BELOW: uz.reasons.IELTS_SECTION_THRESHOLD_BELOW });
 
 const productCopy = {
   en: {
@@ -220,8 +230,43 @@ const languageReferenceCopy = {
   } },
 };
 
+const academicCopy = {
+  en: {
+    schoolCountries: { Uzbekistan: 'Uzbekistan', other: 'Another country' },
+    credentials: { certificate_complete_general_secondary: 'Certificate of complete general secondary education (Uzbekistan)', academic_lyceum_diploma: 'Academic lyceum diploma (Uzbekistan)', professional_college_diploma: 'Professional college diploma (Uzbekistan)', other: 'Another qualification / not sure' },
+    qualificationHint: 'Optional. Select your exact document; other qualifications remain unassessed. We compare grades only in the original scale and do not confirm qualification recognition.',
+    academicReference: 'Published grade reference',
+    academicReferenceLimit: 'This compares one published condition; intake applicability, subjects and recognition still need checking.',
+    reasons: { ACADEMIC_REFERENCE_BELOW: 'Your grade is below a published reference for this document and scale; check the applicable route with the university.', ACADEMIC_REFERENCE_REACHED: 'Your grade reaches a published reference for this document and scale; full academic eligibility is still unknown.', ACADEMIC_REFERENCE_UNCONFIRMED: 'This academic reference is not confirmed for your intended intake.', ACADEMIC_REFERENCE_HISTORICAL: 'This academic reference comes from an earlier season; current applicability is unknown.' },
+  },
+  ru: {
+    schoolCountries: { Uzbekistan: 'Узбекистан', other: 'Другая страна' },
+    credentials: { certificate_complete_general_secondary: 'Аттестат об общем среднем образовании (Узбекистан)', academic_lyceum_diploma: 'Диплом академического лицея (Узбекистан)', professional_college_diploma: 'Диплом профессионального колледжа (Узбекистан)', other: 'Другой документ / не уверен' },
+    qualificationHint: 'Необязательно. Выберите точный документ; другие квалификации пока не оцениваются. Сравниваем оценки только в исходной шкале и не подтверждаем признание документа.',
+    academicReference: 'Опубликованный ориентир оценки',
+    academicReferenceLimit: 'Сравнено одно опубликованное условие; применимость к набору, предметы и признание документа ещё нужно проверить.',
+    reasons: { ACADEMIC_REFERENCE_BELOW: 'Оценка ниже опубликованного ориентира для этого документа и шкалы; уточните применимый путь у вуза.', ACADEMIC_REFERENCE_REACHED: 'Оценка достигает опубликованного ориентира для этого документа и шкалы; полная академическая допустимость пока неизвестна.', ACADEMIC_REFERENCE_UNCONFIRMED: 'Этот академический ориентир не подтверждён для желаемого набора.', ACADEMIC_REFERENCE_HISTORICAL: 'Академический ориентир относится к прошлому сезону; текущая применимость неизвестна.' },
+  },
+  uz: {
+    schoolCountries: { Uzbekistan: 'O‘zbekiston', other: 'Boshqa mamlakat' },
+    credentials: { certificate_complete_general_secondary: 'Umumiy o‘rta ta’lim shahodatnomasi (O‘zbekiston)', academic_lyceum_diploma: 'Akademik litsey diplomi (O‘zbekiston)', professional_college_diploma: 'Kasb-hunar kolleji diplomi (O‘zbekiston)', other: 'Boshqa hujjat / ishonchim komil emas' },
+    qualificationHint: 'Ixtiyoriy. Aniq hujjatni tanlang; boshqa malakalar hozircha baholanmaydi. Baholar faqat asl shkalada taqqoslanadi, hujjat tan olinishi tasdiqlanmaydi.',
+    academicReference: 'E’lon qilingan baho ko‘rsatkichi',
+    academicReferenceLimit: 'Bitta e’lon qilingan shart taqqoslandi; qabul davri, fanlar va hujjat tan olinishini hali tekshirish kerak.',
+    reasons: { ACADEMIC_REFERENCE_BELOW: 'Baho shu hujjat va shkala uchun e’lon qilingan ko‘rsatkichdan past; tegishli yo‘lni universitet bilan aniqlashtiring.', ACADEMIC_REFERENCE_REACHED: 'Baho shu hujjat va shkala uchun e’lon qilingan ko‘rsatkichga yetadi; to‘liq akademik muvofiqlik hali noma’lum.', ACADEMIC_REFERENCE_UNCONFIRMED: 'Bu akademik ko‘rsatkich istalgan qabul davri uchun tasdiqlanmagan.', ACADEMIC_REFERENCE_HISTORICAL: 'Akademik ko‘rsatkich oldingi mavsumga tegishli; joriy qo‘llanishi noma’lum.' },
+  },
+};
+
 export const admissionCopy = {
   en: { ...en, ...selectionCopy.en, ...productCopy.en, ...polishCopy.en, ...languageReferenceCopy.en, locale: 'en', reasons: { ...en.reasons, ...requirementCopy.en, ...languageReferenceCopy.en.reasons }, sourceScopes: {} },
   ru: { ...ru, ...selectionCopy.ru, ...productCopy.ru, ...polishCopy.ru, ...languageReferenceCopy.ru, locale: 'ru', reasons: { ...ru.reasons, ...requirementCopy.ru, ...languageReferenceCopy.ru.reasons }, sourceScopes: {} },
   uz: { ...uz, ...selectionCopy.uz, ...productCopy.uz, ...polishCopy.uz, ...languageReferenceCopy.uz, locale: 'uz', reasons: { ...uz.reasons, ...requirementCopy.uz, ...languageReferenceCopy.uz.reasons }, sourceScopes: {} },
 };
+
+for (const locale of ['en', 'ru', 'uz']) {
+  Object.assign(admissionCopy[locale], academicCopy[locale], { reasons: { ...admissionCopy[locale].reasons, ...academicCopy[locale].reasons } });
+}
+
+Object.assign(admissionCopy.en.languages, { German: 'German', Polish: 'Polish', Italian: 'Italian', French: 'French', Spanish: 'Spanish' });
+Object.assign(admissionCopy.ru.languages, { German: 'Немецкий', Polish: 'Польский', Italian: 'Итальянский', French: 'Французский', Spanish: 'Испанский' });
+Object.assign(admissionCopy.uz.languages, { German: 'Nemischa', Polish: 'Polyakcha', Italian: 'Italyancha', French: 'Fransuzcha', Spanish: 'Ispancha' });

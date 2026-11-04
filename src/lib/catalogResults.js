@@ -1,5 +1,6 @@
 import { hasGpaData } from './matching.js';
 import { describePublicFact } from './admissions/factPresentation.js';
+import { getUniversityPhoto } from './admissions/presentation.js';
 
 export const CATALOG_PAGE_SIZE = 24;
 const byGpaGap = (gpa) => (a, b) => {
@@ -7,6 +8,14 @@ const byGpaGap = (gpa) => (a, b) => {
   const aHasGpa = hasGpaData(a), bHasGpa = hasGpaData(b);
   if (!aHasGpa || !bHasGpa) return aHasGpa === bHasGpa ? 0 : aHasGpa ? -1 : 1;
   return (gpa - b.min_gpa) - (gpa - a.min_gpa);
+};
+
+// Browse presentation only: apply after filtering, preserving the existing
+// order within each group. Photos never enter admission scores or survey ranks.
+const prioritizePhotos = (rows) => {
+  const withPhotos = [], withoutPhotos = [];
+  for (const row of rows) (getUniversityPhoto(row) ? withPhotos : withoutPhotos).push(row);
+  return [...withPhotos, ...withoutPhotos];
 };
 
 const factValue = (programme, key) => {
@@ -60,7 +69,7 @@ export function selectCatalogResults(universities, filters, searchQuery) {
     return true;
   });
   const defaultView = !query && !filters.region && !filters.country && !filters.languages?.length && !filters.degree && !filters.scholarshipsOnly;
-  if (!defaultView) return [...filtered].sort(byGpaGap(filters.gpa));
+  if (!defaultView) return prioritizePhotos([...filtered].sort(byGpaGap(filters.gpa)));
   const countries = new Map();
   for (const uni of filtered) {
     if (!countries.has(uni.country)) countries.set(uni.country, []);
@@ -74,7 +83,7 @@ export function selectCatalogResults(universities, filters, searchQuery) {
     for (const rows of groups) if (rows[index]) balanced.push(rows[index]);
   }
   const remaining = groups.flatMap(rows => rows.slice(4)).sort(byGpaGap(filters.gpa));
-  return [...balanced, ...remaining];
+  return prioritizePhotos([...balanced, ...remaining]);
 }
 
 export function getCatalogPage(results, requestedPage, pageSize = CATALOG_PAGE_SIZE) {

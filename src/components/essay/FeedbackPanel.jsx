@@ -1,185 +1,147 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { 
-    Award, Eye, MessageSquare, Sparkles, 
-    CheckCircle2, AlertCircle, Lightbulb, ArrowRight
-} from 'lucide-react';
+import { AlertCircle, ArrowDown, Award, CheckCircle2, Eye, Lightbulb, MessageSquareText, Sparkles } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getEssayCopy } from '@/lib/essayCopy';
 
-export default function FeedbackPanel({ feedback, essay }) {
-    const getScoreColor = (score) => {
-        if (score >= 8) return 'text-green-600 bg-green-50 border-green-200';
-        if (score >= 6) return 'text-amber-600 bg-amber-50 border-amber-200';
-        return 'text-red-600 bg-red-50 border-red-200';
-    };
+export default function FeedbackPanel({ feedback, language }) {
+  const copy = getEssayCopy(language);
 
-    const getScoreLabel = (score) => {
-        if (score >= 8) return 'Excellent';
-        if (score >= 6) return 'Good';
-        if (score >= 4) return 'Fair';
-        return 'Needs Work';
-    };
-
-    return (
-        <div className="space-y-6">
-            {/* Overall Score */}
-            <Card className="border-2 border-indigo-100 bg-gradient-to-br from-white to-indigo-50">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <CardTitle className="flex items-center gap-2">
-                            <Award className="w-5 h-5 text-indigo-600" />
-                            Overall Assessment
-                        </CardTitle>
-                        <Badge className={`text-xl px-4 py-2 ${getScoreColor(feedback.overall_score)} border`}>
-                            {feedback.overall_score}/10
-                        </Badge>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <div className="mb-2">
-                        <Progress value={feedback.overall_score * 10} className="h-3" />
-                    </div>
-                    <p className="text-sm text-slate-600">
-                        <strong>{getScoreLabel(feedback.overall_score)}</strong> - Your essay shows {feedback.overall_score >= 7 ? 'strong potential' : 'room for improvement'}
-                    </p>
-                </CardContent>
-            </Card>
-
-            <div className="grid md:grid-cols-2 gap-6">
-                {/* Strengths */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                            <CheckCircle2 className="w-5 h-5 text-green-600" />
-                            Strengths
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="space-y-3">
-                            {feedback.strengths?.map((strength, index) => (
-                                <li key={index} className="flex gap-2">
-                                    <Sparkles className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                    <span className="text-slate-700 text-sm">{strength}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
-                </Card>
-
-                {/* Clarity Score */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                            <Eye className="w-5 h-5 text-indigo-600" />
-                            Clarity
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-slate-500">Score</span>
-                            <Badge className={getScoreColor(feedback.clarity_score)}>
-                                {feedback.clarity_score}/10
-                            </Badge>
-                        </div>
-                        <Progress value={feedback.clarity_score * 10} className="h-2" />
-                        <p className="text-sm text-slate-600">{feedback.clarity_explanation}</p>
-                    </CardContent>
-                </Card>
+  return (
+    <div className="space-y-5" aria-live="polite">
+      <Card className="border-[#d7e0e3] bg-white/90 shadow-sm">
+        <CardContent className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:p-6">
+          <div role="img" className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl bg-[#e5edf0] text-[#294750]" aria-label={`${feedback.overall_score} ${copy.scoreLabel}`}>
+            <Award className="mb-0.5 h-4 w-4" aria-hidden="true" />
+            <span className="text-lg font-semibold leading-none">{feedback.overall_score}<span className="text-xs font-normal">/10</span></span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg font-semibold text-slate-800">{copy.score}</h2>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">{copy.summaryHint}</p>
+          </div>
+          <div className="w-full sm:w-40">
+            <div className="mb-1 flex justify-between text-xs text-slate-500">
+              <span>{copy.clarity}</span><span>{feedback.clarity_score}/10</span>
             </div>
+            <div
+              role="progressbar"
+              aria-label={copy.clarity}
+              aria-valuemin={1}
+              aria-valuemax={10}
+              aria-valuenow={feedback.clarity_score}
+              className="h-2 overflow-hidden rounded-full bg-slate-100"
+            >
+              <div className="h-full rounded-full bg-[#719084]" style={{ width: `${feedback.clarity_score * 10}%` }} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* Grammar Issues */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <AlertCircle className="w-5 h-5 text-amber-600" />
-                        Grammar & Style
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {feedback.grammar_issues?.length > 0 && feedback.grammar_issues[0] !== "No major issues" ? (
-                        <ul className="space-y-2">
-                            {feedback.grammar_issues.map((issue, index) => (
-                                <li key={index} className="flex gap-2 text-sm">
-                                    <span className="text-amber-500">•</span>
-                                    <span className="text-slate-700">{issue}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <div className="flex items-center gap-2 text-green-600">
-                            <CheckCircle2 className="w-5 h-5" />
-                            <span>No major grammar issues detected. Great job!</span>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <Card className="border-white/80 bg-white/90 shadow-sm md:col-span-2">
+          <CardHeader className="p-5 pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <CheckCircle2 className="h-4 w-4 text-[#56836e]" aria-hidden="true" />
+              {copy.strengths}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-5 pb-5">
+            <ul className="space-y-3">
+              {feedback.strengths.map((strength, index) => (
+                <li key={index} className="flex gap-2.5 text-sm leading-relaxed text-slate-700">
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#719084]" aria-hidden="true" />
+                  <span>{strength}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
 
-            {/* Tone Assessment */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <MessageSquare className="w-5 h-5 text-violet-600" />
-                        Tone Assessment
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-slate-700 leading-relaxed">{feedback.tone_assessment}</p>
-                </CardContent>
-            </Card>
+        <Card className="border-white/80 bg-white/90 shadow-sm">
+          <CardHeader className="p-5 pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Eye className="h-4 w-4 text-[#557887]" aria-hidden="true" />
+              {copy.clarityExplanation}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-5 pb-5">
+            <p className="text-sm leading-relaxed text-slate-700">{feedback.clarity_explanation}</p>
+          </CardContent>
+        </Card>
+      </div>
 
-            {/* Suggestions */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Lightbulb className="w-5 h-5 text-indigo-600" />
-                        Suggestions for Improvement
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-3">
-                        {feedback.suggestions?.map((suggestion, index) => (
-                            <div key={index} className="flex gap-3 p-3 bg-indigo-50 rounded-lg">
-                                <span className="flex-shrink-0 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
-                                    {index + 1}
-                                </span>
-                                <p className="text-slate-700 text-sm">{suggestion}</p>
-                            </div>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+      <Card className="border-white/80 bg-white/90 shadow-sm">
+        <CardHeader className="p-5 pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <AlertCircle className="h-4 w-4 text-[#a77b49]" aria-hidden="true" />
+            {copy.grammarIssues}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-5">
+          {feedback.grammar_issues.length ? (
+            <ul className="space-y-2.5">
+              {feedback.grammar_issues.map((issue, index) => (
+                <li key={index} className="flex gap-2.5 text-sm leading-relaxed text-slate-700">
+                  <span aria-hidden="true" className="text-[#a77b49]">•</span><span>{issue}</span>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="text-sm leading-relaxed text-slate-600">{copy.noGrammarIssues}</p>}
+        </CardContent>
+      </Card>
 
-            {/* Revised Sentences */}
-            {feedback.revised_sentences?.length > 0 && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <ArrowRight className="w-5 h-5 text-green-600" />
-                            Example Improvements
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            {feedback.revised_sentences.map((item, index) => (
-                                <div key={index} className="space-y-2">
-                                    <div className="p-3 bg-red-50 border border-red-100 rounded-lg">
-                                        <p className="text-xs text-red-600 font-medium mb-1">Before:</p>
-                                        <p className="text-sm text-slate-700 italic">{item.original}</p>
-                                    </div>
-                                    <div className="flex justify-center">
-                                        <ArrowRight className="w-5 h-5 text-slate-400" />
-                                    </div>
-                                    <div className="p-3 bg-green-50 border border-green-100 rounded-lg">
-                                        <p className="text-xs text-green-600 font-medium mb-1">After:</p>
-                                        <p className="text-sm text-slate-700">{item.improved}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-        </div>
-    );
+      <Card className="border-white/80 bg-white/90 shadow-sm">
+        <CardHeader className="p-5 pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MessageSquareText className="h-4 w-4 text-[#74678a]" aria-hidden="true" />
+            {copy.tone}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-5">
+          <p className="text-sm leading-relaxed text-slate-700">{feedback.tone_assessment}</p>
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/80 bg-white/90 shadow-sm">
+        <CardHeader className="p-5 pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Lightbulb className="h-4 w-4 text-[#927a4e]" aria-hidden="true" />
+            {copy.suggestions}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-5">
+          <ol className="space-y-3">
+            {feedback.suggestions.map((suggestion, index) => (
+              <li key={index} className="flex gap-3 rounded-xl bg-[#f5f5f2] p-3.5 text-sm leading-relaxed text-slate-700">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7e9e4] text-xs font-semibold text-[#465750]" aria-hidden="true">{index + 1}</span>
+                <span>{suggestion}</span>
+              </li>
+            ))}
+          </ol>
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/80 bg-white/90 shadow-sm">
+        <CardHeader className="p-5 pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ArrowDown className="h-4 w-4 text-[#56836e]" aria-hidden="true" />
+            {copy.revisions}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 px-5 pb-5">
+          {feedback.revised_sentences.map((sentence, index) => (
+            <div key={index} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-500">{copy.before}</p>
+                <p className="text-sm leading-relaxed text-slate-700">{sentence.original}</p>
+              </div>
+              <div className="rounded-xl border border-[#d7e5dc] bg-[#f1f6f2] p-3.5">
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#416158]">{copy.after}</p>
+                <p className="text-sm leading-relaxed text-slate-700">{sentence.improved}</p>
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

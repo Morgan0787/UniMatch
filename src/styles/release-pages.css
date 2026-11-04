@@ -1,0 +1,130 @@
+/* Shared release polish: carry Search's pearl palette through the product's working pages. */
+body[data-unimatch-theme] .release-page {
+  --release-ink: #182a32;
+  --release-muted: #5f6d75;
+  --release-line: rgba(88, 108, 119, .17);
+  --release-paper: rgba(255, 255, 255, .88);
+  color: var(--release-ink);
+  background:
+    radial-gradient(ellipse at 84% 4%, rgba(248, 225, 214, .42), transparent 30rem),
+    linear-gradient(135deg, #f4f6f8 0%, #edf0f4 58%, #f4f4f5 100%) !important;
+}
+
+body[data-unimatch-theme] .release-page :is(h1, h2, h3) { color: var(--release-ink); }
+body[data-unimatch-theme] .release-page :is(button, a, input, select, textarea, summary, [role="tab"]):focus-visible {
+  outline: 3px solid #5f8294;
+  outline-offset: 3px;
+}
+
+/* Public university details */
+body[data-unimatch-theme] .university-page.release-page .max-w-5xl > .university-back {
+  color: #314951;
+  border-radius: 999px;
+  padding: 0 12px;
+  transition: background-color .16s ease;
+}
+body[data-unimatch-theme] .university-page.release-page .university-back:hover { background: rgba(255,255,255,.68); }
+
+/* Login: a quiet, centered form surface with enough room for translated tabs. */
+body[data-unimatch-theme] .login-page.release-page { padding-block: 28px; }
+body[data-unimatch-theme] .release-login-shell { width: min(100%, 29rem); }
+body[data-unimatch-theme] .release-login-shell > .text-center { padding: 4px 0 8px; }
+body[data-unimatch-theme] .release-login-shell > .text-center > div,
+body[data-unimatch-theme] .release-login-card :is(.bg-indigo-600, .bg-indigo-100) {
+  background: #dce7eb;
+  color: #284650;
+}
+body[data-unimatch-theme] .release-login-shell > .text-center > div svg { color: #284650; }
+body[data-unimatch-theme] .release-login-card {
+  border: 1px solid rgba(255,255,255,.94);
+  border-radius: 22px;
+  background: rgba(255,255,255,.86);
+  box-shadow: 0 14px 42px rgba(35, 53, 63, .09), inset 0 0 0 1px rgba(197,208,216,.2);
+}
+body[data-unimatch-theme] .release-login-card [role="tablist"] { border: 1px solid var(--release-line); background: #f1f4f6; }
+body[data-unimatch-theme] .release-login-card input { min-height: 44px; border-color: #cbd5da; background: #fff; }
+body[data-unimatch-theme] .release-login-card button:is([type="submit"], [type="button"]) { min-height: 42px; }
+body[data-unimatch-theme] .release-login-card button.bg-indigo-600 { background: #263f49; color: white; }
+body[data-unimatch-theme] .release-login-card button.bg-indigo-600:hover { background: #34545f; }
+
+/* Authenticated pages share a low contrast hero and restrained paper surfaces. */
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero {
+  border-bottom: 1px solid var(--release-line);
+  background:
+    radial-gradient(ellipse at 80% 0%, rgba(249, 227, 217, .58), transparent 28rem),
+    linear-gradient(120deg, #eaf0f3, #f5f6f7 68%, #f1f2f3) !important;
+}
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero :is(.text-white, .text-white\/90, .text-indigo-100) { color: var(--release-muted); }
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero .bg-white\/20 { background: rgba(255,255,255,.72); }
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero .bg-white\/20.border-white\/30 { border-color: var(--release-line); }
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero :is(button, a).text-white { color: var(--release-ink); }
+
+body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div {
+  min-width: 0;
+  border-color: rgba(255,255,255,.95);
+  border-radius: 15px;
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 4px 16px rgba(37,54,65,.045);
+}
+body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div > :first-child { color: #24434e; }
+body[data-unimatch-theme] .profile-page.release-page .max-w-4xl > .mb-6.bg-gradient-to-br {
+  border-color: var(--release-line);
+  border-radius: 17px;
+  background: rgba(255,255,255,.74);
+}
+body[data-unimatch-theme] .release-page.internal-page :is(.product-card, [data-slot="card"], .recommendation-card) {
+  border-color: var(--release-line);
+  background: var(--release-paper);
+  box-shadow: 0 5px 20px rgba(37,54,65,.045);
+}
+
+body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner h1 { max-width: 22ch; }
+body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner > p { line-height: 1.55; }
+body[data-unimatch-theme] .recommendations-page.release-page .recommendation-card {
+  overflow: hidden;
+  border-radius: 18px;
+  transition: border-color .16s ease, box-shadow .16s ease;
+}
+body[data-unimatch-theme] .recommendations-page.release-page .recommendation-card:hover {
+  border-color: rgba(115, 143, 155, .48);
+  box-shadow: 0 10px 28px rgba(37,54,65,.09);
+}
+body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner .bg-indigo-600,
+body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner button.bg-indigo-600 { background: #294750; color: white; }
+
+/* Guest survey keeps its existing step flow while gaining a unified page frame. */
+body[data-unimatch-theme] .admissions-page.release-page {
+  width: min(100% - 32px, 76rem);
+  margin: 28px auto 40px;
+  padding: 18px clamp(14px, 2.5vw, 30px) 22px;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 94% 0%, rgba(248,225,214,.36), transparent 25rem),
+    rgba(255,255,255,.56);
+  box-shadow: 0 12px 36px rgba(37,54,65,.05), inset 0 0 0 1px rgba(196,207,215,.16);
+}
+body[data-unimatch-theme] .admissions-page.release-page :is(button, input, select, textarea) { font: inherit; }
+body[data-unimatch-theme] .admissions-page.release-page :is(button, input, select, textarea):focus-visible { outline-offset: 2px; }
+
+/* Comparison is portaled, so it carries its own explicit release class. */
+body[data-unimatch-theme] .release-comparison {
+  --release-line: rgba(88, 108, 119, .17);
+  border: 1px solid rgba(255,255,255,.94);
+  background: #f7f8f9;
+  box-shadow: 0 24px 70px rgba(23,39,48,.2);
+}
+body[data-unimatch-theme] .release-comparison .comparison-scroll { border-color: var(--release-line); background: white; }
+body[data-unimatch-theme] .release-comparison .comparison-table thead th { background: #f2f5f6; }
+body[data-unimatch-theme] .release-comparison .comparison-table :is(td, th) { border-color: var(--release-line); }
+body[data-unimatch-theme] .release-comparison .comparison-label { background: #f7f8f9; }
+body[data-unimatch-theme] .release-comparison .comparison-table tbody > tr > th[scope="rowgroup"] { background: #eaf0f2; color: #354e58; }
+
+@media (max-width: 640px) {
+  body[data-unimatch-theme] .release-page.internal-page .recommendations-hero-inner,
+  body[data-unimatch-theme] .release-page.internal-page .profile-hero-inner { padding-top: 22px; padding-bottom: 20px; }
+  body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid { gap: 8px; }
+  body[data-unimatch-theme] .admissions-page.release-page { width: calc(100% - 20px); margin-block: 14px 24px; padding: 13px 11px 17px; border-radius: 17px; }
+  body[data-unimatch-theme] .release-comparison { max-height: 92dvh; padding: 14px; }
+}
+

@@ -138,7 +138,6 @@
 .admissions-page button:focus-visible, .admissions-page a:focus-visible, .admissions-page input:focus-visible, .admissions-page select:focus-visible, .admissions-page summary:focus-visible { outline: 3px solid #9c5a2d; outline-offset: 4px; }
 .admissions-page h1[tabindex='-1']:focus { outline: none; }
 .admissions-page button, .admissions-page a, .admissions-page input, .admissions-page select, .admissions-page summary { -webkit-tap-highlight-color: transparent; }
-@media (prefers-reduced-motion: reduce) { .admissions-page *, .admissions-page *::before, .admissions-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 .admission-alternatives { margin-top: 36px; padding-top: 24px; border-top: 2px solid #b3a18b; }
 .admission-alternatives > h2 { font-size: clamp(1.35rem,3vw,1.8rem); }
 /* Keep the existing feedback action, but never float it over survey fields. */
@@ -177,3 +176,23 @@ body[data-unimatch-theme]:has(.admissions-page) .product-feedback-trigger { posi
 @media (max-width: 360px) {
   .admission-direction-grid { grid-template-columns: minmax(0,1fr); }
 }
+/* Results begin with the user's selection, followed immediately by comparable facts. */
+.admission-layout[data-view="results"] { display: block; }
+.admissions-page[data-view="results"] .admission-results-heading { align-items: flex-start; }
+.admissions-page[data-view="results"] .admission-selection-summary { flex-basis: 180px; }
+.admissions-page[data-view="results"] .admission-topline { margin-bottom: 20px; }
+.admissions-page[data-view="results"] .admission-coverage { margin-block: 12px; padding-block: 10px; }
+.admission-selection-summary { flex: 1 1 320px; min-width: 0; }
+.admission-selection-summary strong { font-size: 18px; }
+.admission-selection-summary p { margin: 5px 0 0; font-size: 13px; color: #65635c; }
+.admission-budget { display: inline-flex; align-self: flex-start; margin: 0; padding: 5px 9px; border: 1px solid #dedbd3; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.admission-budget-covered { color: #24523f; background: #edf4ee; border-color: #bcd5c1; }
+.admission-budget-exceeds { color: #8a3a28; background: #fff0e8; border-color: #e4b9a5; }
+.admission-budget-unknown { color: #65635c; background: #f4f1ea; }
+.admission-candidate > .admission-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.admission-candidate > .admission-facts > div:nth-child(2) { grid-column: 1 / -1; grid-row: 1; }
+.admission-candidate > .admission-facts > div:nth-child(2) dd { font-size: 20px; font-weight: 600; line-height: 1.35; }
+.admission-candidate > details { border-top: 1px solid #dedbd3; padding-top: 12px; }
+.admission-candidate > details > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+.admission-candidate > details > summary::before { content: '+'; margin-right: 10px; }
+.admission-candidate > details[open] > summary::before { content: '−'; }

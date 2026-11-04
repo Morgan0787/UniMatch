@@ -8,6 +8,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import RequireAuth from '@/components/RequireAuth';
+import { MotionConfig } from 'framer-motion';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
 function App() {
   return (
     <AuthProvider>
+      <MotionConfig reducedMotion="never">
       <QueryClientProvider client={queryClientInstance}>
         <Router>
           <NavigationTracker />
@@ -76,6 +78,7 @@ function App() {
         </Router>
         <Toaster />
       </QueryClientProvider>
+      </MotionConfig>
     </AuthProvider>
   )
 }

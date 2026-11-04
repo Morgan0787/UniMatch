@@ -1,273 +1,255 @@
-import React, { useState } from 'react';
-import { apiClient } from '@/lib/apiClient';
-import { invokeAI } from '@/lib/aiService';
-import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { 
-    Sparkles, FileText, Lightbulb, Send, Loader2, 
-    CheckCircle2, BookOpen
-} from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { AlertCircle, FileText, LoaderCircle, LockKeyhole, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FeedbackPanel from '@/components/essay/FeedbackPanel';
 import BrainstormPanel from '@/components/essay/BrainstormPanel';
+import { invokeAI } from '@/lib/aiService';
+import { useAuth } from '@/lib/AuthContext';
+import { getEssayCopy } from '@/lib/essayCopy';
+import { useLanguage } from '@/lib/i18n';
+import '@/styles/internal-pages.css';
+import '@/styles/release-pages.css';
+
+const LOGIN_URL = '/Login?redirect_to=%2FEssayChecker';
 
 export default function EssayChecker() {
-    const [essay, setEssay] = useState('');
-    const [feedback, setFeedback] = useState(null);
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [activeTab, setActiveTab] = useState('write');
+  const { language } = useLanguage();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const copy = getEssayCopy(language);
+  const aiEnabled = import.meta.env.VITE_AI_ENABLED === 'true';
+  const [action, setAction] = useState('review');
+  const [essay, setEssay] = useState('');
+  const [interests, setInterests] = useState([]);
+  const [result, setResult] = useState(null);
+  const [pending, setPending] = useState(false);
+  const [errorCode, setErrorCode] = useState(null);
+  const pendingRef = useRef(false);
 
-    // Fetch user profile for brainstorming context
-    const { data: user } = useQuery({
-        queryKey: ['currentUser'],
-        queryFn: () => apiClient.auth.me(),
-    });
+  const clearResult = () => {
+    setResult(null);
+    setErrorCode(null);
+  };
 
-    const { data: profiles = [] } = useQuery({
-        queryKey: ['studentProfile', user?.email],
-        queryFn: () => apiClient.entities.StudentProfile.filter({ created_by: user?.email }),
-        enabled: !!user?.email,
-    });
+  const changeAction = (nextAction) => {
+    if (nextAction === action || pendingRef.current) return;
+    setAction(nextAction);
+    clearResult();
+  };
 
-    const profile = profiles[0];
+  const changeEssay = (nextEssay) => {
+    setEssay(nextEssay);
+    clearResult();
+  };
 
-    const analyzeEssay = async () => {
-        if (!essay.trim()) {
-            toast.error('Please write something first');
-            return;
-        }
+  const changeInterests = (nextInterests) => {
+    setInterests(nextInterests);
+    clearResult();
+  };
 
-        if (essay.length < 50) {
-            toast.error('Essay is too short. Please write at least 50 characters.');
-            return;
-        }
+  const submit = async () => {
+    if (pendingRef.current || !aiEnabled || !isAuthenticated) return;
 
-        setIsAnalyzing(true);
-        try {
-            const result = await invokeAI({
-                prompt: `You are an expert university admissions essay consultant. Analyze the following university application essay and provide detailed, constructive feedback.
+    const normalizedEssay = essay.trim();
+    if (action === 'review' && (normalizedEssay.length < 50 || normalizedEssay.length > 12000)) {
+      setErrorCode('invalid_request');
+      return;
+    }
 
-Essay:
-"""
-${essay}
-"""
+    const normalizedInterests = interests.map((interest) => interest.trim()).filter(Boolean);
+    if (action === 'brainstorm' && normalizedInterests.some((interest) => interest.length > 80)) {
+      setErrorCode('invalid_request');
+      return;
+    }
 
-Provide a comprehensive analysis with the following structure:
-1. Overall Score (1-10)
-2. Strengths (list 3-4 specific strong points)
-3. Clarity Score (1-10 with brief explanation)
-4. Grammar Issues (list specific issues found, or state "No major issues")
-5. Tone Assessment (describe the tone and whether it's appropriate for university applications)
-6. Specific Suggestions (provide 4-6 actionable suggestions for improvement)
-7. Revised Sentences (pick 2-3 sentences that could be improved and show how to rewrite them)
+    pendingRef.current = true;
+    setPending(true);
+    setErrorCode(null);
+    setResult(null);
+    try {
+      const request = action === 'review'
+        ? { action: 'review', essay: normalizedEssay, language }
+        : {
+          action: 'brainstorm',
+          language,
+          ...(normalizedInterests.length ? { interests: normalizedInterests } : {}),
+        };
+      const response = await invokeAI(request);
+      setResult({ action, language, data: response });
+    } catch (error) {
+      const knownCodes = new Set([
+        'unauthorized',
+        'rate_limited',
+        'unavailable',
+        'invalid_response',
+        'timeout',
+        'invalid_request',
+      ]);
+      setErrorCode(knownCodes.has(error?.code) ? error.code : 'default');
+    } finally {
+      pendingRef.current = false;
+      setPending(false);
+    }
+  };
 
-Be encouraging but honest. Focus on helping the student tell their authentic story effectively.`,
-                response_json_schema: {
-                    type: "object",
-                    properties: {
-                        overall_score: { type: "number" },
-                        strengths: { 
-                            type: "array",
-                            items: { type: "string" }
-                        },
-                        clarity_score: { type: "number" },
-                        clarity_explanation: { type: "string" },
-                        grammar_issues: {
-                            type: "array",
-                            items: { type: "string" }
-                        },
-                        tone_assessment: { type: "string" },
-                        suggestions: {
-                            type: "array",
-                            items: { type: "string" }
-                        },
-                        revised_sentences: {
-                            type: "array",
-                            items: {
-                                type: "object",
-                                properties: {
-                                    original: { type: "string" },
-                                    improved: { type: "string" }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            setFeedback(result);
-            setActiveTab('feedback');
-            toast.success('Analysis complete!');
-        } catch (error) {
-            toast.error('Failed to analyze essay. Please try again.');
-            console.error(error);
-        } finally {
-            setIsAnalyzing(false);
-        }
-    };
-
-    const wordCount = essay.trim().split(/\s+/).filter(w => w.length > 0).length;
-    const charCount = essay.length;
-
+  if (!aiEnabled) {
     return (
-        <div className="essay-page min-h-screen bg-slate-50 py-8">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                {/* Header */}
-                <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-xl flex items-center justify-center">
-                            <Sparkles className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-slate-800">AI Essay Coach</h1>
-                            <p className="text-slate-500">Get instant feedback on your university application essays</p>
-                        </div>
-                    </div>
-                </div>
-
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                    <TabsList className="bg-white border">
-                        <TabsTrigger value="write" className="gap-2">
-                            <FileText className="w-4 h-4" />
-                            Write Essay
-                        </TabsTrigger>
-                        <TabsTrigger value="feedback" className="gap-2" disabled={!feedback}>
-                            <CheckCircle2 className="w-4 h-4" />
-                            Feedback
-                        </TabsTrigger>
-                        <TabsTrigger value="brainstorm" className="gap-2">
-                            <Lightbulb className="w-4 h-4" />
-                            Brainstorm Ideas
-                        </TabsTrigger>
-                    </TabsList>
-
-                    {/* Write Tab */}
-                    <TabsContent value="write">
-                        <div className="grid lg:grid-cols-3 gap-6">
-                            <div className="lg:col-span-2">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Your Essay</CardTitle>
-                                        <CardDescription>
-                                            Write or paste your university application essay below
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <Textarea
-                                            value={essay}
-                                            onChange={(e) => setEssay(e.target.value)}
-                                            placeholder="Start writing your essay here...&#10;&#10;Example: 'Growing up in Tashkent, I always wondered what lay beyond the horizon...'"
-                                            className="min-h-[400px] text-base leading-relaxed"
-                                        />
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex gap-4 text-sm text-slate-500">
-                                                <span>{wordCount} words</span>
-                                                <span>•</span>
-                                                <span>{charCount} characters</span>
-                                            </div>
-                                            <Button 
-                                                onClick={analyzeEssay}
-                                                disabled={isAnalyzing || !essay.trim()}
-                                                className="bg-indigo-600 hover:bg-indigo-700"
-                                            >
-                                                {isAnalyzing ? (
-                                                    <>
-                                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                        Analyzing...
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Send className="w-4 h-4 mr-2" />
-                                                        Analyze Essay
-                                                    </>
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-
-                            {/* Tips Sidebar */}
-                            <div className="space-y-4">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-lg flex items-center gap-2">
-                                            <BookOpen className="w-5 h-5 text-indigo-600" />
-                                            Writing Tips
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3 text-sm">
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Be authentic and tell your unique story</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Use specific examples and anecdotes</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Show growth and reflection</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Keep it clear and concise</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Avoid clichés and generic statements</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                            <p className="text-slate-600">Proofread multiple times</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="bg-gradient-to-br from-indigo-50 to-violet-50 border-indigo-100">
-                                    <CardContent className="pt-6">
-                                        <Lightbulb className="w-8 h-8 text-indigo-600 mb-3" />
-                                        <p className="text-sm text-slate-700 font-medium mb-2">Need inspiration?</p>
-                                        <p className="text-xs text-slate-600 mb-3">
-                                            Check out the Brainstorm Ideas tab for personalized essay topics and prompts
-                                        </p>
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => setActiveTab('brainstorm')}
-                                            className="w-full"
-                                        >
-                                            Get Ideas
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        </div>
-                    </TabsContent>
-
-                    {/* Feedback Tab */}
-                    <TabsContent value="feedback">
-                        {feedback ? (
-                            <FeedbackPanel feedback={feedback} essay={essay} />
-                        ) : (
-                            <Card>
-                                <CardContent className="py-12 text-center">
-                                    <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                                    <p className="text-slate-500">Write and analyze an essay to see feedback here</p>
-                                </CardContent>
-                            </Card>
-                        )}
-                    </TabsContent>
-
-                    {/* Brainstorm Tab */}
-                    <TabsContent value="brainstorm">
-                        <BrainstormPanel profile={profile} user={user} />
-                    </TabsContent>
-                </Tabs>
-            </div>
-        </div>
+      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
+        <UnavailableState copy={copy} />
+      </main>
     );
+  }
+
+  if (isLoadingAuth) {
+    return (
+      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
+        <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
+          <CardContent className="flex items-center gap-3 p-6 text-sm text-slate-600 sm:p-8" role="status">
+            <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
+            {copy.loadingAuth}
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
+        <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
+          <CardHeader className="p-6 sm:p-8">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e5edf0] text-[#294750]">
+              <LockKeyhole className="h-6 w-6" aria-hidden="true" />
+            </div>
+            <CardTitle className="text-2xl">{copy.signInTitle}</CardTitle>
+            <CardDescription className="text-base leading-relaxed">{copy.signInDescription}</CardDescription>
+          </CardHeader>
+          <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
+            <Button asChild className="w-full sm:w-auto">
+              <Link to={LOGIN_URL}>{copy.signIn}</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  const errorMessage = errorCode === 'unauthorized' ? copy.errors.unauthorized : copy.errors[errorCode] || copy.errors.default;
+  const wordCount = essay.trim() ? essay.trim().split(/\s+/).length : 0;
+
+  return (
+    <main className="release-page internal-page essay-page min-h-screen [overflow-wrap:anywhere] px-4 py-8 sm:px-6 sm:py-12">
+      <div className="mx-auto max-w-5xl space-y-7">
+        <header className="flex items-start gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#294750] text-white shadow-sm sm:h-14 sm:w-14">
+            <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />
+          </div>
+          <div className="pt-0.5">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{copy.title}</h1>
+            <p className="mt-2 max-w-2xl leading-relaxed text-slate-600">{copy.intro}</p>
+          </div>
+        </header>
+
+        <div className="rounded-2xl border border-[#d7e0e3] bg-white/75 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
+          <p className="font-semibold text-[#294750]">{copy.privacyTitle}</p>
+          <p className="mt-1.5">{copy.privacy}</p>
+        </div>
+
+        <Tabs value={action} onValueChange={changeAction} className="space-y-5">
+          <TabsList className="grid h-auto w-full max-w-lg grid-cols-2 rounded-xl border border-slate-200 bg-white/80 p-1">
+            <TabsTrigger value="review" disabled={pending} className="min-h-11 whitespace-normal rounded-lg px-3 py-2 text-sm">
+              <FileText className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" />
+              {copy.reviewTab}
+            </TabsTrigger>
+            <TabsTrigger value="brainstorm" disabled={pending} className="min-h-11 whitespace-normal rounded-lg px-3 py-2 text-sm">
+              <Sparkles className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" />
+              {copy.brainstormTab}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="review" className="mt-0 space-y-5">
+            <Card className="border-white/80 bg-white/90 shadow-sm">
+              <CardHeader className="p-5 sm:p-7">
+                <CardTitle className="text-xl">{copy.reviewTitle}</CardTitle>
+                <CardDescription>{copy.reviewDescription}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 px-5 pb-5 sm:px-7 sm:pb-7">
+                <label htmlFor="essay-draft" className="text-sm font-medium text-slate-800">{copy.essayLabel}</label>
+                <textarea
+                  id="essay-draft"
+                  value={essay}
+                  onChange={(event) => changeEssay(event.target.value)}
+                  placeholder={copy.essayPlaceholder}
+                  maxLength={12000}
+                  disabled={pending}
+                  aria-describedby="essay-count essay-minimum"
+                  className="min-h-[260px] w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-base leading-relaxed text-slate-800 shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5f8294] disabled:cursor-not-allowed disabled:bg-slate-50 sm:min-h-[360px]"
+                />
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+                  <span>{copy.wordCount.replace('{count}', String(wordCount))}</span>
+                  <span id="essay-count" aria-live="polite">{copy.charCount.replace('{count}', String(essay.length))}</span>
+                </div>
+                <p id="essay-minimum" className="text-sm text-slate-500">
+                  {essay.trim().length < 50 ? copy.minLength : copy.maxLength}
+                </p>
+                <Button
+                  type="button"
+                  onClick={submit}
+                  disabled={pending || essay.trim().length < 50 || essay.trim().length > 12000}
+                  aria-busy={pending}
+                  className="w-full bg-[#294750] text-white hover:bg-[#203b43] sm:w-auto"
+                >
+                  {pending ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <FileText className="h-4 w-4" aria-hidden="true" />}
+                  {pending ? copy.workingReview : copy.reviewAction}
+                </Button>
+              </CardContent>
+            </Card>
+            {result?.action === 'review' && result.language === language && <FeedbackPanel feedback={result.data} language={language} />}
+          </TabsContent>
+
+          <TabsContent value="brainstorm" className="mt-0 space-y-5">
+            <BrainstormPanel
+              interests={interests}
+              onInterestsChange={changeInterests}
+              onSubmit={submit}
+              pending={pending}
+              copy={copy}
+            />
+            {result?.action === 'brainstorm' && result.language === language && <BrainstormPanel.Result ideas={result.data} copy={copy} />}
+          </TabsContent>
+        </Tabs>
+
+        {errorCode && (
+          <div role="alert" className="flex flex-col gap-3 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-900 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <div><p className="font-medium">{copy.errorTitle}</p><p className="mt-1">{errorMessage}</p></div>
+            </div>
+            {errorCode === 'unauthorized' && <Link className="font-medium underline underline-offset-4" to={LOGIN_URL}>{copy.loginAgain}</Link>}
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
+
+function UnavailableState({ copy }) {
+  return (
+    <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
+      <CardHeader className="p-6 sm:p-8">
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e5edf0] text-[#294750]">
+          <FileText className="h-6 w-6" aria-hidden="true" />
+        </div>
+        <CardTitle className="text-2xl">{copy.disabledTitle}</CardTitle>
+        <CardDescription className="text-base leading-relaxed">{copy.disabledDescription}</CardDescription>
+      </CardHeader>
+      <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
+        <Button asChild className="w-full sm:w-auto">
+          <Link to="/Search">{copy.explore}</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }

@@ -15,11 +15,11 @@
  * all — see scripts/check-matching.mjs, which now asserts it.
  *
  * That encoding's country term defaults to a 100% weight, which is the default
- * Recommendations *displays* (`countryWeights[country] || 100`). The two agree
+ * Recommendations *displays* (`countryWeights[country] ?? 100`). The two agree
  * on purpose: an untouched country used to score at 50% while the UI showed it
  * at 100%, so the percentage on the card was not the weighting the sliders
- * describe. The `||` is deliberate too, so a slider at 0 falls back the same way
- * in the scorer as in the display.
+ * describe. An explicit zero disables the country contribution; only an unset
+ * weight takes the default, in both the scorer and the display.
  *
  * The module also owns `isGpaFit`, the "GPA fit" badge on a Recommendations
  * card. That badge and `calculateMatchScore`'s full GPA band are one judgment at
@@ -279,11 +279,11 @@ export function calculateMatchScore(university, profile, countryWeights = {}) {
     // Country/Region Preference (weighted, up to 20 points)
     maxScore += 20;
     // Default 100% weight, which is the default Recommendations *displays* for a
-    // country (`countryWeights[country] || 100`): at 50 an untouched country
+    // country (`countryWeights[country] ?? 100`): at 50 an untouched country
     // scored at half weight while the UI showed it at 100, so the percentage on
-    // the card was not the weighting the sliders describe. `||` not `??` on
-    // purpose, so a slider at 0 falls back the same way here as it does there.
-    const countryWeight = countryWeights[university.country] || 100;
+    // the card was not the weighting the sliders describe. Explicit zero means
+    // "Not important" and must contribute no country points.
+    const countryWeight = countryWeights[university.country] ?? 100;
     if (profile.preferred_countries?.includes(university.country)) {
         score += (20 * countryWeight) / 100;
     } else {

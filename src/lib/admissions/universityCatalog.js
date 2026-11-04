@@ -10,7 +10,7 @@ export function withPublicProgrammeFacts(row) {
   const institution = adapted.institutions[0];
   return {
     ...row,
-    admissionCatalog: { status: institution ? 'valid' : 'invalid', identity: institution ? { id: institution.id, institutionId: institution.institutionId, legacyFavoriteKeys: institution.legacyFavoriteKeys } : null, programmes: institution?.programmes || [], sources: institution?.sources || {} },
+    admissionCatalog: { status: institution ? 'valid' : 'invalid', identity: institution ? { id: institution.id, institutionId: institution.institutionId, legacyFavoriteKeys: institution.legacyFavoriteKeys } : null, programmes: institution?.programmes || [], sources: institution?.sources || {}, media: institution?.media || null },
     tuition_min: null, tuition_max: null, living_cost_estimate: null, min_gpa: null, required_ielts: null,
     language: '', topikLevel: '', application_deadline: '', scholarships_available: null, verified: false,
     image_url: institution?.media?.image?.url || '',

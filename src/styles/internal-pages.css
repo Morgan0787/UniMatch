@@ -1,0 +1,230 @@
+/* Quiet, warm surfaces for account tools and other authenticated pages. */
+body[data-unimatch-theme] .internal-page {
+  --internal-ink: #292823;
+  --internal-muted: #65635c;
+  --internal-border: #dedbd3;
+  --internal-copper: #855a36;
+  background: #f4f1eb;
+  color: var(--internal-ink);
+}
+
+body[data-unimatch-theme] .internal-page h1 {
+  max-width: 28ch;
+  color: var(--internal-ink);
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: 1.16;
+}
+
+body[data-unimatch-theme] .internal-page :is(p, li) {
+  line-height: 1.6;
+}
+
+body[data-unimatch-theme] .internal-page .product-page-hero {
+  border-color: var(--internal-border);
+}
+
+body[data-unimatch-theme] .internal-page .product-page-hero > div {
+  padding-top: 28px;
+  padding-bottom: 26px;
+}
+
+body[data-unimatch-theme] .internal-page .product-page-hero .text-indigo-100,
+body[data-unimatch-theme] .internal-page .product-page-hero .text-white\/90 {
+  color: var(--internal-muted);
+}
+
+body[data-unimatch-theme] .internal-page .product-page-hero button.text-white {
+  color: var(--internal-ink);
+}
+
+body[data-unimatch-theme] .internal-page .product-page-hero button.text-white:hover {
+  background: #e9e3d8;
+}
+
+body[data-unimatch-theme] .profile-page .profile-hero-inner {
+  padding-top: 28px;
+  padding-bottom: 24px;
+}
+
+body[data-unimatch-theme] .profile-page .profile-hero-inner h1 {
+  overflow-wrap: anywhere;
+}
+
+body[data-unimatch-theme] .profile-page .profile-hero-inner .grid > div {
+  background: #fffdf8;
+  border: 1px solid #fff;
+  box-shadow: 0 4px 14px #2928230a;
+}
+
+body[data-unimatch-theme] .profile-page .saved-university-row {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+body[data-unimatch-theme] .profile-page .saved-admission-row > :first-child {
+  min-width: min(100%, 15rem);
+}
+
+body[data-unimatch-theme] .profile-page .saved-university-row > :nth-child(2) {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+body[data-unimatch-theme] .profile-page .saved-university-row > :last-child {
+  margin-left: auto;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner {
+  padding-top: 28px;
+  padding-bottom: 26px;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner h1 {
+  max-width: none;
+  margin: 0;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner > p {
+  max-width: 58rem;
+  margin-top: 10px;
+  color: var(--internal-muted);
+  font-size: 14px;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner .text-white {
+  color: var(--internal-ink);
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner .bg-white\/20 {
+  background: #fffdf8;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendations-hero-inner [class*="bg-white"] {
+  border-color: #fff;
+}
+
+body[data-unimatch-theme] .recommendations-page .recommendation-card {
+  height: 100%;
+  border-color: var(--internal-border);
+  border-radius: 16px;
+  box-shadow: 0 2px 5px #29282304;
+}
+
+body[data-unimatch-theme] .recommendation-card .university-identity-small {
+  height: auto;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 18px 18px 14px;
+  background: #f7f4ee;
+}
+
+body[data-unimatch-theme] .recommendation-card .university-monogram {
+  display: none;
+}
+
+body[data-unimatch-theme] .recommendation-card .university-identity-copy h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+body[data-unimatch-theme] .recommendation-card .university-identity-copy p {
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+body[data-unimatch-theme] .recommendation-card .university-identity-actions button {
+  width: 40px;
+  height: 40px;
+  background: #fffdf8;
+}
+
+body[data-unimatch-theme] .recommendation-card-body {
+  padding: 16px 18px 18px;
+}
+
+body[data-unimatch-theme] .recommendation-score {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+body[data-unimatch-theme] .recommendation-score > div {
+  padding: 4px 10px;
+  border-color: #d8c9b6;
+  background: #f4ede3;
+  color: #704a2d;
+  font-size: 14px;
+}
+
+body[data-unimatch-theme] .recommendation-facts svg {
+  flex-shrink: 0;
+  color: var(--internal-copper);
+}
+
+body[data-unimatch-theme] .recommendation-facts .text-slate-400 {
+  color: var(--internal-muted);
+  font-style: normal;
+}
+
+body[data-unimatch-theme] .recommendation-card .recommendation-details {
+  border: 1px solid #d4cec3;
+  background: #f3efe7;
+  color: var(--internal-ink);
+}
+
+body[data-unimatch-theme] .recommendation-card .recommendation-details:hover {
+  border-color: #b8a28a;
+  background: #e9e1d4;
+}
+
+body[data-unimatch-theme] .essay-page.internal-page {
+  padding-top: 30px;
+  padding-bottom: 42px;
+}
+
+body[data-unimatch-theme] .essay-page > div {
+  max-width: 68rem;
+}
+
+body[data-unimatch-theme] .essay-page h1 {
+  margin-bottom: 3px;
+}
+
+body[data-unimatch-theme] .essay-page textarea {
+  min-height: 340px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+body[data-unimatch-theme] .essay-page :is(.essay-tips-card, .essay-inspiration-card) {
+  background: #fffdf8;
+  border: 1px solid var(--internal-border);
+}
+
+body[data-unimatch-theme] .essay-page .essay-inspiration-card {
+  box-shadow: none;
+}
+
+@media (max-width: 640px) {
+  body[data-unimatch-theme] .internal-page .product-page-hero > div {
+    padding-top: 22px;
+    padding-bottom: 20px;
+  }
+
+  body[data-unimatch-theme] .profile-page .saved-university-row {
+    gap: 14px;
+    padding: 18px;
+  }
+
+  body[data-unimatch-theme] .profile-page .saved-admission-row > :first-child,
+  body[data-unimatch-theme] .profile-page .saved-university-row > :nth-child(2) {
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  body[data-unimatch-theme] .essay-page textarea {
+    min-height: 280px;
+  }
+}

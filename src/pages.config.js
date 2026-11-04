@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
 import AdmissionsSurvey from './pages/AdmissionsSurvey';
+import University from './pages/University';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
@@ -19,6 +20,7 @@ export const PAGES = {
     "Recommendations": Recommendations,
     "Search": Search,
     "AdmissionsSurvey": AdmissionsSurvey,
+    "University": University,
 }
 
 export const pagesConfig = {

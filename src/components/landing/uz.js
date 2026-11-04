@@ -1,6 +1,9 @@
 import { copy } from './content';
 export const uzCopy = {
   ...copy.en,
+  privacy: 'Ma’lumotlar maxfiyligi', terms: 'Foydalanish shartlari',
+  privacyText: 'Tanlangan til brauzeringizda saqlanadi. Mehmon anketasi qoralamasi joriy varaqda ikki soatgacha turadi. Hisobga kirib saqlagan profilingiz va tanlangan universitetlaringiz Supabase xizmatida hisobingizga bog‘lanadi. Fikr-mulohaza xabaringiz, ixtiyoriy aloqa emailingiz, sahifa manzili yo‘li va hisobga kirgan bo‘lsangiz hisob emailingizni o‘z ichiga oladi. Parollar yoki shaxsiy hujjatlarni yubormang. Essay Checker yoqilganida, yuborgan esse yoki qiziqishlaringiz sozlangan Groq xizmatiga yoki OpenRouter va u tanlagan model provayderiga uzatiladi. UniMatch esse matnini saqlamaydi va profilingizni modelga yubormaydi. Provayderning ma’lumotlarni saqlash qoidalari amal qiladi. Xosting va autentifikatsiya xizmatlari sayt ishlashi uchun texnik jurnallarni qayta ishlashi mumkin. Ma’lumotlaringiz bo‘yicha savollar uchun sahifa pastidagi aloqa havolasidan foydalaning.',
+  termsText: 'UniMatch universitetlar bilan tanishish vositasidir. Tavsiyalar sizning tanlovlaringizga asoslanadi, qabul talablariga muvofiqlikni tasdiqlamaydi va qabulni kafolatlamaydi. Dasturlar, narxlar va qabul talablarini universitetlarning rasmiy saytlarida tekshiring.',
   match: 'Menga mos universitet', explore: 'Universitetlarni ko‘rish',
   filters: ['Barcha yo‘nalishlar', 'Buyuk Britaniya', 'Yevropa', 'Shimoliy Amerika', 'Osiyo'],
   cardLink: 'Universitet haqida', saved: 'Saqlangan', save: 'Universitetni saqlash', viewSaved: 'Mening ro‘yxatim',

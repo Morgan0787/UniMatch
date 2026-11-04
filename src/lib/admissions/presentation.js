@@ -20,3 +20,11 @@ export function getInstitutionPresentation(option) {
     image,
   };
 }
+
+/** Only reviewed, attributed photos are usable in the public catalogue.
+ * @param {any} university
+ */
+export function getUniversityPhoto(university) {
+  if (university?.admissionCatalog?.status !== 'valid') return null;
+  return getInstitutionPresentation(university.admissionCatalog).image;
+}

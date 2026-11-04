@@ -1,0 +1,103 @@
+/* Home's warm neutrals, with clearer surfaces for working inside the product. */
+body[data-unimatch-theme] .unimatch-app {
+  --product-surface: #ffffff;
+  background: #f1eee7;
+}
+.unimatch-app .product-main { background: transparent; }
+body[data-unimatch-theme] .unimatch-app .catalog-page { background: #f1eee7; }
+.unimatch-app .catalog-heading { padding-block: 28px 18px; }
+.unimatch-app .catalog-heading h1 { font-size: clamp(26px, 3vw, 36px); line-height: 1.15; font-weight: 500; letter-spacing: -.035em; }
+.unimatch-app .catalog-heading p { margin-top: 8px; font-size: 14px; line-height: 1.5; }
+.unimatch-app .catalog-toolbar { background: transparent; border: 0; }
+.catalog-toolbar > div { padding-block: 0 16px; }
+.catalog-toolbar input { min-height: 48px; padding-block: 12px; font-size: 14px; box-shadow: none; }
+.catalog-toolbar .catalog-results { margin-top: 12px; font-size: 13px; }
+.catalog-page > #catalog-compare-status + div { padding-top: 4px; }
+.unimatch-app .catalog-grid { gap: 18px; align-items: stretch; }
+.unimatch-app .catalog-card { background: #fff; border: 1px solid #d7d3ca; border-radius: 16px; box-shadow: 0 2px 5px #29282304; }
+.unimatch-app .catalog-card:hover { border-color: #b8a28a; box-shadow: 0 5px 18px #2928230c; }
+.unimatch-app .catalog-card > .catalog-cover .university-identity-small { padding: 16px 18px 12px; gap: 8px; }
+.unimatch-app .catalog-card h3 { font-size: 18px; line-height: 1.3; }
+.catalog-card .university-identity-copy { min-width: 0; }
+.catalog-card .university-identity-copy p { margin-top: 5px; font-size: 13px; }
+.catalog-card .catalog-save { border: 0; background: #f5f2ec; }
+.unimatch-app .catalog-card > .catalog-card-body { padding: 0 18px 16px; gap: 10px; }
+.catalog-card-facts { padding-top: 10px; border-color: #e6e2da; }
+.programme-summary h4 { margin-top: 3px; font-size: 14px; line-height: 1.4; }
+.programme-label { color: #65635c; font-size: 11px; }
+.programme-summary .programme-preview-facts { gap: 10px 16px; padding-top: 4px; }
+.programme-preview-facts > .programme-inline-fact:not(:last-child) { padding: 0; border: 0; border-radius: 0; background: transparent; }
+.programme-preview-facts > .programme-inline-fact:not(:last-child) dd { margin-top: 3px; }
+.programme-summary dt { font-size: 11px; line-height: 1.4; }
+.programme-inline-fact dd { font-size: 14px; }
+.programme-rule-conditions { font-size: 13px; line-height: 1.5; }
+.programme-rule-conditions summary { min-height: 32px; text-decoration: underline; text-underline-offset: 3px; }
+.programme-rule-conditions p { margin-top: 6px; font-weight: 400; }
+.catalog-card .catalog-tuition { font-size: 22px; line-height: 1.3; letter-spacing: -.025em; }
+.programme-summary .tuition-status { color: #96500f; font-size: 11px; line-height: 1.45; }
+.programme-fact-status, .programme-price-details, .programme-date-details, .programme-intake-details { font-size: 12px; line-height: 1.5; font-weight: 400; letter-spacing: 0; }
+:is(.programme-summary, .programme-details) details > summary { cursor: pointer; }
+:is(.programme-fact-status, .programme-price-details, .programme-date-details, .programme-intake-details) summary { width: fit-content; min-height: 32px; align-content: center; text-decoration: underline; text-underline-offset: 3px; }
+:is(.programme-fact-status, .programme-price-details, .programme-date-details, .programme-intake-details) p { padding-block: 4px 8px; line-height: 1.6; }
+.programme-fact-status { color: #96500f; }
+.programme-price-details, .programme-date-details, .programme-intake-details { color: #65635c; }
+.programme-summary-hint { padding-top: 0; font-size: 11px; }
+.catalog-card-actions { gap: 8px; grid-template-columns: minmax(0,1fr) auto; padding-top: 4px; }
+.unimatch-app .catalog-card a[id^=university-link-] { background: #f3efe7; color: #292823; border: 1px solid #d4cec3; font-size: 13px; }
+.unimatch-app .catalog-card a[id^=university-link-]:hover { background: #e9e1d4; border-color: #b8a28a; }
+.catalog-card .catalog-compare { font-size: 12px; padding-inline: 8px; }
+.catalog-card .catalog-coverage { color: #65635c; font-size: 11px; line-height: 1.5; }
+.catalog-photo { background: #f0eee9; }
+.catalog-photo > img { height: 136px; object-fit: contain; }
+.catalog-photo figcaption { background: #faf8f4; }
+.catalog-photo summary { min-height: 44px; padding: 5px 16px; line-height: 1.4; }
+
+/* A quiet identity band followed by facts, rather than boxes inside boxes. */
+.university-page .university-detail-content { background: #fff; border: 1px solid #d7d3ca; border-radius: 18px; box-shadow: 0 3px 12px #29282305; }
+body[data-unimatch-theme] .university-detail-header .university-identity,
+.university-detail-programmes .university-detail-header { background: #e9e3d8; }
+body[data-unimatch-theme] .university-detail-header .university-identity { padding: 24px 28px; gap: 16px; }
+.university-detail-header .university-monogram { width: 56px; height: 56px; border-radius: 14px; font-size: 20px; }
+.university-detail-header .university-identity-copy p { margin-top: 8px; }
+.university-page .university-detail-content > .space-y-6 { padding: 24px 28px; }
+.programme-context { max-width: 80ch; color: #65635c; font-size: 13px; line-height: 1.55; }
+.programme-stat-grid { gap: 0; background: #faf8f4; border: 1px solid #e1dcd2; border-radius: 12px; overflow: hidden; }
+.programme-stat { border: 0; border-radius: 0; background: transparent; padding: 18px 20px; }
+.programme-stat:nth-child(odd) { border-right: 1px solid #e1dcd2; }
+.programme-stat:nth-child(n+3) { border-top: 1px solid #e1dcd2; }
+.programme-stat > dt { font-size: 12px; margin-bottom: 8px; }
+.programme-stat > dt svg { color: #855a36; }
+.programme-details .programme-stat .catalog-tuition { font-size: 25px; }
+.programme-stat > .programme-value { font-size: 19px; font-weight: 500; }
+.programme-stat > .programme-value-unknown { font-size: 16px; }
+.programme-details .programme-stat .programme-stat-note { color: #65635c; margin-top: 4px; }
+.programme-details .programme-meta { gap: 10px 28px; }
+.programme-details .programme-disclosure { border-color: #e1dcd2; }
+.programme-sources a { color: #704a2d; }
+:is(.programme-summary, .programme-details) summary:focus-visible { outline: 2px solid #855a36; outline-offset: 3px; border-radius: 3px; }
+
+@media (min-width: 1600px) {
+  .catalog-page > .max-w-7xl, .catalog-toolbar > .max-w-7xl { max-width: 1480px; }
+  .unimatch-app .catalog-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
+@media (max-width: 1099px) {
+  .unimatch-app .catalog-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .university-detail-programmes .university-detail-header { flex-wrap: wrap; }
+  .university-detail-programmes .university-detail-header > .university-actions { padding: 0 28px 20px; }
+}
+@media (max-width: 639px) {
+  .unimatch-app .catalog-heading { padding-block: 22px 16px; }
+  .unimatch-app .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .catalog-card-actions { grid-template-columns: minmax(0,1fr) auto; }
+  .catalog-photo > img { height: 144px; }
+  body[data-unimatch-theme] .university-detail-header .university-identity { padding: 20px 18px; gap: 12px; }
+  .university-detail-header .university-monogram { width: 44px; height: 44px; font-size: 16px; }
+  .university-page .university-detail-content > .space-y-6 { padding: 20px 18px; }
+  .university-detail-programmes .university-detail-header > .university-actions { padding: 0 18px 18px; }
+  .programme-stat { padding: 14px; }
+  .programme-details .programme-stat .catalog-tuition { font-size: 21px; }
+  .programme-stat > .programme-value { font-size: 17px; }
+  .programme-stat-grid { grid-template-columns: minmax(0,1fr); }
+  .programme-stat:nth-child(odd) { border-right: 0; }
+  .programme-stat:nth-child(n+2) { border-top: 1px solid #e1dcd2; }
+}

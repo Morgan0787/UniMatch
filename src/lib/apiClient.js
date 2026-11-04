@@ -1,5 +1,9 @@
 import { supabase } from '@/lib/supabase'
 import { withPublicProgrammeFacts } from '@/lib/admissions/universityCatalog.js'
+import { loadUniversityCatalog } from '@/lib/catalogRepository.js'
+import { toAuthUser } from '@/lib/authUser.js'
+import { normalizeFeedbackPayload } from '@/lib/feedbackPayload.js'
+import { normalizeEssayRequest, validateEssayResponse } from '@/lib/essayContract.js'
 
 const TABLE_MAP = {
   University: import.meta.env.VITE_TABLE_UNIVERSITY || 'universities',
@@ -159,9 +163,17 @@ const entityClient = (entityName) => {
 
     create: async (payload) => {
       const user = await auth.me().catch(() => null)
+      if (entityName === 'UserFeedback') {
+        const record = { ...normalizeFeedbackPayload(payload), created_by: user?.email || null }
+        // Anonymous callers may insert, but cannot read feedback rows via RLS.
+        const { error } = await supabase.from(table).insert(record)
+        if (error) throw error
+        return { submitted: true }
+      }
+      if (entityName === 'StudentProfile' && !user?.email) throw new Error('Not authenticated')
       const record = {
         ...payload,
-        ...(user?.email && !payload?.created_by ? { created_by: user.email } : {}),
+        ...(user?.email ? { created_by: user.email } : {}),
       }
 
       const { data, error } = await supabase.from(table).insert(record).select().single()
@@ -171,7 +183,9 @@ const entityClient = (entityName) => {
     },
 
     update: async (id, payload) => {
-      const { data, error } = await supabase.from(table).update(payload).eq('id', id).select().single()
+      const record = { ...payload }
+      if (entityName === 'StudentProfile' || entityName === 'UserFeedback') delete record.created_by
+      const { data, error } = await supabase.from(table).update(record).eq('id', id).select().single()
       if (error) throw error
 
       return normalizeEntityResult(entityName, data)
@@ -195,13 +209,7 @@ const auth = {
     if (error) throw error
     if (!user) throw new Error('Not authenticated')
 
-    return {
-      id: user.id,
-      email: user.email,
-      full_name: user.user_metadata?.full_name,
-      role: user.user_metadata?.role,
-      ...user.user_metadata,
-    }
+    return toAuthUser(user)
   },
 
   isAuthenticated: async () => {
@@ -212,7 +220,8 @@ const auth = {
   },
 
   logout: async (redirectTo = '/') => {
-    await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
     if (typeof window !== 'undefined') {
       window.location.assign(redirectTo)
     }
@@ -225,14 +234,25 @@ const auth = {
 }
 
 const aiInvoke = async (payload) => {
-  const functionName = import.meta.env.VITE_LLM_FUNCTION_NAME || 'invoke-llm'
+  const fail = code => Object.assign(new Error(code === 'unavailable' ? 'AI service is temporarily unavailable' : code), { code })
+  if (import.meta.env.VITE_AI_ENABLED !== 'true') throw fail('unavailable')
+  let input
+  try { input = normalizeEssayRequest(payload) } catch { throw fail('invalid_request') }
+  const functionName = import.meta.env.VITE_LLM_FUNCTION_NAME || 'essay-checker'
   const { data, error } = await supabase.functions.invoke(functionName, {
-    body: payload,
+    body: input,
   })
 
-  if (error) throw error
-  if (typeof data === 'string') return data
-  return data?.result || data?.text || JSON.stringify(data)
+  if (error) {
+    let code = error.context?.status === 401 ? 'unauthorized' : 'unavailable'
+    try {
+      const response = await error.context?.json()
+      if (['unauthorized', 'rate_limited', 'invalid_request', 'invalid_response', 'timeout'].includes(response?.error)) code = response.error
+    } catch { /* Network/gateway failures have no application response body. */ }
+    throw fail(code)
+  }
+  try { return validateEssayResponse(input.action, data?.result) }
+  catch { throw fail('invalid_response') }
 }
 
 const ai = {
@@ -242,7 +262,10 @@ const ai = {
 export const apiClient = {
   auth,
   entities: {
-    University: entityClient('University'),
+    University: {
+      ...entityClient('University'),
+      listCatalog: async () => normalizeEntityResult('University', await loadUniversityCatalog(supabase, TABLE_MAP.University)),
+    },
     StudentProfile: entityClient('StudentProfile'),
     UserFeedback: entityClient('UserFeedback'),
   },

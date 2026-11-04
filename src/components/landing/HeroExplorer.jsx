@@ -5,14 +5,14 @@ import { ArrowUpRight, X } from 'lucide-react';
 import { getLandingLabels } from './labels';
 import { HeroLoadingScreen } from './HeroSceneFallback';
 import { HERO_CENTERS } from './heroSceneData.js';
-import { createHeroSceneRenderer, getHeroSceneFrame, HERO_SCENE_DURATION, projectHeroPoint } from './heroSceneRenderer.js';
+import { createHeroSceneRenderer, getHeroSceneFrame, HERO_SCENE_DURATION, sceneEase, projectHeroPoint } from './heroSceneRenderer.js';
 import './hero-scene.css';
 
 gsap.registerPlugin(ScrollTrigger);
 const connections = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0], [0, 2], [2, 5]];
 
 /** No playback clock: every visual state is a function of scroll time. */
-export default function HeroExplorer({ heroRef, language, reduced, blocked, onDetail, universities: suppliedUniversities = [] }) {
+export default function HeroExplorer({ heroRef, language, blocked, onDetail, universities: suppliedUniversities = [] }) {
   const copy = getLandingLabels(language);
   const universities = Array.isArray(suppliedUniversities) ? suppliedUniversities.filter(u => u?.id && u?.name).slice(0, 4) : [];
   const [ready, setReady] = useState(false), [available, setAvailable] = useState(true);
@@ -20,7 +20,7 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
   const root = useRef(null), canvas = useRef(null), surface = useRef(null);
   const labels = useRef([]), cores = useRef([]), earthCore = useRef(null), links = useRef(null);
   const origin = useRef(null), originLabel = useRef(null), pulse = useRef(null), caption = useRef(null);
-  const dimensions = useRef({ width: 1, height: 1, labels: [] });
+  const dimensions = useRef({ width: 1, height: 1, copyTop: 1, labels: [] });
   const sceneTime = useRef(0), phase = useRef(0);
   const requestRender = useRef(() => {}), measureScene = useRef(() => {});
   const blockedRef = useRef(blocked), visible = useRef(true);
@@ -30,7 +30,7 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
   const failed = useCallback(() => { setAvailable(false); setReady(false); }, []);
 
   const updateOverlay = useCallback(time => {
-    const { width, height, labels: bounds } = dimensions.current;
+    const { width, height, labels: bounds, copyTop } = dimensions.current;
     const frame = getHeroSceneFrame(time, width, height);
     const position = (node, x, y, opacity) => {
       if (!node) return;
@@ -54,7 +54,12 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
     position(origin.current, frame.origin[0], frame.origin[1], frame.c);
     position(originLabel.current, frame.origin[0], frame.origin[1] + 26, frame.c);
     position(pulse.current, frame.pulse[0], frame.pulse[1], frame.pulseOpacity);
-    if (caption.current) caption.current.style.transform = `translateY(${frame.captionY.toFixed(2)}px)`;
+    if (caption.current) {
+      // Reserve the measured copy area while the opening title is visible.
+      const openingY = Math.min(frame.captionY, (copyTop ?? height) - caption.current.offsetHeight - 16);
+      const captionY = time < .9 ? openingY + (frame.captionY - openingY) * sceneEase(time / .9) : frame.captionY;
+      caption.current.style.transform = `translateY(${captionY.toFixed(2)}px)`;
+    }
     if (links.current) links.current.style.opacity = String(frame.a * (1 - frame.b) * 0.10);
     if (phase.current !== frame.stage) { phase.current = frame.stage; setStage(frame.stage); }
     if (root.current) {
@@ -70,7 +75,9 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
     let disposed = false, request = 0, hasFrame = false, frameCount = 0;
     const draw = () => {
       request = 0;
-      if (disposed || !renderer || !visible.current || blockedRef.current || document.hidden) return;
+      // A history return can mount Home below the hero. Its first frame must
+      // release the page-wide loader before offscreen rendering is suspended.
+      if (disposed || !renderer || (hasFrame && !visible.current) || blockedRef.current || document.hidden) return;
       try {
         const drawStarted = performance.now();
         if (!renderer.render(sceneTime.current)) return;
@@ -89,12 +96,14 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
     const tick = () => { if (request) draw(); };
     gsap.ticker.add(tick);
     const queue = () => {
-      if (!disposed && renderer && visible.current && !blockedRef.current && !document.hidden) request = 1;
+      if (!disposed && renderer && (!hasFrame || visible.current) && !blockedRef.current && !document.hidden) request = 1;
     };
     requestRender.current = queue;
     const measure = () => {
       const { width, height } = container.getBoundingClientRect();
-      dimensions.current = { width, height, labels: labels.current.map(label => ({ width: label?.offsetWidth || 0, height: label?.offsetHeight || 0 })) };
+      const copy = heroRef.current?.querySelector('.hero-copy');
+      const copyTop = copy ? copy.getBoundingClientRect().top - heroRef.current.getBoundingClientRect().top : height;
+      dimensions.current = { width, height, copyTop, labels: labels.current.map(label => ({ width: label?.offsetWidth || 0, height: label?.offsetHeight || 0 })) };
       renderer?.resize(width, height, window.devicePixelRatio);
       container.querySelectorAll('line').forEach((line, i) => {
         const [first, second] = connections[i];
@@ -107,10 +116,12 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
     measureScene.current = measure;
     const resize = new ResizeObserver(measure);
     resize.observe(container);
+    const heroCopy = heroRef.current?.querySelector('.hero-copy');
+    if (heroCopy) resize.observe(heroCopy);
     const intersection = new IntersectionObserver(([entry]) => {
       visible.current = entry.isIntersecting;
       if (entry.isIntersecting) queue();
-      else request = 0;
+      else if (hasFrame) request = 0;
     }, { threshold: 0.01 });
     intersection.observe(container);
     document.addEventListener('visibilitychange', queue);
@@ -142,13 +153,13 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
       renderer?.dispose();
       requestRender.current = () => {}; measureScene.current = () => {};
     };
-  }, [attempt, failed, updateOverlay]);
+  }, [attempt, failed, updateOverlay, heroRef]);
 
   useEffect(() => { measureScene.current(); }, [language, selected, universities.length]);
   useEffect(() => { surface.current?.toggleAttribute('inert', !ready); }, [ready]);
   useEffect(() => { if (!blocked) requestRender.current(); }, [blocked]);
   useEffect(() => {
-    if (!ready || !available || reduced) return;
+    if (!ready || !available) return;
     const value = { progress: 0 };
     const timeline = gsap.to(value, {
       progress: 1, ease: 'none',
@@ -156,18 +167,19 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
         id: 'unimatch-hero-story', trigger: heroRef.current, start: 'top top',
         end: () => `+=${window.innerHeight * (window.innerWidth < 600 ? 2.8 : 3.0)}`,
         pin: true, refreshPriority: 10, scrub: 0.55, invalidateOnRefresh: true,
+        onUpdate: self => heroRef.current?.classList.toggle('hero-immersed', self.progress > .00001),
+        onRefresh: self => heroRef.current?.classList.toggle('hero-immersed', self.progress > .00001),
       },
       onUpdate: () => {
         sceneTime.current = value.progress * HERO_SCENE_DURATION;
-        heroRef.current?.classList.toggle('hero-immersed', value.progress > .00001);
         requestRender.current();
       },
     });
     ScrollTrigger.refresh();
     return () => { timeline.scrollTrigger?.kill(); timeline.kill(); heroRef.current?.classList.remove('hero-immersed'); };
-  }, [heroRef, ready, available, reduced]);
+  }, [heroRef, ready, available]);
 
-  return <div ref={root} className={`hero-explorer pearl-story ${ready ? 'scene-ready' : available ? 'scene-loading' : ''}`} data-renderer={ready ? 'webgl' : available ? 'loading' : 'unavailable'} data-scene-time="0" data-motion={reduced ? 'reduced' : 'scroll'}>
+  return <div ref={root} className={`hero-explorer pearl-story ${ready ? 'scene-ready' : available ? 'scene-loading' : ''}`} data-renderer={ready ? 'webgl' : available ? 'loading' : 'unavailable'} data-scene-time="0" data-motion="scroll">
     {!ready && available && <HeroLoadingScreen language={language} />}
     <div ref={surface} className="hero-scene-stage" aria-hidden={!ready}>
       <div className="hero-scene-cores" aria-hidden="true">
@@ -185,7 +197,7 @@ export default function HeroExplorer({ heroRef, language, reduced, blocked, onDe
       <div ref={origin} className="hero-route-dot" aria-hidden="true" /><div ref={pulse} className="hero-route-pulse" aria-hidden="true" />
       <p ref={caption} className="hero-scene-caption" aria-live="polite">{copy.sceneChapters[stage]}</p>
     </div>
-    <p id="scene-instructions" className="scene-instructions">{!available ? copy.sceneUnavailable : ready ? reduced ? copy.sceneReducedInstructions : copy.sceneInstructions : ''}</p>
+    <p id="scene-instructions" className="scene-instructions">{!available ? copy.sceneUnavailable : ready ? copy.sceneInstructions : ''}</p>
     {!available && <button className="hero-scene-retry" onClick={() => {
       setAvailable(true); setAttempt(value => value + 1); setSelected(null);
     }}>{copy.retry}</button>}

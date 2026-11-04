@@ -1,0 +1,82 @@
+/* Search overrides carry the app/catalogue classes so shared legacy rules cannot win by specificity. */
+body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
+  --search-ink: #16272d;
+  --search-muted: #5c6876;
+  --search-line: rgba(93, 111, 122, .16);
+  color: var(--search-ink);
+  background:
+    radial-gradient(ellipse at 84% 7%, rgba(248, 225, 214, .48), transparent 30rem),
+    linear-gradient(135deg, #f4f6f8 0%, #edf0f4 55%, #f3f3f4 100%);
+}
+.unimatch-app .catalog-page.search-page .catalog-heading { padding-block: 28px 18px; }
+.unimatch-app .catalog-page.search-page .catalog-heading h1 { color: var(--search-ink); font-size: clamp(2rem, 3vw, 2.65rem); letter-spacing: -.045em; line-height: 1.08; }
+.unimatch-app .catalog-page.search-page .catalog-heading p { color: var(--search-muted); margin-top: 8px; max-width: 44rem; line-height: 1.45; }
+.unimatch-app .catalog-page.search-page .catalog-toolbar { background: rgba(255,255,255,.58); border-color: var(--search-line); backdrop-filter: blur(16px); }
+.unimatch-app .catalog-page.search-page .catalog-toolbar input { background: rgba(255,255,255,.68); border-color: var(--search-line); color: var(--search-ink); }
+.unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 16px; align-items: stretch; }
+.unimatch-app .catalog-page.search-page .catalog-card.search-university-card {
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(255,255,255,.91), rgba(249,250,252,.82));
+  box-shadow: 0 8px 26px rgba(37,54,65,.055), inset 0 0 0 1px rgba(193,204,214,.22);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.unimatch-app .catalog-page.search-page .catalog-card.search-university-card:hover { border-color: rgba(167,184,197,.76); box-shadow: 0 14px 32px rgba(37,54,65,.10), inset 0 0 0 1px rgba(193,204,214,.22); transform: translateY(-2px); }
+.unimatch-app .catalog-page.search-page .catalog-cover { display: flex; flex-direction: column; min-width: 0; overflow: visible; }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { order: 0; display: flex; align-items: flex-start; min-width: 0; gap: 10px; padding: 12px 16px 9px; background: transparent; }
+.unimatch-app .catalog-page.search-page .university-identity-small .university-monogram { display: none; }
+.unimatch-app .catalog-page.search-page .university-identity-copy { min-width: 0; flex: 1; }
+.unimatch-app .catalog-page.search-page .university-identity-copy h3 { margin: 0; color: var(--search-ink); font-size: clamp(1.2rem, 1.55vw, 1.42rem); font-weight: 550; letter-spacing: -.035em; line-height: 1.15; overflow-wrap: anywhere; white-space: normal; -webkit-line-clamp: unset; }
+.unimatch-app .catalog-page.search-page .university-identity-copy p { margin-top: 4px; color: var(--search-muted); font-size: .82rem; line-height: 1.3; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .university-identity-actions { flex: 0 0 auto; }
+.unimatch-app .catalog-page.search-page .catalog-save { width: 40px; height: 40px; border: 1px solid var(--search-line); border-radius: 13px; background: rgba(255,255,255,.56); }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover > .catalog-photo { order: 1; width: 100%; padding-inline: 1px; background: transparent; }
+.unimatch-app .catalog-page.search-page .catalog-photo > img { width: 100%; height: clamp(150px, 12vw, 170px); object-fit: contain; background: #e9edf0; }
+.unimatch-app .catalog-page.search-page .catalog-photo figcaption { border: 0; background: rgba(255,255,255,.5); }
+.unimatch-app .catalog-page.search-page .catalog-photo summary { min-height: 32px; padding: 4px 16px; font-size: 11px; }
+.unimatch-app .catalog-page.search-page .catalog-photo-credit { padding: 0 16px 8px; }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { min-width: 0; padding: 0 16px 12px; gap: 8px; }
+.unimatch-app .catalog-page.search-page .catalog-card-facts { border-top: 1px solid var(--search-line); padding-top: 8px; }
+.unimatch-app .catalog-page.search-page .programme-summary { min-width: 0; }
+.unimatch-app .catalog-page.search-page .catalog-card .programme-fact-card { padding: 0; border: 0; border-radius: 0; background: transparent; }
+.unimatch-app .catalog-page.search-page .programme-heading .programme-label { margin-bottom: 1px; color: var(--search-muted); font-size: .7rem; }
+.unimatch-app .catalog-page.search-page .programme-heading h4 { margin-top: 2px; color: var(--search-ink); font-size: 1.04rem; font-weight: 500; line-height: 1.2; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .programme-preview-facts { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px 10px; margin-top: 5px; padding-top: 0; }
+.unimatch-app .catalog-page.search-page .programme-preview-facts > :first-child,
+.unimatch-app .catalog-page.search-page .programme-preview-facts > :last-child { grid-column: auto; }
+.unimatch-app .catalog-page.search-page .programme-preview-facts > .programme-inline-fact:not(:last-child) { display: block; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.unimatch-app .catalog-page.search-page .programme-preview-facts > .programme-inline-fact:not(:last-child) dd { margin-top: 1px; }
+.unimatch-app .catalog-page.search-page .programme-summary dt { margin-bottom: 0; color: var(--search-muted); font-size: .68rem; line-height: 1.25; }
+.unimatch-app .catalog-page.search-page .programme-summary .programme-value { color: var(--search-ink); font-size: .82rem; line-height: 1.3; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .programme-summary .catalog-tuition { font-size: .98rem; font-weight: 600; }
+.unimatch-app .catalog-page.search-page .programme-summary .tuition-status { font-size: 11px; line-height: 1.3; }
+.unimatch-app .catalog-page.search-page .programme-summary-hint { margin-top: 4px; padding-top: 0; color: var(--search-muted); font-size: .69rem; line-height: 1.35; }
+.unimatch-app .catalog-page.search-page .programme-confirmation { font-size: 11px; line-height: 1.35; }
+.unimatch-app .catalog-page.search-page .catalog-card-actions { padding-top: 2px; }
+.unimatch-app .catalog-page.search-page .catalog-card a[id^="university-link-"] { min-height: 42px; border-radius: 999px; background: var(--search-ink); color: #fff !important; }
+.unimatch-app .catalog-page.search-page .catalog-card a[id^="university-link-"]:is(:hover,:focus-visible) { color: #fff !important; background: #243a42; }
+.unimatch-app .catalog-page.search-page .catalog-compare { min-height: 42px; border-radius: 999px; }
+.unimatch-app .catalog-page.search-page :is(button,a,input,summary):focus-visible { outline: 3px solid #68839a; outline-offset: 3px; }
+.unimatch-app .catalog-page.search-page .catalog-pagination { color: var(--search-muted); }
+
+@media (min-width: 700px) {
+  .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+}
+@media (min-width: 1100px) {
+  .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
+}
+@media (max-width: 639px) {
+  .unimatch-app .catalog-page.search-page .catalog-heading { padding-block: 24px 16px; }
+  .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 14px; }
+  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { padding: 12px 15px 9px; }
+  .unimatch-app .catalog-page.search-page .university-identity-copy h3 { font-size: 1.2rem; }
+  .unimatch-app .catalog-page.search-page .catalog-save { width: 40px; height: 40px; }
+  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 0 15px 12px; }
+  .unimatch-app .catalog-page.search-page .programme-preview-facts { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px 10px; }
+  .unimatch-app .catalog-page.search-page .catalog-photo > img { height: 156px; }
+  .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 15px; }
+}
+@media (max-width: 359px) {
+  .unimatch-app .catalog-page.search-page .programme-preview-facts { grid-template-columns: minmax(0,1fr); }
+}

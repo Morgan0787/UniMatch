@@ -1,3 +1,5 @@
+import { catalogValue } from '../catalogCopy.js';
+
 const COPY = {
   en: {
     unknown: 'Unknown', unknownNotice: 'This condition still needs confirmation for your application.',
@@ -39,10 +41,10 @@ function scopeValue(value, language) {
     Uzbekistan: ['Uzbekistan', 'Узбекистан', 'O‘zbekiston'],
   };
   const index = language === 'ru' ? 1 : language === 'uz' ? 2 : 0;
-  return labels[value]?.[index] || (/[_]/.test(String(value)) ? copy(language).unknown : String(value));
+  return labels[value]?.[index] || (/[_]/.test(String(value)) ? copy(language).unknown : catalogValue(String(value), language));
 }
 
-function scopeText(scope, language) {
+export function describePublicScope(scope, language = 'en') {
   if (!scope || typeof scope !== 'object' || Array.isArray(scope)) return '';
   const c = copy(language);
   const entries = ['route', 'studentCategory', 'schoolCountry', 'credential', 'intakeYear']
@@ -50,6 +52,8 @@ function scopeText(scope, language) {
     .map(key => `${c[key]}: ${scopeValue(scope[key], language)}`);
   return entries.length ? `${c.scope}: ${entries.join('; ')}` : '';
 }
+
+const scopeText = describePublicScope;
 
 function renderRule(rule, language, nested = false) {
   const c = copy(language);
@@ -65,10 +69,16 @@ function renderRule(rule, language, nested = false) {
     return `${template(c.grade, { minimum: number(rule.minimum), scale: rule.scale })}${scopeText(rule.scope, language) ? ` (${scopeText(rule.scope, language)})` : ''}`;
   }
   if (rule.type === 'ielts' && Number.isFinite(rule.minimum)) {
-    const sections = rule.sections && typeof rule.sections === 'object' && !Array.isArray(rule.sections)
-      ? Object.entries(rule.sections).filter(([, minimum]) => Number.isFinite(minimum))
-        .map(([section, minimum]) => template(c.sectionMinimum, { section: ({ru:{listening:'Аудирование',reading:'Чтение',writing:'Письмо',speaking:'Говорение'},uz:{listening:'Tinglash',reading:'O‘qish',writing:'Yozish',speaking:'Gapirish'}}[language] || {})[section.toLowerCase()] || section, minimum: number(minimum) }))
-      : [];
+    const sectionEntries = rule.sections && typeof rule.sections === 'object' && !Array.isArray(rule.sections)
+      ? Object.entries(rule.sections).filter(([, minimum]) => Number.isFinite(minimum)) : [];
+    const allSectionsEqual = sectionEntries.length === 4
+      && new Set(sectionEntries.map(([section]) => section.toLowerCase())).size === 4
+      && sectionEntries.every(([section, minimum]) => ['reading', 'writing', 'speaking', 'listening'].includes(section.toLowerCase()) && minimum === sectionEntries[0][1]);
+    const eachSection = { en: 'each section minimum {minimum}', ru: 'каждый раздел — минимум {minimum}', uz: 'har bir bo‘limdan kamida {minimum}' };
+    const sections = allSectionsEqual
+      ? [template(eachSection[language] || eachSection.en, { minimum: number(sectionEntries[0][1]) })]
+      : sectionEntries
+        .map(([section, minimum]) => template(c.sectionMinimum, { section: ({ru:{listening:'Аудирование',reading:'Чтение',writing:'Письмо',speaking:'Говорение'},uz:{listening:'Tinglash',reading:'O‘qish',writing:'Yozish',speaking:'Gapirish'}}[language] || {})[section.toLowerCase()] || section, minimum: number(minimum) }));
     const validity = Number.isFinite(rule.validityYears) && typeof rule.referenceDate === 'string'
       ? template(c.validity, { years: number(rule.validityYears), date: rule.referenceDate }).replace(/^;\s*/, '')
       : '';
@@ -82,18 +92,19 @@ function renderRule(rule, language, nested = false) {
 function renderValue(value, kind, language) {
   const c = copy(language);
   if (value === null || value === undefined) return c.unknown;
-  if (kind === 'location') return typeof value.country === 'string' ? [value.campus, value.country].filter(Boolean).join(' · ') : c.unknown;
+  if (kind === 'programme') return typeof value === 'string' ? value : c.unknown;
+  if (kind === 'location') return typeof value.country === 'string' ? [value.campus, catalogValue(value.country, language)].filter(Boolean).join(' · ') : c.unknown;
   if (kind === 'intake') return typeof value.text === 'string' ? value.text : c.unknown;
   if (kind === 'rule') return renderRule(value, language);
   if (kind === 'degree') {
-    if (typeof value === 'string') return value;
+    if (typeof value === 'string') return catalogValue(value, language);
     if (!value || typeof value !== 'object' || Array.isArray(value)) return c.degreeUnknown;
     if (typeof value.award === 'string' && value.award.trim()) return value.award;
-    return typeof value.level === 'string' && value.level.trim() ? value.level : c.degreeUnknown;
+    return typeof value.level === 'string' && value.level.trim() ? catalogValue(value.level, language) : c.degreeUnknown;
   }
   if (kind === 'tuition') {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return c.unknown;
-    const amount = Number.isFinite(value.amount) ? number(value.amount) : c.amountUnknown;
+    const amount = Number.isFinite(value.amount) ? value.amount.toLocaleString(language === 'uz' ? 'uz-UZ' : language, { maximumFractionDigits: 20 }) : c.amountUnknown;
     const currency = typeof value.currency === 'string' && value.currency ? value.currency : '';
     const periodNames = { year: c.year, semester: c.semester, credit_hour: c.creditHour, academic_year_9_months: c.nineMonthYear, '12_months': c.twelveMonths };
     const period = periodNames[value.period] || c.unknownPeriod;
@@ -116,7 +127,7 @@ function renderValue(value, kind, language) {
     if (typeof value.date !== 'string') return c.unknown;
     return `${value.date} (${typeof value.timezone === 'string' ? value.timezone : c.timezoneUnknown})`;
   }
-  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  if (typeof value === 'string' || typeof value === 'number') return catalogValue(String(value), language);
   return c.unknown;
 }
 

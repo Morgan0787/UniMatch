@@ -26,10 +26,25 @@ import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeF
 import { serializeFavoriteWrite } from '@/lib/admissions/favorites';
 import InstitutionMedia, { InstitutionLinks } from '@/components/admissions/InstitutionMedia';
 import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites';
+import { catalogText, catalogValue } from '@/lib/catalogCopy';
 import '@/components/admissions/admissions.css';
+import '@/styles/internal-pages.css';
+import '@/styles/release-pages.css';
+
+const profileSaveMessages = {
+    en: 'Profile saved successfully!',
+    ru: 'Профиль успешно сохранён!',
+    uz: 'Profil muvaffaqiyatli saqlandi!',
+};
 
 export default function Profile() {
     const { t, language } = useLanguage();
+    const gradeLevelLabel = (value) => ({
+        'Grade 10': t('profile.grade10'),
+        'Grade 11': t('profile.grade11'),
+        'Grade 12': t('profile.grade12'),
+        'Gap Year': t('profile.gapYear'),
+    }[value] || value);
     const admissionText = admissionCopy[language] || admissionCopy.en;
     const queryClient = useQueryClient();
     const catalogQuery = usePublicAdmissionsCatalog();
@@ -83,7 +98,7 @@ export default function Profile() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
             setShowProfileBuilder(false);
-            toast.success('Profile saved successfully!');
+            toast.success(profileSaveMessages[language] || profileSaveMessages.en);
         },
     });
 
@@ -132,7 +147,7 @@ export default function Profile() {
 
     if (userLoading || profileLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 p-6">
+            <div className="min-h-screen p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
                 <div className="max-w-4xl mx-auto space-y-6">
                     <Skeleton className="h-40 rounded-2xl" />
                     <Skeleton className="h-80 rounded-2xl" />
@@ -143,12 +158,12 @@ export default function Profile() {
 
     if (!user) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-                <Card className="max-w-md w-full text-center p-8">
+            <div className="min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+                <Card className="product-card max-w-md w-full text-center p-8">
                     <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <User className="w-8 h-8 text-indigo-600" />
                     </div>
-                    <h2 className="text-2xl font-bold text-slate-800 mb-2">{t('profile.signInRequired')}</h2>
+                    <h1 className="text-2xl font-semibold text-slate-800 mb-2">{t('profile.signInRequired')}</h1>
                     <p className="text-slate-600 mb-6">
                         {t('profile.createAccount')}
                     </p>
@@ -162,7 +177,7 @@ export default function Profile() {
 
     if (!profile || showProfileBuilder) {
         return (
-            <div className="min-h-screen bg-slate-50 py-12 px-6">
+            <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
                 <ProfileBuilder 
                     profile={profile}
                     onSave={(data) => saveProfileMutation.mutate(data)}
@@ -173,10 +188,10 @@ export default function Profile() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="profile-page release-page internal-page min-h-screen text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
             {/* Header */}
-            <div className="product-page-hero bg-gradient-to-br from-indigo-500 to-violet-600 text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+            <div className="product-page-hero text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+                <div className="profile-hero-inner max-w-4xl mx-auto px-4 sm:px-6 py-12">
                     <div className="product-hero-heading flex items-start justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-2xl font-bold">
@@ -186,7 +201,7 @@ export default function Profile() {
                                 <h1 className="text-2xl font-bold">{user.full_name || t('profile.student')}</h1>
                                 <p className="text-indigo-100">{user.email}</p>
                                 <Badge className="mt-2 bg-white/20 text-white border-0">
-                                    {profile.grade_level || t('profile.student')} • {profile.home_country || t('profile.unknown')}
+                                    {profile.grade_level ? gradeLevelLabel(profile.grade_level) : t('profile.student')} • {profile.home_country ? catalogValue(profile.home_country, language) : t('profile.unknown')}
                                 </Badge>
                             </div>
                         </div>
@@ -289,7 +304,7 @@ export default function Profile() {
                             <div className="space-y-4">
                                 {admissionFavorites.map(({ institutionId, option, institution }) => {
                                     return <Card key={institutionId} className="overflow-hidden hover:shadow-md transition-shadow">
-                                        <div className="flex flex-col sm:flex-row sm:items-start gap-5 p-5 sm:p-6">
+                                        <div className="saved-university-row saved-admission-row flex flex-col sm:flex-row sm:items-start gap-5 p-5 sm:p-6">
                                             <div className="w-full min-w-0 sm:w-64 sm:flex-shrink-0">
                                                 <InstitutionMedia option={option} c={admissionText} />
                                             </div>
@@ -309,7 +324,7 @@ export default function Profile() {
                                 {unresolvedSaved.map(key => <Card key={key} className="p-6"><p>{admissionText.savedDetailsMissing}</p><Button variant="ghost" disabled={removeSavedMutation.isPending} onClick={() => removeSavedMutation.mutate(key)}>{admissionText.removeSaved}</Button></Card>)}
                                 {savedUniversities.map(uni => (
                                     <Card key={uni.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                                        <div className="flex items-center gap-6 p-6">
+                                        <div className="saved-university-row flex items-center gap-6 p-6">
                                             <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
                                                 <GraduationCap className="w-8 h-8 text-indigo-600" />
                                             </div>
@@ -317,7 +332,7 @@ export default function Profile() {
                                                 <h3 className="font-semibold text-slate-800 truncate">{uni.name}</h3>
                                                 <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
                                                     <MapPin className="w-3.5 h-3.5" />
-                                                    <span>{uni.city}, {uni.country}</span>
+                                                    <span>{uni.city && uni.country ? `${uni.city}, ${uni.country}` : uni.city || uni.country}</span>
                                                     <span className="mx-2">•</span>
                                                     <Globe className="w-3.5 h-3.5" />
                                                     <span>{uni.language}</span>
@@ -331,7 +346,7 @@ export default function Profile() {
                                                             // A NULL tuition must not render as a bare "€/year":
                                                             // that reads as a near-zero price, which is the same lie
                                                             // as "Free". Same wording as the comparison table.
-                                                            <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                                         ) : (
                                                             <>€{uni.tuition_min.toLocaleString()}/{t('common.year')}</>
                                                         )}
@@ -341,7 +356,7 @@ export default function Profile() {
                                             <div className="flex items-center gap-2">
                                                 {uni.website && (
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <a href={uni.website} target="_blank" rel="noopener noreferrer">
+                                                        <a href={uni.website} target="_blank" rel="noopener noreferrer" aria-label={`${t('university.visitWebsite')}: ${uni.name}`}>
                                                             <ExternalLink className="w-4 h-4" />
                                                         </a>
                                                     </Button>
@@ -352,6 +367,7 @@ export default function Profile() {
                                                     className="text-slate-400 hover:text-red-500"
                                                     disabled={favorites.loading || removeSavedMutation.isPending}
                                                     onClick={() => removeSavedMutation.mutate(uni.id)}
+                                                    aria-label={`${t('common.delete')}: ${uni.name}`}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
@@ -395,22 +411,22 @@ export default function Profile() {
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.homeCountry')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.home_country || t('profile.notSet')}</p>
+                                        <p className="font-semibold text-slate-800 text-lg">{profile.home_country ? catalogValue(profile.home_country, language) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.gradeLevel')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.grade_level || t('profile.notSet')}</p>
+                                        <p className="font-semibold text-slate-800 text-lg">{profile.grade_level ? gradeLevelLabel(profile.grade_level) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.targetDegree')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.target_degree || t('profile.notSet')}</p>
+                                        <p className="font-semibold text-slate-800 text-lg">{profile.target_degree ? catalogValue(profile.target_degree, language) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.studyLanguages')}</p>
                                         <div className="flex flex-wrap gap-1 mt-1">
                                             {profile.preferred_languages?.length > 0 ? (
                                                 profile.preferred_languages.map(lang => (
-                                                    <Badge key={lang} variant="secondary">{lang}</Badge>
+                                                    <Badge key={lang} variant="secondary">{catalogValue(lang, language)}</Badge>
                                                 ))
                                             ) : (
                                                 <span className="text-slate-400">{t('profile.notSet')}</span>
@@ -425,7 +441,7 @@ export default function Profile() {
                                         <div className="flex flex-wrap gap-2">
                                             {profile.interests.map(interest => (
                                                 <Badge key={interest} className="bg-indigo-100 text-indigo-700 border-0">
-                                                    {interest}
+                                                    {catalogValue(interest, language)}
                                                 </Badge>
                                             ))}
                                         </div>

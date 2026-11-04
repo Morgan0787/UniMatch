@@ -10,6 +10,7 @@ import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites
 import usePublicAdmissionsCatalog from '@/components/admissions/usePublicAdmissionsCatalog';
 import CatalogStatus from '@/components/admissions/CatalogStatus';
 import '@/components/admissions/admissions.css';
+import '@/styles/release-pages.css';
 
 function storage() {
   try { return window.sessionStorage; } catch { return null; }
@@ -92,17 +93,17 @@ export default function AdmissionsSurvey() {
     setAnswers(nextAnswers); setErrors({}); return true;
   };
 
-  return <section className="admissions-page" data-view={view} data-step={step} aria-labelledby="admission-title">
+  return <section className="admissions-page release-page" data-view={view} data-step={step} aria-labelledby="admission-title">
     <div className="admission-topline"><span>{c.eyebrow}</span><button type="button" className="admission-text-button" onClick={reset}>{c.reset}</button></div>
     <div className="admission-layout" data-view={view} data-step={step}>
-      <aside className="admission-aside" aria-label={c.subtitle}>
+      {view === 'survey' && <aside className="admission-aside" aria-label={c.subtitle}>
         <SurveyStory step={step} view={view} answers={answers} c={c} />
-      </aside>
+      </aside>}
       <div className="admission-content">
         {view === 'survey' && <ol className="admission-stepper" aria-label={c.subtitle}>{c.steps.map((label, index) => <li key={label} data-done={index < step} aria-current={step === index ? 'step' : undefined}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{label}</li>)}</ol>}
-        <p className="admission-eyebrow">{view === 'survey' ? `${step + 1} / 3 · ${c.steps[step]}` : c.subtitle}</p>
+        {view === 'survey' && <p className="admission-eyebrow">{`${step + 1} / 3 · ${c.steps[step]}`}</p>}
         <h1 id="admission-title" tabIndex={-1} ref={title}>{view === 'survey' ? c.stepTitles[step] : c.resultsTitle}</h1>
-        {storageStatus === 'restored' && <p role="status" className="admission-hint">{c.restored}</p>}
+        {storageStatus === 'restored' && view === 'survey' && <p role="status" className="admission-hint">{c.restored}</p>}
         {(storageStatus === 'expired' || storageStatus === 'invalid') && <p role="status" className="admission-hint">{c.expired}</p>}
         {storageStatus === 'unavailable' && <p role="status" className="admission-storage-warning">{c.storageError}</p>}
         {favorites.error && <div className="admission-save-feedback" role="alert"><p>{c[favorites.error] || c.saveError}</p><button type="button" className="admission-text-button" disabled={favorites.loading} onClick={favorites.retry}>{c.saveRetry}</button></div>}
@@ -124,7 +125,7 @@ export default function AdmissionsSurvey() {
           </div>
         </form> : catalogQuery.isPending || catalog.version === 'db-v1:unavailable'
           ? <button type="button" className="admission-button admission-secondary" onClick={edit}>{c.edit}</button>
-          : <PreliminaryResults evaluation={evaluation} answers={answers} onEdit={edit} onApply={apply} errors={errors} c={c} language={language} favorites={favorites} catalogEmpty={catalog.options.length === 0} />}
+          : <PreliminaryResults evaluation={evaluation} answers={answers} onEdit={edit} onApply={apply} errors={errors} c={c} language={language} favorites={favorites} institutions={catalog.institutions} catalogEmpty={catalog.options.length === 0} />}
       </div>
     </div>
     <footer className="admission-footer"><p>{c.temporary}</p></footer>

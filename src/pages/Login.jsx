@@ -10,6 +10,8 @@ import { Loader2, Mail, Lock, GraduationCap, Chrome } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useLanguage } from '@/lib/i18n'
 import { loginText, loginEmailNotice } from '@/lib/loginCopy'
+import { loginCancelTarget, readLastPublicRoute, safeLoginReturn } from '@/lib/loginReturn'
+import '@/styles/release-pages.css'
 
 const getFriendlyAuthError = (error) => {
   if (!error) return 'Something went wrong. Please try again.'
@@ -35,23 +37,14 @@ const getFriendlyAuthError = (error) => {
   return 'We could not complete that request. Please try again.'
 }
 
-function safeInternalReturn(value) {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//') || value.startsWith('/\\')) return '/'
-  try {
-    const parsed = new URL(value, window.location.origin)
-    if (parsed.origin !== window.location.origin) return '/'
-    return `${parsed.pathname}${parsed.search}${parsed.hash}`
-  } catch {
-    return '/'
-  }
-}
-
 export default function Login() {
   const { language } = useLanguage()
   const l = text => loginText(text, language)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const redirectTo = safeInternalReturn(searchParams.get('redirect_to'))
+  const rawRedirectTo = searchParams.get('redirect_to')
+  const redirectTo = safeLoginReturn(rawRedirectTo)
+  const cancelTo = loginCancelTarget(rawRedirectTo, readLastPublicRoute())
 
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -78,41 +71,6 @@ export default function Login() {
     checkSession()
   }, [navigate, redirectTo])
 
-  const ensureProfile = async (authUser) => {
-    if (!authUser?.id) return
-
-    try {
-      const { data: existingProfile, error: selectError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', authUser.id)
-        .maybeSingle()
-
-      if (selectError && selectError.code !== 'PGRST116') {
-        throw selectError
-      }
-
-      if (existingProfile) {
-        return
-      }
-
-      const { error: insertError } = await supabase.from('profiles').insert({
-        id: authUser.id,
-        email: authUser.email ?? null,
-        full_name: authUser.user_metadata?.full_name || authUser.full_name || null,
-        avatar_url: authUser.user_metadata?.avatar_url || authUser.avatar_url || null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-
-      if (insertError) {
-        console.warn('Unable to create profile', insertError)
-      }
-    } catch (err) {
-      console.warn('Unable to create profile', err)
-    }
-  }
-
   const handlePasswordLogin = async (e) => {
     e.preventDefault()
     setError('')
@@ -130,7 +88,6 @@ export default function Login() {
       }
 
       if (data?.session?.user) {
-        await ensureProfile(data.session.user)
         navigate(redirectTo, { replace: true })
       }
     } catch (err) {
@@ -214,7 +171,6 @@ export default function Login() {
       }
 
       if (data?.session?.user) {
-        await ensureProfile(data.session.user)
         navigate(redirectTo, { replace: true })
       } else {
         setSuccessState({
@@ -231,8 +187,8 @@ export default function Login() {
 
   if (successState) {
     return (
-      <div className="login-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
-        <Card className="w-full max-w-md text-center">
+      <div className="login-page release-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
+        <Card className="release-login-card w-full max-w-md text-center">
           <CardContent className="pt-10 pb-10 space-y-4">
             <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
               <Mail className="w-7 h-7 text-indigo-600" />
@@ -249,8 +205,8 @@ export default function Login() {
   }
 
   return (
-    <div className="login-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="login-page release-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="release-login-shell w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mx-auto">
             <GraduationCap className="w-7 h-7 text-white" />
@@ -260,8 +216,8 @@ export default function Login() {
         </div>
 
         {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-teal-900">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
-        <button type="button" className="text-sm text-teal-800 underline" onClick={() => navigate(redirectTo)}>{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
-        <Card className="product-glass">
+        <button type="button" className="text-sm text-teal-800 underline" onClick={() => navigate(cancelTo)}>{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
+        <Card className="release-login-card product-glass">
           <CardContent className="pt-6">
             <Tabs defaultValue="password">
               <TabsList className="w-full mb-6">

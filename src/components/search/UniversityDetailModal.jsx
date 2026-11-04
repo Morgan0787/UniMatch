@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -9,26 +9,23 @@ import {
     MapPin, Globe, GraduationCap, Bookmark, BookmarkCheck, 
     ExternalLink, Award, Calendar, Users, TrendingUp, DollarSign,
     Building2, BookOpen, Home, Heart,
-    Shield, Phone, Mail, CheckCircle2, Info, ChevronRight
+    Shield, Phone, Mail, CheckCircle2, ChevronRight
 } from 'lucide-react';
-import ChanceIndicator from '@/components/ui/ChanceIndicator';
+import LanguageReadiness from './LanguageReadiness';
+import { catalogText, catalogValue, catalogDescription } from '@/lib/catalogCopy';
 import EstimatedField from '@/components/ui/EstimatedField';
 import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
-import { US_GENERIC_VISA_INFO, US_GPA_HOLISTIC_NOTE } from '@/lib/usGenericInfo';
-import { calculateChance, describeMissingChanceData } from '@/lib/matching';
+import { US_GENERIC_VISA_INFO } from '@/lib/usGenericInfo';
+import { calculateChance } from '@/lib/matching';
 import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
 
-export default function UniversityDetailModal({ university, isOpen, onClose, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave }) {
+export function UniversityDetails({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, heading = 'h2' }) {
     const { t, language } = useLanguage();
     
     if (!university) return null;
     
     const chance = userGpa == null ? 'unknown' : calculateChance(university, userGpa, userIelts, userTopik);
-    const requiredTopik = university.country === 'South Korea' ? Number.parseInt(university.topikLevel?.match(/\d+/)?.[0] || '', 10) : null;
-    const suppliedTopik = Number.parseInt(userTopik?.match(/\d+/)?.[0] || '', 10);
-    const languageUnmet = (Number.isFinite(requiredTopik) && (!Number.isFinite(suppliedTopik) || suppliedTopik < requiredTopik))
-      || (Number.isFinite(university.required_ielts) && university.required_ielts > 0 && (userIelts == null || userIelts < university.required_ielts));
     const hasAdmissionCatalog = university.admissionCatalog !== undefined;
 
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix).
@@ -57,50 +54,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
     const showGenericVisa = isUsUniversity && !university.visa_info;
     const showHolisticGpaNote = isUsUniversity && (university.min_gpa === null || university.min_gpa === undefined);
 
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
-                <DialogTitle className="sr-only">{university.name}</DialogTitle>
-                <DialogHeader>
-                    <div className="relative h-48 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-lg">
-                        <UniversityCover university={university} size="large" />
-                    </div>
-                </DialogHeader>
-
-                <div className="space-y-6 w-full">
-                    {/* Chance and Actions */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl">
-                        <div>
-                            {!hasAdmissionCatalog && <>
-                            <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
-                            {languageUnmet ? <p className="text-sm text-amber-800">{{en:'Language requirement not met yet. Check the required score before applying.',ru:'Языковое требование пока не выполнено. Проверьте нужный результат перед подачей.',uz:'Til talabi hali bajarilmagan. Kerakli natijani tekshiring.'}[language]}</p> : <ChanceIndicator chance={chance} reason={describeMissingChanceData(university)?.note} size="lg" />}
-                            {university.required_ielts && userIelts > 0 && userIelts < university.required_ielts && (
-                                <p className="text-xs text-amber-600 mt-1">
-                                    ⚠ {t('university.ieltsBelow')} ({userIelts} / {university.required_ielts})
-                                </p>
-                            )}
-                            {university.required_ielts && userIelts === 0 && (
-                                <p className="text-xs text-amber-600 mt-1">
-                                    ⚠ {t('university.ieltsRequiredNote')} {university.required_ielts}+
-                                </p>
-                            )}
-                            {university.country === "South Korea" && university.topikLevel && (
-                                <>
-                                    {(!userTopik || userTopik === "Not taken") && (
-                                        <p className="text-xs text-amber-600 mt-1">
-                                            ⚠ 🇰🇷 {university.topikLevel} {t('university.topikRequiredNote')}
-                                        </p>
-                                    )}
-                                    {userTopik && userTopik !== "Not taken" && parseInt(userTopik.split(' ')[1]) < parseInt(university.topikLevel.split(' ')[1]) && (
-                                        <p className="text-xs text-amber-600 mt-1">
-                                            ⚠ {t('university.topikBelow')} ({userTopik} / {university.topikLevel})
-                                        </p>
-                                    )}
-                                </>
-                            )}
-                            </>}
-                            </div>
-                                <div className="flex flex-wrap gap-2">
+    const actions = <div className="university-actions flex flex-wrap gap-2">
                             <Button
                                 variant="outline"
                                 onClick={() => onSave(university.id)}
@@ -122,10 +76,27 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     </a>
                                 </Button>
                             )}
-                        </div>
-                    </div>
+                        </div>;
 
-                    {hasAdmissionCatalog && <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} />}
+    return (
+        <article className={`university-detail-content ${hasAdmissionCatalog ? 'university-detail-programmes' : ''}`}>
+                <header className="university-detail-header">
+                    <div className="university-page-cover">
+                        <UniversityCover university={university} size="large" heading={heading} />
+                    </div>
+                    {hasAdmissionCatalog && actions}
+                </header>
+
+                <div className="space-y-6 w-full">
+                    {!hasAdmissionCatalog && <div className="university-overview flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
+                            <LanguageReadiness university={university} ielts={userIelts} topik={userTopik} chance={chance} size="lg" />
+                        </div>
+                        {actions}
+                    </div>}
+
+                    {hasAdmissionCatalog && <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} focused />}
 
                     {!hasAdmissionCatalog && <>
                     {/* Key Stats Grid */}
@@ -133,24 +104,24 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                 <div className="p-3 bg-white border border-slate-100 rounded-xl">
                                     <DollarSign className="w-4 h-4 text-emerald-500 mb-1" />
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.tuition')}</p>
-                                    <p className="font-semibold text-slate-800 text-base truncate">
+                                    <p className="font-semibold text-slate-800 text-base break-words">
                                         {university.tuition_min === 0 ? (
                                             t('university.free')
                                         ) : hasTuitionMin ? (
                                             <>€{university.tuition_min.toLocaleString()}{hasTuitionMax && <>–€{university.tuition_max.toLocaleString()}</>}</>
                                         ) : (
-                                            <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}
                                     </p>
                                 </div>
                                 <div className="p-3 bg-white border border-slate-100 rounded-xl">
                                     <Building2 className="w-4 h-4 text-blue-500 mb-1" />
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.livingCost')}</p>
-                                    <p className="font-semibold text-slate-800 text-base truncate">
+                                    <p className="font-semibold text-slate-800 text-base break-words">
                                         {hasLivingCost ? (
                                             <>€{university.living_cost_estimate.toLocaleString()}/{t('common.year')}</>
                                         ) : (
-                                            <span className="text-slate-400 italic font-normal text-sm">Not published</span>
+                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}
                                     </p>
                                 </div>
@@ -159,9 +130,9 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.minGpa')}</p>
                                     <p className="text-base">
                                         {showHolisticGpaNote ? (
-                                            <span className="italic text-slate-500 text-sm" title={US_GPA_HOLISTIC_NOTE}>
-                                                Holistic admissions
-                                                <span className="ml-1 text-[10px] not-italic uppercase tracking-wide text-slate-400 align-middle">no fixed GPA</span>
+                                            <span className="italic text-slate-500 text-sm" title={catalogText(language, 'holisticNote')}>
+                                                {catalogText(language, 'holistic')}
+                                                <span className="ml-1 text-[10px] not-italic uppercase tracking-wide text-slate-400 align-middle">{catalogText(language, 'noFixedGpa')}</span>
                                             </span>
                                         ) : (
                                             <EstimatedField value={university.min_gpa} field="gpa" region={university.region} format={(v) => Number(v).toFixed(1)} />
@@ -172,7 +143,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     <Users className="w-4 h-4 text-violet-500 mb-1" />
                                     <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.intlStudents')}</p>
                                     <p className="font-semibold text-slate-800 text-base">
-                                        {university.international_students_percent ? `${university.international_students_percent}%` : <span className="text-slate-400 italic font-normal text-sm">Not published</span>}
+                                        {university.international_students_percent ? `${university.international_students_percent}%` : <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>}
                                     </p>
                                 </div>
                             </div>
@@ -186,7 +157,7 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                     </div>
                                     <p className="text-2xl font-bold text-indigo-700">
                                         {totalCost === null ? (
-                                            <span className="text-base text-slate-400 italic font-normal">Not published</span>
+                                            <span className="text-base text-slate-400 italic font-normal">{catalogText(language, 'notPublished')}</span>
                                         ) : (
                                             <>€{totalCost.toLocaleString()}</>
                                         )}
@@ -197,17 +168,12 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
 
                             {/* Description */}
                             {university.description && (
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Info className="w-5 h-5 text-indigo-600" />
-                                            {t('university.about')}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-slate-600 leading-relaxed">{university.description}</p>
-                                    </CardContent>
-                                </Card>
+                                <details className="university-about programme-disclosure">
+                                    <summary>{t('university.about')}</summary>
+                                    <div>
+                                        <p className="text-slate-600 leading-relaxed" lang={catalogDescription(university.description, language) === university.description ? 'en' : language}>{catalogDescription(university.description, language)}</p>{language !== 'en' && catalogDescription(university.description, language) === university.description && <p className="text-xs text-slate-500 mt-2">{catalogText(language, 'sourceLanguageNote')}</p>}
+                                    </div>
+                                </details>
                             )}
 
                             {!hasAdmissionCatalog && <>
@@ -224,12 +190,12 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                                         <div className="flex flex-wrap gap-2">
                                             <Badge variant="secondary" className="bg-slate-100">
                                                 <Globe className="w-3 h-3 mr-1" />
-                                                {university.language}
+                                                {catalogValue(university.language, language)}
                                             </Badge>
                                             {university.degree_levels?.map(deg => (
-                                                <Badge key={deg} variant="secondary" className="bg-indigo-50 text-indigo-600">
+                                                <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-indigo-50 text-indigo-600">
                                                     <GraduationCap className="w-3 h-3 mr-1" />
-                                                    {deg}
+                                                    {catalogValue(deg, language)}
                                                 </Badge>
                                             ))}
                                         </div>
@@ -633,7 +599,15 @@ export default function UniversityDetailModal({ university, isOpen, onClose, use
                     </Collapsible>
                     </>}
                 </div>
-            </DialogContent>
-        </Dialog>
+        </article>
     );
+}
+
+export default function UniversityDetailModal({ isOpen, onClose, university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave }) {
+    return <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden">
+            <DialogTitle className="sr-only">{university?.name}</DialogTitle>
+            <UniversityDetails university={university} userGpa={userGpa} userIelts={userIelts} userTopik={userTopik} isSaved={isSaved} saveDisabled={saveDisabled} onSave={onSave} />
+        </DialogContent>
+    </Dialog>;
 }

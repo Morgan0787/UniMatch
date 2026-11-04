@@ -3,12 +3,10 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger);
-export function usePageMotion(root, language, blocked, reduced) {
+export function usePageMotion(root, language, blocked) {
     const lenisRef = useRef(null);
     const blockedRef = useRef(blocked);
     useEffect(() => {
-        if (reduced)
-            return;
         // Lenis is the single scroll engine. Touch keeps native scrolling.
         const lenis = new Lenis({
             lerp: 0.085,
@@ -67,25 +65,18 @@ export function usePageMotion(root, language, blocked, reduced) {
             lenis.destroy();
             lenisRef.current = null;
         };
-    }, [root, reduced]);
+    }, [root]);
     useEffect(() => {
         blockedRef.current = blocked;
         if (blocked)
             lenisRef.current?.stop();
         else
             lenisRef.current?.start();
-    }, [blocked, reduced]);
+    }, [blocked]);
     useEffect(() => {
         const el = root.current;
         if (!el)
             return;
-        if (reduced) {
-            el.querySelectorAll("[data-counter]").forEach((target) => {
-                target.textContent = String(Number(target.dataset.counter)).padStart(2, "0");
-            });
-            ScrollTrigger.refresh();
-            return;
-        }
         const ctx = gsap.context(() => {
             const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
             intro
@@ -102,9 +93,9 @@ export function usePageMotion(root, language, blocked, reduced) {
             const heroExit = gsap.timeline({ scrollTrigger: {
                 trigger: ".intro-section", start: "top bottom", end: "top 15%", scrub: 0.45,
             }});
-            heroExit.fromTo(".hero-content, .scroll-hint", { autoAlpha: 1, y: 0 }, {
-                autoAlpha: 0, y: -65, ease: "none",
-            }, 0).fromTo(".hero-visual", { autoAlpha: 1, yPercent: 0 }, {
+            // The scene owns copy visibility through hero-immersed. A second
+            // scrub on that copy left stale autoAlpha after responsive repinning.
+            heroExit.fromTo(".hero-visual", { autoAlpha: 1, yPercent: 0 }, {
                 autoAlpha: 0, yPercent: -8, ease: "none",
             }, 0);
             editorialScreens.forEach((screen) => {
@@ -225,5 +216,5 @@ export function usePageMotion(root, language, blocked, reduced) {
             window.removeEventListener("load", refresh);
             ctx.revert();
         };
-    }, [root, language, reduced]);
+    }, [root, language]);
 }

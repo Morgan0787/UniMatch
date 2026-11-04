@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { apiClient } from '@/lib/apiClient';
 import { pagesConfig } from '@/pages.config';
+import { rememberPublicRoute } from './loginReturn';
 
 export default function NavigationTracker() {
     const location = useLocation();
@@ -11,6 +12,8 @@ export default function NavigationTracker() {
     const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 
     useEffect(() => {
+        rememberPublicRoute(location);
+
         const pathname = location.pathname;
         let pageName;
 

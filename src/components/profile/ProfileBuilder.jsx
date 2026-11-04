@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Sparkles, ArrowRight, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n';
+import { catalogValue } from '@/lib/catalogCopy';
 
 const countries = [
     "Uzbekistan", "Kazakhstan", "Kyrgyzstan", "Tajikistan", "Turkmenistan",
@@ -23,7 +23,7 @@ const interests = [
 ];
 
 export default function ProfileBuilder({ profile, onSave, isLoading }) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         gpa: profile?.gpa || 3.0,
@@ -58,30 +58,31 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
     const totalSteps = 3;
 
     return (
-        <Card className="max-w-xl mx-auto border-0 shadow-xl bg-white overflow-hidden">
-            <CardHeader className="bg-gradient-to-br from-indigo-500 to-violet-600 text-white pb-8">
+        <Card className="product-card max-w-2xl mx-auto overflow-hidden">
+            <CardHeader className="product-page-hero border-0 pb-5 sm:pb-6" style={{ backgroundColor: '#f8f6f0', color: '#292823' }}>
                 <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="w-5 h-5" />
-                    <span className="text-sm font-medium text-indigo-100">{t('profile.personalizedMatching')}</span>
+                    <Sparkles className="w-5 h-5 text-[#855a36]" aria-hidden="true" />
+                    <span className="text-sm font-medium text-slate-600">{t('profile.personalizedMatching')}</span>
                 </div>
-                <CardTitle className="text-2xl">{t('profile.buildProfile')}</CardTitle>
-                <CardDescription className="text-indigo-100">
+                <h1 className="text-2xl font-semibold">{t('profile.buildProfile')}</h1>
+                <CardDescription className="text-slate-600">
                     {t('profile.buildProfileDesc')}
                 </CardDescription>
                 {/* Progress */}
-                <div className="flex gap-2 mt-6">
+                <div className="flex gap-2 mt-5" role="progressbar" aria-valuemin={1} aria-valuemax={totalSteps} aria-valuenow={step} aria-label={`${step} / ${totalSteps}`}>
                     {[1, 2, 3].map(s => (
-                        <div 
+                        <div
                             key={s}
                             className={`h-1.5 flex-1 rounded-full transition-all ${
-                                s <= step ? 'bg-white' : 'bg-white/30'
+                                s <= step ? 'bg-[#855a36]' : 'bg-[#dedbd3]'
                             }`}
+                            aria-hidden="true"
                         />
                     ))}
                 </div>
             </CardHeader>
 
-            <CardContent className="p-6">
+            <CardContent className="p-5 sm:p-7">
                 <AnimatePresence mode="wait">
                     {step === 1 && (
                         <motion.div
@@ -89,16 +90,18 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="space-y-6"
+                            transition={{ duration: 0.2 }}
+                            className="space-y-4"
                         >
                             <div>
-                                <h3 className="font-semibold text-slate-800 mb-4">{t('profile.academicInfo')}</h3>
-                                
+                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.academicInfo')}</h2>
+
                                 <div className="space-y-5">
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.gpaScale')}</Label>
+                                    <div className="space-y-2">
+                                        <Label id="profile-gpa-label">{t('profile.gpaScale')}</Label>
                                         <div className="flex items-center gap-4">
                                             <Slider
+                                                aria-labelledby="profile-gpa-label"
                                                 value={[formData.gpa]}
                                                 onValueChange={([val]) => updateField('gpa', val)}
                                                 min={1.0}
@@ -115,13 +118,13 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         </p>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.currentGradeLevel')}</Label>
-                                        <Select 
-                                            value={formData.grade_level} 
+                                    <div className="space-y-2">
+                                        <Label htmlFor="profile-grade-level">{t('profile.currentGradeLevel')}</Label>
+                                        <Select
+                                            value={formData.grade_level}
                                             onValueChange={(val) => updateField('grade_level', val)}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger id="profile-grade-level">
                                                 <SelectValue placeholder={t('profile.selectGrade')} />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -133,30 +136,31 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         </Select>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.targetDegree')}</Label>
-                                        <div className="flex gap-2">
+                                    <div className="space-y-2">
+                                        <Label id="profile-degree-label">{t('profile.targetDegree')}</Label>
+                                        <div className="flex flex-wrap gap-2" role="group" aria-labelledby="profile-degree-label">
                                             {["Bachelor", "Master", "PhD"].map(deg => (
                                                 <Button
                                                     key={deg}
                                                     type="button"
+                                                    aria-pressed={formData.target_degree === deg}
                                                     variant={formData.target_degree === deg ? "default" : "outline"}
-                                                    className={formData.target_degree === deg ? "bg-indigo-600" : ""}
+                                                    className={formData.target_degree === deg ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]" : ""}
                                                     onClick={() => updateField('target_degree', deg)}
                                                 >
-                                                    {deg}
+                                                    {catalogValue(deg, language)}
                                                 </Button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.englishProficiency')}</Label>
-                                        <Select 
-                                            value={String(formData.english_proficiency)} 
+                                    <div className="space-y-2">
+                                        <Label htmlFor="profile-ielts">{t('profile.englishProficiency')}</Label>
+                                        <Select
+                                            value={String(formData.english_proficiency)}
                                             onValueChange={(val) => updateField('english_proficiency', Number(val))}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger id="profile-ielts">
                                                 <SelectValue placeholder={t('profile.selectIelts')} />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -172,13 +176,13 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         </p>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.koreanProficiency')} 🇰🇷</Label>
-                                        <Select 
-                                            value={formData.topikLevel || "Not taken"} 
+                                    <div className="space-y-2">
+                                        <Label htmlFor="profile-topik">{t('profile.koreanProficiency')} 🇰🇷</Label>
+                                        <Select
+                                            value={formData.topikLevel || "Not taken"}
                                             onValueChange={(val) => updateField('topikLevel', val)}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger id="profile-topik">
                                                 <SelectValue placeholder={t('profile.selectTopik')} />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -206,16 +210,18 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="space-y-6"
+                            transition={{ duration: 0.2 }}
+                            className="space-y-4"
                         >
                             <div>
-                                <h3 className="font-semibold text-slate-800 mb-4">{t('profile.budgetBackground')}</h3>
-                                
+                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.budgetBackground')}</h2>
+
                                 <div className="space-y-5">
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.maxAnnualBudget')}</Label>
+                                    <div className="space-y-2">
+                                        <Label id="profile-budget-label">{t('profile.maxAnnualBudget')}</Label>
                                         <div className="flex items-center gap-4">
                                             <Slider
+                                                aria-labelledby="profile-budget-label"
                                                 value={[formData.budget_max]}
                                                 onValueChange={([val]) => updateField('budget_max', val)}
                                                 min={0}
@@ -232,42 +238,44 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         </p>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.homeCountry')}</Label>
-                                        <Select 
-                                            value={formData.home_country} 
+                                    <div className="space-y-2">
+                                        <Label htmlFor="profile-home-country">{t('profile.homeCountry')}</Label>
+                                        <Select
+                                            value={formData.home_country}
                                             onValueChange={(val) => updateField('home_country', val)}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger id="profile-home-country">
                                                 <SelectValue placeholder={t('profile.selectCountry')} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {countries.map(c => (
-                                                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                                                    <SelectItem key={c} value={c}>{catalogValue(c, language)}</SelectItem>
                                                 ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <Label>{t('profile.languagesToStudy')}</Label>
-                                        <div className="flex flex-wrap gap-2">
+                                    <div className="space-y-2">
+                                        <Label id="profile-languages-label">{t('profile.languagesToStudy')}</Label>
+                                        <div className="flex flex-wrap gap-2" role="group" aria-labelledby="profile-languages-label">
                                             {languages.map(lang => (
-                                                <Badge
+                                                <Button
                                                     key={lang}
+                                                    type="button"
+                                                    aria-pressed={formData.preferred_languages.includes(lang)}
                                                     variant={formData.preferred_languages.includes(lang) ? "default" : "outline"}
                                                     className={`cursor-pointer transition-all ${
-                                                        formData.preferred_languages.includes(lang) 
-                                                            ? "bg-indigo-600" 
+                                                        formData.preferred_languages.includes(lang)
+                                                            ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
                                                             : "hover:bg-slate-100"
                                                     }`}
                                                     onClick={() => toggleArrayField('preferred_languages', lang)}
                                                 >
                                                     {formData.preferred_languages.includes(lang) && (
-                                                        <Check className="w-3 h-3 mr-1" />
+                                                        <Check aria-hidden="true" className="w-3 h-3 mr-1" />
                                                     )}
-                                                    {lang}
-                                                </Badge>
+                                                    {catalogValue(lang, language)}
+                                                </Button>
                                             ))}
                                         </div>
                                     </div>
@@ -282,31 +290,34 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
-                            className="space-y-6"
+                            transition={{ duration: 0.2 }}
+                            className="space-y-4"
                         >
                             <div>
-                                <h3 className="font-semibold text-slate-800 mb-4">{t('profile.yourInterests')}</h3>
+                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.yourInterests')}</h2>
                                 <p className="text-sm text-slate-500 mb-4">
                                     {t('profile.interestsNote')}
                                 </p>
-                                
-                                <div className="flex flex-wrap gap-2">
+
+                                <div className="flex flex-wrap gap-2" role="group" aria-label={t('profile.yourInterests')}>
                                     {interests.map(interest => (
-                                        <Badge
+                                        <Button
                                             key={interest}
+                                            type="button"
+                                            aria-pressed={formData.interests.includes(interest)}
                                             variant={formData.interests.includes(interest) ? "default" : "outline"}
                                             className={`cursor-pointer transition-all py-2 px-3 ${
-                                                formData.interests.includes(interest) 
-                                                    ? "bg-indigo-600" 
+                                                formData.interests.includes(interest)
+                                                    ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
                                                     : "hover:bg-slate-100"
                                             }`}
                                             onClick={() => toggleArrayField('interests', interest)}
                                         >
                                             {formData.interests.includes(interest) && (
-                                                <Check className="w-3 h-3 mr-1" />
+                                                <Check aria-hidden="true" className="w-3 h-3 mr-1" />
                                             )}
-                                            {interest}
-                                        </Badge>
+                                            {catalogValue(interest, language)}
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
@@ -315,7 +326,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                 </AnimatePresence>
 
                 {/* Navigation */}
-                <div className="flex justify-between mt-8 pt-6 border-t">
+                <div className="flex justify-between mt-6 pt-5 border-t">
                     <Button
                         variant="ghost"
                         onClick={() => setStep(s => s - 1)}
@@ -323,17 +334,17 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                     >
                         {t('profile.back')}
                     </Button>
-                    
+
                     {step < totalSteps ? (
-                        <Button onClick={() => setStep(s => s + 1)} className="bg-indigo-600 hover:bg-indigo-700">
+                        <Button onClick={() => setStep(s => s + 1)} className="bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]">
                             {t('profile.continue')}
                             <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                     ) : (
-                        <Button 
-                            onClick={handleSubmit} 
+                        <Button
+                            onClick={handleSubmit}
                             disabled={isLoading}
-                            className="bg-indigo-600 hover:bg-indigo-700"
+                            className="bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
                         >
                             {isLoading ? t('profile.saving') : t('profile.completeProfile')}
                             <Sparkles className="w-4 h-4 ml-2" />

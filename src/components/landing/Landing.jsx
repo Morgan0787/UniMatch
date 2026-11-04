@@ -91,10 +91,8 @@ export default function App() {
     const labels = getLandingLabels(language);
     const [menu, setMenu] = useState(false), [videoAvailable, setVideoAvailable] = useState(false), [videoPaused, setVideoPaused] = useState(false);
     const root = useRef(null), hero = useRef(null), video = useRef(null);
-    // Product decision: Home's scroll story runs regardless of OS motion settings.
-    const reduced = false;
     const d = useDiscovery(language), { c, l, saved, filtered, filter, setFilter, onlySaved, setOnlySaved, toggleSave, } = d, p = language === 'uz' ? uzEditorial : editorial[language === "ru" ? "ru" : "en"], ru = language === "ru";
-    usePageMotion(root, language, menu || d.quiz || Boolean(d.detail) || Boolean(d.legal), reduced);
+    usePageMotion(root, language, menu || d.quiz || Boolean(d.detail) || Boolean(d.legal));
     useEffect(() => {
         const oldTitle = document.title;
         document.title = language === 'uz' ? 'UniMatch — Sizga mos kelajak.' : ru
@@ -102,12 +100,6 @@ export default function App() {
             : "UniMatch — A future that fits.";
         return () => { document.title = oldTitle; };
     }, [language, ru]);
-    useEffect(() => {
-        if (reduced) {
-            video.current?.pause();
-            setVideoPaused(true);
-        }
-    }, [reduced]);
     const match = () => d.openQuiz();
     const universities = d.universities;
     return (<div ref={root} className={`unimatch-landing site ${ru ? "lang-ru" : ""}`}>
@@ -120,7 +112,7 @@ export default function App() {
           <div className="hero-visual">
           <HeroSceneBoundary language={language}>
           <Suspense fallback={<HeroLoadingScreen language={language} />}>
-            <HeroExplorer universities={universities} heroRef={hero} language={language} reduced={reduced} blocked={menu || d.quiz || Boolean(d.detail) || Boolean(d.legal)} onDetail={d.setDetail}/>
+            <HeroExplorer universities={universities} heroRef={hero} language={language} blocked={menu || d.quiz || Boolean(d.detail) || Boolean(d.legal)} onDetail={d.setDetail}/>
           </Suspense>
           </HeroSceneBoundary>
           </div>
@@ -148,7 +140,7 @@ export default function App() {
                     {pill}
                   </a>))}
                 <button aria-label={c.explore} onClick={() => document.getElementById("discover")?.scrollIntoView({
-            behavior: reduced ? "instant" : "smooth",
+            behavior: "smooth",
         })}>
                   +
                 </button>
@@ -195,7 +187,7 @@ export default function App() {
           </div>
           <div className="experience-media">
             <img src="/images/hero.jpg" alt={labels.mediaAlt} loading="lazy" data-parallax/>
-            {videoAvailable && (<video ref={video} className="experience-video" src="/video.mp4" autoPlay={!reduced} muted loop playsInline poster="/images/hero.jpg" onError={() => setVideoAvailable(false)}/>)}
+            {videoAvailable && (<video ref={video} className="experience-video" src="/video.mp4" autoPlay muted loop playsInline poster="/images/hero.jpg" onError={() => setVideoAvailable(false)}/>)}
             <div className="experience-media-shade"/>
             <span className="media-eyebrow">{p.mediaLabel}</span>
             <div className="media-center">
@@ -444,6 +436,8 @@ export default function App() {
             <span>© 2026 UniMatch</span>
             <span>{labels.world}</span>
             <div>
+              <button type="button" onClick={() => d.setLegal('privacy')}>{c.privacy}</button>
+              <button type="button" onClick={() => d.setLegal('terms')}>{c.terms}</button>
               <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer">{labels.contact}</a>
             </div>
           </div>

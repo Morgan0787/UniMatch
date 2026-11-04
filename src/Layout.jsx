@@ -19,10 +19,14 @@ import {
 import { LanguageProvider, useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import '@/styles/product-theme.css';
+import '@/styles/discovery-polish.css';
+import { toast } from 'sonner';
 
 function LayoutContent({ children, currentPageName }) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const navigationCopy = {en: ['Main navigation', 'Close menu', 'Open menu'], ru: ['Основная навигация', 'Закрыть меню', 'Открыть меню'], uz: ['Asosiy navigatsiya', 'Menyuni yopish', 'Menyuni ochish']}[language];
     const { user, logout, navigateToLogin } = useAuth();
+    const guestCta = {en:'Find my university',ru:'Подобрать университет',uz:'Universitet tanlash'}[language];
     
     const navItems = [
         { name: t('nav.home'), path: 'Home', icon: Home },
@@ -61,15 +65,16 @@ function LayoutContent({ children, currentPageName }) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        try { await logout(); }
+        catch { toast.error({ en: 'Could not sign out. Please try again.', ru: 'Не удалось выйти. Попробуйте ещё раз.', uz: 'Chiqib bo‘lmadi. Qayta urinib ko‘ring.' }[language]); }
     };
 
     if (currentPageName === 'Home') return <>{children}<div className="landing-feedback"><FeedbackButton /></div></>;
 
     return (
         <div className="unimatch-app min-h-screen bg-slate-50">
-            <nav aria-label="Main navigation" className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+            <nav aria-label={navigationCopy[0]} className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
             }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -155,22 +160,17 @@ function LayoutContent({ children, currentPageName }) {
                                     >
                                         {t('nav.signIn')}
                                     </Button>
-                                    <Button 
-                                        className="bg-indigo-600 hover:bg-indigo-700"
-                                        onClick={() => navigateToLogin()}
-                                    >
-                                        {t('nav.getStarted')}
-                                    </Button>
+                                    <Button asChild className="bg-indigo-600 hover:bg-indigo-700"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
                                 </>
                             )}
                         </div>
 
                         <button
                             ref={menuToggle}
-                            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+                            aria-label={mobileMenuOpen ? navigationCopy[1] : navigationCopy[2]}
                             aria-expanded={mobileMenuOpen}
                             aria-controls="product-mobile-menu"
-                            className="lg:hidden p-2 rounded-lg hover:bg-slate-100"
+                            className="lg:hidden min-h-11 min-w-11 p-2 rounded-lg hover:bg-slate-100"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             {mobileMenuOpen ? (
@@ -220,12 +220,12 @@ function LayoutContent({ children, currentPageName }) {
                                         </Button>
                                     </div>
                                 ) : (
-                                    <Button 
+                                    <div className="grid gap-2"><Button
                                         className="w-full bg-indigo-600 hover:bg-indigo-700"
                                         onClick={() => navigateToLogin()}
                                     >
-                                        {t('nav.signIn')} / {t('nav.getStarted')}
-                                    </Button>
+                                        {t('nav.signIn')}
+                                    </Button><Button asChild variant="outline" className="w-full"><Link to={createPageUrl('AdmissionsSurvey')} onClick={() => setMobileMenuOpen(false)}>{guestCta}</Link></Button></div>
                                 )}
                             </div>
                         </div>
@@ -239,58 +239,22 @@ function LayoutContent({ children, currentPageName }) {
 
             <FeedbackButton />
 
-            <footer className="product-footer bg-white border-t border-slate-100 mt-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-                    <div className="grid md:grid-cols-4 gap-8">
-                        <div className="md:col-span-2">
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
-                                    <GraduationCap className="w-5 h-5 text-white" />
-                                </div>
-                                <span className="font-bold text-xl text-slate-800">UniMatch</span>
-                            </div>
-                            <p className="text-slate-500 max-w-sm">
-                                {t('footer.tagline')}
-                            </p>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-slate-800 mb-4">{t('footer.quickLinks')}</h4>
-                            <div className="space-y-2">
-                                <Link to={createPageUrl("Search")} className="block text-slate-500 hover:text-indigo-600 transition-colors">
-                                    {t('footer.findUniversities')}
-                                </Link>
-                                <Link to={createPageUrl("Profile")} className="block text-slate-500 hover:text-indigo-600 transition-colors">
-                                    {t('footer.myProfile')}
-                                </Link>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-slate-800 mb-4">{t('footer.support')}</h4>
-                            <div className="space-y-2">
-                                <button type="button" onClick={() => setHelpOpen(true)} className="block text-slate-500 hover:text-indigo-600 transition-colors">
-                                    {t('footer.helpCenter')}
-                                </button>
-                                <div>
-                                    <p className="text-slate-800 font-medium mb-2">{t('footer.contactUs')}</p>
-                                    <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer" className="block text-slate-500 hover:text-indigo-600 transition-colors text-sm">
-                                        Telegram: @qebzo
-                                    </a>
-                                    <a href="https://t.me/Abubakr_786" target="_blank" rel="noopener noreferrer" className="block text-slate-500 hover:text-indigo-600 transition-colors text-sm">
-                                        Telegram: @Abubakr_786
-                                    </a>
-                                    <a href="https://t.me/Mr_xomidov" target="_blank" rel="noopener noreferrer" className="block text-slate-500 hover:text-indigo-600 transition-colors text-sm">
-                                        Telegram: @Mr_xomidov
-                                    </a>
-                                    <a href="https://instagram.com/ismailov0787_08" target="_blank" rel="noopener noreferrer" className="block text-slate-500 hover:text-indigo-600 transition-colors text-sm">
-                                        Instagram: @ismailov0787_08
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="border-t border-slate-100 mt-10 pt-8 text-center text-slate-400 text-sm">
-                        © {new Date().getFullYear()} {t('footer.copyright')}
-                    </div>
+            <footer className="product-footer product-footer-compact">
+                <div className="product-footer-inner">
+                    <Link to={createPageUrl('Home')} className="product-footer-brand">UniMatch<span>®</span></Link>
+                    <p>{t('footer.tagline')}</p>
+                    <nav aria-label={t('footer.quickLinks')}>
+                        <Link to={createPageUrl('Search')}>{t('footer.findUniversities')}</Link>
+                        <Link to={createPageUrl('AdmissionsSurvey')}>{guestCta}</Link>
+                        <button type="button" onClick={() => setHelpOpen(true)}>{t('footer.helpCenter')}</button>
+                        <details><summary>{t('footer.contactUs')}</summary><div>
+                            <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer">Telegram: @qebzo</a>
+                            <a href="https://t.me/Abubakr_786" target="_blank" rel="noopener noreferrer">Telegram: @Abubakr_786</a>
+                            <a href="https://t.me/Mr_xomidov" target="_blank" rel="noopener noreferrer">Telegram: @Mr_xomidov</a>
+                            <a href="https://instagram.com/ismailov0787_08" target="_blank" rel="noopener noreferrer">Instagram: @ismailov0787_08</a>
+                        </div></details>
+                    </nav>
+                    <small>© {new Date().getFullYear()} {t('footer.copyright')}</small>
                 </div>
             </footer>
             <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />

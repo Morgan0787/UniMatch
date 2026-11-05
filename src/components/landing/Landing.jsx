@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useRef, useState } from "react";
 import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe2, Sprout, Instagram, Linkedin, ArrowRight, Play, Pause, } from "lucide-react";
 import { Header } from "./Header";
 import { HeroSceneBoundary, HeroLoadingScreen } from './HeroSceneFallback';
@@ -93,13 +93,6 @@ export default function App() {
     const root = useRef(null), hero = useRef(null), video = useRef(null);
     const d = useDiscovery(language), { c, l, saved, filtered, filter, setFilter, onlySaved, setOnlySaved, toggleSave, } = d, p = language === 'uz' ? uzEditorial : editorial[language === "ru" ? "ru" : "en"], ru = language === "ru";
     usePageMotion(root, language, menu || d.quiz || Boolean(d.detail) || Boolean(d.legal));
-    useEffect(() => {
-        const oldTitle = document.title;
-        document.title = language === 'uz' ? 'UniMatch — Sizga mos kelajak.' : ru
-            ? "UniMatch — Ваше место в мире."
-            : "UniMatch — A future that fits.";
-        return () => { document.title = oldTitle; };
-    }, [language, ru]);
     const match = () => d.openQuiz();
     const universities = d.universities;
     return (<div ref={root} className={`unimatch-landing site ${ru ? "lang-ru" : ""}`}>

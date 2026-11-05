@@ -1,9 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /Login
-Disallow: /Profile
-Disallow: /Recommendations
-Disallow: /AdminDataQuality
-Disallow: /AdminFeedback
 
-Sitemap: https://uniiversities.vercel.app/sitemap.xml
+Sitemap: https://getunimatch.app/sitemap.xml

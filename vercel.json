@@ -1,13 +1,74 @@
 {
-  "rewrites": [{"source": "/(.*)", "destination": "/index.html"}],
-  "headers": [{
-    "source": "/(.*)",
-    "headers": [
-      {"key": "X-Content-Type-Options", "value": "nosniff"},
-      {"key": "X-Frame-Options", "value": "DENY"},
-      {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
-      {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()"},
-      {"key": "Content-Security-Policy-Report-Only", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"}
-    ]
-  }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "uniiversities\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://getunimatch.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.getunimatch\\.app"
+        }
+      ],
+      "destination": "https://getunimatch.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/Home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/Search",
+      "destination": "/seo/Search.html"
+    },
+    {
+      "source": "/AdmissionsSurvey",
+      "destination": "/seo/AdmissionsSurvey.html"
+    },
+    {
+      "source": "/:page(University|Login|Profile|Recommendations|AdminDataQuality|AdminFeedback|EssayChecker)",
+      "destination": "/seo/private.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; media-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        }
+      ]
+    }
+  ]
 }

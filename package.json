@@ -13,7 +13,8 @@
     "check:academic-reference": "node scripts/check-academic-reference.mjs",
     "check:admissions": "node scripts/check-academic-reference.mjs && node scripts/check-public-admission-catalog.mjs && node scripts/check-public-admission-loader.mjs && node scripts/check-admission-fact-presentation.mjs && node scripts/check-admission-draft.mjs && node scripts/check-admission-requirements.mjs && node scripts/check-admission-selection.mjs && node scripts/check-admission-engine.mjs && node scripts/check-admission-favorites.mjs && node scripts/check-admission-baseline-mapping.mjs && node scripts/check-admission-research-mapping.mjs",
     "check:admissions:research": "node scripts/check-admissions.mjs && node scripts/check-admission-presentation.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",

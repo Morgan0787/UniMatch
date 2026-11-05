@@ -9,6 +9,8 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import RequireAuth from '@/components/RequireAuth';
 import { MotionConfig } from 'framer-motion';
+import { LanguageProvider } from '@/lib/i18n';
+import RouteSeo from '@/lib/RouteSeo';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -73,8 +75,11 @@ function App() {
       <MotionConfig reducedMotion="never">
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <NavigationTracker />
-          <AuthenticatedApp />
+          <LanguageProvider>
+            <RouteSeo />
+            <NavigationTracker />
+            <AuthenticatedApp />
+          </LanguageProvider>
         </Router>
         <Toaster />
       </QueryClientProvider>

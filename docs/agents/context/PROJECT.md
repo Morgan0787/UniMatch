@@ -1,5 +1,9 @@
 # UniMatch — stable project brief
 
+## Release recovery — 2026-11-05
+
+The recovery candidate combines Release 18 (1ec35b3) with SEO/domain configuration from e1bf863. Publication and browser verification are pending. See [recovery evidence](../../qa/release-recovery-2026-11-05.md).
+
 ## Product
 
 UniMatch helps Central Asian students find universities in Europe, the US, and Asia by ranking realistic admission chances from GPA, IELTS, TOPIK, and verified university data. It is a Vite/React portfolio and potential product, not the separate dating-site test project.

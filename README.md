@@ -10,7 +10,7 @@ Most university-search sites are directories: browse, filter, hope. UniMatch inv
 
 ## How it works
 
-Public site: [unimatch-two.vercel.app](https://unimatch-two.vercel.app/).
+Public site: [getunimatch.app](https://getunimatch.app/).
 
 - **Frontend** — Vite + React + Tailwind, component library via shadcn/ui
 - **Backend** — Supabase (Postgres + Auth), migrated off the original Base44 platform

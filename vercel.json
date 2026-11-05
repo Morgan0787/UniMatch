@@ -1,1 +1,43 @@
-{"rewrites": [{"source": "/(.*)", "destination": "/index.html"}]}
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "uniiversities\\.vercel\\.app"
+        }
+      ],
+      "destination": "https://getunimatch.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www\\.getunimatch\\.app"
+        }
+      ],
+      "destination": "https://getunimatch.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/Home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/Search",
+      "destination": "/seo/Search.html"
+    },
+    {
+      "source": "/:page(Login|Profile|Recommendations|AdminDataQuality|AdminFeedback|EssayChecker)",
+      "destination": "/seo/private.html"
+    }
+  ]
+}

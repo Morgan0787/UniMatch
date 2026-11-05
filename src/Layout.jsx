@@ -15,7 +15,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LanguageProvider, useLanguage } from '@/lib/i18n';
+import { useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import '@/styles/product-theme.css';
 
@@ -297,8 +297,6 @@ function LayoutContent({ children, currentPageName }) {
 
 export default function Layout({ children, currentPageName }) {
     return (
-        <LanguageProvider>
-            <LayoutContent children={children} currentPageName={currentPageName} />
-        </LanguageProvider>
+        <LayoutContent children={children} currentPageName={currentPageName} />
     );
 }

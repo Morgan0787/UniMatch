@@ -56,3 +56,8 @@ Historical visual QA screenshots are retained in the [370517c Home archive](docs
 Inactive legacy CSS and image-selection source are preserved in the [source archive](docs/archive/source/2026-10-13/README.md), with original paths, hashes and restoration instructions.
 
 Start with [AGENTS.md](AGENTS.md) for task-specific guidance. [Context routing](docs/agents/context/README.md) identifies which documents to read; [documentation maintenance](docs/agents/context/MAINTENANCE.md) defines when to update them. For the Codex/OpenCode profile switch, see the [agent setup guide](docs/agents/README.md).
+
+
+## SEO build
+
+Canonical origin: https://getunimatch.app. Run `npm run build` then `npm run check:seo` to validate generated initial metadata, sitemap, image and route coverage. `src/lib/seo.js` classifies routes. The public sitemap contains `/` and `/Search`; account/tool pages and missing URLs are noindex. Page bodies still render through JavaScript. Vercel applies host-scoped permanent redirects from the retired production hostname and uses a custom 404 for unknown paths. Language changes update runtime metadata; stable locale URLs/hreflang are not implemented.

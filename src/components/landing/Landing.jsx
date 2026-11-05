@@ -96,13 +96,6 @@ export default function App() {
     const d = useDiscovery(language), { c, l, saved, filtered, filter, setFilter, onlySaved, setOnlySaved, toggleSave, } = d, p = language === 'uz' ? uzEditorial : editorial[language === "ru" ? "ru" : "en"], ru = language === "ru";
     usePageMotion(root, language, menu || d.quiz || Boolean(d.detail) || Boolean(d.legal), reduced);
     useEffect(() => {
-        const oldTitle = document.title;
-        document.title = language === 'uz' ? 'UniMatch — Sizga mos kelajak.' : ru
-            ? "UniMatch — Ваше место в мире."
-            : "UniMatch — A future that fits.";
-        return () => { document.title = oldTitle; };
-    }, [language, ru]);
-    useEffect(() => {
         if (reduced) {
             video.current?.pause();
             setVideoPaused(true);

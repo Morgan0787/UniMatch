@@ -5,11 +5,10 @@ import { ArrowUpRight, X } from 'lucide-react';
 import { getLandingLabels } from './labels';
 import { HeroLoadingScreen } from './HeroSceneFallback';
 import { HERO_CENTERS } from './heroSceneData.js';
-import { createHeroSceneRenderer, getHeroSceneFrame, HERO_SCENE_DURATION, sceneEase, projectHeroPoint } from './heroSceneRenderer.js';
+import { createHeroSceneRenderer, getHeroSceneFrame, HERO_SCENE_DURATION, sceneEase } from './heroSceneRenderer.js';
 import './hero-scene.css';
 
 gsap.registerPlugin(ScrollTrigger);
-const connections = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0], [0, 2], [2, 5]];
 
 /** No playback clock: every visual state is a function of scroll time. */
 export default function HeroExplorer({ heroRef, language, blocked, onDetail, universities: suppliedUniversities = [] }) {
@@ -18,7 +17,7 @@ export default function HeroExplorer({ heroRef, language, blocked, onDetail, uni
   const [ready, setReady] = useState(false), [available, setAvailable] = useState(true);
   const [attempt, setAttempt] = useState(0), [stage, setStage] = useState(0), [selected, setSelected] = useState(null);
   const root = useRef(null), canvas = useRef(null), surface = useRef(null);
-  const labels = useRef([]), cores = useRef([]), earthCore = useRef(null), links = useRef(null);
+  const labels = useRef([]), cores = useRef([]), earthCore = useRef(null);
   const origin = useRef(null), originLabel = useRef(null), pulse = useRef(null), caption = useRef(null);
   const dimensions = useRef({ width: 1, height: 1, copyTop: 1, labels: [] });
   const sceneTime = useRef(0), phase = useRef(0);
@@ -60,7 +59,6 @@ export default function HeroExplorer({ heroRef, language, blocked, onDetail, uni
       const captionY = time < .9 ? openingY + (frame.captionY - openingY) * sceneEase(time / .9) : frame.captionY;
       caption.current.style.transform = `translateY(${captionY.toFixed(2)}px)`;
     }
-    if (links.current) links.current.style.opacity = String(frame.a * (1 - frame.b) * 0.10);
     if (phase.current !== frame.stage) { phase.current = frame.stage; setStage(frame.stage); }
     if (root.current) {
       root.current.dataset.sceneTime = time.toFixed(3);
@@ -105,12 +103,6 @@ export default function HeroExplorer({ heroRef, language, blocked, onDetail, uni
       const copyTop = copy ? copy.getBoundingClientRect().top - heroRef.current.getBoundingClientRect().top : height;
       dimensions.current = { width, height, copyTop, labels: labels.current.map(label => ({ width: label?.offsetWidth || 0, height: label?.offsetHeight || 0 })) };
       renderer?.resize(width, height, window.devicePixelRatio);
-      container.querySelectorAll('line').forEach((line, i) => {
-        const [first, second] = connections[i];
-        const p = projectHeroPoint(HERO_CENTERS[first], width, height), q = projectHeroPoint(HERO_CENTERS[second], width, height);
-        line.setAttribute('x1', String(p[0])); line.setAttribute('y1', String(p[1]));
-        line.setAttribute('x2', String(q[0])); line.setAttribute('y2', String(q[1]));
-      });
       queue();
     };
     measureScene.current = measure;
@@ -187,7 +179,6 @@ export default function HeroExplorer({ heroRef, language, blocked, onDetail, uni
         {HERO_CENTERS.map((_, i) => <div key={i} className="hero-scene-core" ref={node => { cores.current[i] = node; }} />)}
       </div>
       <canvas key={attempt} ref={canvas} className="hero-particle-canvas" role="img" aria-label={copy.scene} />
-      <svg ref={links} className="hero-scene-links" aria-hidden="true">{connections.map((pair, i) => <line key={i} />)}</svg>
       <div className="hero-scene-labels">
         {copy.sceneSubjects.map((text, i) => i === 3 && university
           ? <button key={i} ref={node => { labels.current[i] = node; }} className="hero-subject-label hero-university-label" tabIndex={-1} aria-label={`${copy.explore} ${university.name}`} onClick={() => setSelected(selected ?? 0)}>{selected === null ? text : university.name}<ArrowUpRight size={11} /></button>

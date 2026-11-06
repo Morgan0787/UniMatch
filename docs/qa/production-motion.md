@@ -62,3 +62,17 @@ or hero copy. It still releases the body scroll lock when loading finishes.
 The earlier ~35 FPS browser measurement remains a limitation, not a 60 FPS
 guarantee. This fix changes motion activation and lazy-target ownership rather
 than claiming a new performance result.
+
+## Editorial handoff correction — 2026-11-07
+
+Removed only the hero SVG connections; particle geometry, labels, glows and the
+reversible scene timeline are unchanged. Removed the 220 ms wheel/touch settle
+timer for the intro and experience headings: it restarted Lenis with a new
+0.85 s scroll, interrupting the existing momentum at those two boundaries.
+Lenis smoothing, heading reveals, exit tweens, anchors and menu blocking remain.
+
+Verification: a focused hook harness reproduced the forced scrollTo at 2050 px
+before the fix and passed at both editorial boundaries afterward. Production
+build and ESLint on both changed source files passed. Local browser at 639×544
+showed the seven symbols without connections and retained both editorial screens.
+This verifies removal of the second scroll animation, not a new FPS guarantee.

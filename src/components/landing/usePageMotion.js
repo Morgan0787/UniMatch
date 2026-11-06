@@ -5,7 +5,6 @@ import Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger);
 export function usePageMotion(root, language, blocked) {
     const lenisRef = useRef(null);
-    const blockedRef = useRef(blocked);
     useEffect(() => {
         // Lenis is the single scroll engine. Touch keeps native scrolling.
         const lenis = new Lenis({
@@ -20,54 +19,14 @@ export function usePageMotion(root, language, blocked) {
         const tick = (time) => lenis.raf(time * 1000);
         // Scroll first, then GSAP's scrub tweens, then the hero's dirty draw.
         gsap.ticker.add(tick, false, true);
-        // MDX gently advances the first editorial screens after input settles.
-        // Use the same Lenis instance, allow interruption, and leave keyboard
-        // navigation and the rest of the page in ordinary document flow.
-        let snapTimer;
-        let touchY = 0;
-        const settle = (direction, target) => {
-            window.clearTimeout(snapTimer);
-            if (target instanceof Element && target.closest("a, button, input, textarea, select, [role=dialog]")) return;
-            snapTimer = window.setTimeout(() => {
-                const el = root.current;
-                if (!el || blockedRef.current) return;
-                const first = el.querySelector(".intro-upper");
-                const next = el.querySelector(".experience-heading");
-                if (!first || !next) return;
-                const position = window.scrollY;
-                const firstTop = first.closest("section").getBoundingClientRect().top + position;
-                const nextTop = next.closest("section").getBoundingClientRect().top + position;
-                if (position < firstTop - innerHeight * 0.55 || position > nextTop + innerHeight * 0.12) return;
-                const stops = [firstTop + Math.max(0, (first.clientHeight - innerHeight) / 2), nextTop];
-                const destination = direction > 0
-                    ? stops.find(stop => stop > position + 35)
-                    : [...stops].reverse().find(stop => stop < position - 35);
-                if (destination !== undefined) lenis.scrollTo(destination, { duration: 0.85 });
-            }, 220);
-        };
-        const onWheel = (event) => {
-            if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) settle(Math.sign(event.deltaY), event.target);
-        };
-        const onTouchStart = (event) => { touchY = event.touches[0]?.clientY ?? 0; };
-        const onTouchEnd = (event) => {
-            const distance = touchY - (event.changedTouches[0]?.clientY ?? touchY);
-            if (Math.abs(distance) > 20) settle(Math.sign(distance), event.target);
-        };
-        window.addEventListener("wheel", onWheel, { passive: true });
-        window.addEventListener("touchstart", onTouchStart, { passive: true });
-        window.addEventListener("touchend", onTouchEnd, { passive: true });
+        // Keep wheel/touch momentum continuous through the editorial screens.
         return () => {
-            window.clearTimeout(snapTimer);
-            window.removeEventListener("wheel", onWheel);
-            window.removeEventListener("touchstart", onTouchStart);
-            window.removeEventListener("touchend", onTouchEnd);
             gsap.ticker.remove(tick);
             lenis.destroy();
             lenisRef.current = null;
         };
     }, [root]);
     useEffect(() => {
-        blockedRef.current = blocked;
         if (blocked)
             lenisRef.current?.stop();
         else

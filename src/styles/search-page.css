@@ -86,6 +86,12 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 @media (min-width: 1100px) {
   .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; }
 }
+@media (min-width: 1600px) {
+  .unimatch-app[data-page="Search"] .search-page .max-w-7xl,
+  .unimatch-app[data-page="Search"] .product-nav > .max-w-7xl,
+  .unimatch-app[data-page="Search"] .product-footer-inner { width: calc(100% - 64px); max-width: 1800px; }
+  .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
 @media (max-width: 639px) {
   .unimatch-app .catalog-page.search-page .catalog-heading { padding-block: 24px 16px; }
   .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 14px; }

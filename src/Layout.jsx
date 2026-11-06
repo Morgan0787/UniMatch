@@ -73,7 +73,7 @@ function LayoutContent({ children, currentPageName }) {
     if (currentPageName === 'Home') return <>{children}<div className="landing-feedback"><FeedbackButton /></div></>;
 
     return (
-        <div className="unimatch-app min-h-screen bg-slate-50">
+        <div className="unimatch-app min-h-screen bg-slate-50" data-page={currentPageName}>
             <nav aria-label={navigationCopy[0]} className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
             }`}>

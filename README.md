@@ -62,3 +62,5 @@ Start with [AGENTS.md](AGENTS.md) for task-specific guidance. [Context routing](
 Search pagination (7 November 2026): numbered buttons highlight the current page, retain first/last pages with ellipses, without a separate result count below. Mobile navigation uses two rows. URL and filter navigation are preserved.
 
 Search toolbar: the search and filter controls sit directly on the continuous page background, without a separate panel fill or divider.
+
+Wide Search layout: from 1600 px, the catalogue uses four columns; its heading, toolbar, navigation and footer share a fluid container capped at 1800 px. Smaller layouts retain their existing breakpoints.

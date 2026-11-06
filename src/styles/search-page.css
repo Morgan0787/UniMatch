@@ -91,6 +91,27 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 .unimatch-app .catalog-page.search-page .catalog-compare { min-height: 42px; border-radius: 999px; }
 .unimatch-app .catalog-page.search-page :is(button,a,input,summary):focus-visible { outline: 3px solid #68839a; outline-offset: 3px; }
 .unimatch-app .catalog-page.search-page .catalog-pagination { color: var(--search-muted); }
+.unimatch-app .catalog-page.search-page .catalog-pagination-controls { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.unimatch-app .catalog-page.search-page .catalog-page-numbers { display: flex; align-items: center; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.unimatch-app .catalog-page.search-page .catalog-pagination button { min-width: 44px; height: 46px; padding: 0 16px; border: 1px solid var(--search-line); border-radius: 8px; background: rgba(255,255,255,.72); color: var(--search-ink); box-shadow: none; font-size: 14px; font-weight: 600; }
+.unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-number { width: 46px; padding: 0; font-variant-numeric: tabular-nums; }
+.unimatch-app .catalog-page.search-page .catalog-page-ellipsis { display: flex; align-items: center; justify-content: center; width: 28px; height: 46px; }
+.unimatch-app .catalog-page.search-page .catalog-pagination button:hover:not(:disabled) { border-color: #a8b7c0; background: #e5eaee; }
+.unimatch-app .catalog-page.search-page .catalog-pagination button[aria-current="page"] { border-color: var(--search-ink); background: var(--search-ink); color: #fff; }
+.unimatch-app .catalog-page.search-page .catalog-pagination button[aria-current="page"]:hover { background: #243a42; }
+.unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-next { border-color: #dcc7b9; background: #f2dfd2; }
+.unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-next:hover:not(:disabled) { border-color: #c6ab99; background: #ead0be; }
+.unimatch-app .catalog-page.search-page .catalog-pagination button:disabled { opacity: .4; }
+.unimatch-app .catalog-page.search-page .catalog-pagination-summary { margin-top: 14px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 639px) {
+  .unimatch-app .catalog-page.search-page .catalog-pagination-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 360px; margin-inline: auto; }
+  .unimatch-app .catalog-page.search-page .catalog-page-numbers { grid-column: 1 / -1; grid-row: 1; justify-content: center; gap: 4px; }
+  .unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-number { min-width: 36px; width: 36px; height: 44px; }
+  .unimatch-app .catalog-page.search-page .catalog-page-ellipsis { width: 20px; height: 44px; }
+}
+
+
 
 @media (min-width: 700px) {
   .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }

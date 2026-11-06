@@ -47,6 +47,63 @@ body[data-unimatch-theme] .release-login-card button:is([type="submit"], [type="
 body[data-unimatch-theme] .release-login-card button.bg-indigo-600 { background: #263f49; color: white; }
 body[data-unimatch-theme] .release-login-card button.bg-indigo-600:hover { background: #34545f; }
 
+/* Equal grid layers keep the centered card and its tabs still in every method. */
+.login-method-panels { display: grid; }
+.login-method-panels > [role="tabpanel"] {
+  grid-area: 1 / 1;
+  min-width: 0;
+  align-self: start;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.login-method-panels > [data-state="active"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+body[data-unimatch-theme] .release-login-card .login-method-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  height: auto;
+  isolation: isolate;
+}
+.login-method-tabs::before {
+  content: '';
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  width: calc((100% - 8px) / 3);
+  border-radius: 999px;
+  background: #faf7f2;
+  box-shadow: 0 1px 3px #182a321a;
+  pointer-events: none;
+  transition: transform .24s cubic-bezier(.22, 1, .36, 1);
+}
+.login-methods[data-method="magic"] .login-method-tabs::before { transform: translateX(100%); }
+.login-methods[data-method="signup"] .login-method-tabs::before { transform: translateX(200%); }
+body[data-unimatch-theme] .release-login-card .login-method-tabs > [role="tab"] {
+  position: relative;
+  min-width: 0;
+  padding-inline: 6px;
+  white-space: normal;
+  background: transparent;
+  box-shadow: none;
+  transition: color .2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-method-panels > [role="tabpanel"],
+  .login-method-tabs::before,
+  body[data-unimatch-theme] .release-login-card .login-method-tabs > [role="tab"] {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* Authenticated pages share a low contrast hero and restrained paper surfaces. */
 body[data-unimatch-theme] .release-page.internal-page .product-page-hero {
   border-bottom: 1px solid var(--release-line);

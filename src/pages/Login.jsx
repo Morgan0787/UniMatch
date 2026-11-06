@@ -52,6 +52,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [successState, setSuccessState] = useState(null)
+  const [method, setMethod] = useState('password')
 
   useEffect(() => {
     const checkSession = async () => {
@@ -219,14 +220,16 @@ export default function Login() {
         <button type="button" className="text-sm text-teal-800 underline" onClick={() => navigate(cancelTo)}>{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
         <Card className="release-login-card product-glass">
           <CardContent className="pt-6">
-            <Tabs defaultValue="password">
-              <TabsList className="w-full mb-6">
+            <Tabs value={method} onValueChange={setMethod} className="login-methods" data-method={method}>
+              <TabsList className="login-method-tabs w-full mb-6">
                 <TabsTrigger value="password" className="flex-1">{l("Password")}</TabsTrigger>
                 <TabsTrigger value="magic" className="flex-1">{l("Magic Link")}</TabsTrigger>
                 <TabsTrigger value="signup" className="flex-1">{l("Sign Up")}</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="password">
+              {/* Mounted grid layers reserve the tallest form's height without exposing inactive controls. */}
+              <div className="login-method-panels">
+              <TabsContent value="password" forceMount inert={method !== 'password' ? '' : undefined} aria-hidden={method !== 'password'}>
                 <form onSubmit={handlePasswordLogin} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="email-pw">{l("Email")}</Label>
@@ -262,7 +265,7 @@ export default function Login() {
                 </form>
               </TabsContent>
 
-              <TabsContent value="magic">
+              <TabsContent value="magic" forceMount inert={method !== 'magic' ? '' : undefined} aria-hidden={method !== 'magic'}>
                 <form onSubmit={handleMagicLink} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="email-magic">{l("Email")}</Label>
@@ -284,7 +287,7 @@ export default function Login() {
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" forceMount inert={method !== 'signup' ? '' : undefined} aria-hidden={method !== 'signup'}>
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="full-name">{l("Full name")}</Label>
@@ -330,6 +333,7 @@ export default function Login() {
                   </Button>
                 </form>
               </TabsContent>
+              </div>
             </Tabs>
           </CardContent>
         </Card>

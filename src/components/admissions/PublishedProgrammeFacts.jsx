@@ -1,4 +1,5 @@
 import React, { useId, useState } from 'react';
+import OptionSelect from '@/components/ui/OptionSelect';
 import { Calendar, DollarSign, GraduationCap, Languages } from 'lucide-react';
 import { describePublicFact, describePublicScope } from '@/lib/admissions/factPresentation';
 import { groupPublicSources } from '@/lib/admissions/sourcePresentation';
@@ -92,7 +93,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
     <section className={`space-y-3 ${compact ? 'programme-summary' : 'programme-details'}`} aria-label={labels.programme}>
       {admissionCatalog.status === 'invalid' && <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-md p-2" role="status">{labels.warning}</p>}
       {focused && programmes.length > 1 && <div className="programme-picker">
-        <label htmlFor={selectorId}>{help.choose}<span>{help.count}: {programmes.length}</span></label><select id={selectorId} value={selectedProgramme.id} onChange={event => setSelectedId(event.target.value)}>{programmes.map(programme => <option key={programme.id} value={programme.id}>{describePublicFact(factFor(programme, 'name'), language, 'programme').value}</option>)}</select>
+        <label htmlFor={selectorId}>{help.choose}<span>{help.count}: {programmes.length}</span></label><OptionSelect id={selectorId} value={selectedProgramme.id} onValueChange={setSelectedId} options={programmes.map(programme => ({ value: programme.id, label: describePublicFact(factFor(programme, 'name'), language, 'programme').value }))} />
       </div>}
       {shown.length === 0 ? <p className="text-sm text-slate-500">{labels.empty}</p> : shown.map(programme => {
         const name = describePublicFact(factFor(programme, 'name'), language, 'programme').value;

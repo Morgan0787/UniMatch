@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import OptionSelect from '@/components/ui/OptionSelect';
 
 export function AnswerField({ name, label, value, onChange, options = null, error = false, hint = undefined, c, type = 'text', min = undefined, max = undefined, step = undefined }) {
   const id = `admission-${name}`;
@@ -6,7 +7,7 @@ export function AnswerField({ name, label, value, onChange, options = null, erro
   const props = { id, name, value, onChange: event => onChange(name, event.target.value), 'aria-invalid': Boolean(error), 'aria-describedby': description || undefined };
   return <div className={`admission-field${hint ? ' admission-field-priority' : ''}`}>
     <label htmlFor={id}>{label}</label>
-    {options ? <select {...props}><option value="">{c.any}</option>{Object.entries(options).map(([key, title]) => <option value={key} key={key}>{String(title)}</option>)}</select>
+    {options ? <OptionSelect id={id} name={name} value={value} onValueChange={next => onChange(name, next)} aria-invalid={Boolean(error)} aria-describedby={description || undefined} emptyLabel={c.any} options={Object.entries(options).map(([key, title]) => ({ value: key, label: String(title) }))} />
       : <input {...props} type={type} min={min} max={max} step={step} maxLength={type === 'text' ? 200 : undefined} inputMode={type === 'number' ? 'decimal' : undefined} />}
     {hint && <p id={`${id}-hint`} className="admission-hint">{hint}</p>}
     {error && <p id={`${id}-error`} className="admission-error">{c.invalid}</p>}

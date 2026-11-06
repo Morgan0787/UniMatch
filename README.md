@@ -12,6 +12,8 @@ Most university-search sites are directories: browse, filter, hope. UniMatch inv
 
 Public site: [getunimatch.app](https://getunimatch.app/).
 
+Dropdown controls share responsive, keyboard-accessible menus across the survey, programme selection and existing product forms. [UI verification](docs/qa/select-ui-2026-11-07.md).
+
 - **Frontend** — Vite + React + Tailwind, component library via shadcn/ui
 - **Backend** — Supabase (Postgres + Auth), migrated off the original Base44 platform
 - **Core pages** — `Home`, `Search`, `Recommendations`, `Profile`, `Login`, plus internal tools (`AdminDataQuality`, `AdminFeedback`, `EssayChecker`)

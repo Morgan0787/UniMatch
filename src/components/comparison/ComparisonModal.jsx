@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import OptionSelect from '@/components/ui/OptionSelect';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/i18n';
@@ -64,9 +65,7 @@ export default function ComparisonModal({ universities, isOpen, onClose, onRemov
                   <Button variant="ghost" size="sm" aria-label={`${c.remove}: ${university.name}`} onClick={() => onRemove(university.id)}>{c.remove}</Button>
                 </div>
                 {programmes.length > 1 && <label className="mt-3 block text-xs font-medium text-slate-700">{c.select}
-                  <select className="mt-1 w-full rounded-lg border p-2 text-sm" value={programme?.id || ''} onChange={event => setSelection(previous => ({ ...previous, [university.id]: event.target.value }))}>
-                    {programmes.map(item => <option key={item.id} value={item.id}>{comparisonFact(item, 'name', 'programme', language).value}</option>)}
-                  </select>
+                  <OptionSelect className="mt-1" value={programme?.id || ''} onValueChange={value => setSelection(previous => ({ ...previous, [university.id]: value }))} options={programmes.map(item => ({ value: item.id, label: comparisonFact(item, 'name', 'programme', language).value }))} />
                 </label>}
               </th>)}
             </tr>

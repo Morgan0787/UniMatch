@@ -25,9 +25,9 @@
 .admission-fields { display: grid; gap: 22px; margin-block: 24px; }
 .admission-field { display: grid; gap: 8px; min-width: 0; align-content: start; }
 .admission-field label, .admissions-page legend { font-size: 14px; font-weight: 600; }
-.admission-field input, .admission-field select { display: block; width: 100%; min-width: 0; max-width: 100%; min-height: 48px; padding: 11px 12px; font-size: 16px; color: #1d2b33; background: #fffefa; border: 1px solid #c9c2b7; border-radius: 12px; }
+.admission-field input, .admission-field [data-ui="select-trigger"] { width: 100%; min-width: 0; max-width: 100%; min-height: 48px; padding: 11px 12px; font-size: 16px; color: #1d2b33; background: #fffefa; border: 1px solid #c9c2b7; border-radius: 12px; }
 .admission-field [aria-invalid=true] { border-color: #a33620; }
-.admission-field input:focus-visible, .admission-field select:focus-visible { outline: 2px solid #98500e; outline-offset: 3px; }
+.admission-field input:focus-visible, .admission-field [data-ui="select-trigger"]:focus-visible { outline: 2px solid #98500e; outline-offset: 3px; }
 .admission-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
 .admissions-page fieldset { min-width: 0; padding: 0; border: 0; }.admissions-page legend { margin-bottom: 12px; }
 .admission-regions { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -121,7 +121,7 @@
 .admission-direction-card:has(:focus-visible) { outline: 3px solid #9c5a2d; outline-offset: 3px; }
 .admissions-page .admission-choice { border-color: #fffdf4ed; border-radius: 22px; background: linear-gradient(125deg,#fffdf4ad,#ebe6d45c); box-shadow: inset 0 1px #fff, 0 5px 12px #3c514719; backdrop-filter: blur(8px); font-size: 13px; }
 .admissions-page .admission-choice:has(:checked) { background: linear-gradient(135deg,#e2c8a9d9,#d3dac9ed); border-color: #899b84; color: #294439; }
-.admissions-page .admission-field input, .admissions-page .admission-field select { border-color: #a8bab2; background: #fffdf5c9; color: #273f46; border-radius: 14px; }
+.admissions-page .admission-field input, .admissions-page .admission-field [data-ui="select-trigger"] { border-color: #a8bab2; background: #fffdf5c9; color: #273f46; border-radius: 14px; }
 .admission-story { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 600px; padding: 32px 25px 26px; overflow: hidden; isolation: isolate; border: 1px solid #ffffffb3; border-radius: 26px; background: radial-gradient(ellipse 190px 200px at 57% 55%,#e8ad798c,transparent 80%),radial-gradient(ellipse at 26% 35%,#b6c3c5,#e0e1d6 75%); color: #243741; }
 .admission-story-label { margin: 0 0 19px; color: #465d61; font-size: 12px; }
 .admission-story h2 { margin: 0; font-size: clamp(30px,3.3vw,45px); line-height: 1.02; font-weight: 400; letter-spacing: -.05em; }

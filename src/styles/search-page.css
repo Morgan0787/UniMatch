@@ -11,7 +11,7 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 .unimatch-app .catalog-page.search-page .catalog-heading { padding-block: 28px 18px; }
 .unimatch-app .catalog-page.search-page .catalog-heading h1 { color: var(--search-ink); font-size: clamp(2rem, 3vw, 2.65rem); letter-spacing: -.045em; line-height: 1.08; }
 .unimatch-app .catalog-page.search-page .catalog-heading p { color: var(--search-muted); margin-top: 8px; max-width: 44rem; line-height: 1.45; }
-.unimatch-app .catalog-page.search-page .catalog-toolbar { background: rgba(255,255,255,.58); border-color: var(--search-line); backdrop-filter: blur(16px); }
+.unimatch-app .catalog-page.search-page .catalog-toolbar { background: transparent; border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .unimatch-app .catalog-page.search-page .catalog-toolbar input { background: rgba(255,255,255,.68); border-color: var(--search-line); color: var(--search-ink); }
 .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 16px; align-items: stretch; }
 .unimatch-app .catalog-page.search-page .catalog-card.search-university-card {

@@ -197,7 +197,6 @@ export default function Search() {
                     </ul>
                     <Button variant="outline" className="catalog-page-next" disabled={pageInfo.page === pageInfo.pages} onClick={() => changePage(pageInfo.page + 1)}>{pagingLabels[1]}<ChevronRight aria-hidden="true" /></Button>
                 </div>
-                <p className="catalog-pagination-summary" role="status">{pageInfo.start}–{pageInfo.end} / {sortedUniversities.length}<span className="sr-only"> · {pageLabel} {pageInfo.page} / {pageInfo.pages}</span></p>
             </nav>}
             <ComparisonModal universities={compareUniversities} isOpen={showComparison} onClose={() => setShowComparison(false)} onRemove={handleRemoveFromCompare} userProfile={userProfile} />
         </div>

@@ -70,7 +70,6 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 .unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-next { border-color: #dcc7b9; background: #f2dfd2; }
 .unimatch-app .catalog-page.search-page .catalog-pagination .catalog-page-next:hover:not(:disabled) { border-color: #c6ab99; background: #ead0be; }
 .unimatch-app .catalog-page.search-page .catalog-pagination button:disabled { opacity: .4; }
-.unimatch-app .catalog-page.search-page .catalog-pagination-summary { margin-top: 14px; text-align: center; font-size: 13px; font-variant-numeric: tabular-nums; }
 
 @media (max-width: 639px) {
   .unimatch-app .catalog-page.search-page .catalog-pagination-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 360px; margin-inline: auto; }

@@ -59,4 +59,4 @@ Inactive legacy CSS and image-selection source are preserved in the [source arch
 
 Start with [AGENTS.md](AGENTS.md) for task-specific guidance. [Context routing](docs/agents/context/README.md) identifies which documents to read; [documentation maintenance](docs/agents/context/MAINTENANCE.md) defines when to update them. For the Codex/OpenCode profile switch, see the [agent setup guide](docs/agents/README.md).
 
-Search pagination (7 November 2026): numbered buttons highlight the current page, retain first/last pages with ellipses, and keep the result count below. Mobile navigation uses two rows. URL and filter navigation are preserved.
+Search pagination (7 November 2026): numbered buttons highlight the current page, retain first/last pages with ellipses, without a separate result count below. Mobile navigation uses two rows. URL and filter navigation are preserved.

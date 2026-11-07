@@ -76,3 +76,7 @@ See the [release regression check](../../qa/public-release.md).
 ## Existing source of truth
 
 For detailed import provenance or schema history, read the relevant sections of root `PROJECT_CONTEXT.md`. Maintain active constraints here and add dated historical updates there according to `docs/agents/context/MAINTENANCE.md`. Existing tooling evidence is inherited; recheck it when changing the tooling or relying on a disputed coverage claim.
+
+### Search photo presentation — 7 November 2026
+Owner-requested Liquid Glass styling uses cropped card previews. Keep full-frame access in the existing photo disclosure and preserve captions, scope, authorship, source and licence. Full originals remain available with object-fit: contain.
+

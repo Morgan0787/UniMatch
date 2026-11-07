@@ -21,6 +21,8 @@ Dropdown controls share responsive, keyboard-accessible menus across the survey,
 - **Scroll presentation** — MDX-inspired editorial transitions, reversible scene motion and a light cream palette. Per the 2026-10-17 product decision, Home animation runs independently of the OS reduced-motion setting. [Production diagnosis and checks](docs/qa/production-motion.md).
 - **Hero story** — generated relief Earth, subject constellations and a university route controlled by scroll. A loading screen precedes the first frame; the first scroll hides the header/copy and expands the scene. [Implementation, QA and performance limits](docs/qa/hero-particle-story.md).
 
+Search uses warm Liquid Glass materials, amber background light, compact programme cards and mobile filter sheets. [Implementation and release verification](docs/qa/search-liquid-glass-2026-11-07.md).
+
 ## Data quality
 
 University records (GPA/IELTS thresholds, deadlines, tuition, scholarships) are collected from official admissions pages rather than generated. Each record is expected to carry a `source_url` and a `verified` flag so the app — and the built-in `AdminDataQuality` tool — can distinguish confirmed data from fields still awaiting verification.

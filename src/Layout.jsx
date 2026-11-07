@@ -237,13 +237,14 @@ function LayoutContent({ children, currentPageName }) {
                 {children}
             </main>
 
-            <FeedbackButton />
+            {currentPageName !== 'Search' && <FeedbackButton />}
 
             <footer className="product-footer product-footer-compact">
                 <div className="product-footer-inner">
                     <Link to={createPageUrl('Home')} className="product-footer-brand">UniMatch<span>®</span></Link>
                     <p>{t('footer.tagline')}</p>
                     <nav aria-label={t('footer.quickLinks')}>
+                        {currentPageName === 'Search' && <FeedbackButton />}
                         <Link to={createPageUrl('Search')}>{t('footer.findUniversities')}</Link>
                         <Link to={createPageUrl('AdmissionsSurvey')}>{guestCta}</Link>
                         <button type="button" onClick={() => setHelpOpen(true)}>{t('footer.helpCenter')}</button>

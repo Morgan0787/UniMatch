@@ -12,7 +12,7 @@ import { motion } from 'framer-motion';
 import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { calculateChance } from '@/lib/matching';
-import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
+import SearchProgrammePreview from './SearchProgrammePreview';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
@@ -78,7 +78,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                     {/* Quick stats */}
                     <div className="catalog-card-facts space-y-1.5">
                         {hasAdmissionCatalog ? (
-                            <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} compact />
+                            <SearchProgrammePreview admissionCatalog={university.admissionCatalog} language={language} />
                         ) : <>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
@@ -150,7 +150,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium h-9 text-sm"
                         >
                             <Link id={`university-link-${university.id}`} to={detailUrl} state={{ fromApp: true }} onClick={() => onView?.(university)}>
-                            {hasAdmissionCatalog ? {en:'Programme details',ru:'Условия программы',uz:'Dastur shartlari'}[language] : t('university.viewDetails')}
+                            {{en:'Details',ru:'Подробнее',uz:'Batafsil'}[language] || t('university.viewDetails')}
                             <ArrowRight className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
                             </Link>
                         </Button>

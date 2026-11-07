@@ -17,9 +17,11 @@ export default function UniversityPhoto({ university, language }) {
     <figcaption>
       <details>
         <summary aria-label={`${creditLabel}: ${caption}`}>
-          <span>{caption}</span><ChevronDown size={14} aria-hidden="true" />
+          <span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span><ChevronDown size={14} aria-hidden="true" />
         </summary>
         <div className="catalog-photo-credit">
+          <img className="catalog-photo-original" src={image.url} width={image.width} height={image.height}
+            loading="lazy" decoding="async" alt={caption} />
           <p>{caption}</p>
           <p>{localized?.scope || image.matchScope}</p>
           <p><a href={image.sourcePage} target="_blank" rel="noopener noreferrer">{image.title}</a> — {image.creator} · <a href={image.license.url} target="_blank" rel="noopener noreferrer">{image.license.id}</a></p>

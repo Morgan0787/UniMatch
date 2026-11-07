@@ -38,6 +38,7 @@ function LayoutContent({ children, currentPageName }) {
     const [helpOpen, setHelpOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const menuToggle = useRef(null);
+    const menuPanel = useRef(null);
 
     useEffect(() => {
         document.body.dataset.unimatchTheme = 'warm-glass';
@@ -53,8 +54,15 @@ function LayoutContent({ children, currentPageName }) {
                 menuToggle.current?.focus();
             }
         };
+        const closeOutside = (event) => {
+            if (!menuPanel.current?.contains(event.target) && !menuToggle.current?.contains(event.target)) setMobileMenuOpen(false);
+        };
         document.addEventListener('keydown', closeOnEscape);
-        return () => document.removeEventListener('keydown', closeOnEscape);
+        document.addEventListener('pointerdown', closeOutside);
+        return () => {
+            document.removeEventListener('keydown', closeOnEscape);
+            document.removeEventListener('pointerdown', closeOutside);
+        };
     }, [mobileMenuOpen]);
 
     useEffect(() => {
@@ -183,14 +191,15 @@ function LayoutContent({ children, currentPageName }) {
                 </div>
 
                 {mobileMenuOpen && (
-                    <div id="product-mobile-menu" className="product-mobile-menu lg:hidden bg-white border-t shadow-lg">
-                        <div className="px-4 py-4 space-y-1">
+                    <div ref={menuPanel} id="product-mobile-menu" className="product-mobile-menu lg:hidden bg-white border-t shadow-lg">
+                        <div className="product-mobile-menu-inner">
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
                                     to={createPageUrl(item.path)}
+                                    aria-current={currentPageName === item.path ? 'page' : undefined}
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
+                                    className={`product-mobile-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
                                         currentPageName === item.path
                                             ? 'bg-indigo-50 text-indigo-700'
                                             : 'text-slate-600 hover:bg-slate-100'
@@ -201,9 +210,9 @@ function LayoutContent({ children, currentPageName }) {
                                 </Link>
                             ))}
                             
-                            <div className="pt-4 border-t mt-4">
-                                <div className="mb-3">
-                                    <LanguageSwitcher />
+                            <div className="product-mobile-menu-account">
+                                <div className="product-mobile-menu-language">
+                                    <LanguageSwitcher inline />
                                 </div>
                                 {user ? (
                                     <div className="space-y-2">
@@ -220,7 +229,7 @@ function LayoutContent({ children, currentPageName }) {
                                         </Button>
                                     </div>
                                 ) : (
-                                    <div className="grid gap-2"><Button
+                                    <div className="product-mobile-guest-actions"><Button
                                         className="w-full bg-indigo-600 hover:bg-indigo-700"
                                         onClick={() => navigateToLogin()}
                                     >
@@ -265,8 +274,6 @@ function LayoutContent({ children, currentPageName }) {
 
 export default function Layout({ children, currentPageName }) {
     return (
-        <>
-            <LayoutContent children={children} currentPageName={currentPageName} />
-        </>
+        <LayoutContent children={children} currentPageName={currentPageName} />
     );
 }

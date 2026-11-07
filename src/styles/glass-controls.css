@@ -1,0 +1,158 @@
+/* Language and filter controls use the same soft pearl surfaces as the catalogue. */
+body[data-unimatch-theme] .unimatch-app .language-switcher-trigger {
+  display: inline-flex;
+  min-width: 76px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid #ffffffed;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffffffd9, #fffaf0a8);
+  color: #292e30;
+  box-shadow: inset 0 1px 1px #fff, 0 4px 12px #5d493014;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+body[data-unimatch-theme] .unimatch-app .language-switcher-trigger:hover,
+body[data-unimatch-theme] .unimatch-app .language-switcher-trigger[data-state="open"] {
+  background: #ffffffed;
+  box-shadow: inset 0 1px 1px #fff, 0 6px 16px #5d49301a;
+}
+body[data-unimatch-theme] .unimatch-app .language-switcher-trigger .language-switcher-globe { width: 16px; height: 16px; flex: 0 0 auto; }
+.language-switcher-trigger > span { font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+
+body[data-unimatch-theme] .language-switcher-menu,
+body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] {
+  z-index: 100;
+  overflow: hidden;
+  border: 1px solid #ffffffed;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #fffdf9f5, #f5eee7ed);
+  color: #292e30;
+  box-shadow: inset 0 1px 1px #fff, 0 14px 36px #4937232b;
+  backdrop-filter: blur(24px) saturate(125%);
+  -webkit-backdrop-filter: blur(24px) saturate(125%);
+}
+body[data-unimatch-theme] .language-switcher-menu { min-width: 176px; padding: 6px; }
+body[data-unimatch-theme] .language-switcher-menu [role="menuitemradio"] {
+  position: relative;
+  min-height: 44px;
+  padding: 0 38px 0 12px;
+  border-radius: 12px;
+  color: #34302b;
+}
+body[data-unimatch-theme] .language-switcher-menu [role="menuitemradio"] > span:first-child { display: none; }
+body[data-unimatch-theme] .language-switcher-menu [role="menuitemradio"][data-highlighted] { background: #efe5d8; color: #34291e; }
+body[data-unimatch-theme] .language-switcher-menu [role="menuitemradio"][aria-checked="true"] {
+  background: #f4dfc1;
+  color: #65451f;
+  font-weight: 650;
+}
+.language-switcher-check { position: absolute; right: 13px; color: #a76617; font-size: 16px; font-weight: 700; }
+
+/* Mobile navigation keeps its three language choices within the panel. */
+body[data-unimatch-theme] .language-inline { display: flex; align-items: center; gap: 12px; margin: 0; padding: 0; min-width: 0; border: 0; }
+.language-inline-globe { width: 18px; height: 18px; flex-shrink: 0; color: #72695e; }
+body[data-unimatch-theme] .language-inline-options {
+  display: flex; flex: 1; min-width: 0; padding: 3px;
+  border: 1px solid #ffffffed; border-radius: 999px;
+  background: linear-gradient(135deg, #ffffff99, #fffaf066);
+  box-shadow: inset 0 1px #fff;
+}
+.language-inline-option { position: relative; flex: 1; min-width: 44px; cursor: pointer; }
+.language-inline-option > span {
+  display: flex; align-items: center; justify-content: center; min-height: 44px;
+  border: 1px solid transparent; border-radius: 999px;
+  color: #625e59; font-size: 12px; font-weight: 650; letter-spacing: .03em;
+}
+.language-inline-option:hover > span { background: #ffffff80; }
+.language-inline-option > input:checked + span { color: #65451f; border-color: #fff4e4; background: #f4dfc1; box-shadow: inset 0 1px #fff9, 0 2px 5px #7e552012; }
+.language-inline-option > input:focus-visible + span { outline: 3px solid #966433; outline-offset: 2px; }
+
+@media (max-width: 1023px) {
+  body[data-unimatch-theme] .unimatch-app .product-nav .product-mobile-menu {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    width: min(320px, calc(100vw - 24px)); max-height: calc(100dvh - 104px);
+    padding: 0;
+    border: 1px solid #fffffff0; border-radius: 24px;
+    background: linear-gradient(140deg, #fffaf5, #f5eee5);
+    box-shadow: inset 0 1px #fff, 0 12px 32px #49372324;
+  }
+  .product-mobile-menu-inner { padding: 10px; }
+  body[data-unimatch-theme] .product-mobile-menu .product-mobile-link {
+    gap: 10px; min-height: 44px; margin: 0; padding: 8px 12px;
+    border-radius: 14px; font-size: 13px; line-height: 20px;
+  }
+  .product-mobile-link > svg { width: 18px; height: 18px; }
+  body[data-unimatch-theme] .unimatch-app .product-mobile-menu .product-mobile-link[aria-current="page"] {
+    color: #785127; background: #f1dfc6b3; box-shadow: inset 0 1px #fff9;
+  }
+  .product-mobile-menu-account { margin-top: 8px; padding-top: 10px; border-top: 1px solid #a78b6b30; }
+  .product-mobile-menu-language { margin: 0 4px 10px; }
+  .product-mobile-guest-actions { display: grid; grid-template-columns: .8fr 1.5fr; gap: 8px; }
+  body[data-unimatch-theme] .product-mobile-guest-actions > :is(a,button) {
+    min-width: 0; min-height: 44px; padding-inline: 8px; font-size: 12px;
+  }
+}
+
+/* The drawer supplies the glass material; its controls do not add another blurred layer. */
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel h3 { color: #292e30; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-value { color: #9a5d18; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [data-ui="select-trigger"] {
+  min-height: 48px;
+  border-color: #ffffffed;
+  border-radius: 15px;
+  background: linear-gradient(140deg, #ffffffc9, #fffaf2a8);
+  color: #302d29;
+  box-shadow: inset 0 1px 1px #fff, 0 4px 12px #5d49300a;
+}
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [data-ui="select-trigger"]:hover { background: #ffffffed; }
+body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"] { min-height: 44px; border-radius: 11px; color: #34302b; }
+body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"][data-highlighted] { background: #efe5d8; color: #34291e; }
+body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"][data-state="checked"] { background: #f4dfc1; color: #65451f; font-weight: 650; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [data-orientation="horizontal"] { height: 7px; background: #c7b69f80; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [data-orientation="horizontal"] > span { background: #c38742; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [role="slider"] {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  background: #bd7b30;
+  box-shadow: 0 2px 7px #5d493033, inset 0 1px #ffffffb3;
+}
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip {
+  min-height: 40px;
+  border-color: #ffffffed;
+  border-radius: 999px;
+  background: #ffffff80;
+  color: #544d44;
+  box-shadow: inset 0 1px #fff, 0 3px 9px #5d49300a;
+}
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip:hover { background: #ffffffd9; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip.is-selected {
+  border-color: #fff4e4;
+  background: #f1d8b4;
+  color: #65451f;
+  box-shadow: inset 0 1px #fff9, 0 3px 9px #8a5d2917;
+}
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [aria-expanded] {
+  border-color: #ffffffed;
+  background: #ffffff80;
+  color: #423a31;
+}
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [aria-expanded]:hover { background: #ffffffd9; }
+body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel :focus-visible,
+body[data-unimatch-theme] .language-switcher-menu :focus-visible,
+.glass-filter-options :focus-visible { outline: 3px solid #966433; outline-offset: 2px; }
+
+@media (max-width: 639px) {
+  body[data-unimatch-theme] .unimatch-app .language-switcher-trigger { min-width: 68px; padding-inline: 11px; }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body[data-unimatch-theme] .language-switcher-menu, body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] { background: #faf5ef; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  body[data-unimatch-theme] .language-switcher-menu, body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] { background: #faf5ef; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

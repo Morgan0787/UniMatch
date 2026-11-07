@@ -1,0 +1,115 @@
+/* The public detail page continues Search's warm pearl light field. */
+body[data-unimatch-theme] .unimatch-app[data-page="University"] {
+  position: relative;
+  isolation: isolate;
+  background: #f0eae7;
+}
+body[data-unimatch-theme] .unimatch-app[data-page="University"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 28% 18% at 77% 24%, #ffca6fe0, #ffd49380 38%, #ffdfb100),
+    radial-gradient(ellipse 30% 24% at 13% 83%, #ffc579a8, #ffdaab66 45%, #ffdfb100),
+    radial-gradient(ellipse 29% 18% at 73% 99%, #ffc575b8, #ffdfb16b 42%, #ffdfb100),
+    radial-gradient(ellipse 42% 40% at 48% 45%, #fff9f3b3, #fff9f300);
+}
+body[data-unimatch-theme] .unimatch-app[data-page="University"] .product-nav {
+  top: 14px; left: 24px; right: 24px; width: auto; max-width: 1352px; margin-inline: auto;
+  border: 1px solid #ffffffed; border-radius: 32px;
+  background: linear-gradient(130deg, #ffffff80, #fff9f25c);
+  box-shadow: inset 0 1px 1px #fff, 0 8px 28px #5d493014;
+  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+}
+.unimatch-app[data-page="University"] .product-main { padding-top: 96px; }
+.unimatch-app[data-page="University"] .product-footer { background: #ffffff33; border-color: #ffffffa6; }
+.unimatch-app[data-page="University"] .product-mobile-menu { border-radius: 0 0 30px 30px; background: #faf4eef2; }
+body[data-unimatch-theme] .university-page.release-page {
+  --release-ink: #292e30;
+  --release-muted: #625e59;
+  background: transparent !important;
+}
+body[data-unimatch-theme] .university-page .university-page-layout { max-width: none; }
+body[data-unimatch-theme] .university-page .university-info-section { padding-block: 24px; border-top: 1px solid #a78b6b30; }
+body[data-unimatch-theme] .university-page .university-info-title {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 16px;
+  font-size: 20px; font-weight: 650; color: #292e30;
+}
+body[data-unimatch-theme] .university-page .university-info-title svg { color: #86633f; flex-shrink: 0; }
+body[data-unimatch-theme] .university-page .university-info-section > div > p { max-width: 80ch; }
+body[data-unimatch-theme] .university-page .university-info-section + [data-orientation="horizontal"],
+body[data-unimatch-theme] .university-page .university-about + [data-orientation="horizontal"] { display: none; }
+body[data-unimatch-theme] .university-page .university-detail-content {
+  border: 1px solid #fffffff0;
+  border-radius: 28px;
+  background: linear-gradient(125deg, #ffffff99, #fffaf278);
+  box-shadow: inset 0 1px 1px #fff, 0 12px 36px #5d493014;
+  backdrop-filter: blur(22px) saturate(115%);
+  -webkit-backdrop-filter: blur(22px) saturate(115%);
+}
+body[data-unimatch-theme] .university-page :is(.university-detail-header, .university-detail-header .university-identity) { background: transparent; }
+body[data-unimatch-theme] .university-page .university-detail-header { padding-block: 8px; }
+body[data-unimatch-theme] .university-page .university-monogram {
+  border: 1px solid #fff;
+  background: linear-gradient(140deg, #fff9, #ffe1b24d);
+  color: #615344;
+  box-shadow: inset 0 1px #fff, 0 4px 12px #5d493014;
+}
+body[data-unimatch-theme] .university-page .university-identity-copy :is(h1,h2) { font-weight: 650; }
+body[data-unimatch-theme] .university-page .university-back {
+  border: 1px solid #ffffffd9;
+  background: #ffffff61;
+  box-shadow: inset 0 1px #fff, 0 4px 12px #5d49300a;
+}
+body[data-unimatch-theme] .university-page :is(.programme-stat, .programme-picker [data-ui="select-trigger"], .university-actions > button, .university-actions > a) {
+  border: 1px solid #ffffffe6;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff8c, #ffffff4d);
+  box-shadow: inset 0 1px #fff, 0 4px 12px #5d49300a;
+}
+body[data-unimatch-theme] .university-page .programme-stat { padding: 18px; }
+body[data-unimatch-theme] .university-page .programme-stat-grid { gap: 14px; }
+body[data-unimatch-theme] .university-page .university-actions > :is(button,a) { min-height: 46px; border-radius: 999px; }
+/* A single broad reflection keeps the primary action dense and readable. */
+body[data-unimatch-theme] .university-page .university-detail-content .university-actions > a {
+  color: #fff;
+  border-color: #ffffff8c;
+  background: radial-gradient(ellipse 100% 100% at 25% -65%, #ffffff61, #ffffff00 90%), linear-gradient(180deg, #394144, #202729);
+  box-shadow: inset 0 1px #ffffff70, 0 4px 8px #2823211f;
+}
+body[data-unimatch-theme] .university-page .university-actions > a:hover { background-color: #414a4d; filter: brightness(1.1); }
+body[data-unimatch-theme] .university-page .university-actions > button[aria-pressed="true"] { color: #754719; background: #ffdfac99; }
+body[data-unimatch-theme] .university-page :is(a,button,summary,[role="combobox"]):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
+/* The licensed image keeps its source and full-frame view in the credit disclosure. */
+body[data-unimatch-theme] .university-page .catalog-photo { margin: 0 32px 8px; background: transparent; }
+body[data-unimatch-theme] .university-page .catalog-photo > img {
+  display: block; width: 100%; height: 240px; object-fit: cover; border-radius: 18px;
+}
+body[data-unimatch-theme] .university-page .catalog-photo :is(figcaption, details, summary) { background: transparent; border: 0; }
+body[data-unimatch-theme] .university-page .catalog-photo summary {
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  min-height: 44px; cursor: pointer; font-size: 12px; color: #625e59;
+}
+body[data-unimatch-theme] .university-page .catalog-photo-credit { padding: 14px; border: 1px solid #fff; border-radius: 18px; background: #ffffff80; font-size: 13px; overflow-wrap: anywhere; }
+body[data-unimatch-theme] .university-page .catalog-photo-credit p { margin-top: 8px; }
+body[data-unimatch-theme] .university-page .catalog-photo-credit a { text-decoration: underline; }
+body[data-unimatch-theme] .university-page .catalog-photo-original { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 10px; }
+body[data-unimatch-theme] .university-page .programme-disclosure { border-color: #a78b6b30; }
+@media (max-width: 639px) {
+  body[data-unimatch-theme] .unimatch-app[data-page="University"] .product-nav { top: 10px; left: 12px; right: 12px; }
+  .unimatch-app[data-page="University"] .product-nav > div { padding-inline: 16px; }
+  .unimatch-app[data-page="University"] .product-main { padding-top: 84px; }
+  body[data-unimatch-theme] .university-page .university-detail-content { border-radius: 24px; }
+  body[data-unimatch-theme] .university-page .catalog-photo { margin-inline: 18px; }
+  body[data-unimatch-theme] .university-page .catalog-photo > img { height: 180px; }
+  body[data-unimatch-theme] .university-page .programme-stat { padding: 14px; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body[data-unimatch-theme] .university-page .university-detail-content { background: #faf5ef; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  body[data-unimatch-theme] .university-page .university-detail-content { background: #faf5ef; backdrop-filter: none; }
+}

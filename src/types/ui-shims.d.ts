@@ -44,6 +44,8 @@ declare module "@/components/ui/dropdown-menu" {
   export const DropdownMenu: any;
   export const DropdownMenuContent: any;
   export const DropdownMenuItem: any;
+  export const DropdownMenuRadioGroup: any;
+  export const DropdownMenuRadioItem: any;
   export const DropdownMenuSeparator: any;
   export const DropdownMenuTrigger: any;
 }

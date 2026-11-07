@@ -19,9 +19,27 @@ import { useLanguage } from '@/lib/i18n';
 import { US_GENERIC_VISA_INFO } from '@/lib/usGenericInfo';
 import { calculateChance } from '@/lib/matching';
 import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
+import UniversityPhoto from './UniversityPhoto';
+
+function UniversityInfoSection({ expanded, title, icon: Icon, children }) {
+    const titleContent = <><Icon className="w-5 h-5" aria-hidden="true" />{title}</>;
+    if (expanded) return <section className="university-info-section">
+        <h2 className="university-info-title">{titleContent}</h2>
+        <div className="university-info-body">{children}</div>
+    </section>;
+    return <Collapsible>
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">{titleContent}</h3>
+            <ChevronRight className="w-5 h-5 text-slate-400" />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="pt-4">{children}</CollapsibleContent>
+    </Collapsible>;
+}
 
 export function UniversityDetails({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, heading = 'h2' }) {
     const { t, language } = useLanguage();
+    const About = heading === 'h1' ? 'section' : 'details';
+    const AboutTitle = heading === 'h1' ? 'h2' : 'summary';
     
     if (!university) return null;
     
@@ -86,6 +104,8 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                     </div>
                     {hasAdmissionCatalog && actions}
                 </header>
+
+                {heading === 'h1' && <UniversityPhoto university={university} language={language} />}
 
                 <div className="space-y-6 w-full">
                     {!hasAdmissionCatalog && <div className="university-overview flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -168,12 +188,12 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
 
                             {/* Description */}
                             {university.description && (
-                                <details className="university-about programme-disclosure">
-                                    <summary>{t('university.about')}</summary>
+                                <About className={`university-about ${heading === 'h1' ? 'university-info-section' : 'programme-disclosure'}`}>
+                                    <AboutTitle className={heading === 'h1' ? 'university-info-title' : undefined}>{t('university.about')}</AboutTitle>
                                     <div>
                                         <p className="text-slate-600 leading-relaxed" lang={catalogDescription(university.description, language) === university.description ? 'en' : language}>{catalogDescription(university.description, language)}</p>{language !== 'en' && catalogDescription(university.description, language) === university.description && <p className="text-xs text-slate-500 mt-2">{catalogText(language, 'sourceLanguageNote')}</p>}
                                     </div>
-                                </details>
+                                </About>
                             )}
 
                             {!hasAdmissionCatalog && <>
@@ -266,15 +286,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                             <Separator className="my-6" />
 
                             {/* Campus Life */}
-                            <Collapsible>
-                                <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
-                                    <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                        <Home className="w-5 h-5 text-indigo-600" />
-                                        {t('university.campusLife')}
-                                    </h3>
-                                    <ChevronRight className="w-5 h-5 text-slate-400" />
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="pt-4">
+                            <UniversityInfoSection expanded={heading === 'h1'} title={t('university.campusLife')} icon={Home}>
                                     {university.campus_life ? (
                                 <>
                                     <Card>
@@ -342,21 +354,12 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     ) : (
                                         <p className="text-slate-500 text-center py-6">{t('university.campusInfoNotAvailable')}</p>
                                     )}
-                                </CollapsibleContent>
-                            </Collapsible>
+                                </UniversityInfoSection>
 
                             <Separator className="my-6" />
 
                             {/* Support */}
-                            <Collapsible>
-                                <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
-                                    <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                        <Heart className="w-5 h-5 text-indigo-600" />
-                                        {t('university.support')}
-                                    </h3>
-                                    <ChevronRight className="w-5 h-5 text-slate-400" />
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="pt-4">
+                            <UniversityInfoSection expanded={heading === 'h1'} title={t('university.support')} icon={Heart}>
                             {university.international_support ? (
                                 <Card>
                                     <CardHeader>
@@ -435,21 +438,12 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 </Card>
                                 </div>
                             )}
-                        </CollapsibleContent>
-                    </Collapsible>
+                        </UniversityInfoSection>
 
                     <Separator className="my-6" />
 
                     {/* Visa */}
-                    <Collapsible>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Shield className="w-5 h-5 text-indigo-600" />
-                                {t('university.visa')}
-                            </h3>
-                            <ChevronRight className="w-5 h-5 text-slate-400" />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-4">
+                    <UniversityInfoSection expanded={heading === 'h1'} title={t('university.visa')} icon={Shield}>
                             {university.visa_info ? (
                                 <Card>
                                     <CardHeader>
@@ -534,22 +528,13 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                             ) : (
                                 <p className="text-slate-500 text-center py-6">{t('university.visaInfoNotAvailable')}</p>
                             )}
-                        </CollapsibleContent>
-                    </Collapsible>
+                        </UniversityInfoSection>
 
                     {!hasAdmissionCatalog && <>
                     <Separator className="my-6" />
 
                     {/* Scholarships */}
-                    <Collapsible>
-                        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
-                            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                                <Award className="w-5 h-5 text-indigo-600" />
-                                {t('university.scholarships')}
-                            </h3>
-                            <ChevronRight className="w-5 h-5 text-slate-400" />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-4">
+                    <UniversityInfoSection expanded={heading === 'h1'} title={t('university.scholarships')} icon={Award}>
                             {university.scholarships && university.scholarships.length > 0 ? (
                                 <div className="space-y-4">
                                     {university.scholarships.map((scholarship, index) => (
@@ -595,8 +580,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                             ) : (
                                 <p className="text-slate-500 text-center py-6">{t('university.noScholarshipInfo')}</p>
                             )}
-                        </CollapsibleContent>
-                    </Collapsible>
+                        </UniversityInfoSection>
                     </>}
                 </div>
         </article>

@@ -12,6 +12,7 @@ import { universityReturnPath } from '@/lib/universityNavigation';
 import { admissionFavoriteRepository } from '@/lib/admissions/favoriteRepository';
 import { canonicalFavoriteIds, serializeFavoriteWrite, writeAdmissionFavorite } from '@/lib/admissions/favorites';
 import '@/styles/release-pages.css';
+import '@/styles/university-glass.css';
 
 const COPY = {
   en: { back: 'Back to universities', loading: 'Loading university…', missing: 'University not found', error: 'Unable to load this university', retry: 'Try again', saveError: 'Saving could not be confirmed. Please try again.' },
@@ -79,7 +80,7 @@ export default function University() {
   };
 
   return <div className="university-page release-page catalog-page min-h-screen">
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
+    <div className="university-page-layout max-w-5xl mx-auto px-4 sm:px-6 py-4">
       <Link className="university-back inline-flex items-center gap-2 min-h-11 mb-3 text-sm" to={returnTo} onClick={event => {
         if (location.state?.fromApp && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) { event.preventDefault(); navigate(-1); }
       }}><ArrowLeft className="w-4 h-4" />{c.back}</Link>

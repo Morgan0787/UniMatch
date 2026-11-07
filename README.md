@@ -23,6 +23,8 @@ Dropdown controls share responsive, keyboard-accessible menus across the survey,
 
 Search uses warm Liquid Glass materials, amber background light, compact programme cards and mobile filter sheets. [Implementation and release verification](docs/qa/search-liquid-glass-2026-11-07.md).
 
+University Liquid Glass: a full-width pearl card with amber light and visible information sections, matching filter controls and language menus, plus compact mobile navigation with inline EN / RU / UZ and keyboard/outside dismissal. [Implementation and release verification](docs/qa/university-glass-2026-11-07.md).
+
 ## Data quality
 
 University records (GPA/IELTS thresholds, deadlines, tuition, scholarships) are collected from official admissions pages rather than generated. Each record is expected to carry a `source_url` and a `verified` flag so the app — and the built-in `AdminDataQuality` tool — can distinguish confirmed data from fields still awaiting verification.

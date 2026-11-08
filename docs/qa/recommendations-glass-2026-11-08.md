@@ -1,0 +1,11 @@
+# Recommendations Liquid Glass — 8 November 2026
+
+Implemented the initial reference's warm pearl glass, floating pill navigation, profile metrics with outline icons, segmented result filters, sort control, photo/programme cards, smoked glass actions and a floating comparison dock. Existing shared Search cards now accept optional children; Recommendations uses them instead of duplicating programme and photo presentation. The responsive grid uses one, two, three or four columns; mobile profile metrics use two columns and comparison controls remain reachable.
+
+Ranking weights, daily shuffle, reserved unknown-result slots, public catalogue query and protected access are preserved. The budget filter only compares the existing annual EUR tuition/living pair, using the upper tuition bound; programme prices with different currencies or periods are excluded. Unknown conditions, photo sources and full-original disclosures remain visible. Profile loading uses the existing skeleton instead of briefly showing the incomplete-profile gate. Catalogue failures expose a retry action.
+
+Verification: 53 browser assertions passed with no JavaScript exceptions at 2560, 1440, 768, 390 and 320 CSS px. Coverage includes grid counts, horizontal fit, labelled controls, sort restoration, filter reset, three-university comparison limit, modal/Escape, mobile dock/feedback separation, keyboard preference sliders, university links, guest login redirect, loading failure and shared Search-card regression. Reviewed programme/photo fixtures use actual public Pécs, Debrecen and Turku rows, with fixture selection and a local authenticated profile. No real account writes or real-user authentication were tested; all remote writes were blocked by the harness.
+
+The production build and SEO checks, scoped ESLint, full project TypeScript check and CRLF-aware diff whitespace check passed. Local ignored evidence: `output/playwright/recommendations-glass/results.json`, `final-{width}.png`, `programmes-{width}.png` and `comparison-390.png`. The screenshot fixtures demonstrate presentation; they do not claim those institutions are the signed-in user's actual recommendations.
+
+Publication: pending scoped release and public-site smoke verification.

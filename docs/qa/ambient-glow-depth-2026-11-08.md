@@ -6,4 +6,4 @@ Verified on the isolated production build: 106 browser assertions passed, no Jav
 
 Build, SEO validation, scoped Layout ESLint and diff whitespace checks passed. Browser screenshots and measurements: `output/playwright/ambient-v2-candidate/` (local ignored artifacts). Auth fixtures do not validate real account writes or admin authorization. Photo loading may also contribute to screenshot pixel differences; position measurements independently verify light travel.
 
-Publication: pending scoped release and public-site smoke verification.
+Published commit 121c695c30edcda3d8298dc247635a38b7709615. Vercel dpl_4PewoWD83jHSXN2SyXDhuKamEKzh is READY in production. Public-site smoke: 11/11 checks passed via the public alias redirecting to getunimatch.app, including live central motion, Home exclusion and desktop/mobile fit.

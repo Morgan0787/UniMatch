@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useLocation } from 'react-router-dom';
-import { universityPageUrl } from '@/lib/universityNavigation';
+import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-    Sparkles, Target, TrendingUp, Award,
-    DollarSign, Globe, Bookmark, BookmarkCheck,
-    ArrowRight, AlertCircle, GitCompare, SlidersHorizontal
-} from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Target, GraduationCap, Globe, Coins, BookOpen, Pencil, ArrowRight, AlertCircle, GitCompare, SlidersHorizontal, ArrowDownUp, X } from 'lucide-react';
+import UniversityCard from '@/components/search/UniversityCard';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
-import UniversityCover from '@/components/ui/UniversityCover';
+
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from '@/lib/i18n';
-import { VERDICT, calculateMatchScore, describeMissingChanceData, hasCostData, isGpaFit } from '@/lib/matching';
+import { VERDICT, calculateMatchScore, describeMissingChanceData, hasCostData } from '@/lib/matching';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
-import { catalogText, catalogValue } from '@/lib/catalogCopy';
+import { catalogValue } from '@/lib/catalogCopy';
 import '@/styles/internal-pages.css';
 import '@/styles/release-pages.css';
+import '@/styles/recommendations-glass.css';
 
 const recommendationMessages = {
     en: {
@@ -114,176 +109,34 @@ function MatchScoreIndicator({ score, missingReason }) {
     );
 }
 
-function RecommendationCard({ university, profile, matchScore, isSaved, onSave, isComparing, onCompareToggle }) {
-    const { t, language } = useLanguage();
-    const location = useLocation();
-    const messages = recommendationMessages[language] || recommendationMessages.en;
-    // null when the cost is unknown, so no badge below can assert a budget fit
-    // from invented numbers.
-    const totalCost = hasCostData(university)
-        ? university.tuition_min + university.living_cost_estimate
-        : null;
-    
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="group"
-        >
-            <Card className="product-card recommendation-card overflow-hidden transition-all duration-300 border-slate-200">
-                <UniversityCover university={university} size="small" showName actions={
-                    <div className="flex gap-1">
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            type="button"
-                            aria-label={`${isComparing ? messages.uncompare : messages.compare}: ${university.name}`}
-                            aria-pressed={isComparing}
-                            onClick={() => onCompareToggle(university.id)}
-                            className={`bg-white/90 hover:bg-white ${isComparing ? 'ring-2 ring-indigo-600' : ''}`}
-                        >
-                            <GitCompare className={`w-4 h-4 ${isComparing ? 'text-indigo-600' : ''}`} />
-                        </Button>
-                        <Button
-                            size="icon"
-                            variant="ghost"
-                            type="button"
-                            aria-label={`${isSaved ? messages.unsave : messages.save}: ${university.name}`}
-                            aria-pressed={isSaved}
-                            onClick={() => onSave(university.id)}
-                            className="bg-white/90 hover:bg-white"
-                        >
-                            {isSaved ? (
-                                <BookmarkCheck className="w-4 h-4 text-indigo-600" />
-                            ) : (
-                                <Bookmark className="w-4 h-4" />
-                            )}
-                        </Button>
-                    </div>
-                } />
-                
-                <CardContent className="recommendation-card-body p-5 space-y-4">
-                    {/* Match Score */}
-                    <div>
-                        <p className="text-xs text-slate-500 mb-2">{t('recommendations.matchScore')}</p>
-                        <MatchScoreIndicator
-                            score={matchScore}
-                            missingReason={describeMissingChanceData(university)?.note}
-                        />
-                    </div>
-                    
-                    {/* Key Stats */}
-                    <div className="recommendation-facts grid grid-cols-2 gap-3 text-sm">
-                        <div className="flex items-center gap-2">
-                            <DollarSign className="w-4 h-4 text-emerald-500" />
-                            <div>
-                                <p className="text-xs text-slate-500">{t('university.tuition')}</p>
-                                <p className="font-semibold text-slate-800">
-                                    {university.tuition_min === 0 ? t('university.free') : university.tuition_min === null || university.tuition_min === undefined ? (
-                                        <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
-                                    ) : (
-                                        `€${university.tuition_min.toLocaleString()}`
-                                    )}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-blue-500" />
-                            <div>
-                                <p className="text-xs text-slate-500">{t('university.minGpa')}</p>
-                                <p className="font-semibold text-slate-800">
-                                    {university.min_gpa === null || university.min_gpa === undefined ? (
-                                        <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
-                                    ) : (
-                                        university.min_gpa.toFixed(1)
-                                    )}
-                                </p>
-                            </div>
-                        </div>
-                        {university.required_ielts && (
-                            <div className="flex items-center gap-2">
-                                <Globe className="w-4 h-4 text-violet-500" />
-                                <div>
-                                    <p className="text-xs text-slate-500">IELTS</p>
-                                    <p className="font-semibold text-slate-800">{university.required_ielts}+</p>
-                                </div>
-                            </div>
-                        )}
-                        {university.scholarships_available && (
-                            <div className="flex items-center gap-2">
-                                <Award className="w-4 h-4 text-amber-500" />
-                                <Badge variant="secondary" className="bg-amber-50 text-amber-700 text-xs">
-                                    {t('university.scholarships')}
-                                </Badge>
-                            </div>
-                        )}
-                    </div>
-                    
-                    {/* Why Recommended */}
-                    <div className="pt-3 border-t space-y-1">
-                        <p className="text-xs font-medium text-slate-700">{t('recommendations.whyRecommended')}</p>
-                        <div className="flex flex-wrap gap-1.5">
-                            {isGpaFit(university, profile.gpa) && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('recommendations.gpaFit')}
-                                </Badge>
-                            )}
-                            {profile.budget_max && totalCost !== null && totalCost <= profile.budget_max && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('recommendations.withinBudget')}
-                                </Badge>
-                            )}
-                            {profile.preferred_countries?.includes(university.country) && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('recommendations.preferredCountry')}
-                                </Badge>
-                            )}
-                            {university.ranking && university.ranking <= 100 && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('recommendations.topRanked')}
-                                </Badge>
-                            )}
-                            {university.international_students_percent !== null
-                                && university.international_students_percent !== undefined
-                                && university.international_students_percent >= 15 && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('recommendations.diverseCampus')}
-                                </Badge>
-                            )}
-                            {university.scholarships_available && (
-                                <Badge variant="outline" className="text-xs">
-                                    ✓ {t('university.scholarships')}
-                                </Badge>
-                            )}
-                        </div>
-                    </div>
-                    
-                    <Button 
-                        asChild
-                        className="recommendation-details w-full bg-indigo-600 hover:bg-indigo-700"
-                    >
-                      <Link to={universityPageUrl(university.id, location.pathname + location.search + location.hash)} state={{ fromApp: true }}>
-                        {t('university.viewDetails')}
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Link>
-                    </Button>
-                </CardContent>
-            </Card>
-        </motion.div>
-    );
+function RecommendationCard({ university, profile, matchScore, isSaved, onSave, isComparing, onCompareToggle, compareLimitReached }) {
+    return <UniversityCard university={university} userGpa={profile.gpa} userIelts={profile.english_proficiency}
+        userTopik={profile.topikLevel} isSaved={isSaved} onSave={onSave} isComparing={isComparing}
+        onCompareToggle={onCompareToggle} compareLimitReached={compareLimitReached}>
+        {university.admissionCatalog === undefined && <MatchScoreIndicator score={matchScore}
+            missingReason={describeMissingChanceData(university)?.note} />}
+    </UniversityCard>;
 }
 
 export default function Recommendations() {
     const { t, language } = useLanguage();
     const messages = recommendationMessages[language] || recommendationMessages.en;
     const [userProfile, setUserProfile] = useState(null);
+    const [loadingProfile, setLoadingProfile] = useState(true);
     const [savedUniversities, setSavedUniversities] = useState([]);
     const [compareList, setCompareList] = useState([]);
     const [showComparison, setShowComparison] = useState(false);
     const [countryWeights, setCountryWeights] = useState({});
     const [compareNotice, setCompareNotice] = useState('');
+    const [resultFilter, setResultFilter] = useState('all');
+    const [sortOrder, setSortOrder] = useState('match');
+    const copy = {
+        ru: {title:'Ваши персональные рекомендации', subtitle:'Варианты на основе вашего профиля. Проверьте условия каждой программы.', all:'Все варианты', budget:'По бюджету', unknown:'Требуют уточнения', sort:'Сначала подходящие', name:'По названию', edit:'Изменить профиль', year:'EUR / год', upTo:'До', comparison:'Для сравнения', clear:'Очистить сравнение', empty:'По этим условиям вариантов пока нет', reset:'Показать все варианты', settings:'Настроить подбор', results:'вариантов', budgetNote:'Учитываются только варианты с опубликованной стоимостью обучения и проживания.'},
+        en: {title:'Your personal recommendations', subtitle:'Options based on your profile. Check the conditions of each programme.', all:'All options', budget:'Within budget', unknown:'Needs clarification', sort:'Best matches first', name:'University name', edit:'Edit profile', year:'EUR / year', upTo:'Up to', comparison:'To compare', clear:'Clear comparison', empty:'No options match these conditions yet', reset:'Show all options', settings:'Adjust preferences', results:'options', budgetNote:'Only options with published tuition and living costs are included.'},
+        uz: {title:'Siz uchun shaxsiy tavsiyalar', subtitle:'Profilingizga asoslangan variantlar. Har bir dastur shartlarini tekshiring.', all:'Barcha variantlar', budget:'Budjet doirasida', unknown:'Aniqlashtirish kerak', sort:'Avval mos variantlar', name:'Universitet nomi', edit:'Profilni tahrirlash', year:'EUR / yil', upTo:'Gacha', comparison:'Taqqoslash uchun', clear:'Taqqoslashni tozalash', empty:'Bu shartlarga mos variantlar hozircha yo‘q', reset:'Barcha variantlar', settings:'Tanlovni sozlash', results:'ta variant', budgetNote:'Faqat o‘qish va yashash xarajatlari e’lon qilingan variantlar hisobga olinadi.'},
+    }[language] || {title:t('recommendations.title'), subtitle:t('recommendations.subtitle')};
     
-    const { data: universities = [], isLoading: loadingUniversities } = useQuery({
+    const { data: universities = [], isLoading: loadingUniversities, isError, refetch } = useQuery({
         queryKey: ['universities', new Date().toISOString().split('T')[0]], // Daily cache key
         queryFn: () => apiClient.entities.University.list(),
         staleTime: 1000 * 60 * 60, // 1 hour
@@ -311,6 +164,8 @@ export default function Recommendations() {
                 }
             } catch (e) {
                 // Not logged in or no profile
+            } finally {
+                setLoadingProfile(false);
             }
         };
         loadProfile();
@@ -427,13 +282,26 @@ export default function Recommendations() {
         ].slice(0, RECOMMENDATION_LIMIT);
     }, [universities, userProfile, countryWeights]);
     
+    const visibleUniversities = React.useMemo(() => {
+        const rows = recommendedUniversities.filter(uni => {
+            // Programme fees may have a different period/currency. Only use the
+            // legacy annual EUR pair here; never add those unlike amounts.
+            if (resultFilter === 'budget') return uni.admissionCatalog === undefined
+                && userProfile?.budget_max != null && hasCostData(uni)
+                && (uni.tuition_max ?? uni.tuition_min) + uni.living_cost_estimate <= userProfile.budget_max;
+            if (resultFilter === 'unknown') return uni.matchScore === null || uni.admissionCatalog !== undefined;
+            return true;
+        });
+        return sortOrder === 'name' ? [...rows].sort((a,b) => a.name.localeCompare(b.name, language)) : rows;
+    }, [recommendedUniversities, resultFilter, sortOrder, userProfile?.budget_max, language]);
+
     const compareUniversities = universities.filter(uni => compareList.includes(uni.id));
     
-    const isLoading = loadingUniversities;
+    const isLoading = loadingUniversities || loadingProfile;
     
     if (!userProfile && !isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="recommendations-page recommendations-gate min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
                 <Card className="product-card max-w-md w-full">
                     <CardHeader>
                         <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -461,20 +329,18 @@ export default function Recommendations() {
         <div className="recommendations-page release-page internal-page min-h-screen text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
             {/* Header */}
             <div className="product-page-hero text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
-                <div className="recommendations-hero-inner max-w-7xl mx-auto px-4 sm:px-6 py-12">
+                <div className="recommendations-hero-inner recommendations-container">
                     <div className="product-hero-heading flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                                <Sparkles className="w-6 h-6" />
-                            </div>
-                            <h1 className="text-3xl font-bold">{t('recommendations.title')}</h1>
+
+                            <h1 className="text-3xl font-bold">{copy.title}</h1>
                         </div>
                         {userProfile?.preferred_countries?.length > 0 && (
                             <Sheet>
                                 <SheetTrigger asChild>
-                                    <Button variant="ghost" className="bg-white/20 hover:bg-white/30 text-white gap-2">
+                                    <Button variant="ghost" className="recommendation-preferences gap-2">
                                         <SlidersHorizontal className="w-4 h-4" />
-                                        {t('recommendations.adjustPreferences')}
+                                        {copy.settings}
                                     </Button>
                                 </SheetTrigger>
                                 <SheetContent>
@@ -514,40 +380,23 @@ export default function Recommendations() {
                         )}
                     </div>
                     <p className="text-white/90 text-lg max-w-2xl">
-                        {t('recommendations.subtitle')}
+                        {copy.subtitle}
                     </p>
                     
-                    {userProfile && (
-                        <div className="mt-6 flex flex-wrap gap-3">
-                            {userProfile.gpa && (
-                                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                                    GPA: {userProfile.gpa.toFixed(1)}
-                                </Badge>
-                            )}
-                            {userProfile.english_proficiency > 0 && (
-                                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                                    IELTS: {userProfile.english_proficiency}
-                                </Badge>
-                            )}
-                            {userProfile.budget_max && (
-                                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                                    Budget: €{userProfile.budget_max.toLocaleString()}/yr
-                                </Badge>
-                            )}
-                            {userProfile.target_degree && (
-                                <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">
-                                    {userProfile.target_degree}
-                                </Badge>
-                            )}
-                        </div>
-                    )}
+                    {userProfile && <div className="recommendation-profile-strip">
+                        <div className="recommendation-profile-metric"><GraduationCap aria-hidden="true" /><span>GPA {userProfile.gpa == null ? '—' : userProfile.gpa.toFixed(1)}</span></div>
+                        <div className="recommendation-profile-metric"><Globe aria-hidden="true" /><span>IELTS {userProfile.english_proficiency > 0 ? userProfile.english_proficiency : '—'}</span></div>
+                        <div className="recommendation-profile-metric"><Coins aria-hidden="true" /><span>{userProfile.budget_max ? copy.upTo+' '+userProfile.budget_max.toLocaleString(language)+' '+copy.year : '—'}</span></div>
+                        <div className="recommendation-profile-metric"><BookOpen aria-hidden="true" /><span>{catalogValue(userProfile.target_degree, language) || '—'}</span></div>
+                        <Button asChild variant="outline" className="recommendation-edit"><Link to={createPageUrl('Profile')}><Pencil size={18} aria-hidden="true" />{copy.edit}</Link></Button>
+                    </div>}
                 </div>
             </div>
             
             {/* Recommendations */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <div className="recommendations-container recommendations-results">
                 {isLoading ? (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="recommendations-grid">
                         {[1,2,3,4,5,6].map(i => (
                             <Card key={i}>
                                 <Skeleton className="h-40" />
@@ -559,29 +408,26 @@ export default function Recommendations() {
                             </Card>
                         ))}
                     </div>
+                ) : isError ? (
+                    <div className="recommendation-empty" role="alert">
+                        <h2>{{ru:'Не удалось загрузить рекомендации',en:'Unable to load recommendations',uz:'Tavsiyalarni yuklab bo‘lmadi'}[language]}</h2>
+                        <Button variant="outline" onClick={() => void refetch()}>{{ru:'Попробовать снова',en:'Try again',uz:'Qayta urinish'}[language]}</Button>
+                    </div>
                 ) : (
                     <>
-                        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                            <div>
-                                <h2 className="text-xl font-semibold text-slate-800">
-                                    {t('recommendations.topMatches', { count: recommendedUniversities.length })}
-                                </h2>
-                                <p className="text-slate-500">{t('recommendations.sortedByMatch')}</p>
+                        <div className="recommendation-toolbar">
+                            <div className="recommendation-segments" role="group" aria-label={copy.title}>
+                                {[['all',copy.all],['budget',copy.budget],['unknown',copy.unknown]].map(([value,label]) => <button key={value} type="button" aria-pressed={resultFilter === value} onClick={() => setResultFilter(value)}>{label}</button>)}
                             </div>
-                            {compareList.length > 0 && (
-                                <Button 
-                                    onClick={() => setShowComparison(true)}
-                                    className="bg-indigo-600 hover:bg-indigo-700 gap-2"
-                                >
-                                    <GitCompare className="w-4 h-4" />
-                                    {t('search.compare')} ({compareList.length})
-                                </Button>
-                            )}
+                            <label className="recommendation-sort"><ArrowDownUp size={18} aria-hidden="true" /><span className="sr-only">{copy.sort}</span><select value={sortOrder} onChange={e => setSortOrder(e.target.value)} aria-label={copy.sort}><option value="match">{copy.sort}</option><option value="name">{copy.name}</option></select></label>
                         </div>
+                        <p className="recommendation-result-count" role="status">{visibleUniversities.length} {copy.results}{resultFilter === 'budget' && <span> · {copy.budgetNote}</span>}</p>
+                        {visibleUniversities.length === 0 && <div className="recommendation-empty"><h2>{copy.empty}</h2><Button variant="outline" onClick={() => setResultFilter('all')}>{copy.reset}</Button></div>}
                         {compareNotice && <p role="status" className="mb-4 text-sm text-[#855a36]">{compareNotice}</p>}
+                        <p id="catalog-compare-status" className="sr-only">{messages.compareLimit}</p>
                         
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {recommendedUniversities.map((university) => (
+                        <div className="recommendations-grid">
+                            {visibleUniversities.map((university) => (
                                 <RecommendationCard
                                     key={university.id}
                                     university={university}
@@ -591,6 +437,7 @@ export default function Recommendations() {
                                     onSave={handleSave}
                                     isComparing={compareList.includes(university.id)}
                                     onCompareToggle={handleCompareToggle}
+                                    compareLimitReached={compareList.length >= 3}
                                 />
                             ))}
                         </div>
@@ -598,7 +445,12 @@ export default function Recommendations() {
                 )}
             </div>
             
-            {/* University Detail Modal */}
+            {compareList.length > 0 && <aside className="recommendation-compare-dock" aria-label={t('search.compare')}>
+                <span className="recommendation-compare-count">{copy.comparison}: <strong>{compareList.length}</strong></span>
+                <div className="recommendation-compare-items">{compareUniversities.map(uni => <button key={uni.id} type="button" onClick={() => handleRemoveFromCompare(uni.id)} aria-label={messages.uncompare+': '+uni.name}><span>{uni.name}</span><X size={14} aria-hidden="true" /></button>)}</div>
+                <Button className="recommendation-compare-open" onClick={() => setShowComparison(true)}><GitCompare size={18} aria-hidden="true" />{t('search.compare')}<ArrowRight size={18} aria-hidden="true" /></Button>
+                <button className="recommendation-compare-clear" type="button" aria-label={copy.clear} onClick={() => {setCompareList([]);setCompareNotice('');}}><X size={20} aria-hidden="true" /></button>
+            </aside>}
 
             
             {/* Comparison Modal */}

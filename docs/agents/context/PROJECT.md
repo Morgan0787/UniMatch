@@ -6,6 +6,8 @@ The recovery candidate combines Release 18 (1ec35b3) with SEO/domain configurati
 
 ## Product
 
+Recommendations Liquid Glass (8 November 2026): uses the accepted glass reference with responsive one-to-four-column cards, profile metric strip, budget/unknown filters, sorting and a mobile comparison dock. Reuses Search programme/photo presentation; ranking, daily selection and protected access remain unchanged. [Implementation and verification](../../qa/recommendations-glass-2026-11-08.md).
+
 Amber background motion (8 November 2026): shared by all nine non-Home routes, including guest and authenticated account states. Five transform-only animations follow distinct 11–16-second loops through the center and edges; Home keeps its existing landing scene. [Implementation and verification](../../qa/ambient-glow-depth-2026-11-08.md).
 
 Survey Liquid Glass (8 November 2026): survey and preliminary matching use a unified full-width pearl surface, floating navigation, outlined subject icons and independently animated amber light. Responsive form actions, desktop summary and result photos/caveats are verified locally. Matching and access rules are unchanged. See [survey QA and release status](../../qa/survey-liquid-glass-2026-11-07.md).

@@ -27,6 +27,8 @@ University Liquid Glass: a full-width pearl card with amber light and visible in
 
 Survey Liquid Glass: three survey steps and preliminary matching share a full-width pearl surface, floating glass navigation, outlined subject icons and independently moving amber background light. Completed steps allow returning without losing answers; results show photos and the main qualification caveat. [Implementation, screenshots and verification limits](docs/qa/survey-liquid-glass-2026-11-07.md).
 
+Recommendations Liquid Glass (8 November 2026): warm pearl cards, profile metrics, segmented filters, smoked glass actions and a floating comparison dock follow the accepted reference. Layout adapts from 320 to 2560 CSS px, with one to four columns. Ranking and protected access are preserved. [Implementation, checks and verification limits](docs/qa/recommendations-glass-2026-11-08.md).
+
 Amber background motion (8 November 2026): every page except Home shares five independent amber lights across the center and edges, with distinct 11–16-second trajectories. Page canvases expose the light while content cards retain their fills. [Scope and browser verification](docs/qa/ambient-glow-depth-2026-11-08.md).
 
 ## Data quality

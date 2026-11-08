@@ -16,7 +16,7 @@ import SearchProgrammePreview from './SearchProgrammePreview';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
-export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView, isComparing, onCompareToggle, compareLimitReached = false }) {
+export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, children = null }) {
     const { t, language } = useLanguage();
     const location = useLocation();
     const detailUrl = universityPageUrl(university.id, location.pathname + location.search + location.hash);
@@ -142,6 +142,8 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                     {!hasAdmissionCatalog && <div className="mb-2">
                         <LanguageReadiness university={university} ielts={userIelts} topik={userTopik} chance={chance} />
                     </div>}
+
+                    {children}
 
                     {/* Action buttons */}
                     <div className={`catalog-card-actions mt-auto ${compareLimitReached && !isComparing ? 'catalog-card-actions-limited' : ''}`}>

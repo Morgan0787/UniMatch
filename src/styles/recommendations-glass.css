@@ -1,0 +1,145 @@
+/* Pearl glass and warm reflected light, shared with the approved catalogue. */
+body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] {
+  --recommendation-ink: #2d302f;
+  --recommendation-muted: #69645f;
+  --recommendation-line: #8f765c24;
+}
+body[data-unimatch-theme] .unimatch-app .recommendations-page { color: var(--recommendation-ink); padding-bottom: 100px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-container { width: calc(100% - 80px); max-width: 1840px; margin-inline: auto; }
+body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner { padding: 24px 0 12px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .product-page-hero { border: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading { margin-bottom: 4px; gap: 16px; align-items: start; flex-wrap: nowrap; }
+body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading > div { flex: 1; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { max-width: none; font-size: clamp(30px, 2.9vw, 46px); line-height: 1.12; letter-spacing: -.045em; color: var(--recommendation-ink); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner > p { max-width: none; margin-top: 8px; font-size: clamp(15px, 1.4vw, 20px); line-height: 1.45; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendation-preferences { min-height: 42px; flex-shrink: 0; border: 1px solid #ffffffd9; border-radius: 999px; background: #ffffff59; color: #51483e; }
+body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip {
+  display: flex; align-items: center; gap: 0; margin-top: 18px; padding: 10px 14px;
+  border: 1px solid #fffffff0; border-radius: 32px;
+  background: linear-gradient(120deg, #ffffff66, #fff8ed4d);
+  box-shadow: inset 0 1px 1px #fff, 0 7px 22px #73553a0c;
+  backdrop-filter: blur(20px) saturate(125%); -webkit-backdrop-filter: blur(20px) saturate(125%);
+}
+body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric { display: flex; flex: 1 1 auto; align-items: center; gap: 14px; min-width: 0; padding: 3px 22px; font-size: clamp(14px, 1.3vw, 19px); font-weight: 550; }
+body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric + .recommendation-profile-metric { border-left: 1px solid #89715b40; }
+body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric svg { width: 28px; height: 28px; flex-shrink: 0; stroke-width: 1.5; color: #514536; }
+body[data-unimatch-theme] .unimatch-app .recommendation-edit { gap: 10px; min-height: 42px; border: 1px solid #fff; border-radius: 999px; background: #ffffff4d; box-shadow: inset 0 1px #fff, 0 3px 9px #7050330c; color: var(--recommendation-ink); white-space: nowrap; }
+body[data-unimatch-theme] .unimatch-app .recommendations-results { padding-top: 8px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 9px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-segments { display: flex; padding: 3px; border: 1px solid #fff; border-radius: 999px; background: #ffffff59; box-shadow: 0 4px 12px #73553a0b; }
+body[data-unimatch-theme] .unimatch-app .recommendation-segments button { min-height: 40px; padding: 7px 28px; border: 1px solid transparent; border-radius: 999px; font-size: 15px; line-height: 1.3; transition: background .18s ease, box-shadow .18s ease; }
+body[data-unimatch-theme] .unimatch-app .recommendation-segments button[aria-pressed="true"] { border-color: #fff; background: linear-gradient(130deg, #fff7e7c9, #f2d4ad75); box-shadow: inset 0 1px #fff, 0 3px 10px #9a643119; color: #423222; font-weight: 600; }
+body[data-unimatch-theme] .unimatch-app .recommendation-sort { display: flex; gap: 10px; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #fff; border-radius: 999px; background: #ffffff66; box-shadow: 0 4px 12px #73553a0b; }
+body[data-unimatch-theme] .unimatch-app .recommendation-sort select { width: 100%; min-height: 42px; background: transparent; border: 0; color: var(--recommendation-ink); font-size: 14px; padding-right: 8px; cursor: pointer; }
+body[data-unimatch-theme] .unimatch-app .recommendation-result-count { min-height: 20px; margin-bottom: 12px; color: var(--recommendation-muted); font-size: 12px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; align-items: stretch; }
+body[data-unimatch-theme] .unimatch-app .recommendations-grid > * { min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card.search-university-card {
+  height: 100%; min-width: 0; display: flex; flex-direction: column; border: 1px solid #fffffff0; border-radius: 26px;
+  background: linear-gradient(155deg, #ffffffb8, #fffdf780 68%, #ffffffa6);
+  box-shadow: 0 10px 28px #5f41291a, inset 0 1px 1px #fff, inset 0 -1px 1px #ffffff80;
+  backdrop-filter: blur(16px) saturate(125%); -webkit-backdrop-filter: blur(16px) saturate(125%);
+}
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card:hover { border-color: #fff; box-shadow: 0 14px 32px #5f412923, inset 0 1px #fff; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-cover { display: flex; flex-direction: column; overflow: visible; min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-small { order: 0; display: flex; gap: 12px; align-items: start; padding: 16px 20px 12px; background: transparent; min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-monogram { display: none; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy { min-width: 0; flex: 1; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy h3 { color: var(--recommendation-ink); font-size: clamp(21px, 1.65vw, 27px); font-weight: 650; letter-spacing: -.035em; line-height: 1.1; overflow-wrap: anywhere; white-space: normal; -webkit-line-clamp: unset; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy p { margin-top: 5px; color: var(--recommendation-muted); font-size: 14px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-actions { flex-shrink: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-save { width: 42px; height: 42px; border: 1px solid #fff; border-radius: 50%; background: #ffffff80; box-shadow: inset 0 1px #fff, 0 4px 12px #70503314; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo { order: 1; width: 100%; padding: 0 12px; background: transparent; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo > img { width: 100%; height: clamp(150px, 11vw, 210px); object-fit: cover; border-radius: 14px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo figcaption { border: 0; background: transparent; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo summary { min-height: 32px; padding: 3px 6px; justify-content: end; gap: 5px; font-size: 11px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo summary > span { flex: 0 1 auto; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo-original { width: 100%; height: auto; object-fit: contain; border-radius: 10px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo-credit { padding-inline: 4px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-body { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 4px 20px 16px; gap: 12px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts { border-top: 0; padding-top: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts > .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts .uppercase { font-size: 11px; letter-spacing: .02em; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-tuition { font-size: 17px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-scholarship > div { background: #f2e4c7; color: #72572b; box-shadow: none; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-preview { display: flex; flex-direction: column; gap: 6px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-eyebrow { font-size: 12px; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-preview h4 { min-height: 43px; font-size: 18px; font-weight: 650; line-height: 1.2; letter-spacing: -.025em; overflow-wrap: anywhere; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; padding-block: 10px; border-block: 1px solid var(--recommendation-line); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats > div { min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats > div + div { border-left: 1px solid var(--recommendation-line); padding-left: 14px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats dt { font-size: 12px; line-height: 1.3; margin-bottom: 5px; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats dd { font-size: 16px; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-stats small { font-size: 11px; font-weight: 400; line-height: 1.35; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-status { display: flex; align-items: center; gap: 8px; width: fit-content; border: 1px solid #ffedca; border-radius: 999px; padding: 6px 12px; margin: 2px 0 9px; font-size: 13px; font-weight: 600; color: #995000; background: #ffe4b6b3; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-status svg { flex-shrink: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-review h5 { font-size: 14px; font-weight: 650; margin-bottom: 5px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-review ul { list-style: disc; padding-left: 20px; font-size: 13px; line-height: 1.5; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-review li::marker { color: #b66b16; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-actions { margin-top: auto; display: grid; grid-template-columns: 1.25fr 1fr; gap: 10px; padding-top: 8px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-coverage { grid-column: 1 / -1; font-size: 12px; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-actions a,
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-open {
+  min-height: 44px; border: 1px solid #ffffff7a; border-radius: 999px;
+  background: linear-gradient(160deg, #626968d9, #303b3bd9 60%, #313937ed);
+  box-shadow: inset 0 1px 1px #ffffff70, inset 0 -1px 1px #14202166, 0 3px 6px #30251c1a;
+  color: #fff; font-size: 15px; font-weight: 550;
+}
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-compare { min-height: 44px; border: 1px solid #fff; border-radius: 999px; background: #ffffff66; box-shadow: inset 0 1px #fff, 0 3px 8px #70503312; font-size: 14px; color: var(--recommendation-ink); white-space: normal; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-compare[aria-pressed="true"] { background: #f6e3c9; border-color: #d6aa79; color: #62431e; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-actions-limited { grid-template-columns: 1fr; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .recommendation-score { font-size: 12px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-empty { padding: 48px 20px; text-align: center; border: 1px solid #fff; border-radius: 24px; background: #ffffff66; }
+body[data-unimatch-theme] .unimatch-app .recommendation-empty h2 { margin-bottom: 16px; font-size: 20px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-dock { position: fixed; z-index: 35; bottom: max(18px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; width: max-content; max-width: calc(100% - 32px); padding: 11px 18px; border: 1px solid #fff; border-radius: 999px; background: linear-gradient(120deg, #fffaf2c9, #eee5dac4); box-shadow: inset 0 1px #fff, 0 12px 40px #5d493026; backdrop-filter: blur(24px) saturate(130%); -webkit-backdrop-filter: blur(24px) saturate(130%); }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-count { padding-inline: 6px; font-size: 14px; white-space: nowrap; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-items { display: flex; gap: 8px; min-width: 0; max-width: 440px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-items button { display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 42px; padding: 7px 12px; border: 1px solid #fff; border-radius: 16px; background: #ffffff66; font-size: 12px; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-items button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-items svg { flex-shrink: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-open { gap: 10px; padding-inline: 22px; flex-shrink: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-clear { flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: #ffffff66; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page :is(button,a,select,summary):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
+body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav { top: 14px; left: 24px; right: 24px; width: auto; max-width: 1840px; margin-inline: auto; border: 1px solid #fffffff0; border-radius: 32px; background: linear-gradient(130deg, #ffffff80, #fff9f25c); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); box-shadow: inset 0 1px #fff, 0 8px 28px #5d493014; }
+body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-main { padding-top: 96px; }
+body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav a[aria-current="page"] { border-radius: 999px; background: #ffffff80; box-shadow: inset 0 0 0 1px #ffffffdb; }
+body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-footer { background: #ffffff33; }
+@media (min-width: 2000px) {
+  body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 22px; }
+}
+@media (max-width: 1199px) {
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip { flex-wrap: wrap; border-radius: 26px; gap: 12px 0; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric { flex: 1 1 25%; padding-inline: 14px; font-size: 14px; gap: 9px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-edit { margin-left: auto; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  body[data-unimatch-theme] .unimatch-app .recommendation-preferences { font-size: 0; width: 42px; padding: 0; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-preferences svg { width: 18px; height: 18px; }
+}
+@media (max-width: 699px) {
+  body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"]:has(.recommendation-compare-dock) .product-feedback-trigger { bottom: 152px; }
+  body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav { top: 10px; left: 12px; right: 12px; }
+  body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav > div { padding-inline: 16px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading { gap: 8px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-container { width: calc(100% - 32px); }
+  body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner { padding-top: 20px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { font-size: 30px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip { padding: 14px 8px 10px; gap: 14px 0; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric { flex-basis: 50%; padding-inline: 10px; font-size: 13px; gap: 9px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric:nth-child(3) { border-left: 0; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric svg { width: 23px; height: 23px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-edit { width: 100%; margin: 0 3px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-toolbar { gap: 10px; margin-top: 8px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-segments { width: 100%; border-radius: 22px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-segments button { flex: 1 1 0; padding: 7px 8px; font-size: 12px; border-radius: 18px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-sort { width: 100%; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo > img { height: 180px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-preview h4 { min-height: 0; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-body { padding-inline: 16px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-compare-dock { display: grid; grid-template-columns: 1fr 44px; width: calc(100% - 24px); max-width: 440px; gap: 8px 10px; padding: 10px 12px; border-radius: 26px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-compare-items { display: none; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-compare-count { grid-column: 1; font-size: 13px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-compare-open { grid-column: 1; grid-row: 2; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-compare-clear { grid-column: 2; grid-row: 1 / 3; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page { padding-bottom: 135px; }
+}

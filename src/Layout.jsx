@@ -83,6 +83,13 @@ function LayoutContent({ children, currentPageName }) {
 
     return (
         <div className="unimatch-app min-h-screen bg-slate-50" data-page={currentPageName}>
+            <div className="ambient-light-field" aria-hidden="true">
+                <span className="ambient-glow ambient-glow--north" />
+                <span className="ambient-glow ambient-glow--west" />
+                <span className="ambient-glow ambient-glow--center" />
+                <span className="ambient-glow ambient-glow--east" />
+                <span className="ambient-glow ambient-glow--south" />
+            </div>
             <nav aria-label={navigationCopy[0]} className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
             }`}>

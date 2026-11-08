@@ -5,27 +5,60 @@ body[data-unimatch-theme] .unimatch-app[data-page] {
   background: #f0eae7;
 }
 
-body[data-unimatch-theme] .unimatch-app[data-page]::before,
-body[data-unimatch-theme] .unimatch-app[data-page]::after {
-  content: "";
+.unimatch-app > .ambient-light-field {
   position: fixed;
-  inset: -12%;
+  inset: 0;
   z-index: -1;
+  overflow: hidden;
   pointer-events: none;
 }
 
-body[data-unimatch-theme] .unimatch-app[data-page]::before {
-  background:
-    radial-gradient(ellipse 30% 27% at 80% 19%, #ffca6fd9, #ffd49366 45%, #ffdfb100),
-    radial-gradient(ellipse 44% 42% at 48% 46%, #fff9f3b3, #fff9f300);
-  animation: ambient-light-upper 14s ease-in-out -3s infinite alternate;
+.ambient-light-field > .ambient-glow {
+  position: absolute;
+  width: clamp(280px, 38vw, 680px);
+  aspect-ratio: 1.2;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    #ffbd60a6 0%, #ffca7b75 24%, #ffdaaa30 49%, #ffdfb100 72%);
+  animation: ambient-glow-drift var(--drift-duration) cubic-bezier(.45, 0, .55, 1) var(--drift-delay) infinite;
 }
 
-body[data-unimatch-theme] .unimatch-app[data-page]::after {
-  background:
-    radial-gradient(ellipse 30% 27% at 12% 80%, #ffc579b8, #ffdaab66 45%, #ffdfb100),
-    radial-gradient(ellipse 29% 23% at 77% 94%, #ffc575c9, #ffdfb166 42%, #ffdfb100);
-  animation: ambient-light-lower 18s ease-in-out -9s infinite alternate;
+.ambient-light-field > .ambient-glow--north {
+  left: 65%; top: -14%;
+  --drift-duration: 12s; --drift-delay: -2s;
+  --x0: -7vw; --y0: 0vh; --x1: 5vw; --y1: 7vh;
+  --x2: 8vw; --y2: 0vh; --x3: -3vw; --y3: -5vh;
+}
+
+.ambient-light-field > .ambient-glow--west {
+  left: -16%; top: 40%;
+  --drift-duration: 14s; --drift-delay: -6s;
+  --x0: 0vw; --y0: 8vh; --x1: 8vw; --y1: -3vh;
+  --x2: 3vw; --y2: -10vh; --x3: -4vw; --y3: 0vh;
+}
+
+.ambient-light-field > .ambient-glow--center {
+  left: 32%; top: 28%;
+  width: clamp(290px, 36vw, 620px);
+  opacity: .78;
+  --drift-duration: 11s; --drift-delay: -1s;
+  --x0: -8vw; --y0: 3vh; --x1: 3vw; --y1: -7vh;
+  --x2: 9vw; --y2: 4vh; --x3: -2vw; --y3: 10vh;
+}
+
+.ambient-light-field > .ambient-glow--east {
+  left: 76%; top: 43%;
+  opacity: .85;
+  --drift-duration: 16s; --drift-delay: -10s;
+  --x0: 1vw; --y0: -8vh; --x1: -7vw; --y1: 1vh;
+  --x2: -1vw; --y2: 10vh; --x3: 5vw; --y3: 1vh;
+}
+
+.ambient-light-field > .ambient-glow--south {
+  left: 38%; top: 77%;
+  --drift-duration: 13s; --drift-delay: -4s;
+  --x0: 7vw; --y0: 4vh; --x1: -5vw; --y1: 0vh;
+  --x2: -8vw; --y2: -8vh; --x3: 3vw; --y3: -3vh;
 }
 
 /* Expose the light through page canvases, while preserving individual card fills. */
@@ -34,14 +67,9 @@ body[data-unimatch-theme] .unimatch-app[data-page] .product-page-hero {
   background: transparent !important;
 }
 
-@keyframes ambient-light-upper {
-  0% { transform: translate3d(-6%, -4%, 0) scale(1.02); opacity: .88; }
-  50% { transform: translate3d(6%, 3%, 0) scale(1.05); opacity: 1; }
-  100% { transform: translate3d(-2%, 8%, 0) scale(1.02); opacity: .92; }
-}
-
-@keyframes ambient-light-lower {
-  0% { transform: translate3d(6%, 4%, 0) scale(1.02); opacity: .88; }
-  50% { transform: translate3d(-6%, -3%, 0) scale(1.04); opacity: 1; }
-  100% { transform: translate3d(2%, -8%, 0) scale(1.02); opacity: .92; }
+@keyframes ambient-glow-drift {
+  0%, 100% { transform: translate3d(var(--x0), var(--y0), 0) scale(.96); }
+  25% { transform: translate3d(var(--x1), var(--y1), 0) scale(1.03); }
+  50% { transform: translate3d(var(--x2), var(--y2), 0) scale(1); }
+  75% { transform: translate3d(var(--x3), var(--y3), 0) scale(1.04); }
 }

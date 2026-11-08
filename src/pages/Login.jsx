@@ -6,12 +6,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Mail, Lock, GraduationCap, Chrome } from 'lucide-react'
+import { Loader2, Mail, Lock, Chrome, ArrowLeft } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useLanguage } from '@/lib/i18n'
 import { loginText, loginEmailNotice } from '@/lib/loginCopy'
 import { loginCancelTarget, readLastPublicRoute, safeLoginReturn } from '@/lib/loginReturn'
+import AuthExperience from '@/components/auth/AuthExperience'
+import { authSceneCopy } from '@/components/auth/authCopy'
 import '@/styles/release-pages.css'
+import '@/styles/auth-experience.css'
 
 const getFriendlyAuthError = (error) => {
   if (!error) return 'Something went wrong. Please try again.'
@@ -40,6 +43,7 @@ const getFriendlyAuthError = (error) => {
 export default function Login() {
   const { language } = useLanguage()
   const l = text => loginText(text, language)
+  const sceneCopy = authSceneCopy(language)
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const rawRedirectTo = searchParams.get('redirect_to')
@@ -186,41 +190,22 @@ export default function Login() {
     }
   }
 
-  if (successState) {
-    return (
-      <div className="login-page release-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
-        <Card className="release-login-card w-full max-w-md text-center">
-          <CardContent className="pt-10 pb-10 space-y-4">
-            <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
-              <Mail className="w-7 h-7 text-indigo-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-slate-800">{successState.title}</h2>
-            <p className="text-slate-500 text-sm">{successState.message}</p>
-            <Button variant="ghost" size="sm" onClick={() => setSuccessState(null)}>
-              {l("Use a different method")}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
   return (
-    <div className="login-page release-page min-h-screen flex items-center justify-center bg-slate-50 p-4">
-      <div className="release-login-shell w-full max-w-md space-y-6">
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mx-auto">
-            <GraduationCap className="w-7 h-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-slate-800">UniMatch</h1>
-          <p className="text-slate-500 text-sm">{l("Sign in to your account")}</p>
-        </div>
-
-        {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-teal-900">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
-        <button type="button" className="text-sm text-teal-800 underline" onClick={() => navigate(cancelTo)}>{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
+    <div className="login-page release-page auth-page">
+      <div className="auth-layout">
+      <AuthExperience method={method} copy={sceneCopy} />
+      <section className="release-login-shell auth-form-shell" aria-labelledby="auth-title">
         <Card className="release-login-card product-glass">
-          <CardContent className="pt-6">
-            <Tabs value={method} onValueChange={setMethod} className="login-methods" data-method={method}>
+          <CardContent className="auth-card-content">
+            <header className="auth-form-heading" aria-live="polite" aria-atomic="true">
+              <h1 id="auth-title">{successState ? successState.title : l(method === 'signup' ? 'Create Account' : 'Sign in to your account')}</h1>
+              <p>{successState ? successState.message : sceneCopy.subtitle}</p>
+            </header>
+            {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="auth-return-notice">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
+            {successState ? <div className="auth-success" role="status">
+              <div className="auth-success-icon"><Mail aria-hidden="true" /></div>
+              <Button variant="outline" onClick={() => setSuccessState(null)}>{l('Use a different method')}</Button>
+            </div> : <Tabs value={method} onValueChange={setMethod} className="login-methods" data-method={method}>
               <TabsList className="login-method-tabs w-full mb-6">
                 <TabsTrigger value="password" className="flex-1">{l("Password")}</TabsTrigger>
                 <TabsTrigger value="magic" className="flex-1">{l("Magic Link")}</TabsTrigger>
@@ -236,6 +221,7 @@ export default function Login() {
                     <Input
                       id="email-pw"
                       type="email"
+                      autoComplete="email"
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -247,6 +233,7 @@ export default function Login() {
                     <Input
                       id="password"
                       type="password"
+                      autoComplete="current-password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -272,6 +259,7 @@ export default function Login() {
                     <Input
                       id="email-magic"
                       type="email"
+                      autoComplete="email"
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -294,6 +282,7 @@ export default function Login() {
                     <Input
                       id="full-name"
                       type="text"
+                      autoComplete="name"
                       placeholder={l("Your name")}
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
@@ -304,6 +293,7 @@ export default function Login() {
                     <Input
                       id="email-su"
                       type="email"
+                      autoComplete="email"
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -315,6 +305,7 @@ export default function Login() {
                     <Input
                       id="password-su"
                       type="password"
+                      autoComplete="new-password"
                       placeholder={l("At least 6 characters")}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -334,9 +325,11 @@ export default function Login() {
                 </form>
               </TabsContent>
               </div>
-            </Tabs>
+            </Tabs>}
           </CardContent>
         </Card>
+        <button type="button" className="auth-back" onClick={() => navigate(cancelTo)}><ArrowLeft size={16} aria-hidden="true" />{{en:'Back without signing in',ru:'Вернуться без входа',uz:'Kirmasdan qaytish'}[language]}</button>
+      </section>
       </div>
     </div>
   )

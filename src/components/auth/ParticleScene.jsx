@@ -4,7 +4,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { DynamicDrawUsage } from 'three'
 import { createParticleDetails, createParticleNormals, createParticleShapes } from './particleShapes'
 
-const COUNT = 32000
+const COUNT = 26000
 const VERTEX = `
   attribute float aSize;
   attribute vec3 aNormal;
@@ -236,7 +236,7 @@ export default function ParticleScene({ method, active, onFailure, fallback }) {
       pointer.current.y = 1 - (event.clientY - rect.top) / rect.height * 2
       pointer.current.active = true
     }} onPointerLeave={() => { pointer.current.active = false }}>
-      <Canvas ref={canvasRef} dpr={[1, 1.5]} camera={{ position: [0, 0, 7], fov: 43 }}
+      <Canvas ref={canvasRef} dpr={[1, 1.5]} camera={{ position: [0, 0, 7], fov: 36 }}
         frameloop={active ? 'always' : 'never'} gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }} fallback={fallback}>
         <ParticleFigure method={method} pointer={pointer} />
       </Canvas>

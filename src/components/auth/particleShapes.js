@@ -1,6 +1,12 @@
 import landMask from '../landing/hero-landmask.js'
 
 const landBytes = Uint8Array.from(atob(landMask.data), character => character.charCodeAt(0))
+// The shared 256×128 raster has a one-row export streak across the Pacific
+// at 16°S (columns 0–73). Repair this scene's copy without changing Home.
+for (let column = 0; column < 74; column += 1) {
+  const bit = 75 * landMask.width + column
+  landBytes[bit >> 3] &= ~(1 << (bit & 7))
+}
 const GLOBE_RADIUS = 1.78
 const GLOBE_YAW = 65 * Math.PI / 180
 

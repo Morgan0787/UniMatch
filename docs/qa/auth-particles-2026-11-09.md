@@ -44,4 +44,18 @@ User review rejected the procedural ridges as vein-like. Removed all synthetic r
 
 The embedded browser was observed with `prefers-reduced-motion: reduce`; its initial sparse image was the old SVG fallback rather than the live WebGL scene. The fallback has been replaced with shaded vector illustrations and an explicit motion opt-in.
 
-Software rendering checks behavior, not representative hardware frame rate. Real Google completion, delivered email links and authenticated sessions remain unverified. Visual acceptance, including resemblance to the LOOT reference, belongs to the local preview review; this is not an accepted production design.
+Software rendering checks behavior, not representative hardware frame rate. Real Google completion, delivered email links and authenticated sessions remain unverified. Visual acceptance, including resemblance to the LOOT reference, remains subject to user review on their large screen.
+
+## Publication receipt — 9 November 2026
+
+User explicitly requested publication for large-screen review. Released only Login, the four auth scene modules, auth stylesheet and this pre-release QA record from an isolated checkout based on production `163caa90cf1e3357c43dee344daf2cb8fc1d5619`. No unrelated root changes or dependency changes were included. Release commit: `d2c993c52f98749821b9640cdc1d50b00b09dda5`.
+
+The isolated release build, typecheck and scoped ESLint passed. The login-return script is absent from that historical release checkout; the earlier root result above applies, and both login helper files match production unchanged. Vercel deployment `dpl_9B7oZJcqU7E3A6x6rMkjsdca2qX1` reached READY with `getunimatch.app` assigned to that exact commit. Public `/Login` visibly rendered the animated pearl globe, book and cap after reduced-motion opt-in; all three tabs switched and no console errors were recorded. No real auth request was submitted. Capture: `output/playwright/auth-particles-20261108/published-auth.jpg`. This receipt is local follow-up evidence; the deployed QA snapshot predates publication.
+
+## Large-screen review corrections — 9 November 2026
+
+Removed a confirmed raster export streak at 16°S across the Pacific from the auth scene's private copy of Home's land mask. Home's asset is unchanged. Geometry checks found 223 Pacific samples in the affected latitude band at the ocean radius, with no false land shelf. All three position/normal/detail buffers remain finite.
+
+The scene now has 26,000 particles (previously 32,000), a 36° camera field of view and a responsive canvas up to 780px high within a wider layout. Central ambient light opacity is .28 and the local halo is softer. Form width is capped at 440px; heading/padding are reduced and viewports <=820px high receive 44px fields/actions and tighter spacing. Mounted panels still reserve a stable card size.
+
+Local typecheck, scoped ESLint and final Vite build passed. Browser DOM checks: 1920×1080, 1366×768, 1024×600 and 390×844 have no horizontal overflow; 1366×768 registration card is approximately 558px tall, back action bottom 688px. Switching all three tabs preserves card bounds and entered name; mobile removes the scene after its media query updates. Auth handlers/API remain unchanged. Large-screen dimensions are DOM evidence; hardware performance and real authentication completion are not newly tested. Earlier screenshots at 32,000 points are superseded for particle density by this revision.

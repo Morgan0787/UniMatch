@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react';
+import { BriefcaseBusiness, Monitor, Settings, Layers2, Code2, Compass, Ellipsis, Square } from 'lucide-react';
 import OptionSelect from '@/components/ui/OptionSelect';
+
+const directionIcons = { business: BriefcaseBusiness, it: Monitor, computer_engineering: Settings, software_engineering: Layers2, computer_science: Code2, other: Ellipsis };
 
 export function AnswerField({ name, label, value, onChange, options = null, error = false, hint = undefined, c, type = 'text', min = undefined, max = undefined, step = undefined }) {
   const id = `admission-${name}`;
@@ -33,14 +36,14 @@ export default function SurveyFields({ step, answers, onChange, errors, c }) {
     <fieldset className="admission-fieldset admission-fieldset-directions">
       <legend>{c.field}</legend>
       <div className="admission-direction-grid" role="radiogroup" aria-label={c.field}>
-        {Object.entries(c.fields).map(([value, label], index) => <label className="admission-direction-card" key={value}>
+        {Object.entries(c.fields).map(([value, label]) => { const Icon = directionIcons[value] || Compass; return <label className="admission-direction-card" key={value}>
           <input type="radio" name="admission-field" value={value} aria-labelledby={`admission-direction-${value}`} aria-describedby={`admission-direction-${value}-hint`} checked={answers.field === value} onChange={() => onChange('field', value)} />
-          <span className="admission-direction-mark" aria-hidden="true">{['01', '02', '03', '04', '05', '↗'][index % 6]}</span>
+          <span className="admission-direction-mark" aria-hidden="true"><Icon size={24} strokeWidth={1.5} /></span>
           <span className="admission-direction-body"><span id={`admission-direction-${value}`}>{String(label)}</span><small id={`admission-direction-${value}-hint`}>{c.fieldDescriptions[value]}</small></span>
-        </label>)}
+        </label>; })}
         <label className="admission-direction-card admission-direction-open">
           <input type="radio" name="admission-field" value="" aria-labelledby="admission-direction-open" aria-describedby="admission-direction-open-hint" checked={!answers.field} onChange={() => onChange('field', '')} />
-          <span className="admission-direction-mark" aria-hidden="true">↗</span>
+          <span className="admission-direction-mark" aria-hidden="true"><Square size={22} strokeWidth={1.5} /></span>
           <span className="admission-direction-body"><span id="admission-direction-open">{c.any}</span><small id="admission-direction-open-hint">{c.fieldDescriptions.open}</small></span>
         </label>
       </div>

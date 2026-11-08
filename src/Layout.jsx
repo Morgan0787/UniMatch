@@ -85,16 +85,16 @@ function LayoutContent({ children, currentPageName }) {
             <nav aria-label={navigationCopy[0]} className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
                 isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
             }`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                <div className="product-nav-inner max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex items-center justify-between h-16">
-                        <Link to={createPageUrl("Home")} className="flex items-center gap-2">
+                        <Link to={createPageUrl("Home")} className="product-nav-brand flex items-center gap-2">
                             <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
                                 <GraduationCap className="w-5 h-5 text-white" />
                             </div>
                             <span className="product-wordmark font-bold text-xl text-slate-800">UniMatch</span>
                         </Link>
 
-                        <div className="hidden lg:flex items-center gap-1">
+                        <div className="product-nav-links hidden lg:flex items-center gap-1">
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
@@ -111,7 +111,7 @@ function LayoutContent({ children, currentPageName }) {
                             ))}
                         </div>
 
-                        <div className="hidden lg:flex items-center gap-3">
+                        <div className="product-nav-account hidden lg:flex items-center gap-3">
                             <LanguageSwitcher />
                             {user ? (
                                 <DropdownMenu>
@@ -168,7 +168,7 @@ function LayoutContent({ children, currentPageName }) {
                                     >
                                         {t('nav.signIn')}
                                     </Button>
-                                    <Button asChild className="bg-indigo-600 hover:bg-indigo-700"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
+                                    <Button asChild className="product-nav-guest-cta bg-indigo-600 hover:bg-indigo-700"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
                                 </>
                             )}
                         </div>

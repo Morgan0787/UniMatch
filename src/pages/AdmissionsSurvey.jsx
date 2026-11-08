@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, Check, RotateCcw } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { emptyAnswers, evaluateAnswers, validateAnswers } from '@/lib/admissions/evaluate';
 import { clearDraft, loadDraft, saveDraft } from '@/lib/admissions/draft';
@@ -11,6 +12,7 @@ import usePublicAdmissionsCatalog from '@/components/admissions/usePublicAdmissi
 import CatalogStatus from '@/components/admissions/CatalogStatus';
 import '@/components/admissions/admissions.css';
 import '@/styles/release-pages.css';
+import '@/styles/survey-glass.css';
 
 function storage() {
   try { return window.sessionStorage; } catch { return null; }
@@ -93,14 +95,14 @@ export default function AdmissionsSurvey() {
     setAnswers(nextAnswers); setErrors({}); return true;
   };
 
-  return <section className="admissions-page release-page" data-view={view} data-step={step} aria-labelledby="admission-title">
-    <div className="admission-topline"><span>{c.eyebrow}</span><button type="button" className="admission-text-button" onClick={reset}>{c.reset}</button></div>
+  return <section className="admissions-page release-page survey-glass" data-view={view} data-step={step} aria-labelledby="admission-title">
+    <div className="admission-topline"><span>{c.subtitle}</span><button type="button" className="admission-text-button" onClick={reset}><RotateCcw size={15} aria-hidden="true" />{c.reset}</button></div>
     <div className="admission-layout" data-view={view} data-step={step}>
       {view === 'survey' && <aside className="admission-aside" aria-label={c.subtitle}>
         <SurveyStory step={step} view={view} answers={answers} c={c} />
       </aside>}
       <div className="admission-content">
-        {view === 'survey' && <ol className="admission-stepper" aria-label={c.subtitle}>{c.steps.map((label, index) => <li key={label} data-done={index < step} aria-current={step === index ? 'step' : undefined}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{label}</li>)}</ol>}
+        {view === 'survey' && <ol className="admission-stepper" aria-label={c.subtitle}>{c.steps.map((label, index) => <li key={label} data-done={index < step} aria-current={step === index ? 'step' : undefined}><span aria-hidden="true">{index < step ? <Check size={16} /> : String(index + 1).padStart(2, '0')}</span>{index < step ? <button type="button" onClick={() => { setStep(index); setErrors({}); }}>{label}</button> : label}</li>)}</ol>}
         {view === 'survey' && <p className="admission-eyebrow">{`${step + 1} / 3 · ${c.steps[step]}`}</p>}
         <h1 id="admission-title" tabIndex={-1} ref={title}>{view === 'survey' ? c.stepTitles[step] : c.resultsTitle}</h1>
         {storageStatus === 'restored' && view === 'survey' && <p role="status" className="admission-hint">{c.restored}</p>}
@@ -120,7 +122,7 @@ export default function AdmissionsSurvey() {
           <SurveyFields key={step} step={step} answers={answers} onChange={update} errors={errors} c={c} />
           <div className="admission-actions">
             {step > 0 && <button type="button" className="admission-button admission-secondary" onClick={() => { setStep(previous => /** @type {0|1|2} */ (previous - 1)); setErrors({}); }}>{c.back}</button>}
-            <button type="submit" className="admission-button">{step === 2 ? c.show : c.next} <span aria-hidden="true">↗</span></button>
+            <button type="submit" className="admission-button">{step === 2 ? c.show : c.next}<ArrowRight size={18} aria-hidden="true" /></button>
             <button type="button" className="admission-text-button admission-skip" onClick={skip}>{c.skip}</button>
           </div>
         </form> : catalogQuery.isPending || catalog.version === 'db-v1:unavailable'

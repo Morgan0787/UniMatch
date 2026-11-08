@@ -6,6 +6,8 @@ The recovery candidate combines Release 18 (1ec35b3) with SEO/domain configurati
 
 ## Product
 
+Survey Liquid Glass (8 November 2026): survey and preliminary matching use a unified full-width pearl surface, floating navigation, outlined subject icons and independently animated amber light. Responsive form actions, desktop summary and result photos/caveats are verified locally. Matching and access rules are unchanged. See [survey QA and release status](../../qa/survey-liquid-glass-2026-11-07.md).
+
 UniMatch helps Central Asian students find universities in Europe, the US, and Asia by ranking realistic admission chances from GPA, IELTS, TOPIK, and verified university data. It is a Vite/React portfolio and potential product, not the separate dating-site test project.
 
 ## Stack and deployment

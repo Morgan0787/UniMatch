@@ -37,11 +37,16 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
   const saved = favorites.savedIds.includes(option.institutionId);
   const pending = favorites.pendingId === option.institutionId;
   return <article className="admission-candidate" data-institution={option.institutionId || option.university} data-top={Boolean(isTop)}>
+    <div className="admission-candidate-overview">
     <div className="admission-candidate-meta"><span>{option.university}</span><span>{c.regionNames[option.region]} · {catalogValue(option.country, language)}</span></div>
     {isTop && <p className="admission-top-badge">{c.topBadge}</p>}
     <h2>{option.name}</h2>
+    <InstitutionMedia option={option} c={c} compact />
+    </div>
+    <div className="admission-candidate-body">
     <p className={`admission-status ${alternative ? 'admission-status-attention' : ''}`}>{alternative ? c.attention : c.unknown}</p>
     <p className={`admission-budget admission-budget-${budgetState}`}>{ui[budgetState]}</p>
+    <p className="admission-key-reason">{mainReason ? c.cardReasons[mainReason.code] || c.reasons[mainReason.code] || c.incomplete : c.incomplete}</p>
     <dl className="admission-facts">
       <div><dt>{{en:'Teaching language',ru:'Язык обучения',uz:'Ta’lim tili'}[language] || 'Teaching language'}</dt><dd>{c.languages[teachingLanguage.value] || teachingLanguage.value}</dd></div>
       <div><dt>{ui.tuition}</dt><dd>{tuitionFact ? <TuitionValue fact={tuitionFact} language={language} /> : tuition?.amount != null ? `${tuition.amount.toLocaleString(language)} ${tuition.currency} / ${c.periods[tuition.period] || c.unknownShort}` : c.unknownShort}{!tuitionFact && tuition?.feeYear && <small> · {tuition.feeYear}</small>}</dd></div>
@@ -55,10 +60,8 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
     <details>
       <summary>{ui.details}</summary>
     {knownReason && <p className="admission-known-reason">{c.cardReasons[knownReason.code]}</p>}
-    <p className="admission-key-reason">{mainReason ? c.cardReasons[mainReason.code] || c.reasons[mainReason.code] || c.incomplete : c.incomplete}</p>
     {languageReference && <p className="admission-language-reference">{c.languageReference}: {languageReference.value}. {languageReference.notice} {c.languageReferenceLimit}</p>}
     {row.academicReferences?.length > 0 && <p className="admission-language-reference">{c.academicReference}: {[...new Set(row.academicReferences.map(reference => `${reference.minimum}/${reference.scale}${reference.season ? ` (${reference.season})` : ''}`))].join(', ')}. {c.academicReferenceLimit}</p>}
-    <InstitutionMedia option={option} c={c} />
       <p>{option.entryPath === 'unknown' ? c.entryUnknown : c.entryConditional}</p>
       <p>{c.living}</p>
       <ul className="admission-reasons">{reasons.map(reason => <Reason key={reason.code} reason={reason} c={c} />)}</ul>
@@ -68,6 +71,7 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
       ]} />}
       <div className="admission-next-step"><h3>{c.nextStep}</h3><p>{c.noDeadline}</p></div>
     </details>
+    </div>
   </article>;
 }
 
@@ -83,6 +87,7 @@ export default function PreliminaryResults({ evaluation, answers, onEdit, onAppl
   const alternatives = evaluation.alternatives || [];
   const shown = evaluation.results.length + alternatives.length;
   return <>
+    <p className="admission-results-lead">{c.resultsLead}</p>
     <div className="admission-results-heading">
 <div className="admission-selection-summary" aria-label={ui.summary}><strong>{ui.count.replace('{count}', String(shown))}</strong><p>{[c.fields[answers.field] || c.any, (answers.regions || []).map(region => c.regionNames[region] || catalogValue(region, language)).join(', ') || c.any, answers.language && catalogValue(answers.language, language), answers.exam && answers.score && [answers.exam, answers.score].join(' '), answers.budget && [Number(answers.budget).toLocaleString(language), answers.currency].join(' ')].filter(Boolean).join(' · ')}</p></div>
       {compared.length > 0 && <button type="button" className="admission-button" disabled={compared.length < 2} onClick={() => setComparisonOpen(true)}>{compareCopy} ({compared.length}/3)</button>}
@@ -106,6 +111,6 @@ export default function PreliminaryResults({ evaluation, answers, onEdit, onAppl
     </section>}
     {compared.length > 0 && <button type="button" className="admission-button" disabled={compared.length < 2} onClick={() => setComparisonOpen(true)}>{compareCopy} ({compared.length}/3)</button>}
     <ComparisonModal universities={compared} isOpen={comparisonOpen} onClose={() => setComparisonOpen(false)} onRemove={id => setCompared(previous => previous.filter(item => item.id !== id))} />
-    <RefineAnswers answers={answers} onApply={next => { setCompared([]); setComparisonOpen(false); onApply(next); }} c={c} errors={errors} />
+    <RefineAnswers answers={answers} onApply={next => { setCompared([]); setComparisonOpen(false); return onApply(next); }} c={c} errors={errors} />
   </>;
 }

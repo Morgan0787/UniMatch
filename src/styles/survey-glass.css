@@ -1,0 +1,231 @@
+/* Survey material follows the accepted catalogue; scoped to this route. */
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] {
+  position: relative;
+  isolation: isolate;
+  background: #f0eae7;
+}
+.unimatch-app[data-page="AdmissionsSurvey"]::before,
+.unimatch-app[data-page="AdmissionsSurvey"]::after {
+  content: "";
+  position: fixed;
+  inset: -8%;
+  z-index: -1;
+  pointer-events: none;
+}
+.unimatch-app[data-page="AdmissionsSurvey"]::before {
+  background: radial-gradient(ellipse 30% 27% at 80% 19%, #ffca6fd9, #ffd49366 45%, #ffdfb100), radial-gradient(ellipse 44% 42% at 48% 46%, #fff9f3b3, #fff9f300);
+  animation: survey-light-upper 42s ease-in-out infinite alternate;
+}
+.unimatch-app[data-page="AdmissionsSurvey"]::after {
+  background: radial-gradient(ellipse 30% 27% at 12% 80%, #ffc579b8, #ffdaab66 45%, #ffdfb100), radial-gradient(ellipse 29% 23% at 77% 94%, #ffc575c9, #ffdfb166 42%, #ffdfb100);
+  animation: survey-light-lower 57s ease-in-out infinite alternate;
+}
+@keyframes survey-light-upper { 0% { transform: translate3d(-3%, -2%, 0) scale(1.02); opacity: .88; } 50% { transform: translate3d(2%, 3%, 0) scale(1.05); opacity: 1; } 100% { transform: translate3d(-1%, 5%, 0) scale(1.02); opacity: .92; } }
+@keyframes survey-light-lower { 0% { transform: translate3d(3%, 2%, 0) scale(1.02); opacity: .88; } 50% { transform: translate3d(-3%, -3%, 0) scale(1.04); opacity: 1; } 100% { transform: translate3d(1%, -5%, 0) scale(1.02); opacity: .92; } }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav {
+  top: 18px; left: 24px; right: 24px; width: auto; max-width: none; margin-inline: auto;
+  border: 1px solid #ffffffed; border-radius: 32px;
+  background: linear-gradient(130deg, #ffffff57, #fff9f238);
+  box-shadow: inset 0 1px 1px #fff, 0 8px 28px #5d493014;
+  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+}
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-inner { max-width: none; padding-inline: 28px; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-brand { gap: 14px; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-wordmark { font-size: 22px; letter-spacing: .08em; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-brand > div { width: 40px; height: 40px; border-radius: 13px; box-shadow: inset 0 1px #ffffff30, 0 3px 8px #4937231a; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-links { gap: clamp(4px, 1.6vw, 28px); }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-links > a { padding: 10px 18px; font-size: clamp(14px, 1.15vw, 19px); font-weight: 500; border-radius: 999px; color: #302d29; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-links > a:hover { background: #ffffff70; box-shadow: inset 0 0 0 1px #ffffffb3; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-guest-cta { display: none; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .language-switcher-trigger { min-width: 60px; min-height: 36px; background: #ffffff47; box-shadow: inset 0 1px #ffffffb3, 0 3px 8px #5d49300a; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .language-switcher-trigger .language-switcher-globe { display: none; }
+body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .language-switcher-trigger > span { font-size: 15px; font-weight: 500; letter-spacing: 0; }
+.unimatch-app[data-page="AdmissionsSurvey"] .product-main { padding-top: 96px; }
+.unimatch-app[data-page="AdmissionsSurvey"] .product-footer { background: #ffffff33; border-color: #ffffffa6; }
+body[data-unimatch-theme] .unimatch-app .admissions-page.survey-glass {
+  --survey-ink: #292e30;
+  --survey-muted: #625e59;
+  --survey-line: #a78b6b30;
+  width: calc(100% - 48px); max-width: none;
+  margin: 0 auto 48px; padding: 0;
+  /* The shared release canvas uses !important; this route owns its light field. */
+  border: 0; border-radius: 0; background: transparent !important; box-shadow: none;
+  color: var(--survey-ink);
+}
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-topline { border: 0; padding: 0 4px 8px; min-height: 36px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-topline > span { color: var(--survey-muted); font-size: 13px; font-weight: 500; letter-spacing: 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-text-button { color: var(--survey-muted); display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-layout { grid-template-columns: minmax(280px, .95fr) minmax(0, 2.05fr); gap: 0; padding: 0; align-items: stretch; }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-layout[data-view="survey"],.admission-content,.admission-story,.admission-candidate) {
+  border: 1px solid #fffffff0; border-radius: 28px;
+  background: linear-gradient(135deg, #ffffff7a, #fffdf947 68%, #ffffff66);
+  box-shadow: inset 0 1px 1px #fff, inset 0 -1px 1px #ffffff80, 0 12px 32px #5d493014;
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-view="survey"] :is(.admission-content,.admission-story) { background: transparent; border: 0; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-content { padding: clamp(24px, 3vw, 44px); }
+body[data-unimatch-theme] .unimatch-app .survey-glass h1 { color: var(--survey-ink); font-size: clamp(30px, 3.1vw, 52px); line-height: 1.12; font-weight: 600; letter-spacing: -.04em; margin: 30px 0 14px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-intro,.admission-hint,.admission-footer) { color: var(--survey-muted); line-height: 1.55; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-intro { font-size: clamp(15px, 1.25vw, 20px); max-width: 68ch; margin: 0 0 24px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-content > .admission-eyebrow { display: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper { gap: 12px; margin: 0; padding: 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li { display: flex; gap: 8px; align-items: center; border: 0; padding: 12px 0 0; border-top: 3px solid #a78b6b20; color: var(--survey-muted); font-size: 15px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li > span { display: grid; place-items: center; flex: 0 0 20px; margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li[aria-current] { color: #62431f; border-color: #c58e4f; font-weight: 650; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li[aria-current] > span { color: #62431f; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li[data-done=true] { color: #625343; border-color: #d8b68c; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper button { min-height: 44px; margin-block: -9px; padding: 0; border: 0; background: transparent; text-align: left; color: inherit; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields { margin-block: 24px; gap: 24px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-field label,legend) { font-size: 14px; color: var(--survey-ink); font-weight: 600; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-grid { gap: 10px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 54px; gap: 16px; padding: 12px 38px 12px 20px; border: 1px solid #ffffffed; border-radius: 20px; color: var(--survey-ink); background: #ffffff47; box-shadow: inset 0 1px 1px #fff, 0 4px 10px #5d49300d; font-size: clamp(14px, 1.15vw, 18px); transition: background .18s ease, border-color .18s ease; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body { gap: 4px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body > span { font-weight: 550; line-height: 1.3; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-mark { color: #80694e; flex: 0 0 22px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:hover { background: #ffffffa8; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked) { background: linear-gradient(125deg, #fff3e1dd, #f5dbb7b3); border-color: #c99860; color: #4e371f; box-shadow: inset 0 1px #fff, 0 3px 10px #c18b3f0d; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked) :is(small,.admission-direction-mark) { color: #675037; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked)::after { color: #8b5a23; top: 10px; right: 11px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open { grid-column: 1 / -1; min-height: 48px; width: fit-content; max-width: 100%; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open .admission-direction-body { grid-template-columns: auto 1fr; align-items: center; gap: 12px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-field :is(input,[data-ui="select-trigger"]) { min-height: 50px; padding: 12px 16px; color: var(--survey-ink); border: 1px solid #c9b9a680; border-radius: 16px; background: #ffffff80; box-shadow: inset 0 1px 1px #fff, 0 3px 8px #5d493008; font-size: 16px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-field [aria-invalid=true] { border-color: #a33620; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-field-priority { border: 0; padding: 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-choice { min-height: 44px; padding: 9px 14px; border-color: #fff; border-radius: 999px; background: #ffffff70; box-shadow: inset 0 1px #fff, 0 3px 8px #5d49300d; color: var(--survey-ink); backdrop-filter: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-choice:has(:checked) { color: #62431f; border-color: #c99860; background: #f8e1c2b8; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-choice input { accent-color: #956230; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-hint { font-size: 12px; margin-top: 10px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-actions { border-color: var(--survey-line); gap: 12px; margin-top: 28px; padding-top: 22px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-button { min-height: 48px; border: 1px solid #ffffffa6; border-radius: 999px; padding: 12px 24px; color: #fffdf9; font-size: 15px; font-weight: 550; background: radial-gradient(ellipse 100% 80% at 48% -35%, #ffffff80, #ffffff00 80%), linear-gradient(165deg, #4b5152, #272e30 65%, #202729); box-shadow: inset 0 1px 1px #ffffff80, inset 0 -1px 1px #1118, 0 4px 10px #47352426; text-decoration: none; transition: box-shadow .18s ease, background .18s ease; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-button:hover { filter: none; box-shadow: inset 0 1px 1px #fff9, 0 6px 16px #47352433; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-button:active { transform: translateY(1px); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-secondary { background: linear-gradient(135deg, #ffffffa8, #fffaf070); color: var(--survey-ink); border-color: #fff; box-shadow: inset 0 1px #fff, 0 3px 8px #5d493014; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-secondary[aria-pressed=true] { background: #f8e1c2b8; border-color: #c99860; color: #62431f; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-skip { flex-basis: auto; margin-left: auto; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story { min-height: 100%; padding: clamp(26px, 3vw, 44px); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story-label { color: #806344; font-size: 10px; letter-spacing: .1em; margin-bottom: 18px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story h2 { color: var(--survey-ink); font-size: clamp(32px, 3vw, 48px); font-weight: 550; line-height: 1.12; letter-spacing: -.04em; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story-description { color: var(--survey-muted); font-size: clamp(15px, 1.3vw, 20px); line-height: 1.5; margin-top: 20px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story-ribbon { height: 290px; flex-basis: 290px; margin: 24px -12px 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story-route { display: block; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="0"] .admission-answer-summary { display: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-story-current { display: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-answer-summary { display: grid; gap: 0; margin: 6px 0 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-answer-summary > div { padding-block: 15px; border-top: 1px solid var(--survey-line); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-answer-summary svg { flex-shrink: 0; color: #80694e; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-answer-summary dt { display: flex; align-items: center; gap: 12px; color: var(--survey-muted); font-size: 11px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-answer-summary dd { color: var(--survey-ink); font-size: 13px; line-height: 1.45; margin: 5px 0 0 30px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-footer { display: flex; gap: 10px; border-color: var(--survey-line); margin-top: 24px; padding: 18px 4px 0; max-width: 80ch; }
+body[data-unimatch-theme] .unimatch-app .survey-glass summary { color: var(--survey-ink); text-decoration: none; font-weight: 550; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields > details { padding: 0 18px 4px; margin-top: 0; border: 1px solid #ffffffd9; background: #ffffff38; border-radius: 18px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields > details > summary { min-height: 52px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields > details[open] > .admission-pair { margin-top: 16px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="2"] .admission-fields > .admission-pair { grid-template-columns: minmax(0, 2fr) minmax(105px, .8fr); }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="2"] #admission-budget { font-size: 24px; min-height: 60px; font-weight: 550; font-variant-numeric: tabular-nums; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="2"] #admission-currency { min-height: 60px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-view="results"] .admission-layout { display: block; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-view="results"] .admission-topline { margin-bottom: 4px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-view="results"] .admission-content { padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; backdrop-filter: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass[data-view="results"] h1 { margin: 10px 0; font-size: clamp(32px, 3vw, 42px); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-results-lead { color: var(--survey-muted); font-size: 16px; margin-bottom: 24px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-results-heading { padding: 20px 24px; border: 1px solid #fff; border-radius: 24px; background: #ffffff70; box-shadow: inset 0 1px #fff, 0 5px 16px #5d49300d; gap: 18px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-selection-summary { flex-basis: 320px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-selection-summary strong { font-size: 20px; font-weight: 600; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-selection-summary p { color: var(--survey-muted); line-height: 1.6; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-coverage { border: 0; padding: 0; margin: 8px 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-coverage summary { color: var(--survey-muted); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 20px; margin-block: 24px; align-items: start; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate { padding: 22px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-candidate-overview,.admission-candidate-body) { min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate-meta { display: grid; gap: 5px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate-meta > span:first-child { font-size: 21px; font-weight: 650; line-height: 1.2; color: var(--survey-ink); letter-spacing: -.03em; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate-meta > span:last-child { font-size: 13px; color: var(--survey-muted); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate h2 { font-size: 17px; font-weight: 550; letter-spacing: -.015em; line-height: 1.4; margin: 14px 0; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact { border: 1px solid #fff; background: #ffffff4d; box-shadow: none; margin: 0 0 16px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact img { aspect-ratio: 2.8; object-fit: cover; height: auto; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact .admission-photo-fallback { aspect-ratio: auto; min-height: 100px; background: linear-gradient(135deg, #e4d6c6, #f5eee7); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact .admission-photo-fallback > span:first-child { font-size: 28px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact .admission-photo-fallback > span:last-child { display: none; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact figcaption { padding: 0 12px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-photo-compact summary { font-size: 11px; min-height: 44px; padding: 10px 0; color: var(--survey-muted); }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-status,.admission-budget) { border: 1px solid #dfd5cb; border-radius: 999px; padding: 5px 10px; font-size: 12px; line-height: 1.5; margin: 0 6px 8px 0; background: #f2ece6cc; color: #5c5146; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-status-attention { background: #ffe5bfc2; color: #80511c; border-color: #d9ae75; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-budget-covered { background: #e7eee5; color: #39533c; border-color: #c3d1bc; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-budget-exceeds { background: #ffeadc; color: #8a3a28; border-color: #e4b9a5; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-key-reason { font-size: 13px; line-height: 1.55; color: var(--survey-muted); margin: 4px 0 14px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-facts { border-color: var(--survey-line); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-facts dt { color: var(--survey-muted); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-facts dd { color: var(--survey-ink); }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-card-actions { align-items: stretch; gap: 10px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-card-actions .admission-button { flex: 1; min-height: 44px; font-size: 13px; padding: 10px 14px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-official-links { flex-basis: 100%; padding-bottom: 10px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-official-links a { color: #75532e; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate-body > details { border-top: 1px solid var(--survey-line); margin-top: 16px; padding-top: 2px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-refine { border: 1px solid #fff; border-radius: 24px; background: #ffffff80; padding: 8px 24px; margin-top: 28px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-refine > summary { padding-block: 16px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-refine > form { padding-bottom: 12px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-alternatives { border-color: var(--survey-line); margin-top: 32px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass :is(button,a,input,summary,[role="combobox"]):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
+body[data-unimatch-theme] .unimatch-app .survey-glass h1:focus { outline: none; }
+body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] { border: 1px solid #fff; border-radius: 18px; background: #faf5eef5; color: #292e30; box-shadow: inset 0 1px #fff, 0 14px 36px #49372326; backdrop-filter: blur(20px); }
+body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="option"] { min-height: 44px; border-radius: 10px; }
+body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="option"][data-highlighted] { background: #f4e4ce; color: #62431f; }
+@media (min-width: 901px) { body[data-unimatch-theme] .unimatch-app .survey-glass .admission-aside { position: sticky; top: 106px; } }
+@media (min-width: 1100px) {
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-layout[data-view="survey"] { min-height: calc(100svh - 190px); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="0"] .admission-fields > .admission-field { grid-template-columns: minmax(140px, .4fr) minmax(0, 1fr); align-items: center; }
+}
+@media (min-width: 1900px) {
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-layout { grid-template-columns: minmax(340px, 480px) minmax(0, 1fr); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 701px) {
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates > :only-child { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates > :only-child .admission-photo-compact { margin-bottom: 0; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates > :only-child .admission-photo-compact img { aspect-ratio: 2.2; }
+}
+@media (max-width: 900px) {
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-layout { grid-template-columns: minmax(0, 1fr); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-aside { display: none; }
+}
+@media (max-width: 640px) {
+  body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav { top: 8px; left: 10px; right: 10px; border-radius: 28px; }
+  body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav-inner { padding-inline: 16px; }
+  body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-wordmark { font-size: 17px; }
+  .unimatch-app[data-page="AdmissionsSurvey"] .product-main { padding-top: 82px; }
+  body[data-unimatch-theme] .unimatch-app .admissions-page.survey-glass { width: calc(100% - 24px); margin-bottom: 28px; padding: 0; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-topline { padding: 0 4px 10px; gap: 4px; justify-content: space-between; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-topline > span { font-size: 11px; display: block; max-width: 48%; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-topline .admission-text-button { font-size: 12px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-content { padding: 22px 16px; border-radius: 24px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper { gap: 8px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper li { flex-direction: column; align-items: flex-start; font-size: 11px; gap: 8px; padding-top: 10px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper button { margin-block: -8px; min-height: 32px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass h1 { font-size: 28px; margin-top: 24px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-intro { font-size: 14px; margin-bottom: 20px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields { gap: 22px; margin-block: 20px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-grid { grid-template-columns: minmax(0,1fr); gap: 8px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 56px; padding: 12px 28px 12px 14px; gap: 12px; font-size: 14px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open { min-height: 48px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open .admission-direction-body { grid-template-columns: 1fr; gap: 3px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-pair { grid-template-columns: minmax(0,1fr); }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-actions > .admission-button { flex: 1; padding-inline: 16px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-actions > button[type="submit"] { flex-basis: 100%; order: -1; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-skip { margin: 0 auto; justify-content: center; flex-basis: 100%; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-footer { font-size: 11px; margin-top: 20px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidates { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-candidate { padding: 18px; border-radius: 24px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-results-heading { padding: 18px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-results-heading .admission-button { margin-left: 0; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-refine { padding-inline: 18px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass[data-step="2"] .admission-fields > .admission-pair { grid-template-columns: minmax(0,1fr) 100px; gap: 10px; align-items: end; }
+}
+@media (prefers-reduced-motion: reduce) { body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-button,.admission-direction-card) { transition: none; } }
+@media (prefers-reduced-transparency: reduce) {
+  body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-layout[data-view="survey"],.admission-content,.admission-story,.admission-candidate,.admission-refine,.admission-results-heading) { background: #faf5ee; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}

@@ -27,6 +27,8 @@ University Liquid Glass: a full-width pearl card with amber light and visible in
 
 Survey Liquid Glass: three survey steps and preliminary matching share a full-width pearl surface, floating glass navigation, outlined subject icons and independently moving amber background light. Completed steps allow returning without losing answers; results show photos and the main qualification caveat. [Implementation, screenshots and verification limits](docs/qa/survey-liquid-glass-2026-11-07.md).
 
+Amber background motion (8 November 2026): every page except Home shares two independently moving lights (14 and 18 seconds), with a wider drift and visible movement immediately after opening. Page canvases expose the light while content cards retain their fills. [Scope and browser verification](docs/qa/ambient-light-2026-11-08.md).
+
 ## Data quality
 
 University records (GPA/IELTS thresholds, deadlines, tuition, scholarships) are collected from official admissions pages rather than generated. Each record is expected to carry a `source_url` and a `verified` flag so the app — and the built-in `AdminDataQuality` tool — can distinguish confirmed data from fields still awaiting verification.

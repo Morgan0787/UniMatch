@@ -122,19 +122,6 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .catalog-page .max-w
 .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { height: auto; position: relative; }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 8px; }
 .unimatch-app .catalog-page.search-page .catalog-grid { gap: 18px; }
-body[data-unimatch-theme] .unimatch-app[data-page="Search"] {
-  position: relative; isolation: isolate;
-  background: #f0eae7;
-}
-/* Viewport light stays visible at the foot of the screen, however long the catalogue is. */
-body[data-unimatch-theme] .unimatch-app[data-page="Search"]::before {
-  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    radial-gradient(ellipse 28% 18% at 77% 24%, #ffca6fe0 0%, #ffd49380 38%, #ffdfb100 100%),
-    radial-gradient(ellipse 30% 24% at 13% 83%, #ffc579a8 0%, #ffdaab66 45%, #ffdfb100 100%),
-    radial-gradient(ellipse 29% 18% at 73% 99%, #ffc575b8 0%, #ffdfb16b 42%, #ffdfb100 100%),
-    radial-gradient(ellipse 42% 40% at 48% 45%, #fff9f3b3, #fff9f300);
-}
 .unimatch-app[data-page="Search"] .product-main { padding-top: 96px; }
 body[data-unimatch-theme] .unimatch-app[data-page="Search"] .product-nav {
   top: 14px; left: 24px; right: 24px; width: auto; max-width: 1352px; margin-inline: auto;

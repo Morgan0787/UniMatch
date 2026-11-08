@@ -1,27 +1,4 @@
-/* Survey material follows the accepted catalogue; scoped to this route. */
-body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] {
-  position: relative;
-  isolation: isolate;
-  background: #f0eae7;
-}
-.unimatch-app[data-page="AdmissionsSurvey"]::before,
-.unimatch-app[data-page="AdmissionsSurvey"]::after {
-  content: "";
-  position: fixed;
-  inset: -8%;
-  z-index: -1;
-  pointer-events: none;
-}
-.unimatch-app[data-page="AdmissionsSurvey"]::before {
-  background: radial-gradient(ellipse 30% 27% at 80% 19%, #ffca6fd9, #ffd49366 45%, #ffdfb100), radial-gradient(ellipse 44% 42% at 48% 46%, #fff9f3b3, #fff9f300);
-  animation: survey-light-upper 42s ease-in-out infinite alternate;
-}
-.unimatch-app[data-page="AdmissionsSurvey"]::after {
-  background: radial-gradient(ellipse 30% 27% at 12% 80%, #ffc579b8, #ffdaab66 45%, #ffdfb100), radial-gradient(ellipse 29% 23% at 77% 94%, #ffc575c9, #ffdfb166 42%, #ffdfb100);
-  animation: survey-light-lower 57s ease-in-out infinite alternate;
-}
-@keyframes survey-light-upper { 0% { transform: translate3d(-3%, -2%, 0) scale(1.02); opacity: .88; } 50% { transform: translate3d(2%, 3%, 0) scale(1.05); opacity: 1; } 100% { transform: translate3d(-1%, 5%, 0) scale(1.02); opacity: .92; } }
-@keyframes survey-light-lower { 0% { transform: translate3d(3%, 2%, 0) scale(1.02); opacity: .88; } 50% { transform: translate3d(-3%, -3%, 0) scale(1.04); opacity: 1; } 100% { transform: translate3d(1%, -5%, 0) scale(1.02); opacity: .92; } }
+/* Page material; shared ambient light is defined in ambient-light.css. */
 body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .product-nav {
   top: 18px; left: 24px; right: 24px; width: auto; max-width: none; margin-inline: auto;
   border: 1px solid #ffffffed; border-radius: 32px;

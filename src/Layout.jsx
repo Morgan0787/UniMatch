@@ -19,6 +19,7 @@ import {
 import { useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import '@/styles/product-theme.css';
+import '@/styles/ambient-light.css';
 import '@/styles/discovery-polish.css';
 import { toast } from 'sonner';
 

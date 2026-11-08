@@ -1,0 +1,47 @@
+/* Home renders outside this shell and keeps its own landing-page background. */
+body[data-unimatch-theme] .unimatch-app[data-page] {
+  position: relative;
+  isolation: isolate;
+  background: #f0eae7;
+}
+
+body[data-unimatch-theme] .unimatch-app[data-page]::before,
+body[data-unimatch-theme] .unimatch-app[data-page]::after {
+  content: "";
+  position: fixed;
+  inset: -12%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+body[data-unimatch-theme] .unimatch-app[data-page]::before {
+  background:
+    radial-gradient(ellipse 30% 27% at 80% 19%, #ffca6fd9, #ffd49366 45%, #ffdfb100),
+    radial-gradient(ellipse 44% 42% at 48% 46%, #fff9f3b3, #fff9f300);
+  animation: ambient-light-upper 14s ease-in-out -3s infinite alternate;
+}
+
+body[data-unimatch-theme] .unimatch-app[data-page]::after {
+  background:
+    radial-gradient(ellipse 30% 27% at 12% 80%, #ffc579b8, #ffdaab66 45%, #ffdfb100),
+    radial-gradient(ellipse 29% 23% at 77% 94%, #ffc575c9, #ffdfb166 42%, #ffdfb100);
+  animation: ambient-light-lower 18s ease-in-out -9s infinite alternate;
+}
+
+/* Expose the light through page canvases, while preserving individual card fills. */
+body[data-unimatch-theme] .unimatch-app[data-page] .product-main > :first-child,
+body[data-unimatch-theme] .unimatch-app[data-page] .product-page-hero {
+  background: transparent !important;
+}
+
+@keyframes ambient-light-upper {
+  0% { transform: translate3d(-6%, -4%, 0) scale(1.02); opacity: .88; }
+  50% { transform: translate3d(6%, 3%, 0) scale(1.05); opacity: 1; }
+  100% { transform: translate3d(-2%, 8%, 0) scale(1.02); opacity: .92; }
+}
+
+@keyframes ambient-light-lower {
+  0% { transform: translate3d(6%, 4%, 0) scale(1.02); opacity: .88; }
+  50% { transform: translate3d(-6%, -3%, 0) scale(1.04); opacity: 1; }
+  100% { transform: translate3d(2%, -8%, 0) scale(1.02); opacity: .92; }
+}

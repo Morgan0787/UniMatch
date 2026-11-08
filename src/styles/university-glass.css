@@ -1,21 +1,4 @@
-/* The public detail page continues Search's warm pearl light field. */
-body[data-unimatch-theme] .unimatch-app[data-page="University"] {
-  position: relative;
-  isolation: isolate;
-  background: #f0eae7;
-}
-body[data-unimatch-theme] .unimatch-app[data-page="University"]::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 28% 18% at 77% 24%, #ffca6fe0, #ffd49380 38%, #ffdfb100),
-    radial-gradient(ellipse 30% 24% at 13% 83%, #ffc579a8, #ffdaab66 45%, #ffdfb100),
-    radial-gradient(ellipse 29% 18% at 73% 99%, #ffc575b8, #ffdfb16b 42%, #ffdfb100),
-    radial-gradient(ellipse 42% 40% at 48% 45%, #fff9f3b3, #fff9f300);
-}
+/* Page material; shared ambient light is defined in ambient-light.css. */
 body[data-unimatch-theme] .unimatch-app[data-page="University"] .product-nav {
   top: 14px; left: 24px; right: 24px; width: auto; max-width: 1352px; margin-inline: auto;
   border: 1px solid #ffffffed; border-radius: 32px;

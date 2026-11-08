@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { getUniversityPhoto } from '@/lib/admissions/presentation';
 
-export default function UniversityPhoto({ university, language }) {
+export default function UniversityPhoto({ university, language, showDetails = true }) {
   const [failedUrl, setFailedUrl] = useState(null);
   const image = getUniversityPhoto(university);
   if (!image || failedUrl === image.url) return null;
@@ -14,7 +14,7 @@ export default function UniversityPhoto({ university, language }) {
     <img src={image.url} width={image.width} height={image.height}
       loading="lazy" decoding="async" alt={caption}
       onError={() => setFailedUrl(image.url)} />
-    <figcaption>
+    {showDetails && <figcaption>
       <details>
         <summary aria-label={`${creditLabel}: ${caption}`}>
           <span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span><ChevronDown size={14} aria-hidden="true" />
@@ -28,6 +28,6 @@ export default function UniversityPhoto({ university, language }) {
           <p>{image.attribution}</p><p>{image.changes}</p><p>{image.rightsNotes}</p>
         </div>
       </details>
-    </figcaption>
+    </figcaption>}
   </figure>;
 }

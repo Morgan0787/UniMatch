@@ -78,5 +78,5 @@ See the [release regression check](../../qa/public-release.md).
 For detailed import provenance or schema history, read the relevant sections of root `PROJECT_CONTEXT.md`. Maintain active constraints here and add dated historical updates there according to `docs/agents/context/MAINTENANCE.md`. Existing tooling evidence is inherited; recheck it when changing the tooling or relying on a disputed coverage claim.
 
 ### Search photo presentation — 7 November 2026
-Owner-requested Liquid Glass styling uses cropped card previews. Keep full-frame access in the existing photo disclosure and preserve captions, scope, authorship, source and licence. Full originals remain available with object-fit: contain.
+Owner-requested Liquid Glass styling uses cropped card previews. On 8 November 2026 the owner removed photo-credit overlays from compact Search and Recommendations cards. Full-frame access, captions, scope, authorship, source and licence remain available through the existing photo disclosure on the university detail page; originals use object-fit: contain. This supersedes the earlier requirement to keep the disclosure on card previews.
 

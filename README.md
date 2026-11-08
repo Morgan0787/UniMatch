@@ -74,3 +74,5 @@ Search pagination (7 November 2026): numbered buttons highlight the current page
 Search toolbar: the search and filter controls sit directly on the continuous page background, without a separate panel fill or divider.
 
 Wide Search layout: from 1600 px, the catalogue uses four columns; its heading, toolbar, navigation and footer share a fluid container capped at 1800 px. Smaller layouts retain their existing breakpoints.
+
+UI fixes (8 November 2026): subject choices use amber selection without checkmarks; the undecided choice spans the grid with a compass icon. Survey language lists and the navigation language menu use translucent pearl glass. Search IELTS choices display integer scores correctly after selection and reload. Photo disclosures are available on the university page instead of compact cards. [Checks and limits](docs/qa/glass-ui-fixes-2026-11-08.md).

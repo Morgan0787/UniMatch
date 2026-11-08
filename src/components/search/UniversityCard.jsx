@@ -41,7 +41,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
             <Card className="catalog-card search-university-card product-card group overflow-hidden border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
                 {/* Header with cover */}
                 <div className="catalog-cover relative overflow-hidden">
-                    <UniversityPhoto university={university} language={language} />
+                    <UniversityPhoto university={university} language={language} showDetails={false} />
                     <UniversityCover university={university} size="small" showName actions={
                         <Button
                             variant="ghost"

@@ -57,7 +57,7 @@ body[data-unimatch-theme] .unimatch-app .survey-glass .admission-stepper button 
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields { margin-block: 24px; gap: 24px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-field label,legend) { font-size: 14px; color: var(--survey-ink); font-weight: 600; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-grid { gap: 10px; }
-body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 54px; gap: 16px; padding: 12px 38px 12px 20px; border: 1px solid #ffffffed; border-radius: 20px; color: var(--survey-ink); background: #ffffff47; box-shadow: inset 0 1px 1px #fff, 0 4px 10px #5d49300d; font-size: clamp(14px, 1.15vw, 18px); transition: background .18s ease, border-color .18s ease; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 54px; gap: 16px; padding: 12px 20px; border: 1px solid #ffffffed; border-radius: 20px; color: var(--survey-ink); background: #ffffff47; box-shadow: inset 0 1px 1px #fff, 0 4px 10px #5d49300d; font-size: clamp(14px, 1.15vw, 18px); transition: background .18s ease, border-color .18s ease; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body { gap: 4px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body > span { font-weight: 550; line-height: 1.3; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-body small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
@@ -65,8 +65,7 @@ body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-mark 
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:hover { background: #ffffffa8; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked) { background: linear-gradient(125deg, #fff3e1dd, #f5dbb7b3); border-color: #c99860; color: #4e371f; box-shadow: inset 0 1px #fff, 0 3px 10px #c18b3f0d; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked) :is(small,.admission-direction-mark) { color: #675037; }
-body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card:has(:checked)::after { color: #8b5a23; top: 10px; right: 11px; }
-body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open { grid-column: 1 / -1; min-height: 48px; width: fit-content; max-width: 100%; }
+body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open { grid-column: 1 / -1; width: 100%; max-width: 100%; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open .admission-direction-body { grid-template-columns: auto 1fr; align-items: center; gap: 12px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-field :is(input,[data-ui="select-trigger"]) { min-height: 50px; padding: 12px 16px; color: var(--survey-ink); border: 1px solid #c9b9a680; border-radius: 16px; background: #ffffff80; box-shadow: inset 0 1px 1px #fff, 0 3px 8px #5d493008; font-size: 16px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-field [aria-invalid=true] { border-color: #a33620; }
@@ -147,7 +146,7 @@ body[data-unimatch-theme] .unimatch-app .survey-glass .admission-refine > form {
 body[data-unimatch-theme] .unimatch-app .survey-glass .admission-alternatives { border-color: var(--survey-line); margin-top: 32px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass :is(button,a,input,summary,[role="combobox"]):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
 body[data-unimatch-theme] .unimatch-app .survey-glass h1:focus { outline: none; }
-body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] { border: 1px solid #fff; border-radius: 18px; background: #faf5eef5; color: #292e30; box-shadow: inset 0 1px #fff, 0 14px 36px #49372326; backdrop-filter: blur(20px); }
+body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] { border: 1px solid #fff; border-radius: 18px; background: linear-gradient(145deg, #fffdf9c4, #f5eee7b8); color: #292e30; box-shadow: inset 0 1px #fff, 0 14px 36px #49372326; backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%); }
 body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="option"] { min-height: 44px; border-radius: 10px; }
 body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="option"][data-highlighted] { background: #f4e4ce; color: #62431f; }
 @media (min-width: 901px) { body[data-unimatch-theme] .unimatch-app .survey-glass .admission-aside { position: sticky; top: 106px; } }
@@ -187,8 +186,7 @@ body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="o
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-intro { font-size: 14px; margin-bottom: 20px; }
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-fields { gap: 22px; margin-block: 20px; }
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-grid { grid-template-columns: minmax(0,1fr); gap: 8px; }
-  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 56px; padding: 12px 28px 12px 14px; gap: 12px; font-size: 14px; }
-  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open { min-height: 48px; }
+  body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-card { min-height: 56px; padding: 12px 14px; gap: 12px; font-size: 14px; }
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-direction-open .admission-direction-body { grid-template-columns: 1fr; gap: 3px; }
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-pair { grid-template-columns: minmax(0,1fr); }
   body[data-unimatch-theme] .unimatch-app .survey-glass .admission-actions > .admission-button { flex: 1; padding-inline: 16px; }
@@ -205,4 +203,8 @@ body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] [role="o
 @media (prefers-reduced-motion: reduce) { body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-button,.admission-direction-card) { transition: none; } }
 @media (prefers-reduced-transparency: reduce) {
   body[data-unimatch-theme] .unimatch-app .survey-glass :is(.admission-layout[data-view="survey"],.admission-content,.admission-story,.admission-candidate,.admission-refine,.admission-results-heading) { background: #faf5ee; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] { background: #faf5ee; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body[data-unimatch-theme]:has(.survey-glass) [data-ui="select-content"] { background: #faf5ee; }
 }

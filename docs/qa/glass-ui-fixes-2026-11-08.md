@@ -1,0 +1,11 @@
+# Glass UI annotation fixes — 8 November 2026
+
+Implemented six owner annotations: removed subject selection checkmarks while preserving native radio state, keyboard focus and amber border/fill; made the undecided subject full-width with a compass; applied translucent pearl material to survey language lists and navigation/filter options; removed credit overlays from compact university cards while retaining full photos and attribution in university details; corrected IELTS option values 6.0/7.0 to match numeric state serialized as 6/7.
+
+The navigation menu also needed greater selector specificity: a generic popper rule supplied an opaque background underneath the translucent gradient. Computed-style checks now require a transparent background colour as well as the gradient and blur. Reduced-transparency and no-backdrop-filter fallbacks retain opaque readable surfaces.
+
+Verification: 58 local Chrome assertions passed, no JavaScript exceptions. Coverage: radio keyboard navigation and visible focus, undecided width/icon, both language menus' computed material, scroll/select/Escape focus, all six IELTS options (unset, no certificate, 5.5, 6, 6.5, 7), URL values, drawer reopen and reload, labelled controls and horizontal fit at 320/633/1296/2560 CSS px, mobile drawer, Search and Recommendations photo overlays absent, university full-photo/source/licence disclosure preserved, survey reduced-transparency preference. Screenshots were visually inspected after animations settled.
+
+Full project TypeScript, scoped ESLint, production build with SEO checks and CRLF-aware diff whitespace checks passed. Browser harness: `node output/playwright/glass-ui-fixes-qa.cjs`. Ignored local evidence: `output/playwright/glass-ui-fixes/results.json`, `survey-directions-633.png`, `survey-language-633.png`, `language-menu-1296.png`, `ielts-6-{1296,320}.png`.
+
+Limits: local Search/Recommendations use a prior public snapshot of published Pécs/Debrecen/Turku rows and cached reviewed images. The Recommendations profile is browser-only. No real account writes, data changes or real-user authentication were exercised; the harness blocks remote writes. No-backdrop-filter fallback was inspected in source; reduced transparency was exercised in Chrome. Production smoke is pending publication.

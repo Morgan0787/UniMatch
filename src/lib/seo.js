@@ -1,6 +1,7 @@
 import { catalogAlternates, catalogLanguage, catalogPath } from './discoveryContent.js';
+import { SITE_URL } from './siteUrl.js';
 
-export const SITE_URL = 'https://getunimatch.app';
+export { SITE_URL };
 export const SOCIAL_IMAGE = `${SITE_URL}/og-unimatch.png`;
 
 // Existing application routes. The build adds reviewed discovery pages and

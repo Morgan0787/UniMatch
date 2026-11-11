@@ -59,6 +59,12 @@ npm run dev
 
 The Vite build generates the sitemap, sourced university profiles, country and subject pages, and published application guides. Vercel Preview and Production builds read the published catalog using the existing public Supabase settings. For a local build with current catalog data, opt in with `SEO_FETCH_PUBLIC_CATALOG=1`. See the [SEO publishing and verification guide](docs/seo.md).
 
+## Vercel monitoring
+
+Web Analytics and Speed Insights run on `https://getunimatch.app` for published pages. The integration excludes query strings, fragments, private routes, Preview, and local runs. No custom events are sent.
+
+In the Vercel project `uni_match`, open **Analytics** and **Speed Insights** and enable each feature if it is included in the project's plan. Check the dashboards after the next authorized production release. See the [Web Analytics quickstart](https://vercel.com/docs/analytics/quickstart) and [Speed Insights quickstart](https://vercel.com/docs/speed-insights/quickstart).
+
 ## Status
 
 Actively developed, pre-launch solo project. Expect incomplete data coverage and rough edges outside the core search/match flow.

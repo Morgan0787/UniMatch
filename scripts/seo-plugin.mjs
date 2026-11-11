@@ -106,6 +106,7 @@ function usePreviewRoutes(server) {
 export default function seoPlugin() {
   let config;
   let discovery = buildDiscoveryPages([]);
+  let telemetryEntry;
   return {
     name: 'unimatch-seo',
     enforce: 'post',
@@ -114,10 +115,15 @@ export default function seoPlugin() {
       if (config.command === 'build' && !config.build.ssr) {
         const env = { ...loadEnv(config.mode, config.envDir, ['VITE_', 'SEO_']), ...process.env };
         discovery = buildDiscoveryPages(await loadSeoInstitutions(env));
+        telemetryEntry = this.emitFile({ type: 'chunk', id: resolve(config.root, 'src/lib/staticTelemetry.js') });
       }
     },
     resolveId(id) { return id === virtualLinks ? `\0${id}` : null; },
-    load(id) { return id === `\0${virtualLinks}` ? `export default ${JSON.stringify(discovery.catalogLinks)};` : null; },
+    load(id) {
+      if (id !== `\0${virtualLinks}`) return null;
+      const paths = [...basePaths, ...discovery.pages.map(page => page.path)];
+      return `export default ${JSON.stringify(discovery.catalogLinks)}; export const publicPaths = ${JSON.stringify(paths)};`;
+    },
     transformIndexHtml: html => withSeo(html, '/'),
     configurePreviewServer: usePreviewRoutes,
     generateBundle(_options, bundle) {
@@ -125,6 +131,7 @@ export default function seoPlugin() {
       const entry = bundle['index.html'];
       if (!entry || entry.type !== 'asset') throw new Error('Missing built index.html');
       const html = String(entry.source);
+      const telemetryScript = `<script type="module" src="/${escape(this.getFileName(telemetryEntry))}"></script>`;
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
       entry.source = withContent(html, buildAppFallback('/', discovery.catalogLinks));
       for (const path of basePaths.filter(path => path !== '/')) {
@@ -134,8 +141,9 @@ export default function seoPlugin() {
         emit(`${path.slice(1)}.html`, withContent(output, page));
       }
       for (const page of discovery.pages) {
-        emit(`${page.path.slice(1)}.html`, withContent(withSeo(html, page.path, page), page,
-          { standalone: true, interactive: Boolean(page.universityId) }));
+        const interactive = Boolean(page.universityId);
+        const output = withContent(withSeo(html, page.path, page), page, { standalone: true, interactive });
+        emit(`${page.path.slice(1)}.html`, interactive ? output : output.replace('</body>', `${telemetryScript}\n  </body>`));
       }
       emit('seo/private.html', withSeo(html, '/Login'));
       emit('404.html', withContent(withSeo(html, '/not-found'), {

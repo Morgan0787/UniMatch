@@ -12,6 +12,7 @@ import RequireAuth from '@/components/RequireAuth';
 import { MotionConfig } from 'framer-motion';
 import { LanguageProvider } from '@/lib/i18n';
 import RouteSeo from '@/lib/RouteSeo';
+import VercelTelemetry from '@/lib/VercelTelemetry';
 import { CATALOG_LANGUAGES, catalogPath, DiscoveryContent } from '@/lib/discoveryContent';
 import { readPublicUniversityPage } from '@/lib/publicUniversityPage';
 
@@ -100,6 +101,7 @@ function App() {
           <LanguageProvider publicPage={publicPage}>
             <RouteSeo publicPage={publicPage} />
             <NavigationTracker />
+            <VercelTelemetry />
             <AppContent publicPage={publicPage} />
           </LanguageProvider>
         </Router>

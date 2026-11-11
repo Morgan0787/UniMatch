@@ -16,7 +16,7 @@ UniMatch helps Central Asian students find universities in Europe, the US, and A
 
 ## Stack and deployment
 
-- Organic discovery: Vite emits static university profiles from the validated anonymous publication feed, selected country and subject pages, editorial guides and EN/RU/UZ catalog variants. See [SEO publishing and verification](../../seo.md). This is local implementation; publication requires a separate release.
+- Organic discovery is live on `getunimatch.app`. Vite emits static university profiles from the validated anonymous publication feed, selected country and subject pages, editorial guides and EN/RU/UZ catalog variants. See [SEO publishing and verification](../../seo.md) for the production release and Search Console status.
 
 - Frontend: Vite, React, Tailwind CSS, shadcn/ui; the Sites landing uses Three.js/React Three Fiber, GSAP and Lenis.
 - Backend: Supabase Postgres and Supabase Auth; migrated from Base44.

@@ -2,6 +2,11 @@
 
 Vite emits the canonical HTML and sitemap from the same set of routes. Public URLs include `/`, `/Search`, `/AdmissionsSurvey`, `/ru/Search`, `/uz/Search`, eligible `/universities/<institutionId>` profiles, and reviewed discovery pages. The catalog has translated HTML and reciprocal `hreflang` on all three URLs. `/Search` is the English and `x-default` URL; `/en/Search` redirects there. The old language switch remains available on the rest of the app. Publish additional localized URLs only when the main content is translated.
 
+## Production and Search Console verification
+
+- Production release [`9d97ba0`](https://github.com/Morgan0787/UniMatch/commit/9d97ba0e328147ace5341c724aa3fbb734a2da41) served 114 canonical URLs, including 102 university profiles. All 114 returned HTTP 200 without `noindex` on `getunimatch.app`. The missing profile check returned HTTP 404. Tested Vercel aliases redirected to the public domain or required Vercel Authentication and returned `X-Robots-Tag: noindex`.
+- On 2026-11-12, Search Console successfully processed the resubmitted `sitemap.xml` and reported 114 discovered URLs. Google had indexed the homepage and selected it as its canonical. Google accepted indexing requests for `/Search`, `/ru/Search`, `/uz/Search`, `/universities` and `/universities/oc90-032`. Follow actual indexing in the [Pages report](https://search.google.com/search-console/index?resource_id=https%3A%2F%2Fgetunimatch.app%2F).
+
 ## Build and test
 
 Use the existing `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` settings. For a local build with actual published catalog data:
@@ -55,7 +60,7 @@ If the Vercel project disables system environment variables for builds, set `SEO
 ## After an approved deployment
 
 1. On the exact production host, open `/sitemap.xml`, one emitted profile and the three catalog URLs. Confirm status 200, one self-referencing canonical and useful text in the initial response. Check that a missing profile returns 404 and that a preview/staging host sends `X-Robots-Tag: noindex`.
-2. In the existing [Search Console property](https://search.google.com/search-console), go to **Sitemaps** and submit `https://getunimatch.app/sitemap.xml`. The existing verification tag is preserved.
+2. In the existing [Search Console property](https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fgetunimatch.app%2F), check the status and last read date for `https://getunimatch.app/sitemap.xml`. Submit it if it is missing from the report. The existing verification tag is preserved.
 3. In **URL Inspection**, test a profile and each catalog language. Use the live test to check fetch status and inspect the Google-selected canonical after processing. A sitemap entry does not confirm indexing.
 4. Check **Page indexing** for unexpected soft 404s, duplicates and crawled-but-not-indexed pages. In **Performance → Search results**, filter by page path and compare clicks, impressions and queries over consistent periods. Use **Core Web Vitals** when field data becomes available.
 

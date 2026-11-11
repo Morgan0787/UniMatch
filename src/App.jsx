@@ -23,7 +23,7 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const PROTECTED_PAGES = new Set(['Profile', 'Recommendations']);
 
 function PageLoading() {
-  return <div className="grid min-h-48 place-items-center" aria-busy="true">
+  return <div className="grid min-h-screen place-items-center" aria-busy="true">
     <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-800" />
   </div>;
 }

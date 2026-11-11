@@ -46,6 +46,7 @@ function normalizePagePath(value) {
     }
   }
 
+  if (path === '/ru/Search' || path === '/uz/Search') return '/Search'
   if (path.length > MAX_PAGE_PATH_LENGTH || !APP_PATHS.has(path)) return null
   return path
 }

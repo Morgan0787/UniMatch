@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
     {
@@ -28,23 +29,25 @@
       "source": "/Home",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/en/Search",
+      "destination": "/Search",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/Search",
-      "destination": "/seo/Search.html"
-    },
-    {
-      "source": "/AdmissionsSurvey",
-      "destination": "/seo/AdmissionsSurvey.html"
-    },
-    {
       "source": "/:page(University|Login|Profile|Recommendations|AdminDataQuality|AdminFeedback|EssayChecker)",
-      "destination": "/seo/private.html"
+      "destination": "/seo/private"
     }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "missing": [{ "type": "host", "value": "getunimatch\\.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+    },
     {
       "source": "/(.*)",
       "headers": [

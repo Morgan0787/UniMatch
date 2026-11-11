@@ -17,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLanguage } from '@/lib/i18n';
+import { catalogPath } from '@/lib/discoveryContent';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import '@/styles/product-theme.css';
 import '@/styles/ambient-light.css';
@@ -106,7 +107,7 @@ function LayoutContent({ children, currentPageName }) {
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
-                                    to={createPageUrl(item.path)}
+                                    to={item.path === 'Search' ? catalogPath(language) : createPageUrl(item.path)}
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                                         currentPageName === item.path
@@ -204,7 +205,7 @@ function LayoutContent({ children, currentPageName }) {
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
-                                    to={createPageUrl(item.path)}
+                                    to={item.path === 'Search' ? catalogPath(language) : createPageUrl(item.path)}
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`product-mobile-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
@@ -262,7 +263,7 @@ function LayoutContent({ children, currentPageName }) {
                     <p>{t('footer.tagline')}</p>
                     <nav aria-label={t('footer.quickLinks')}>
                         {currentPageName === 'Search' && <FeedbackButton />}
-                        <Link to={createPageUrl('Search')}>{t('footer.findUniversities')}</Link>
+                        <Link to={catalogPath(language)}>{t('footer.findUniversities')}</Link>
                         <Link to={createPageUrl('AdmissionsSurvey')}>{guestCta}</Link>
                         <button type="button" onClick={() => setHelpOpen(true)}>{t('footer.helpCenter')}</button>
                         <details><summary>{t('footer.contactUs')}</summary><div>

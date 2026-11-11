@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/lib/i18n';
+import { catalogPath } from '@/lib/discoveryContent';
 
 const COPY = {
   en: { title:'How to use UniMatch', intro:'Start with a few preferences. You can explore without an account.', steps:[['Find options','Take the survey or search by university, programme, country or teaching language. Unknown answers can stay blank.'],['Understand a result','Check the programme, fee currency and season. “Unknown” means a detail needs checking; it does not mean you qualify. Open official sources for current conditions.'],['Compare and save','Choose up to three universities to compare. Sign in to save a university to My Profile. After returning from sign-in, confirm the pending save.']], survey:'Start the survey', search:'Browse universities', account:'My Profile' },
@@ -11,6 +12,6 @@ const COPY = {
 export default function HelpDialog({ open, onClose }) {
   const { language } = useLanguage();
   const c = COPY[language] || COPY.en;
-  return <Dialog open={open} onOpenChange={value => { if (!value) onClose(); }}><DialogContent className="max-h-[90dvh] overflow-auto w-[calc(100%_-_1.5rem)] rounded-2xl"><DialogHeader><DialogTitle>{c.title}</DialogTitle><DialogDescription>{c.intro}</DialogDescription></DialogHeader><ol className="space-y-5">{c.steps.map(([title, body]) => <li key={title}><h3 className="font-semibold text-slate-900">{title}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{body}</p></li>)}</ol><div className="flex flex-wrap gap-4 text-sm text-teal-800 underline"><Link to="/AdmissionsSurvey" onClick={onClose}>{c.survey}</Link><Link to="/Search" onClick={onClose}>{c.search}</Link><Link to="/Profile" onClick={onClose}>{c.account}</Link></div></DialogContent></Dialog>;
+  return <Dialog open={open} onOpenChange={value => { if (!value) onClose(); }}><DialogContent className="max-h-[90dvh] overflow-auto w-[calc(100%_-_1.5rem)] rounded-2xl"><DialogHeader><DialogTitle>{c.title}</DialogTitle><DialogDescription>{c.intro}</DialogDescription></DialogHeader><ol className="space-y-5">{c.steps.map(([title, body]) => <li key={title}><h3 className="font-semibold text-slate-900">{title}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{body}</p></li>)}</ol><div className="flex flex-wrap gap-4 text-sm text-teal-800 underline"><Link to="/AdmissionsSurvey" onClick={onClose}>{c.survey}</Link><Link to={catalogPath(language)} onClick={onClose}>{c.search}</Link><Link to="/Profile" onClick={onClose}>{c.account}</Link></div></DialogContent></Dialog>;
 }
 

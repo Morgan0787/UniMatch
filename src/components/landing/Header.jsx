@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { X, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/i18n';
+import { catalogPath } from '@/lib/discoveryContent';
 import { getLandingLabels } from './labels';
 
 export function Header({ language, setLanguage, menu, setMenu, onMatch }) {
@@ -43,7 +44,7 @@ export function Header({ language, setLanguage, menu, setMenu, onMatch }) {
     if (playing) { audio.current.pause(); setPlaying(false); }
     else audio.current.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   };
-  const labels = [['/Home','nav.home'],['/Search','nav.findUniversities'],['/Recommendations','nav.recommendations'],['/Profile','nav.myProfile']];
+  const labels = [['/Home','nav.home'],[catalogPath(language),'nav.findUniversities'],['/Recommendations','nav.recommendations'],['/Profile','nav.myProfile']];
   const languages = <div className="language-switch" aria-label={copy.language}>{['en','ru','uz'].map(locale => <button key={locale} onClick={() => setLanguage(locale)} aria-pressed={language === locale}>{locale.toUpperCase()}</button>)}</div>;
   return <>
     <header className={`site-header ${scrolled ? 'is-away' : ''}`} aria-hidden={scrolled}>

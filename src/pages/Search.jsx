@@ -14,6 +14,8 @@ import FilterPanel from '@/components/search/FilterPanel';
 import UniversityCard from '@/components/search/UniversityCard';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
 import { useLanguage } from '@/lib/i18n';
+import { catalogContent, DiscoverySections } from '@/lib/discoveryContent';
+import discoveryLinks from 'virtual:seo-discovery-links';
 import { selectCatalogResults, getCatalogPage } from '@/lib/catalogResults';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { DEFAULT_FILTERS, normalizeFilters, readCatalogState, writeCatalogState } from '@/lib/catalogState';
@@ -198,6 +200,9 @@ export default function Search() {
                     <Button variant="outline" className="catalog-page-next" disabled={pageInfo.page === pageInfo.pages} onClick={() => changePage(pageInfo.page + 1)}>{pagingLabels[1]}<ChevronRight aria-hidden="true" /></Button>
                 </div>
             </nav>}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+                <DiscoverySections sections={catalogContent(language, discoveryLinks).sections} />
+            </div>
             <ComparisonModal universities={compareUniversities} isOpen={showComparison} onClose={() => setShowComparison(false)} onRemove={handleRemoveFromCompare} userProfile={userProfile} />
         </div>
     );

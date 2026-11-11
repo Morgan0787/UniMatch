@@ -9,8 +9,10 @@ const getWikimediaResponsiveSources = (url) => {
       || parsed.port || parsed.username || parsed.password || !/^\/wikipedia\/commons\/thumb\//.test(parsed.pathname)) return null;
     const match = parsed.pathname.match(/^(.*\/)(960px-)([^/]+\.jpe?g)$/i);
     if (!match) return null;
+    const srcSet = widths => widths.map(width => `${parsed.origin}${match[1]}${width}px-${match[3]} ${width}w`).join(', ');
     return {
-      srcSet: [250, 500, 960].map(width => `${parsed.origin}${match[1]}${width}px-${match[3]} ${width}w`).join(', '),
+      srcSet: srcSet([250, 500, 960]),
+      mobileSrcSet: srcSet([250, 500]),
       sizes: '(min-width: 1600px) calc((100vw - 100px) / 4), (min-width: 1100px) calc((100vw - 100px) / 3), (min-width: 700px) calc((100vw - 80px) / 2), calc(100vw - 56px)',
     };
   } catch {
@@ -28,12 +30,17 @@ export default function UniversityPhoto({ university, language, showDetails = tr
   const caption = localized?.caption || image.caption || image.title;
   const creditLabel = { en: 'Photo details and credit', ru: 'О фото и его авторе', uz: 'Surat va muallif haqida' }[language] || 'Photo details and credit';
 
-  return <figure className="catalog-photo">
-    <img src={image.url} width={image.width} height={image.height}
+  const preview = <img src={image.url} width={image.width} height={image.height}
       srcSet={responsiveSources?.srcSet}
       sizes={responsiveSources?.sizes}
       loading={prioritizeLoading ? 'eager' : 'lazy'} fetchPriority={prioritizeLoading ? 'high' : 'auto'} decoding="async" alt={caption}
-      onError={() => responsiveSources ? setFailedResponsiveUrl(image.url) : setFailedUrl(image.url)} />
+      onError={() => responsiveSources ? setFailedResponsiveUrl(image.url) : setFailedUrl(image.url)} />;
+
+  return <figure className="catalog-photo">
+    {responsiveSources ? <picture>
+      <source media="(max-width: 500px)" srcSet={responsiveSources.mobileSrcSet} sizes={responsiveSources.sizes} />
+      {preview}
+    </picture> : preview}
     {showDetails && <figcaption>
       <details>
         <summary aria-label={`${creditLabel}: ${caption}`}>

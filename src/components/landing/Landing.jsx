@@ -7,6 +7,7 @@ import { usePageMotion } from "./usePageMotion";
 import { useDiscovery, DiscoveryDialogs } from "./Discovery";
 import { Action, Lines } from "./ui";
 import { useLanguage } from "@/lib/i18n";
+import { catalogPath } from "@/lib/discoveryContent";
 import "./landing.css";
 import "./story.css";
 import { uzEditorial } from './uz';
@@ -363,7 +364,7 @@ export default function App() {
             <span>
               {labels.places}
             </span>
-            <a className="text-link" href="/Search">
+            <a className="text-link" href={catalogPath(language)}>
               {p.viewAll}
               <ArrowUpRight size={16}/>
             </a>

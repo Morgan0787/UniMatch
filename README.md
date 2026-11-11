@@ -55,6 +55,10 @@ npm run dev
 - `VITE_TABLE_STUDENT_PROFILE` (default: `student_profiles`)
 - `VITE_TABLE_USER_FEEDBACK` (default: `user_feedback`)
 
+## Organic discovery
+
+The Vite build generates the sitemap, sourced university profiles, country and subject pages, and published application guides. Vercel Preview and Production builds read the published catalog using the existing public Supabase settings. For a local build with current catalog data, opt in with `SEO_FETCH_PUBLIC_CATALOG=1`. See the [SEO publishing and verification guide](docs/seo.md).
+
 ## Status
 
 Actively developed, pre-launch solo project. Expect incomplete data coverage and rough edges outside the core search/match flow.

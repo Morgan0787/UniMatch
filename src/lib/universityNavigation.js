@@ -1,6 +1,6 @@
 import { safeLoginReturn } from './loginReturn.js';
 
-const RETURN_ROUTES = new Set(['/', '/home', '/search', '/recommendations', '/profile', '/admissionssurvey']);
+const RETURN_ROUTES = new Set(['/', '/home', '/search', '/ru/search', '/uz/search', '/recommendations', '/profile', '/admissionssurvey']);
 
 export function universityReturnPath(value) {
   const safe = safeLoginReturn(value);

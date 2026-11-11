@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import { apiClient } from '@/lib/apiClient';
 import { pagesConfig } from '@/pages.config';
 import { rememberPublicRoute } from './loginReturn';
+import { catalogLanguage } from './discoveryContent';
 
 export default function NavigationTracker() {
     const location = useLocation();
@@ -19,6 +20,8 @@ export default function NavigationTracker() {
 
         if (pathname === '/' || pathname === '') {
             pageName = mainPageKey;
+        } else if (catalogLanguage(pathname)) {
+            pageName = 'Search';
         } else {
             const pathSegment = pathname.replace(/^\//, '').split('/')[0];
             const pageKeys = Object.keys(Pages);

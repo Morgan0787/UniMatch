@@ -10,6 +10,7 @@ import { invokeAI } from '@/lib/aiService';
 import { useAuth } from '@/lib/AuthContext';
 import { getEssayCopy } from '@/lib/essayCopy';
 import { useLanguage } from '@/lib/i18n';
+import { catalogPath } from '@/lib/discoveryContent';
 import '@/styles/internal-pages.css';
 import '@/styles/release-pages.css';
 
@@ -97,7 +98,7 @@ export default function EssayChecker() {
   if (!aiEnabled) {
     return (
       <main className="release-page min-h-screen px-5 py-12 sm:py-16">
-        <UnavailableState copy={copy} />
+        <UnavailableState copy={copy} catalogHref={catalogPath(language)} />
       </main>
     );
   }
@@ -235,7 +236,7 @@ export default function EssayChecker() {
   );
 }
 
-function UnavailableState({ copy }) {
+function UnavailableState({ copy, catalogHref }) {
   return (
     <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
       <CardHeader className="p-6 sm:p-8">
@@ -247,7 +248,7 @@ function UnavailableState({ copy }) {
       </CardHeader>
       <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
         <Button asChild className="w-full sm:w-auto">
-          <Link to="/Search">{copy.explore}</Link>
+          <Link to={catalogHref}>{copy.explore}</Link>
         </Button>
       </CardContent>
     </Card>

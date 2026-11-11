@@ -1,5 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { defaultLanguage, storageKey, supportedLanguages, translations } from './translations';
+import { catalogLanguage, catalogPath } from '../discoveryContent.js';
 
 const LanguageContext = createContext(undefined);
 
@@ -30,21 +32,36 @@ function createTranslator(language) {
   };
 }
 
-export function LanguageProvider({ children }) {
-  const [language, setLanguageState] = useState(() => {
+export function LanguageProvider({ children, publicPage = undefined }) {
+  const { pathname, search, hash, state } = useLocation();
+  const navigate = useNavigate();
+  const catalogLocale = catalogLanguage(pathname);
+  const [preferred, setPreferred] = useState(() => {
     if (typeof window === 'undefined') return defaultLanguage;
-    return normalizeLanguage(window.localStorage.getItem(storageKey) || defaultLanguage);
+    try { return normalizeLanguage(window.localStorage.getItem(storageKey) || defaultLanguage); }
+    catch { return defaultLanguage; }
   });
+  const language = normalizeLanguage(catalogLocale || (publicPage?.path === pathname ? publicPage.language : preferred));
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(storageKey, language);
+    if (catalogLocale && catalogLocale !== 'en') setPreferred(catalogLocale);
+  }, [catalogLocale]);
+
+  useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
+  useEffect(() => {
+    try { window.localStorage.setItem(storageKey, preferred); } catch { /* Storage may be disabled. */ }
+  }, [preferred]);
+
   const setLanguage = useCallback((nextLanguage) => {
-    setLanguageState(normalizeLanguage(nextLanguage));
-  }, []);
+    const next = normalizeLanguage(nextLanguage);
+    setPreferred(next);
+    if (catalogLocale && next !== catalogLocale) {
+      navigate({ pathname: catalogPath(next), search, hash }, { state });
+    }
+  }, [catalogLocale, hash, navigate, search, state]);
 
   const t = useMemo(() => createTranslator(language), [language]);
   const value = useMemo(() => ({ language, setLanguage, t, supportedLanguages }), [language, setLanguage, t]);

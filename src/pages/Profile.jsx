@@ -3,6 +3,7 @@ import { apiClient } from '@/lib/apiClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { catalogPath } from '@/lib/discoveryContent';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,7 +295,7 @@ export default function Profile() {
                                     {t('profile.startExploring')}
                                 </p>
                                 <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
-                                    <Link to={createPageUrl("Search")}>
+                                    <Link to={catalogPath(language)}>
                                         <Search className="w-4 h-4 mr-2" />
                                         {t('profile.browse')}
                                     </Link>

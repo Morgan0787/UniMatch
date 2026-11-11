@@ -2,7 +2,8 @@ const HOME = '/'
 const ORIGIN = 'https://unimatch.local'
 export const LAST_PUBLIC_ROUTE_KEY = 'unimatch:last-public-route'
 
-const PUBLIC_ROUTES = new Set(['/', '/home', '/search', '/admissionssurvey', '/university'])
+const PUBLIC_ROUTES = new Set(['/', '/home', '/search', '/ru/search', '/uz/search', '/admissionssurvey', '/university'])
+const isPublicRoute = path => PUBLIC_ROUTES.has(path.toLowerCase()) || /^\/universities\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)
 
 /** Keep login return targets inside the app and out of the login route. */
 export function safeLoginReturn(value) {
@@ -37,7 +38,7 @@ export function safePublicLoginReturn(value) {
   const safeReturn = safeLoginReturn(value)
   try {
     const parsed = new URL(safeReturn, ORIGIN)
-    return PUBLIC_ROUTES.has(parsed.pathname.toLowerCase()) ? safeReturn : HOME
+    return isPublicRoute(parsed.pathname) ? safeReturn : HOME
   } catch {
     return HOME
   }
@@ -69,7 +70,7 @@ export function loginCancelTarget(redirectTo, lastPublicRoute) {
   if (typeof redirectTo !== 'string' || !redirectTo) return safePublicLoginReturn(lastPublicRoute)
   const safeTarget = safeLoginReturn(redirectTo)
   const parsed = new URL(safeTarget, ORIGIN)
-  if (safeTarget !== HOME && PUBLIC_ROUTES.has(parsed.pathname.toLowerCase())) return safePublicLoginReturn(safeTarget)
+  if (safeTarget !== HOME && isPublicRoute(parsed.pathname)) return safePublicLoginReturn(safeTarget)
   if (safeTarget === HOME && redirectTo === '/') return HOME
   return safePublicLoginReturn(lastPublicRoute)
 }

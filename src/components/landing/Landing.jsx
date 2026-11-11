@@ -141,8 +141,8 @@ export default function App() {
               </div>
             </div>
           </div>
-          <a className="scroll-hint" href="#intro" aria-label={labels.more}>
-            <ArrowDown size={14}/>
+          <a className="scroll-hint" href="#intro">
+            <ArrowDown size={14} aria-hidden="true" />
             <span>{labels.chapter}</span>
           </a>
         </section>

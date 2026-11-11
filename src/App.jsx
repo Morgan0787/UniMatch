@@ -3,7 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -22,9 +22,16 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 
 const PROTECTED_PAGES = new Set(['Profile', 'Recommendations']);
 
-const LayoutWrapper = ({ children, currentPageName }) => Layout ?
-  <Layout currentPageName={currentPageName}>{children}</Layout>
-  : <>{children}</>;
+function PageLoading() {
+  return <div className="grid min-h-48 place-items-center" aria-busy="true">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-800" />
+  </div>;
+}
+
+function LayoutWrapper({ children, currentPageName }) {
+  const content = <Suspense fallback={<PageLoading />}>{children}</Suspense>;
+  return Layout ? <Layout currentPageName={currentPageName}>{content}</Layout> : content;
+}
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -86,7 +93,10 @@ function AppContent({ publicPage }) {
   return <DiscoveryContent page={publicPage}>
     <details className="mt-8 border-t border-slate-200 pt-4" onToggle={event => setDetailsOpen(event.currentTarget.open)}>
       <summary className="cursor-pointer py-2 font-semibold">Show details and save this university</summary>
-      {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> : <Pages.University publicId={publicPage.universityId} />)}
+      {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> :
+        <Suspense fallback={<p role="status">Loading university…</p>}>
+          <Pages.University publicId={publicPage.universityId} />
+        </Suspense>)}
     </details>
   </DiscoveryContent>;
 }

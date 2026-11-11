@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { selectCatalogResults, getCatalogPage } from '../src/lib/catalogResults.js';
+import { loadUniversityCatalog } from '../src/lib/catalogRepository.js';
 
 const filters = { gpa: null, ielts: null, budget: null, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
 const rows = Array.from({ length: 53 }, (_, i) => ({
@@ -50,4 +51,30 @@ assert.equal(selectCatalogResults([historicalLanguage], { ...filters, degree: 'B
 const invalidCatalog = { ...canonicalOnly, admissionCatalog: { status: 'invalid', programmes: canonicalOnly.admissionCatalog.programmes } };
 assert.equal(selectCatalogResults([invalidCatalog], { ...filters, languages: ['English'] }, '').length, 0, 'invalid canonical catalog cannot affirm a language filter');
 assert.equal(selectCatalogResults([invalidCatalog], { ...filters, degree: 'Bachelor' }, '').length, 0, 'invalid canonical catalog cannot affirm a degree filter');
-console.log('Catalog checks passed: complete pagination, stable order, canonical programme search/filters, and unknown-data preservation.');
+const catalogRows = Array.from({ length: 2063 }, (_, id) => ({ id }));
+function mockCatalog(total, { count = total, failAt = -1 } = {}) {
+  let active = 0;
+  let peak = 0;
+  const offsets = [];
+  const client = { from: () => ({ select: (_fields, options) => ({ order: () => ({
+    async range(start, end) {
+      offsets.push(start);
+      peak = Math.max(peak, ++active);
+      await new Promise(resolve => setTimeout(resolve, start === 500 ? 5 : 0));
+      active--;
+      return { data: catalogRows.slice(start, Math.min(end + 1, total)), error: start === failAt ? new Error('page failed') : null, count: options ? count : null };
+    },
+  }) }) }) };
+  return { client, offsets, peak: () => peak };
+}
+
+const concurrent = mockCatalog(2063);
+assert.deepEqual(await loadUniversityCatalog(concurrent.client, 'universities'), catalogRows);
+assert.equal(concurrent.peak(), 4);
+const unknownTotal = mockCatalog(1000, { count: null });
+assert.deepEqual(await loadUniversityCatalog(unknownTotal.client, 'universities'), catalogRows.slice(0, 1000));
+assert.deepEqual(unknownTotal.offsets, [0, 500, 1000]);
+const growing = mockCatalog(2063, { count: 1000 });
+assert.deepEqual(await loadUniversityCatalog(growing.client, 'universities'), catalogRows);
+await assert.rejects(loadUniversityCatalog(mockCatalog(2063, { failAt: 1000 }).client, 'universities'), /page failed/);
+console.log('Catalog checks passed: complete pagination, bounded reads, stable order, canonical programme search/filters, and unknown-data preservation.');

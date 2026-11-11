@@ -16,7 +16,7 @@ import SearchProgrammePreview from './SearchProgrammePreview';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
-export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, children = null }) {
+export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, prioritizePhotoLoading = false, children = null }) {
     const { t, language } = useLanguage();
     const location = useLocation();
     const detailUrl = universityPageUrl(university.id, location.pathname + location.search + location.hash);
@@ -41,7 +41,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
             <Card className="catalog-card search-university-card product-card group overflow-hidden border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
                 {/* Header with cover */}
                 <div className="catalog-cover relative overflow-hidden">
-                    <UniversityPhoto university={university} language={language} showDetails={false} />
+                    <UniversityPhoto university={university} language={language} showDetails={false} prioritizeLoading={prioritizePhotoLoading} responsivePreview />
                     <UniversityCover university={university} size="small" showName actions={
                         <Button
                             variant="ghost"

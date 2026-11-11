@@ -1,26 +1,17 @@
-import AdminDataQuality from './pages/AdminDataQuality';
-import AdminFeedback from './pages/AdminFeedback';
-import EssayChecker from './pages/EssayChecker';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import Recommendations from './pages/Recommendations';
-import Search from './pages/Search';
-import AdmissionsSurvey from './pages/AdmissionsSurvey';
-import University from './pages/University';
+import { lazy } from 'react';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
-    "AdminDataQuality": AdminDataQuality,
-    "AdminFeedback": AdminFeedback,
-    "EssayChecker": EssayChecker,
-    "Home": Home,
-    "Login": Login,
-    "Profile": Profile,
-    "Recommendations": Recommendations,
-    "Search": Search,
-    "AdmissionsSurvey": AdmissionsSurvey,
-    "University": University,
+    "AdminDataQuality": lazy(() => import('./pages/AdminDataQuality')),
+    "AdminFeedback": lazy(() => import('./pages/AdminFeedback')),
+    "EssayChecker": lazy(() => import('./pages/EssayChecker')),
+    "Home": lazy(() => import('./pages/Home')),
+    "Login": lazy(() => import('./pages/Login')),
+    "Profile": lazy(() => import('./pages/Profile')),
+    "Recommendations": lazy(() => import('./pages/Recommendations')),
+    "Search": lazy(() => import('./pages/Search')),
+    "AdmissionsSurvey": lazy(() => import('./pages/AdmissionsSurvey')),
+    "University": lazy(() => import('./pages/University')),
 }
 
 export const pagesConfig = {

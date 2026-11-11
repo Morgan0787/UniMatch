@@ -2,18 +2,45 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { getUniversityPhoto } from '@/lib/admissions/presentation';
 
-export default function UniversityPhoto({ university, language, showDetails = true }) {
+const getWikimediaResponsiveSources = (url) => {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:' || !['upload.wikimedia.org', 'thumb.wikimedia.org'].includes(parsed.hostname)
+      || parsed.port || parsed.username || parsed.password || !/^\/wikipedia\/commons\/thumb\//.test(parsed.pathname)) return null;
+    const match = parsed.pathname.match(/^(.*\/)(960px-)([^/]+\.jpe?g)$/i);
+    if (!match) return null;
+    const srcSet = widths => widths.map(width => `${parsed.origin}${match[1]}${width}px-${match[3]} ${width}w`).join(', ');
+    return {
+      srcSet: srcSet([250, 500, 960]),
+      mobileSrcSet: srcSet([250, 500]),
+      sizes: '(min-width: 1600px) calc((100vw - 100px) / 4), (min-width: 1100px) calc((100vw - 100px) / 3), (min-width: 700px) calc((100vw - 80px) / 2), calc(100vw - 56px)',
+    };
+  } catch {
+    return null;
+  }
+};
+
+export default function UniversityPhoto({ university, language, showDetails = true, prioritizeLoading = false, responsivePreview = false }) {
+  const [failedResponsiveUrl, setFailedResponsiveUrl] = useState(null);
   const [failedUrl, setFailedUrl] = useState(null);
   const image = getUniversityPhoto(university);
   if (!image || failedUrl === image.url) return null;
+  const responsiveSources = responsivePreview && failedResponsiveUrl !== image.url ? getWikimediaResponsiveSources(image.url) : null;
   const localized = image.localized?.[language] || image.localized?.en;
   const caption = localized?.caption || image.caption || image.title;
   const creditLabel = { en: 'Photo details and credit', ru: 'О фото и его авторе', uz: 'Surat va muallif haqida' }[language] || 'Photo details and credit';
 
+  const preview = <img src={image.url} width={image.width} height={image.height}
+      srcSet={responsiveSources?.srcSet}
+      sizes={responsiveSources?.sizes}
+      loading={prioritizeLoading ? 'eager' : 'lazy'} fetchPriority={prioritizeLoading ? 'high' : 'auto'} decoding="async" alt={caption}
+      onError={() => responsiveSources ? setFailedResponsiveUrl(image.url) : setFailedUrl(image.url)} />;
+
   return <figure className="catalog-photo">
-    <img src={image.url} width={image.width} height={image.height}
-      loading="lazy" decoding="async" alt={caption}
-      onError={() => setFailedUrl(image.url)} />
+    {responsiveSources ? <picture>
+      <source media="(max-width: 500px)" srcSet={responsiveSources.mobileSrcSet} sizes={responsiveSources.sizes} />
+      {preview}
+    </picture> : preview}
     {showDetails && <figcaption>
       <details>
         <summary aria-label={`${creditLabel}: ${caption}`}>

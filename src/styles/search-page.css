@@ -32,7 +32,7 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 .unimatch-app .catalog-page.search-page .university-identity-actions { flex: 0 0 auto; }
 .unimatch-app .catalog-page.search-page .catalog-save { width: 44px; height: 44px; border: 1px solid #fff; border-radius: 16px; background: rgba(255,255,255,.56); box-shadow: inset 0 1px #fff, 0 4px 12px #5d493014; }
 .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover > .catalog-photo { order: 1; width: 100%; padding-inline: 12px; background: transparent; }
-.unimatch-app .catalog-page.search-page .catalog-photo > img { width: 100%; height: 174px; object-fit: cover; border-radius: 14px; background: transparent; }
+.unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { display: block; width: 100%; height: 174px; object-fit: cover; border-radius: 14px; background: transparent; }
 .unimatch-app .catalog-page.search-page .catalog-photo-original { display: block; width: 100%; height: auto; margin-block: 8px; border-radius: 10px; object-fit: contain; }
 .unimatch-app .catalog-page.search-page .catalog-photo figcaption { border: 0; background: rgba(255,255,255,.5); }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { min-height: 32px; padding: 4px 16px; font-size: 11px; }
@@ -99,7 +99,7 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
   .unimatch-app .catalog-page.search-page .catalog-save { width: 44px; height: 44px; }
   .unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 0 15px 12px; }
   .unimatch-app .catalog-page.search-page .programme-preview-facts { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px 10px; }
-  .unimatch-app .catalog-page.search-page .catalog-photo > img { height: 180px; }
+  .unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 180px; }
   .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 15px; }
 }
 @media (max-width: 359px) {
@@ -118,7 +118,7 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .catalog-page .max-w
 .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { min-height: 72px; padding: 10px 20px 8px; }
 .unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 8px 20px 16px; }
 .unimatch-app .catalog-page.search-page .catalog-photo figcaption { background: transparent; }
-.unimatch-app .catalog-page.search-page .catalog-photo > img { height: 144px; }
+.unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 144px; }
 .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { height: auto; position: relative; }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 8px; }
 .unimatch-app .catalog-page.search-page .catalog-grid { gap: 18px; }
@@ -231,7 +231,7 @@ body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer :focus-visi
   .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { height: auto; }
   .unimatch-app .catalog-page.search-page .catalog-photo summary { top: 140px; bottom: auto; }
   .unimatch-app .catalog-page.search-page .catalog-photo details[open] summary { position: static; width: fit-content; margin: 8px 0 0 auto; }
-  .unimatch-app .catalog-page.search-page .catalog-photo > img { height: 180px; }
+  .unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 180px; }
   .unimatch-app .catalog-page.search-page .catalog-toolbar { padding-inline: 16px; }
   .unimatch-app .catalog-page.search-page .catalog-toolbar > div { padding: 16px; border-radius: 26px; }
   .unimatch-app .catalog-page.search-page .catalog-toolbar input { font-size: 16px; }

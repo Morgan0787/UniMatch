@@ -6,7 +6,7 @@ import { loadEnv } from 'vite';
 import { getSeo, PUBLIC_PATHS, PRIVATE_PATHS, SITE_URL } from '../src/lib/seo.js';
 import { catalogContent, catalogLanguage, catalogPath, CATALOG_LANGUAGES, DiscoveryContent } from '../src/lib/discoveryContent.js';
 import { buildAppFallback, buildDiscoveryPages } from './seo-pages.mjs';
-import { loadSeoInstitutions } from './seo-catalog.mjs';
+import { loadSeoCatalogPreview, loadSeoInstitutions } from './seo-catalog.mjs';
 
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const scriptJson = value => JSON.stringify(value).replaceAll('<', '\\u003c');
@@ -107,6 +107,7 @@ export default function seoPlugin() {
   let config;
   let discovery = buildDiscoveryPages([]);
   let telemetryEntry;
+  let catalogPreview = null;
   return {
     name: 'unimatch-seo',
     enforce: 'post',
@@ -114,7 +115,12 @@ export default function seoPlugin() {
     async buildStart() {
       if (config.command === 'build' && !config.build.ssr) {
         const env = { ...loadEnv(config.mode, config.envDir, ['VITE_', 'SEO_']), ...process.env };
-        discovery = buildDiscoveryPages(await loadSeoInstitutions(env));
+        const [institutions, preview] = await Promise.all([
+          loadSeoInstitutions(env),
+          loadSeoCatalogPreview(env).catch(() => null),
+        ]);
+        discovery = buildDiscoveryPages(institutions);
+        catalogPreview = preview;
         telemetryEntry = this.emitFile({ type: 'chunk', id: resolve(config.root, 'src/lib/staticTelemetry.js') });
       }
     },
@@ -133,12 +139,16 @@ export default function seoPlugin() {
       const html = String(entry.source);
       const telemetryScript = `<script type="module" src="/${escape(this.getFileName(telemetryEntry))}"></script>`;
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
+      const preloadCatalog = html => html.replace('<head>', '<head>\n    <link rel="preload" href="/assets/catalog-preview.json" as="fetch" crossorigin />');
+      if (catalogPreview) emit('assets/catalog-preview.json', JSON.stringify(catalogPreview));
       entry.source = withContent(html, buildAppFallback('/', discovery.catalogLinks));
       for (const path of basePaths.filter(path => path !== '/')) {
         const language = catalogLanguage(path);
-        const output = withSeo(html, path);
+        let output = withSeo(html, path);
         const page = language ? catalogContent(language, discovery.catalogLinks) : buildAppFallback(path, discovery.catalogLinks);
-        emit(`${path.slice(1)}.html`, withContent(output, page));
+        output = withContent(output, page);
+        if (catalogPreview && (language || path === '/Search')) output = preloadCatalog(output);
+        emit(`${path.slice(1)}.html`, output);
       }
       for (const page of discovery.pages) {
         const interactive = Boolean(page.universityId);

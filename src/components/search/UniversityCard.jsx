@@ -16,13 +16,13 @@ import SearchProgrammePreview from './SearchProgrammePreview';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
-export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, prioritizePhotoLoading = false, children = null }) {
+export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, prioritizePhotoLoading = false, previewOnly = false, children = null }) {
     const { t, language } = useLanguage();
     const location = useLocation();
     const detailUrl = universityPageUrl(university.id, location.pathname + location.search + location.hash);
     const limitLabel = {en:'Limit: 3 universities — remove one first',ru:'Лимит: 3 вуза — сначала уберите один',uz:'Limit: 3 ta universitet — avval bittasini olib tashlang'}[language];
     const hasAdmissionCatalog = university.admissionCatalog !== undefined;
-    const limited = comparisonProgrammes(university).length === 0;
+    const limited = !previewOnly && comparisonProgrammes(university).length === 0;
     const limitedLabel = {en:'General university data · programme terms unknown',ru:'Общие сведения о вузе · условия программ неизвестны',uz:'Universitet haqida umumiy ma’lumot · dastur shartlari noma’lum'}[language];
     const chance = userGpa == null ? 'unknown' : calculateChance(university, userGpa, userIelts, userTopik);
     // FIX (2026-07-26): tuition_min can now correctly be null (see apiClient.js fix),
@@ -48,7 +48,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                             size="icon"
                             aria-label={`${t(isSaved ? 'university.saved' : 'university.save')}: ${university.name}`}
                             aria-pressed={Boolean(isSaved)}
-                            disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
+                            disabled={previewOnly || saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
                             className="catalog-save hover:bg-white"
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -62,7 +62,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                             )}
                         </Button>
                     }>
-                    {!hasAdmissionCatalog && university.scholarships_available && (
+                    {!previewOnly && !hasAdmissionCatalog && university.scholarships_available && (
                         <div className="catalog-scholarship mt-1">
                             <Badge className="bg-emerald-500 text-white border-0 shadow-sm whitespace-normal">
                                 <Award className="w-3 h-3 mr-1" />
@@ -75,6 +75,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
 
                 {/* Content */}
                 <div className="catalog-card-body p-4 flex-1 flex flex-col">
+                    {!previewOnly && <>
                     {/* Quick stats */}
                     <div className="catalog-card-facts space-y-1.5">
                         {hasAdmissionCatalog ? (
@@ -142,6 +143,7 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                     {!hasAdmissionCatalog && <div className="mb-2">
                         <LanguageReadiness university={university} ielts={userIelts} topik={userTopik} chance={chance} />
                     </div>}
+                    </>}
 
                     {children}
 
@@ -160,7 +162,8 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                             variant="outline"
                             size="sm"
                             aria-pressed={isComparing}
-                            aria-disabled={compareLimitReached && !isComparing}
+                            disabled={previewOnly}
+                            aria-disabled={previewOnly || (compareLimitReached && !isComparing)}
                             aria-describedby="catalog-compare-status"
                             className={`catalog-compare w-full min-h-11 h-auto py-2 whitespace-normal text-xs ${isComparing ? "border-indigo-600 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-600 hover:bg-indigo-50"}`}
                             onClick={(e) => {

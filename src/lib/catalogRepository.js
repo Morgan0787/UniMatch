@@ -1,14 +1,16 @@
 // Catalogue browsing needs the complete collection before filtering and paging.
 // Keep this separate from limited list calls used by recommendations.
 /** @param {any} client @param {string} table */
-export async function loadUniversityCatalog(client, table) {
+export async function loadUniversityCatalog(client, table, { signal = undefined } = {}) {
   const pageSize = 500;
   const maxConcurrent = 4;
 
   async function readPage(offset, includeCount = false) {
-    const { data, error, count } = await client.from(table)
+    let request = client.from(table)
       .select('*', includeCount ? { count: 'exact' } : undefined)
-      .order('id', { ascending: true }).range(offset, offset + pageSize - 1);
+      .order('id', { ascending: true });
+    if (signal) request = request.abortSignal(signal);
+    const { data, error, count } = await request.range(offset, offset + pageSize - 1);
     if (error) throw error;
     return { data: data || [], count };
   }

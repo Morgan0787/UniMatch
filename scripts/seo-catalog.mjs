@@ -1,5 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 import { loadPublicCatalog } from '../src/lib/admissions/catalog.js';
+import { loadUniversityCatalog } from '../src/lib/catalogRepository.js';
+import { normalizeUniversity } from '../src/lib/normalizeUniversity.js';
+import { selectCatalogResults } from '../src/lib/catalogResults.js';
+import { DEFAULT_FILTERS } from '../src/lib/catalogState.js';
 
 const DEFAULT_TABLE = 'universities';
 const FETCH_TIMEOUT_MS = 15_000;
@@ -171,6 +175,75 @@ export async function loadSeoInstitutions(env = process.env) {
     return projectSeoInstitutions(adapted);
   } catch {
     throw new Error('catalog_load_failed');
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function previewImage(row) {
+  const image = row?.admissionCatalog?.media?.image;
+  if (!image) return null;
+  const url = safeHttpsUrl(image.url);
+  const sourcePage = safeHttpsUrl(image.sourcePage);
+  const licenseUrl = safeHttpsUrl(image.license?.url);
+  if (!url || !sourcePage || !licenseUrl || !safeText(image.license?.id)
+    || !safeText(image.creator) || !safeText(image.attribution)
+    || !Number.isFinite(image.width) || image.width <= 0
+    || !Number.isFinite(image.height) || image.height <= 0) return null;
+  const localized = {};
+  for (const language of ['en', 'ru', 'uz']) {
+    const content = image.localized?.[language];
+    if (!isObject(content)) continue;
+    const caption = safeText(content.caption);
+    const title = safeText(content.title);
+    if (caption || title) localized[language] = { ...(caption ? { caption } : {}), ...(title ? { title } : {}) };
+  }
+  return {
+    url, sourcePage,
+    license: { id: safeText(image.license.id), url: licenseUrl },
+    creator: safeText(image.creator), attribution: safeText(image.attribution),
+    width: image.width, height: image.height,
+    ...(safeText(image.caption) ? { caption: safeText(image.caption) } : {}),
+    ...(safeText(image.title) ? { title: safeText(image.title) } : {}),
+    ...(Object.keys(localized).length ? { localized } : {}),
+  };
+}
+
+/** Load a bounded public read, then emit only the first six default Search rows. */
+export async function loadSeoCatalogPreview(env = process.env) {
+  if (!publicCatalogEnabled(env)) return null;
+
+  const url = env.VITE_SUPABASE_URL;
+  const anonKey = env.VITE_SUPABASE_ANON_KEY;
+  const table = env.VITE_TABLE_UNIVERSITY || DEFAULT_TABLE;
+  if (typeof url !== 'string' || !safeHttpsUrl(url)
+    || !isAllowedPublicKey(anonKey) || !SAFE_TABLE_NAME.test(table)) {
+    throw new Error('catalog_configuration_invalid');
+  }
+
+  const client = createClient(url, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
+  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const data = await loadUniversityCatalog(client, table, { signal: controller.signal });
+    const universities = data.map(normalizeUniversity);
+    const selected = selectCatalogResults(universities, DEFAULT_FILTERS, '');
+    const rows = selected.slice(0, 6).map(row => {
+      const image = previewImage(row);
+      return {
+        id: row.id,
+        name: row.name,
+        country: row.country,
+        city: row.city,
+        ...(image ? { admissionCatalog: { status: 'valid', media: { image } } } : {}),
+      };
+    });
+    if (!rows.every(row => typeof row.id === 'string' && row.id.trim() && typeof row.name === 'string' && row.name.trim())) return null;
+    return { rows, total: selected.length };
+  } catch {
+    throw new Error('catalog_preview_load_failed');
   } finally {
     clearTimeout(timeout);
   }

@@ -66,14 +66,21 @@ export function catalogContent(language, links) {
 }
 
 /** @param {DiscoveryLink[]} links */
-function linkList(links) {
-  return h('ul', { className: 'space-y-3 pl-5 list-disc' }, links.map(({ href, label, detail }, i) =>
-    h('li', { key: `${href}-${i}` }, h('a', { href, className: 'underline underline-offset-4 text-sky-900' }, label),
-      detail ? h('span', null, ` — ${detail}`) : null)));
+function linkList(links, cards = false) {
+  return h('ul', { className: cards ? 'grid gap-3 sm:grid-cols-2' : 'space-y-3 pl-5 list-disc' },
+    links.map(({ href, label, detail }, i) =>
+      h('li', { key: `${href}-${i}` }, h('a', {
+        href,
+        className: cards
+          ? 'block h-full rounded-xl border border-slate-200 bg-white p-4 font-semibold text-sky-900 hover:border-sky-600 hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-700'
+          : 'underline underline-offset-4 text-sky-900',
+      }, label, cards && detail ? h('span', { className: 'mt-1 block text-sm font-normal text-slate-600' }, detail) : null),
+      !cards && detail ? h('span', null, ` — ${detail}`) : null)));
 }
 
 /** @param {{page: DiscoveryPage, children?: import('react').ReactNode, standalone?: boolean}} props */
 export function DiscoveryContent({ page, children = null, standalone = true }) {
+  const directory = page.path === '/universities';
   return h('main', { className: 'max-w-4xl mx-auto px-5 py-8 sm:px-8 sm:py-12 text-slate-900 bg-white' },
     standalone && h('header', { className: 'mb-8 border-b border-slate-200 pb-4' },
       h('a', { href: '/', className: 'font-bold text-xl' }, 'UniMatch')),
@@ -82,22 +89,26 @@ export function DiscoveryContent({ page, children = null, standalone = true }) {
         h('li', { key: href }, h('a', { href, className: 'underline underline-offset-4' }, label), ' /')))) : null,
     h('h1', { className: 'text-3xl font-bold sm:text-4xl mb-4' }, page.heading),
     h('p', { className: 'text-lg leading-relaxed mb-6' }, page.intro),
+    directory && h('a', {
+      href: '/Search',
+      className: 'mb-8 inline-flex rounded-lg bg-sky-900 px-5 py-3 font-semibold text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-700',
+    }, 'Search and compare universities'),
     page.alternates && h('nav', { 'aria-label': 'Language', className: 'mb-6' },
       h('ul', { className: 'flex flex-wrap gap-4' }, Object.entries(page.alternates).filter(([lang]) => lang !== 'x-default')
         .map(([lang, href]) => h('li', { key: lang }, h('a', {
           href, hrefLang: lang, lang, 'aria-current': lang === page.language ? 'page' : undefined,
           className: 'underline underline-offset-4',
         }, LANGUAGE_NAMES[lang] || lang))))),
-    h(DiscoverySections, { sections: page.sections }),
-    page.actions?.length ? linkList(page.actions) : null,
+    h(DiscoverySections, { sections: page.sections, cards: directory }),
+    !directory && page.actions?.length ? linkList(page.actions) : null,
     children);
 }
 
-/** @param {{sections: DiscoverySection[]}} props */
-export function DiscoverySections({ sections }) {
+/** @param {{sections: DiscoverySection[], cards?: boolean}} props */
+export function DiscoverySections({ sections, cards = false }) {
   return sections.map(({ heading, paragraphs, items, links }) => h('section', { key: heading, className: 'mb-7' },
     h('h2', { className: 'text-xl font-semibold mb-3' }, heading),
     paragraphs?.map((paragraph, i) => h('p', { key: i, className: 'leading-relaxed mb-3' }, paragraph)),
     items?.length ? h('ul', { className: 'space-y-3 pl-5 list-disc' }, items.map((item, i) => h('li', { key: i }, item))) : null,
-    links?.length ? linkList(links) : null));
+    links?.length ? linkList(links, cards) : null));
 }

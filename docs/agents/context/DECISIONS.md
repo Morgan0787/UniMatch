@@ -3,6 +3,7 @@
 ## Product rules
 
 - Profile and Recommendations require login; Home and Search stay public.
+- The desktop authentication illustration animates automatically, including with reduced-motion preferences. If WebGL is unavailable, the static illustration remains available.
 - Missing GPA/IELTS/TOPIK may use clearly labelled regional estimates through `EstimatedField`, never a fabricated school-specific number.
 - Missing tuition, acceptance rate, degree levels, or notable programs must display `Not published` unless verified data exists.
 - Never treat an LLM-generated number as fact without `source_url` and `verified`.

@@ -57,11 +57,8 @@ class SceneBoundary extends Component {
 
 export default function AuthExperience({ method, copy }) {
   const desktop = useMedia('(min-width: 1024px)')
-  const reducedMotion = useMedia('(prefers-reduced-motion: reduce)')
   const [visible, setVisible] = useState(() => !document.hidden)
   const [failed, setFailed] = useState(false)
-  const [motionEnabled, setMotionEnabled] = useState(false)
-  const staticMotion = reducedMotion && !motionEnabled
   useEffect(() => {
     const update = () => setVisible(!document.hidden)
     document.addEventListener('visibilitychange', update)
@@ -76,9 +73,9 @@ export default function AuthExperience({ method, copy }) {
         <h2>{copy.headline}</h2>
         <p>{copy.description}</p>
       </div>
-      <div className="auth-scene" aria-hidden="true" data-figure={method} data-renderer={staticMotion || failed ? 'static' : 'webgl'}>
+      <div className="auth-scene" aria-hidden="true" data-figure={method} data-renderer={failed ? 'static' : 'webgl'}>
         <div className="auth-scene-halo" />
-        {staticMotion || failed ? fallback : (
+        {failed ? fallback : (
           <SceneBoundary fallback={fallback}>
             <Suspense fallback={fallback}>
               <ParticleScene method={method} active={visible} onFailure={() => setFailed(true)} fallback={fallback} />
@@ -87,10 +84,6 @@ export default function AuthExperience({ method, copy }) {
         )}
       </div>
       <p className="auth-art-caption" aria-hidden="true">{copy.caption}</p>
-      {reducedMotion && !failed && <div className="auth-motion-control">
-        <span>{copy.motionNotice}</span>
-        <button type="button" aria-pressed={motionEnabled} onClick={() => setMotionEnabled(value => !value)}>{motionEnabled ? copy.pauseMotion : copy.enableMotion}</button>
-      </div>}
     </aside>
   )
 }

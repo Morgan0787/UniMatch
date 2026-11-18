@@ -6,9 +6,6 @@ const COPY = {
     subtitle: 'Keep your shortlist and your next steps in one place.',
     recommendationsNotice: 'You can get preliminary results from the survey without signing in. Sign in to get recommendations based on your saved profile.',
     surveyProfileNotice: 'Use this tab to sign in and save your survey answers. Your recommendations will open after saving.',
-    motionNotice: 'Your device prefers reduced motion.',
-    enableMotion: 'Explore the interactive scene',
-    pauseMotion: 'Pause animation',
   },
   ru: {
     headline: 'Твой мир возможностей.',
@@ -17,9 +14,6 @@ const COPY = {
     subtitle: 'Сохраняй университеты и планируй поступление.',
     recommendationsNotice: 'Предварительные результаты анкеты доступны без входа. Войдите, чтобы получить рекомендации по сохранённому профилю.',
     surveyProfileNotice: 'Войдите в этой вкладке, чтобы сохранить ответы анкеты в профиле и открыть рекомендации.',
-    motionNotice: 'На устройстве включено уменьшение движения.',
-    enableMotion: 'Включить интерактивную сцену',
-    pauseMotion: 'Остановить анимацию',
   },
   uz: {
     headline: 'Imkoniyatlar olami.',
@@ -28,9 +22,6 @@ const COPY = {
     subtitle: 'Universitetlarni saqlang va o‘qishga kirishni rejalashtiring.',
     recommendationsNotice: 'So‘rovnomaning dastlabki natijalarini tizimga kirmasdan ko‘rishingiz mumkin. Saqlangan profilingiz asosida tavsiyalar olish uchun tizimga kiring.',
     surveyProfileNotice: 'Javoblarni profilga saqlash va tavsiyalarni ochish uchun shu varaqda tizimga kiring.',
-    motionNotice: 'Qurilmada harakatni kamaytirish yoqilgan.',
-    enableMotion: 'Interaktiv sahnani yoqish',
-    pauseMotion: 'Animatsiyani to‘xtatish',
   },
 }
 

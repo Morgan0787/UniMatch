@@ -11,12 +11,16 @@ export function admissionFavoriteRepository(owner) {
   };
   return {
     findProfiles: async email => { await verifyOwner(); return apiClient.entities.StudentProfile.filter({ created_by: email }); },
-    createProfile: async row => { await verifyOwner(); return apiClient.entities.StudentProfile.create(row); },
+    createProfile: async row => {
+      await verifyOwner();
+      return apiClient.entities.StudentProfile.create({ ...row, created_by: owner.email });
+    },
     updateProfile: async (id, row) => { await verifyOwner(); return apiClient.entities.StudentProfile.update(id, row); },
     readProfile: async id => {
       await verifyOwner();
       const rows = await apiClient.entities.StudentProfile.filter({ id });
       if (rows.length !== 1) throw new Error('Your profile could not be confirmed.');
+      await verifyOwner();
       return rows[0];
     },
   };

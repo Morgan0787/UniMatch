@@ -7,6 +7,7 @@ import {
   loadFavoriteIntent,
   removeAdmissionFavorite,
   saveFavoriteIntent,
+  serializeFavoriteWrite,
   writeAdmissionFavorite,
 } from '../src/lib/admissions/favorites.js';
 import { favoriteStorageId, institutionIdFromFavorite } from '../src/lib/admissions/favoriteKeys.js';
@@ -93,5 +94,38 @@ await assert.rejects(
   /could not be confirmed/,
   'A confirmed requested key cannot hide loss of an unrelated legacy UUID',
 );
+
+const legacyId = 'a1111111-1111-4111-8111-111111111111';
+const publishedId = 'b2222222-2222-4222-8222-222222222222';
+const published = { id: publishedId, institutionId: herts, legacyFavoriteKeys: [hertsKey] };
+const registry = [published, { id: legacyId, institutionId: legacyId, legacyFavoriteKeys: [] }];
+assert.deepEqual(canonicalFavoriteIds([legacyId.toUpperCase(), hertsKey.toUpperCase(), publishedId], registry), [legacyId, herts]);
+assert.deepEqual(canonicalFavoriteIds([hertsKey], [{ ...published, legacyFavoriteKeys: [] }]), []);
+const owner = { id: 'parallel-auth-id', email: 'student@example.test' };
+let sharedProfile = null;
+let creates = 0;
+const sharedRepo = {
+  findProfiles: async () => sharedProfile ? [sharedProfile] : [],
+  createProfile: async row => {
+    creates += 1;
+    sharedProfile = { id: 'first-profile', ...row };
+    return sharedProfile;
+  },
+  updateProfile: async (id, row) => {
+    assert.equal(id, sharedProfile.id);
+    sharedProfile = { ...sharedProfile, ...row };
+    return sharedProfile;
+  },
+  readProfile: async () => sharedProfile,
+};
+const write = (institutionId, remove = false) =>
+  serializeFavoriteWrite(owner.id, () => writeAdmissionFavorite(sharedRepo, owner, institutionId, remove, registry));
+await assert.rejects(() => write(legacyId, true), /profile could not be found/);
+assert.equal(creates, 0, 'Removing from an absent profile must not create one');
+await Promise.all([write(legacyId), write(herts)]);
+assert.equal(creates, 1, 'Two queued first saves must share a single profile');
+assert.deepEqual(sharedProfile.saved_universities, [legacyId, publishedId]);
+await write(herts, true);
+assert.deepEqual(sharedProfile.saved_universities, [legacyId]);
 
 console.log('Admission favorite mock contract checks passed.');

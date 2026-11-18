@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/apiClient';
 import { useAuth } from '@/lib/AuthContext';
-import { admissionFavoriteRepository as repository } from '@/lib/admissions/favoriteRepository';
+import { studentProfileQueryOptions, writeConfirmedFavorite } from '@/lib/studentProfile';
 import { EMPTY_CATALOG } from '@/lib/admissions/catalog';
 import { evaluateAnswers } from '@/lib/admissions/evaluate';
 import { DRAFT_KEY, TTL_MS, loadDraft, saveDraft } from '@/lib/admissions/draft';
@@ -12,8 +12,6 @@ import {
   createFavoriteIntent,
   loadFavoriteIntent,
   saveFavoriteIntent,
-  serializeFavoriteWrite,
-  writeAdmissionFavorite,
 } from '@/lib/admissions/favorites';
 
 function sessionStorageOrNull() {
@@ -31,15 +29,14 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
   const user = session?.user || null;
   const userId = user?.id || null;
   const email = user?.email || null;
-  const [savedState, setSavedState] = useState(() => ({ ownerId: userId, ownerEmail: email, ids: [] }));
-  const savedIds = savedState.ownerId === userId && savedState.ownerEmail === email ? savedState.ids : [];
+  const profileQuery = useQuery(studentProfileQueryOptions(user));
+  const saved = profileQuery.data?.[0]?.saved_universities;
+  const savedIds = useMemo(() => canonicalFavoriteIds(saved, institutions), [saved, institutions]);
   const [pendingId, setPendingId] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [resumeIntent, setResumeIntent] = useState(null);
   const [intentStatus, setIntentStatus] = useState('empty');
-  const [loadGeneration, setLoadGeneration] = useState(0);
   const previousOwner = useRef({ userId, email });
   const operation = useRef(null);
   const checkingCatalog = useRef(false);
@@ -55,9 +52,8 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
       setResumeIntent(null);
     }
     if (previous.userId !== userId || previous.email !== email) {
-      setSavedState({ ownerId: userId, ownerEmail: email, ids: [] });
       retryOption.current = null; retryDesired.current = null;
-      setPendingId(null); setLoading(false); setError(''); setNotice('');
+      setPendingId(null); setError(''); setNotice('');
     }
     previousOwner.current = { userId, email };
     if (userId) {
@@ -68,30 +64,6 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
       setResumeIntent(null);
     }
   }, [email, userId]);
-
-  useEffect(() => {
-    let active = true;
-    const ownsCurrentState = () => active && identityRef.current.userId === userId && identityRef.current.email === email;
-    setSavedState(current => current.ownerId === userId && current.ownerEmail === email
-      ? current : { ownerId: userId, ownerEmail: email, ids: [] });
-    if (isLoadingAuth || !userId || !email) {
-      setLoading(false);
-      return () => { active = false; };
-    }
-    setLoading(true);
-    setError('');
-    apiClient.entities.StudentProfile.filter({ created_by: email })
-      .then(profiles => {
-        if (!ownsCurrentState()) return;
-        if (profiles.length > 1) throw new Error('Your profile could not be selected safely.');
-        setSavedState({ ownerId: userId, ownerEmail: email, ids: canonicalFavoriteIds(profiles[0]?.saved_universities, institutions) });
-      })
-      .catch(err => {
-        if (ownsCurrentState()) setError(err?.message === 'Your profile could not be selected safely.' ? 'saveDuplicates' : 'saveError');
-      })
-      .finally(() => { if (ownsCurrentState()) setLoading(false); });
-    return () => { active = false; };
-  }, [email, institutions, isLoadingAuth, loadGeneration, userId]);
 
   const clearIntent = useCallback(() => {
     const removed = clearFavoriteIntent(sessionStorageOrNull());
@@ -161,15 +133,13 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
     }
     const remove = !retryDesired.current;
     const operationToken = { userId, email };
-    operation.current = operationToken; setPendingId(id); setLoading(true);
+    operation.current = operationToken; setPendingId(id);
     try {
       const owner = { id: userId, email };
-      const profile = await serializeFavoriteWrite(userId, () => writeAdmissionFavorite(repository(owner), owner, id, remove, institutions));
+      await writeConfirmedFavorite(queryClient, owner, id, remove, institutions);
       if (identityRef.current.userId !== userId || identityRef.current.email !== email || operation.current !== operationToken) return false;
-      setSavedState({ ownerId: userId, ownerEmail: email, ids: canonicalFavoriteIds(profile.saved_universities, institutions) });
       setNotice(remove ? 'removedFromAccount' : 'savedInAccount');
       retryOption.current = null; retryDesired.current = null;
-      await queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
       return true;
     } catch (err) {
       if (identityRef.current.userId === userId && identityRef.current.email === email && operation.current === operationToken) {
@@ -180,7 +150,7 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
     } finally {
       if (operation.current === operationToken) {
         operation.current = null;
-        if (identityRef.current.userId === userId && identityRef.current.email === email) { setPendingId(null); setLoading(false); }
+        if (identityRef.current.userId === userId && identityRef.current.email === email) setPendingId(null);
       }
     }
   }, [answers, catalog, catalogReady, catalogVersion, email, institutions, isLoadingAuth, queryClient, refreshCatalog, savedIds, step, userId, view]);
@@ -213,12 +183,18 @@ export default function useAdmissionFavorites({ answers, view, step, catalog = E
   const retry = useCallback(() => {
     if (resumeIntent) return confirmResume();
     if (retryOption.current) return requestSave(retryOption.current, retryDesired.current ?? true);
-    setLoadGeneration(generation => generation + 1);
+    setError('');
+    void profileQuery.refetch();
     return false;
-  }, [confirmResume, requestSave, resumeIntent]);
+  }, [confirmResume, profileQuery.refetch, requestSave, resumeIntent]);
+
+  const profileError = profileQuery.isError
+    ? profileQuery.error?.message === 'Your profile could not be selected safely.' ? 'saveDuplicates' : 'saveError'
+    : '';
 
   return {
-    savedIds, pendingId, loading: loading || isLoadingAuth, canSave: catalogReady, isAuthenticated: Boolean(userId && email), error, notice, resumeIntent, intentStatus,
+    savedIds, pendingId, loading: Boolean(pendingId) || profileQuery.isLoading || isLoadingAuth, canSave: catalogReady,
+    isAuthenticated: Boolean(userId && email), error: error || profileError, notice, resumeIntent, intentStatus,
     requestSave, confirmResume, dismissResume: clearIntent, retry, clearIntent,
   };
 }

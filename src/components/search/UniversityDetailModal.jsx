@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
-    MapPin, Globe, GraduationCap, Bookmark, BookmarkCheck, 
+    MapPin, Globe, GraduationCap, Bookmark, BookmarkCheck, LoaderCircle,
     ExternalLink, Award, Calendar, Users, TrendingUp, DollarSign,
     Building2, BookOpen, Home, Heart,
     Shield, Phone, Mail, CheckCircle2, ChevronRight
@@ -36,7 +36,7 @@ function UniversityInfoSection({ expanded, title, icon: Icon, children }) {
     </Collapsible>;
 }
 
-export function UniversityDetails({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, heading = 'h2' }) {
+export function UniversityDetails({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, savePendingLabel = undefined, onSave, heading = 'h2', programmeId = '' }) {
     const { t, language } = useLanguage();
     const About = heading === 'h1' ? 'section' : 'details';
     const AboutTitle = heading === 'h1' ? 'h2' : 'summary';
@@ -77,10 +77,13 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 variant="outline"
                                 onClick={() => onSave(university.id)}
                                 aria-pressed={Boolean(isSaved)}
+                                aria-busy={Boolean(savePendingLabel)}
                                 disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
                                 className={isSaved ? "border-indigo-200 bg-indigo-50" : ""}
                             >
-                                {isSaved ? (
+                                {savePendingLabel ? (
+                                    <><LoaderCircle className="w-4 h-4 mr-2 motion-safe:animate-spin" aria-hidden="true" />{savePendingLabel}</>
+                                ) : isSaved ? (
                                     <><BookmarkCheck className="w-4 h-4 mr-2 text-indigo-600" /> {t('university.saved')}</>
                                 ) : (
                                     <><Bookmark className="w-4 h-4 mr-2" /> {t('university.save')}</>
@@ -116,7 +119,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                         {actions}
                     </div>}
 
-                    {hasAdmissionCatalog && <PublishedProgrammeFacts admissionCatalog={university.admissionCatalog} language={language} focused />}
+                    {hasAdmissionCatalog && <PublishedProgrammeFacts key={`${university.id}:${programmeId || ''}`} admissionCatalog={university.admissionCatalog} language={language} initialProgrammeId={programmeId} focused />}
 
                     {!hasAdmissionCatalog && <>
                     {/* Key Stats Grid */}

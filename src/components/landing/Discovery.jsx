@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/apiClient';
 import { useAuth } from '@/lib/AuthContext';
 import { universityPageUrl } from '@/lib/universityNavigation';
+import { isUniversityFavorite, studentProfileQueryOptions, writeConfirmedUniversityFavorite } from '@/lib/studentProfile';
 import { copy } from './content';
 import { uzCopy } from './uz';
 import { getLandingLabels } from './labels';
@@ -22,26 +23,33 @@ export function useDiscovery(language) {
   const [notice, setNotice] = useState('');
   const [legal, setLegal] = useState(null);
   const query = useQuery({ queryKey: ['universities'], queryFn: () => apiClient.entities.University.list() });
-  const profile = useQuery({
-    queryKey: ['landing-profile', user?.email],
-    queryFn: () => apiClient.entities.StudentProfile.filter({ created_by: user.email }),
-    enabled: Boolean(user?.email),
-  });
+  const profile = useQuery(studentProfileQueryOptions(user));
   const currentProfile = profile.data?.[0];
-  const saved = Array.isArray(currentProfile?.saved_universities) ? currentProfile.saved_universities : [];
+  const rows = query.data ?? [];
+  const savedKeys = currentProfile?.saved_universities;
+  const saved = useMemo(() => {
+    if (!Array.isArray(savedKeys)) return [];
+    const aliases = new Map();
+    for (const row of rows) {
+      for (const alias of row.admissionCatalog?.identity?.legacyFavoriteKeys ?? []) aliases.set(alias.toLowerCase(), row.id);
+    }
+    return [...new Set(savedKeys.map(key => typeof key === 'string' ? aliases.get(key.toLowerCase()) ?? key : key))];
+  }, [savedKeys, rows]);
   const mutation = useMutation({
-    mutationFn: next => apiClient.entities.StudentProfile.update(currentProfile.id, { saved_universities: next }),
-    onSuccess: () => client.invalidateQueries({ queryKey: ['landing-profile', user?.email] }),
+    /** @param {import('@/lib/studentProfile').UniversityFavoriteRequest} request */
+    mutationFn: ({ owner, university, remove }) => writeConfirmedUniversityFavorite(client, owner, university, remove),
     onError: () => setNotice(labels.saveError),
   });
-  const rows = query.data ?? [];
   const universities = useMemo(() => selectDiscoveryUniversities(rows, language), [rows, language]);
   const filtered = useMemo(() => selectDiscoveryUniversities(rows, language, filter), [rows, language, filter]);
   const toggleSave = id => {
     setNotice('');
     if (!user) { navigateToLogin('/Profile'); return; }
     if (!currentProfile) { navigate('/Profile'); return; }
-    if (!mutation.isPending) mutation.mutate(saved.includes(id) ? saved.filter(value => value !== id) : [...saved, id]);
+    const university = rows.find(row => row.id === id);
+    if (university && !mutation.isPending) {
+      mutation.mutate({ owner: user, university, remove: isUniversityFavorite(savedKeys, university) });
+    }
   };
   return {
     c, l: language === 'ru' ? 1 : 0, universities, saved, filtered,

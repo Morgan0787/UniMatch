@@ -4,7 +4,7 @@ import OptionSelect from '@/components/ui/OptionSelect';
 
 const directionIcons = { business: BriefcaseBusiness, it: Monitor, computer_engineering: Settings, software_engineering: Layers2, computer_science: Code2, other: Ellipsis };
 
-export function AnswerField({ name, label, value, onChange, options = null, error = false, hint = undefined, c, type = 'text', min = undefined, max = undefined, step = undefined }) {
+export function AnswerField({ name, label, value, onChange, options = null, error = false, errorMessage = undefined, hint = undefined, c, type = 'text', min = undefined, max = undefined, step = undefined }) {
   const id = `admission-${name}`;
   const description = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(' ');
   const props = { id, name, value, onChange: event => onChange(name, event.target.value), 'aria-invalid': Boolean(error), 'aria-describedby': description || undefined };
@@ -13,7 +13,7 @@ export function AnswerField({ name, label, value, onChange, options = null, erro
     {options ? <OptionSelect id={id} name={name} value={value} onValueChange={next => onChange(name, next)} aria-invalid={Boolean(error)} aria-describedby={description || undefined} emptyLabel={c.any} options={Object.entries(options).map(([key, title]) => ({ value: key, label: String(title) }))} />
       : <input {...props} type={type} min={min} max={max} step={step} maxLength={type === 'text' ? 200 : undefined} inputMode={type === 'number' ? 'decimal' : undefined} />}
     {hint && <p id={`${id}-hint`} className="admission-hint">{hint}</p>}
-    {error && <p id={`${id}-error`} className="admission-error">{c.invalid}</p>}
+    {error && <p id={`${id}-error`} className="admission-error">{errorMessage || c.invalid}</p>}
   </div>;
 }
 
@@ -58,7 +58,11 @@ export default function SurveyFields({ step, answers, onChange, errors, c }) {
   </div>;
   if (step === 1) return <div className="admission-fields">
     {field('exam', c.exam, { options: c.exams })}
-    {answers.exam && answers.exam !== 'not_taken' && field('score', c.score, { type: 'number', min: 0, max: answers.exam === 'IELTS' ? 9 : answers.exam === 'TOPIK' ? 6 : 120, step: answers.exam === 'IELTS' ? 0.5 : answers.exam === 'TOPIK' ? 1 : 'any' })}
+    {answers.exam && answers.exam !== 'not_taken' && field('score', c.score, {
+      type: 'number', min: 0, max: answers.exam === 'IELTS' ? 9 : answers.exam === 'TOPIK' ? 6 : 120,
+      step: answers.exam === 'IELTS' ? 0.5 : answers.exam === 'TOPIK' ? 1 : 'any',
+      errorMessage: answers.exam === 'IELTS' ? c.ieltsInvalid : undefined,
+    })}
     <p className="admission-hint">{c.examHint}</p>
     <details open={gradesOpen} onToggle={event => setGradesOpen(event.currentTarget.open)}>
       <summary>{c.gradesToggle}</summary>
@@ -93,10 +97,10 @@ export function RefineAnswers({ answers, onApply, c, errors }) {
           <legend>{c.ieltsSections}</legend>
           <p className="admission-hint">{c.ieltsSectionsHint}</p>
           <div className="admission-pair">
-            {field('listening', c.ieltsListening, { type: 'number', min: 0, max: 9, step: 0.5 })}
-            {field('reading', c.ieltsReading, { type: 'number', min: 0, max: 9, step: 0.5 })}
-            {field('writing', c.ieltsWriting, { type: 'number', min: 0, max: 9, step: 0.5 })}
-            {field('speaking', c.ieltsSpeaking, { type: 'number', min: 0, max: 9, step: 0.5 })}
+            {field('listening', c.ieltsListening, { type: 'number', min: 0, max: 9, step: 0.5, errorMessage: c.ieltsInvalid })}
+            {field('reading', c.ieltsReading, { type: 'number', min: 0, max: 9, step: 0.5, errorMessage: c.ieltsInvalid })}
+            {field('writing', c.ieltsWriting, { type: 'number', min: 0, max: 9, step: 0.5, errorMessage: c.ieltsInvalid })}
+            {field('speaking', c.ieltsSpeaking, { type: 'number', min: 0, max: 9, step: 0.5, errorMessage: c.ieltsInvalid })}
           </div>
         </fieldset>}
         <QualificationFields answers={refinement} field={field} c={c} />

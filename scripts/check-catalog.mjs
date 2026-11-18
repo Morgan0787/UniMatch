@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
-import { selectCatalogResults, getCatalogPage } from '../src/lib/catalogResults.js';
+import { selectCatalogResults, selectCatalogSearchResults, getCatalogueProgrammeLocation, getCatalogPage } from '../src/lib/catalogResults.js';
 import { loadUniversityCatalog } from '../src/lib/catalogRepository.js';
+import { readCatalogState, writeCatalogState } from '../src/lib/catalogState.js';
+import { withPublicProgrammeFacts } from '../src/lib/admissions/universityCatalog.js';
+import { universityPageUrl } from '../src/lib/universityNavigation.js';
+import { publicAdmissionCatalogRow, publicCatalogFact, publicCatalogSource } from './fixtures/publicAdmissionCatalog.mjs';
 
 const filters = { gpa: null, ielts: null, budget: null, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
 const rows = Array.from({ length: 53 }, (_, i) => ({
@@ -51,6 +55,75 @@ assert.equal(selectCatalogResults([historicalLanguage], { ...filters, degree: 'B
 const invalidCatalog = { ...canonicalOnly, admissionCatalog: { status: 'invalid', programmes: canonicalOnly.admissionCatalog.programmes } };
 assert.equal(selectCatalogResults([invalidCatalog], { ...filters, languages: ['English'] }, '').length, 0, 'invalid canonical catalog cannot affirm a language filter');
 assert.equal(selectCatalogResults([invalidCatalog], { ...filters, degree: 'Bachelor' }, '').length, 0, 'invalid canonical catalog cannot affirm a degree filter');
+
+const budgetFilters = { ...filters, budget: 4000, languages: ['English'], degree: 'Bachelor' };
+const annualFee = { amount: 4000, currency: 'EUR', period: 'year', feeYear: '2027/28', includedFees: [], excludedFees: [] };
+const budgetUniversity = ({ tuition = publicCatalogFact(annualFee), targetIntakeYear = 2027 } = {}) => {
+  const row = publicAdmissionCatalogRow({ targetIntakeYear });
+  row.catalog.programmes[0].tuition = tuition;
+  return withPublicProgrammeFacts({ ...row, tuition_min: 1, admission_requirements: { unimatch_catalog_v1: row.catalog } });
+};
+const budgetStatus = (row, activeFilters = budgetFilters, query = 'Computer Science', currentYear = 2026) =>
+  selectCatalogSearchResults([row], activeFilters, query, currentYear)[0]?.budget;
+assert.deepEqual(budgetStatus(budgetUniversity()), { group: 'within', reason: null }, 'the annual EUR maximum is inclusive');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 4001 }) })).group, 'above');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: '12_months' }) })).group, 'within');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 0 }) }), { ...budgetFilters, budget: 0 }).group, 'within');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'USD' }) })).reason, 'nonEuroTuition');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: 'semester' }) })).reason, 'nonAnnualTuition');
+
+const historicalFee = publicCatalogFact(null, 'historical_reference', { applicability: 'unconfirmed', historical: {
+  value: { ...annualFee, feeYear: '2025/26' }, referenceSeason: '2025/26', checkedAt: '2026-10-01', sourceIds: [publicCatalogSource.key],
+} });
+for (const tuition of [
+  publicCatalogFact(null, 'unknown'), historicalFee,
+  publicCatalogFact(annualFee, 'estimate'), publicCatalogFact(annualFee, 'published_unconfirmed'),
+  publicCatalogFact(annualFee, 'current_verified', { applicability: 'not_applicable' }),
+  publicCatalogFact({ ...annualFee, feeYear: '2026/27' }), publicCatalogFact({ ...annualFee, feeYear: '2027/31' }),
+  publicCatalogFact({ ...annualFee, feeYear: null }),
+  publicCatalogFact(annualFee, 'current_verified', { scope: { ...publicCatalogFact(annualFee).scope, studentCategory: 'domestic' } }),
+]) {
+  assert.deepEqual(budgetStatus(budgetUniversity({ tuition })), { group: 'unknown', reason: 'unconfirmedTuition' });
+}
+assert.equal(budgetStatus(budgetUniversity({ targetIntakeYear: 2028 })).group, 'unknown', 'tuition from an older intake cannot qualify');
+assert.equal(budgetStatus(budgetUniversity(), budgetFilters, 'Computer Science', 2028).group, 'unknown', 'an outdated catalogue intake cannot qualify');
+assert.equal(budgetStatus({ ...budgetUniversity(), admissionCatalog: undefined, tuition_min: 1 }, { ...filters, budget: 4000 }, '').group, 'unknown', 'legacy price cannot determine programme budget group');
+
+const multiProgramme = publicAdmissionCatalogRow({ country: 'United States', surveyRegion: 'USA' });
+const firstProgramme = multiProgramme.catalog.programmes[0];
+firstProgramme.tuition.value.amount = 1000;
+const korea = structuredClone(firstProgramme);
+korea.id = 'robotics-korea';
+korea.name.value = 'Robotics (SUNY Korea)';
+korea.degree.value = 'Master';
+korea.teachingLanguage.value = 'Korean';
+korea.tuition.value.amount = 6000;
+korea.location = publicCatalogFact({ country: 'South Korea', region: 'South Korea', campus: 'SUNY Korea' });
+for (const fact of Object.values(korea)) if (fact?.scope) fact.scope.programmeId = korea.id;
+multiProgramme.catalog.programmes.push(korea);
+const programmeRows = [withPublicProgrammeFacts({ ...multiProgramme, admission_requirements: { unimatch_catalog_v1: multiProgramme.catalog } })];
+const multiResult = selectCatalogSearchResults(programmeRows, { ...filters, budget: 4000 }, 'Robotics', 2026)[0];
+assert.equal(multiResult.budget.group, 'above', 'a different affordable programme cannot make the searched programme affordable');
+assert.equal(multiResult.programme.id, korea.id);
+assert.equal(multiResult.university.country, 'United States');
+assert.deepEqual(getCatalogueProgrammeLocation(multiResult.programme), { country: 'South Korea', region: 'South Korea', campus: 'SUNY Korea' });
+assert.equal(getCatalogueProgrammeLocation({ location: { ...korea.location, applicability: 'unconfirmed' } }), null);
+assert.deepEqual(selectCatalogSearchResults(programmeRows, { ...budgetFilters, degree: 'Master' }, '', 2026), [], 'language and degree from separate programmes cannot form a budget result');
+assert.deepEqual(selectCatalogSearchResults(rows, filters, '').map(result => result.university), results, 'no-budget browsing retains university order and records');
+
+const alternateView = writeCatalogState(new URLSearchParams('q=Robotics&page=3'), { filters: budgetFilters, budgetGroup: 'unknown' });
+assert.equal(readCatalogState(new URLSearchParams()).budgetGroup, 'within');
+assert.equal(readCatalogState(alternateView).budgetGroup, 'unknown');
+assert.equal(readCatalogState(new URLSearchParams('budgetView=invalid')).budgetGroup, 'within');
+const zeroLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: 0 } });
+assert.equal(readCatalogState(zeroLimit).filters.budget, 0);
+const clearedLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: null } });
+assert.equal(readCatalogState(clearedLimit).budgetGroup, 'within');
+assert.deepEqual(readCatalogState(clearedLimit).filters.languages, ['English']);
+const detailParams = new URL(universityPageUrl(multiResult.university.id, `/Search?${alternateView}`, multiResult.programme.id), 'https://example.test').searchParams;
+assert.equal(detailParams.get('programme'), korea.id);
+assert.equal(detailParams.get('from'), `/Search?${alternateView}`);
+
 const catalogRows = Array.from({ length: 2063 }, (_, id) => ({ id }));
 function mockCatalog(total, { count = total, failAt = -1 } = {}) {
   let active = 0;
@@ -77,4 +150,4 @@ assert.deepEqual(unknownTotal.offsets, [0, 500, 1000]);
 const growing = mockCatalog(2063, { count: 1000 });
 assert.deepEqual(await loadUniversityCatalog(growing.client, 'universities'), catalogRows);
 await assert.rejects(loadUniversityCatalog(mockCatalog(2063, { failAt: 1000 }).client, 'universities'), /page failed/);
-console.log('Catalog checks passed: complete pagination, bounded reads, stable order, canonical programme search/filters, and unknown-data preservation.');
+console.log('Catalog checks passed: pagination, stable browse, scoped annual budget groups, programme campus and detail links, and URL state.');

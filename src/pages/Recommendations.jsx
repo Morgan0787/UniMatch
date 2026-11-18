@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '@/lib/apiClient';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link, useLocation, useNavigate, useNavigationType, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -16,29 +16,27 @@ import { Label } from "@/components/ui/label";
 import { useLanguage } from '@/lib/i18n';
 import { VERDICT, calculateMatchScore, describeMissingChanceData, hasCostData } from '@/lib/matching';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
+import { admissionCopy } from '@/components/admissions/copy';
+import { useAuth } from '@/lib/AuthContext';
 import { catalogValue } from '@/lib/catalogCopy';
+import { readRecommendationState, writeRecommendationState } from '@/lib/recommendationState';
+import { isUniversityFavorite, studentProfileQueryOptions, writeConfirmedUniversityFavorite } from '@/lib/studentProfile';
 import '@/styles/internal-pages.css';
 import '@/styles/release-pages.css';
 import '@/styles/recommendations-glass.css';
 
 const recommendationMessages = {
     en: {
-        save: 'Save university',
-        unsave: 'Remove saved university',
         compare: 'Add to comparison',
         uncompare: 'Remove from comparison',
         compareLimit: 'You can compare up to 3 universities. Remove one to add another.',
     },
     ru: {
-        save: 'Сохранить университет',
-        unsave: 'Убрать из сохранённых',
         compare: 'Добавить к сравнению',
         uncompare: 'Убрать из сравнения',
         compareLimit: 'Можно сравнить не более 3 университетов. Уберите один, чтобы добавить другой.',
     },
     uz: {
-        save: 'Universitetni saqlash',
-        unsave: 'Saqlanganlardan olib tashlash',
         compare: 'Taqqoslashga qo‘shish',
         uncompare: 'Taqqoslashdan olib tashlash',
         compareLimit: 'Ko‘pi bilan 3 ta universitetni taqqoslash mumkin. Boshqasini qo‘shish uchun bittasini olib tashlang.',
@@ -109,10 +107,13 @@ function MatchScoreIndicator({ score, missingReason }) {
     );
 }
 
-function RecommendationCard({ university, profile, matchScore, isSaved, onSave, isComparing, onCompareToggle, compareLimitReached }) {
+function RecommendationCard({ university, profile, matchScore, isSaved, onSave, saveDisabled, savePendingLabel, saveError, saveNotice, onView, isComparing, onCompareToggle, compareLimitReached }) {
     return <UniversityCard university={university} userGpa={profile.gpa} userIelts={profile.english_proficiency}
         userTopik={profile.topikLevel} isSaved={isSaved} onSave={onSave} isComparing={isComparing}
-        onCompareToggle={onCompareToggle} compareLimitReached={compareLimitReached}>
+        onCompareToggle={onCompareToggle} compareLimitReached={compareLimitReached} onView={onView}
+        saveDisabled={saveDisabled} savePendingLabel={savePendingLabel}>
+        {saveError && <p role="alert" className="text-sm text-amber-800">{saveError}</p>}
+        <span role="status" className={savePendingLabel ? 'block text-sm font-medium text-slate-600' : 'sr-only'}>{savePendingLabel || saveNotice}</span>
         {university.admissionCatalog === undefined && <MatchScoreIndicator score={matchScore}
             missingReason={describeMissingChanceData(university)?.note} />}
     </UniversityCard>;
@@ -120,16 +121,29 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
 
 export default function Recommendations() {
     const { t, language } = useLanguage();
+    const { session } = useAuth();
+    const owner = session?.user;
+    const queryClient = useQueryClient();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const navigationType = useNavigationType();
+    const [searchParams] = useSearchParams();
+    const { filter: resultFilter, sort: sortOrder } = readRecommendationState(searchParams);
     const messages = recommendationMessages[language] || recommendationMessages.en;
-    const [userProfile, setUserProfile] = useState(null);
-    const [loadingProfile, setLoadingProfile] = useState(true);
-    const [savedUniversities, setSavedUniversities] = useState([]);
+    const favoriteText = admissionCopy[language] || admissionCopy.en;
     const [compareList, setCompareList] = useState([]);
     const [showComparison, setShowComparison] = useState(false);
     const [countryWeights, setCountryWeights] = useState({});
     const [compareNotice, setCompareNotice] = useState('');
-    const [resultFilter, setResultFilter] = useState('all');
-    const [sortOrder, setSortOrder] = useState('match');
+    const profileQuery = useQuery(studentProfileQueryOptions(owner));
+    const userProfile = profileQuery.data?.[0];
+    const favoriteMutation = useMutation({
+        /** @param {import('@/lib/studentProfile').UniversityFavoriteRequest} request */
+        mutationFn: ({ owner, university, remove }) => writeConfirmedUniversityFavorite(queryClient, owner, university, remove),
+    });
+    const favoriteOwner = favoriteMutation.variables?.owner;
+    const favoriteAction = favoriteOwner?.id === owner?.id && favoriteOwner?.email === owner?.email ? favoriteMutation.variables : null;
+    const savingFavorite = Boolean(favoriteAction && favoriteMutation.isPending);
     const copy = {
         ru: {title:'Ваши персональные рекомендации', subtitle:'Варианты на основе вашего профиля. Проверьте условия каждой программы.', all:'Все варианты', budget:'По бюджету', unknown:'Требуют уточнения', sort:'Сначала подходящие', name:'По названию', edit:'Изменить профиль', year:'EUR / год', upTo:'До', comparison:'Для сравнения', clear:'Очистить сравнение', empty:'По этим условиям вариантов пока нет', reset:'Показать все варианты', settings:'Настроить подбор', results:'вариантов', budgetNote:'Учитываются только варианты с опубликованной стоимостью обучения и проживания.'},
         en: {title:'Your personal recommendations', subtitle:'Options based on your profile. Check the conditions of each programme.', all:'All options', budget:'Within budget', unknown:'Needs clarification', sort:'Best matches first', name:'University name', edit:'Edit profile', year:'EUR / year', upTo:'Up to', comparison:'To compare', clear:'Clear comparison', empty:'No options match these conditions yet', reset:'Show all options', settings:'Adjust preferences', results:'options', budgetNote:'Only options with published tuition and living costs are included.'},
@@ -144,48 +158,26 @@ export default function Recommendations() {
         refetchOnWindowFocus: true,
     });
     
-    useEffect(() => {
-        const loadProfile = async () => {
-            try {
-                const user = await apiClient.auth.me();
-                const profiles = await apiClient.entities.StudentProfile.filter({ created_by: user.email });
-                if (profiles.length > 0) {
-                    setUserProfile(profiles[0]);
-                    setSavedUniversities(profiles[0].saved_universities || []);
-                    
-                    // Initialize country weights to 100% for preferred countries
-                    if (profiles[0].preferred_countries?.length > 0) {
-                        const initialWeights = {};
-                        profiles[0].preferred_countries.forEach(country => {
-                            initialWeights[country] = 100;
-                        });
-                        setCountryWeights(initialWeights);
-                    }
-                }
-            } catch (e) {
-                // Not logged in or no profile
-            } finally {
-                setLoadingProfile(false);
-            }
-        };
-        loadProfile();
-    }, []);
-    
-    const handleSave = async (universityId) => {
-        try {
-            const newSaved = savedUniversities.includes(universityId)
-                ? savedUniversities.filter(id => id !== universityId)
-                : [...savedUniversities, universityId];
-            setSavedUniversities(newSaved);
-            
-            const user = await apiClient.auth.me();
-            const profiles = await apiClient.entities.StudentProfile.filter({ created_by: user.email });
-            if (profiles.length > 0) {
-                await apiClient.entities.StudentProfile.update(profiles[0].id, { saved_universities: newSaved });
-            }
-        } catch (e) {
-            // Handle error
-        }
+    const changeResults = patch => {
+        const query = writeRecommendationState(searchParams, patch).toString();
+        navigate({ pathname: location.pathname, search: query, hash: location.hash }, { replace: true });
+    };
+
+    const rememberPosition = university => {
+        navigate(location.pathname + location.search + location.hash, {
+            replace: true,
+            state: { recommendationFocusId: university.id, recommendationScrollY: window.scrollY },
+        });
+    };
+
+    const handleSave = universityId => {
+        const university = universities.find(row => row.id === universityId);
+        if (!owner?.id || !owner?.email || !userProfile || !university || savingFavorite) return;
+        favoriteMutation.mutate({
+            owner,
+            university,
+            remove: isUniversityFavorite(userProfile.saved_universities, university),
+        });
     };
     
     const handleCompareToggle = (universityId) => {
@@ -297,9 +289,25 @@ export default function Recommendations() {
 
     const compareUniversities = universities.filter(uni => compareList.includes(uni.id));
     
-    const isLoading = loadingUniversities || loadingProfile;
+    const isLoading = loadingUniversities || profileQuery.isLoading;
+    const focusId = location.state?.recommendationFocusId;
+    const scrollY = location.state?.recommendationScrollY;
     
-    if (!userProfile && !isLoading) {
+    useEffect(() => {
+        if (navigationType !== 'POP' || isLoading || typeof focusId !== 'string') return;
+        const frame = requestAnimationFrame(() => {
+            const link = document.getElementById(`university-link-${focusId}`);
+            if (link && Number.isFinite(scrollY)) {
+                link.focus({ preventScroll: true });
+                window.scrollTo(0, scrollY);
+            } else {
+                document.getElementById('recommendations-title')?.focus();
+            }
+        });
+        return () => cancelAnimationFrame(frame);
+    }, [navigationType, location.key, isLoading, focusId, scrollY]);
+
+    if (!userProfile && !isLoading && !profileQuery.isError) {
         return (
             <div className="recommendations-page recommendations-gate min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
                 <Card className="product-card max-w-md w-full">
@@ -333,7 +341,7 @@ export default function Recommendations() {
                     <div className="product-hero-heading flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
 
-                            <h1 className="text-3xl font-bold">{copy.title}</h1>
+                            <h1 id="recommendations-title" tabIndex={-1} className="text-3xl font-bold">{copy.title}</h1>
                         </div>
                         {userProfile?.preferred_countries?.length > 0 && (
                             <Sheet>
@@ -408,38 +416,46 @@ export default function Recommendations() {
                             </Card>
                         ))}
                     </div>
-                ) : isError ? (
+                ) : isError || profileQuery.isError ? (
                     <div className="recommendation-empty" role="alert">
                         <h2>{{ru:'Не удалось загрузить рекомендации',en:'Unable to load recommendations',uz:'Tavsiyalarni yuklab bo‘lmadi'}[language]}</h2>
-                        <Button variant="outline" onClick={() => void refetch()}>{{ru:'Попробовать снова',en:'Try again',uz:'Qayta urinish'}[language]}</Button>
+                        <Button variant="outline" onClick={() => void (profileQuery.isError ? profileQuery.refetch() : refetch())}>{{ru:'Попробовать снова',en:'Try again',uz:'Qayta urinish'}[language]}</Button>
                     </div>
                 ) : (
                     <>
                         <div className="recommendation-toolbar">
                             <div className="recommendation-segments" role="group" aria-label={copy.title}>
-                                {[['all',copy.all],['budget',copy.budget],['unknown',copy.unknown]].map(([value,label]) => <button key={value} type="button" aria-pressed={resultFilter === value} onClick={() => setResultFilter(value)}>{label}</button>)}
+                                {[['all',copy.all],['budget',copy.budget],['unknown',copy.unknown]].map(([value,label]) => <button key={value} type="button" aria-pressed={resultFilter === value} onClick={() => changeResults({ filter: value })}>{label}</button>)}
                             </div>
-                            <label className="recommendation-sort"><ArrowDownUp size={18} aria-hidden="true" /><span className="sr-only">{copy.sort}</span><select value={sortOrder} onChange={e => setSortOrder(e.target.value)} aria-label={copy.sort}><option value="match">{copy.sort}</option><option value="name">{copy.name}</option></select></label>
+                            <label className="recommendation-sort"><ArrowDownUp size={18} aria-hidden="true" /><span className="sr-only">{copy.sort}</span><select value={sortOrder} onChange={e => changeResults({ sort: e.target.value })} aria-label={copy.sort}><option value="match">{copy.sort}</option><option value="name">{copy.name}</option></select></label>
                         </div>
                         <p className="recommendation-result-count" role="status">{visibleUniversities.length} {copy.results}{resultFilter === 'budget' && <span> · {copy.budgetNote}</span>}</p>
-                        {visibleUniversities.length === 0 && <div className="recommendation-empty"><h2>{copy.empty}</h2><Button variant="outline" onClick={() => setResultFilter('all')}>{copy.reset}</Button></div>}
+                        {visibleUniversities.length === 0 && <div className="recommendation-empty"><h2>{copy.empty}</h2><Button variant="outline" onClick={() => changeResults({ filter: 'all' })}>{copy.reset}</Button></div>}
                         {compareNotice && <p role="status" className="mb-4 text-sm text-[#855a36]">{compareNotice}</p>}
                         <p id="catalog-compare-status" className="sr-only">{messages.compareLimit}</p>
                         
                         <div className="recommendations-grid">
-                            {visibleUniversities.map((university) => (
-                                <RecommendationCard
-                                    key={university.id}
-                                    university={university}
-                                    profile={userProfile}
-                                    matchScore={university.matchScore}
-                                    isSaved={savedUniversities.includes(university.id)}
-                                    onSave={handleSave}
-                                    isComparing={compareList.includes(university.id)}
-                                    onCompareToggle={handleCompareToggle}
-                                    compareLimitReached={compareList.length >= 3}
-                                />
-                            ))}
+                            {visibleUniversities.map(university => {
+                                const affected = favoriteAction?.university.id === university.id;
+                                return (
+                                    <RecommendationCard
+                                        key={university.id}
+                                        university={university}
+                                        profile={userProfile}
+                                        matchScore={university.matchScore}
+                                        isSaved={isUniversityFavorite(userProfile?.saved_universities, university)}
+                                        onSave={handleSave}
+                                        saveDisabled={savingFavorite}
+                                        savePendingLabel={affected && savingFavorite ? favoriteText[favoriteAction.remove ? 'removing' : 'saving'] : undefined}
+                                        saveError={affected && favoriteMutation.isError ? favoriteText.saveError : ''}
+                                        saveNotice={affected && favoriteMutation.isSuccess ? favoriteText[favoriteAction.remove ? 'removedFromAccount' : 'savedInAccount'] : ''}
+                                        onView={rememberPosition}
+                                        isComparing={compareList.includes(university.id)}
+                                        onCompareToggle={handleCompareToggle}
+                                        compareLimitReached={compareList.length >= 3}
+                                    />
+                                );
+                            })}
                         </div>
                     </>
                 )}

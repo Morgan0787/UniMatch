@@ -161,10 +161,29 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profil
 .unimatch-app .catalog-page.search-page .search-profile-hint button { min-width: 44px; min-height: 44px; display: grid; place-items: center; color: #685034; }
 .unimatch-app .catalog-page.search-page .catalog-results .bg-indigo-100 { border: 1px solid #ffffffa6; background: #f1d9b866; color: #634422; }
 
+.unimatch-app .search-page .catalog-budget-results {
+  margin-bottom: 20px; padding: 16px; border: 1px solid #ffffffed; border-radius: 22px;
+  background: #fcf8f0de; color: #292e30; box-shadow: inset 0 1px #fff, 0 4px 14px #5d49300a;
+}
+.unimatch-app .search-page .catalog-budget-results h2 { margin: 0 0 4px; font-size: 18px; font-weight: 650; }
+.unimatch-app .search-page .catalog-budget-results p { color: #554b40; font-size: 14px; line-height: 1.45; }
+.unimatch-app .search-page .catalog-budget-groups { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px; }
+.unimatch-app .search-page .catalog-budget-groups button {
+  height: auto; min-height: 44px; padding: 8px 14px; border: 1px solid #bdb0a0; border-radius: 999px;
+  background: #fffdf8; color: #302a22; text-align: left; white-space: normal;
+}
+.unimatch-app .search-page .catalog-budget-groups button:hover { background: #f4e6d5; }
+.unimatch-app .search-page .catalog-budget-groups button[aria-pressed="true"] { border-color: #332c24; background: #332c24; color: #fff; }
+.unimatch-app .search-page .catalog-budget-groups button:focus-visible { outline: 2px solid #855a36; outline-offset: 2px; }
+.unimatch-app .search-page .catalog-budget-groups button span { padding-inline: 6px; border-radius: 999px; background: #a5896340; font-variant-numeric: tabular-nums; }
+.unimatch-app .search-page .catalog-budget-empty { padding: 20px 4px 24px; color: #51483f; font-size: 15px; }
+.unimatch-app .search-page .catalog-budget-reason { color: #79501e; }
+
 /* The reference card has three clear bands: identity/photo, programme/stats, review/actions. */
 .unimatch-app .catalog-page.search-page .search-programme-preview { display: flex; flex-direction: column; gap: 5px; color: #292e30; }
 .unimatch-app .catalog-page.search-page .search-programme-eyebrow { font-size: 13px; color: #65605a; }
-.unimatch-app .catalog-page.search-page .search-programme-preview h4 { margin: 0; font-size: 18px; font-weight: 650; line-height: 1.18; letter-spacing: -.025em; min-height: 43px; }
+.unimatch-app .catalog-page.search-page .search-programme-preview h4 { margin: 0; font-size: 18px; font-weight: 650; line-height: 1.18; letter-spacing: -.025em; min-height: 43px; white-space: normal; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .search-programme-campus { color: #51483f; }
 .unimatch-app .catalog-page.search-page .search-programme-stats { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; padding-block: 9px; border-block: 1px solid #8f765c24; }
 .unimatch-app .catalog-page.search-page .search-programme-stats > div { min-width: 0; }
 .unimatch-app .catalog-page.search-page .search-programme-stats > div + div { border-left: 1px solid #8f765c24; padding-left: 14px; }
@@ -187,6 +206,7 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profil
 .unimatch-app .catalog-page.search-page .university-identity-copy h3 { font-size: 24px; line-height: 1.05; }
 .unimatch-app .catalog-page.search-page .catalog-save { border-radius: 50%; }
 .unimatch-app .catalog-page.search-page .university-identity-actions { position: absolute; top: calc(100% + 8px); right: 22px; z-index: 2; }
+.unimatch-app .catalog-page.search-page .catalog-cover:not(:has(> .catalog-photo)) .university-identity-actions { position: static; }
 .unimatch-app .catalog-page.search-page .catalog-save { background: #ffffffe0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 .unimatch-app .catalog-page.search-page .catalog-photo { position: relative; }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { position: absolute; top: 104px; right: 20px; z-index: 1; display: flex; align-items: center; gap: 5px; min-height: 32px; padding: 3px 10px; border: 1px solid #ffffffb3; border-radius: 999px; background: #ffffffe0; font-size: 11px; color: #51483f; }

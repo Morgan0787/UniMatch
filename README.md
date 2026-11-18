@@ -23,11 +23,15 @@ Dropdown controls share responsive, keyboard-accessible menus across the survey,
 
 Search uses warm Liquid Glass materials, amber background light, compact programme cards and mobile filter sheets. [Implementation and release verification](docs/qa/search-liquid-glass-2026-11-07.md).
 
+The catalog's annual tuition limit shows verified programmes within budget first. Open the other budget groups to see programmes above the limit or whose tuition needs clarification. Programme cards identify the programme campus when sourced details are available.
+
 University Liquid Glass: a full-width pearl card with amber light and visible information sections, matching filter controls and language menus, plus compact mobile navigation with inline EN / RU / UZ and keyboard/outside dismissal. [Implementation and release verification](docs/qa/university-glass-2026-11-07.md).
 
 Survey Liquid Glass: three survey steps and preliminary matching share a full-width pearl surface, floating glass navigation, outlined subject icons and independently moving amber background light. Completed steps allow returning without losing answers; results show photos and the main qualification caveat. [Implementation, screenshots and verification limits](docs/qa/survey-liquid-glass-2026-11-07.md).
 
 Recommendations Liquid Glass (8 November 2026): warm pearl cards, profile metrics, segmented filters, smoked glass actions and a floating comparison dock follow the accepted reference. Layout adapts from 320 to 2560 CSS px, with one to four columns. Ranking and protected access are preserved. [Implementation, checks and verification limits](docs/qa/recommendations-glass-2026-11-08.md).
+
+Recommendation filter and sort choices are kept in the page URL. Opening a university from recommendations and returning to the list restores the card's position. The saved list updates after the account write is confirmed.
 
 Amber background motion (8 November 2026): every page except Home shares five independent amber lights across the center and edges, with distinct 11–16-second trajectories. Page canvases expose the light while content cards retain their fills. [Scope and browser verification](docs/qa/ambient-glow-depth-2026-11-08.md).
 

@@ -3,6 +3,8 @@ import { countries, guides } from './seo-editorial.mjs';
 
 const home = { href: '/', label: 'UniMatch' };
 const catalog = { href: '/Search', label: 'Explore and compare universities' };
+const survey = { href: '/AdmissionsSurvey', label: 'Find my match' };
+const surveyLabels = { en: survey.label, ru: 'Подобрать университеты', uz: 'Mos universitetlarni topish' };
 const universityIndex = { href: '/universities', label: 'University profiles' };
 const countryIndex = { href: '/countries', label: 'Study destinations' };
 const guideIndex = { href: '/guides', label: 'Application guides' };
@@ -79,6 +81,7 @@ function profile(institution, countryLink, needsDisambiguation) {
       ...(institution.website ? [{ href: institution.website, label: 'University website' }] : []),
       ...(countryLink ? [countryLink] : []),
       catalog,
+      survey,
       { href: `/University?id=${encodeURIComponent(institution.id)}`, label: 'Open interactive university details' },
     ],
     schema: [{
@@ -155,7 +158,8 @@ export function buildDiscoveryPages(institutions, editorial = guides) {
       ? Object.fromEntries(alternateEntries.map(entry => [entry.language, `${entry.language === 'en' ? '' : `/${entry.language}`}/guides/${entry.slug}`])) : null;
     if (alternates?.en) alternates['x-default'] = alternates.en;
     articles.push(page(path, heading, intro, [home, guideIndex], sections, {
-      language, ...(alternates ? { alternates } : {}),
+      language, actions: [catalog, { ...survey, label: surveyLabels[language] }],
+      ...(alternates ? { alternates } : {}),
       schema: [{
         '@type': 'Article', headline: heading, description: intro, inLanguage: language,
         author: { '@id': `${SITE_URL}/#organization` },

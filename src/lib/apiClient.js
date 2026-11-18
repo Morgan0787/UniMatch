@@ -72,7 +72,10 @@ const entityClient = (entityName) => {
         if (error) throw error
         return { submitted: true }
       }
-      if (entityName === 'StudentProfile' && !user?.email) throw new Error('Not authenticated')
+      if (entityName === 'StudentProfile') {
+        if (!user?.email) throw new Error('Not authenticated')
+        if (payload.created_by != null && payload.created_by !== user.email) throw new Error('sessionChanged')
+      }
       const record = {
         ...payload,
         ...(user?.email ? { created_by: user.email } : {}),

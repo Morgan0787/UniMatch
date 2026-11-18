@@ -19,12 +19,11 @@ import ChanceIndicator from '@/components/ui/ChanceIndicator';
 import { useLanguage } from '@/lib/i18n';
 import { admissionCopy } from '@/components/admissions/copy';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import usePublicAdmissionsCatalog from '@/components/admissions/usePublicAdmissionsCatalog';
 import CatalogStatus from '@/components/admissions/CatalogStatus';
 import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
-import { serializeFavoriteWrite } from '@/lib/admissions/favorites';
+import { saveStudentProfile, studentProfileQueryOptions, writeConfirmedUniversityFavorite } from '@/lib/studentProfile';
 import InstitutionMedia, { InstitutionLinks } from '@/components/admissions/InstitutionMedia';
 import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites';
 import { catalogText, catalogValue } from '@/lib/catalogCopy';
@@ -33,9 +32,9 @@ import '@/styles/internal-pages.css';
 import '@/styles/release-pages.css';
 
 const profileSaveMessages = {
-    en: 'Profile saved successfully!',
-    ru: 'Профиль успешно сохранён!',
-    uz: 'Profil muvaffaqiyatli saqlandi!',
+    en: { success: 'Profile saved successfully!', error: 'Could not save your profile. Please try again.' },
+    ru: { success: 'Профиль успешно сохранён!', error: 'Не удалось сохранить профиль. Попробуйте ещё раз.' },
+    uz: { success: 'Profil muvaffaqiyatli saqlandi!', error: 'Profilni saqlab bo‘lmadi. Qayta urinib ko‘ring.' },
 };
 
 export default function Profile() {
@@ -47,6 +46,7 @@ export default function Profile() {
         'Gap Year': t('profile.gapYear'),
     }[value] || value);
     const admissionText = admissionCopy[language] || admissionCopy.en;
+    const profileSaveText = profileSaveMessages[language] || profileSaveMessages.en;
     const queryClient = useQueryClient();
     const catalogQuery = usePublicAdmissionsCatalog();
     const catalog = catalogQuery.catalog;
@@ -57,11 +57,7 @@ export default function Profile() {
     const user = session?.user || null;
 
     // Get student profile
-    const { data: profiles = [], isLoading: profileLoading } = useQuery({
-        queryKey: ['studentProfile', user?.id, user?.email],
-        queryFn: () => apiClient.entities.StudentProfile.filter({ created_by: user?.email }),
-        enabled: !!user?.email,
-    });
+    const { data: profiles = [], isLoading: profileLoading, isError: profileError, refetch: refetchProfile } = useQuery(studentProfileQueryOptions(user));
 
     const profile = profiles[0];
     const favorites = useAdmissionFavorites({ answers: {}, view: 'survey', step: 0, catalog, catalogReady: catalogQuery.canSave, refreshCatalog: catalogQuery.refresh });
@@ -89,61 +85,17 @@ export default function Profile() {
 
     // Mutations
     const saveProfileMutation = useMutation({
-        mutationFn: async (data) => {
-            if (profile) {
-                return apiClient.entities.StudentProfile.update(profile.id, data);
-            } else {
-                return apiClient.entities.StudentProfile.create(data);
-            }
-        },
+        mutationFn: data => saveStudentProfile(queryClient, user, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
             setShowProfileBuilder(false);
-            toast.success(profileSaveMessages[language] || profileSaveMessages.en);
+            toast.success(profileSaveText.success);
         },
+        onError: () => toast.error(profileSaveText.error),
     });
 
     const removeSavedMutation = useMutation({
-        mutationFn: (universityId) => serializeFavoriteWrite(user?.id, async () => {
-            const { data, error } = await supabase.auth.getSession();
-            if (error) throw error;
-            if (!data.session?.user?.id || data.session.user.id !== user?.id || !data.session.user.email) {
-                throw new Error('Your signed-in account changed. Reload and retry.');
-            }
-            const ownedProfiles = await apiClient.entities.StudentProfile.filter({ created_by: data.session.user.email });
-            if (ownedProfiles.length !== 1 || ownedProfiles[0].id !== profile?.id) {
-                throw new Error('Your profile could not be selected safely.');
-            }
-            const current = ownedProfiles[0].saved_universities;
-            if (current != null && !Array.isArray(current)) throw new Error('The saved list has an unexpected format.');
-            const newSaved = (current || []).filter(id => id !== universityId);
-            const beforeWrite = await supabase.auth.getSession();
-            if (beforeWrite.error) throw beforeWrite.error;
-            if (beforeWrite.data.session?.user?.id !== user?.id
-                || beforeWrite.data.session?.user?.email !== data.session.user.email) {
-                throw new Error('Your signed-in account changed. Reload and retry.');
-            }
-            const updated = await apiClient.entities.StudentProfile.update(profile.id, { saved_universities: newSaved });
-            if (!Array.isArray(updated?.saved_universities) || updated.saved_universities.includes(universityId)) {
-                throw new Error('The save could not be confirmed. Please retry.');
-            }
-            const confirmed = await apiClient.entities.StudentProfile.filter({ id: profile.id });
-            const afterWrite = await supabase.auth.getSession();
-            if (afterWrite.error) throw afterWrite.error;
-            if (afterWrite.data.session?.user?.id !== user?.id
-                || afterWrite.data.session?.user?.email !== data.session.user.email) {
-                throw new Error('Your signed-in account changed. Reload and retry.');
-            }
-            if (confirmed.length !== 1 || !Array.isArray(confirmed[0].saved_universities)
-                || confirmed[0].saved_universities.includes(universityId)) {
-                throw new Error('The save could not be confirmed. Please retry.');
-            }
-            return confirmed[0];
-        }),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['studentProfile'] });
-        },
-        onError: error => toast.error(error?.message || 'Saved universities could not be updated.'),
+        mutationFn: universityId => writeConfirmedUniversityFavorite(queryClient, user, { id: universityId }, true),
+        onError: () => toast.error(admissionText.saveError),
     });
 
     if (userLoading || profileLoading) {
@@ -152,6 +104,17 @@ export default function Profile() {
                 <div className="max-w-4xl mx-auto space-y-6">
                     <Skeleton className="h-40 rounded-2xl" />
                     <Skeleton className="h-80 rounded-2xl" />
+                </div>
+            </div>
+        );
+    }
+
+    if (profileError && !profile) {
+        return (
+            <div className="min-h-screen p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+                <div className="max-w-4xl mx-auto space-y-4">
+                    <p role="alert">{admissionText[favorites.error] || admissionText.saveError}</p>
+                    <Button variant="outline" onClick={() => void refetchProfile()}>{admissionText.saveRetry}</Button>
                 </div>
             </div>
         );

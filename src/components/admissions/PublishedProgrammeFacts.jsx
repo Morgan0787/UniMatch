@@ -65,9 +65,9 @@ function CostReference({ fact, label, language, labels }) {
 }
 
 /** Displays only validated namespace facts; source links are resolved from its validated source map. */
-export default function PublishedProgrammeFacts({ admissionCatalog, language = 'en', compact = false, expandable = false, focused = false, additionalSources = [] }) {
+export default function PublishedProgrammeFacts({ admissionCatalog, language = 'en', compact = false, expandable = false, focused = false, additionalSources = [], initialProgrammeId = '' }) {
   const selectorId = useId();
-  const [selectedId, setSelectedId] = useState('');
+  const [selectedId, setSelectedId] = useState(initialProgrammeId);
   if (!admissionCatalog) return null;
   const labels = LABELS[language] || LABELS.en;
   const extra = { en:{notes:'Published conditions',location:'Programme campus',intake:'Intake'},ru:{notes:'Опубликованные условия',location:'Кампус программы',intake:'Набор'},uz:{notes:'E’lon qilingan shartlar',location:'Dastur kampusi',intake:'Qabul davri'} }[language] || {notes:'Published conditions',location:'Programme campus',intake:'Intake'};

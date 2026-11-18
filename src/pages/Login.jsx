@@ -48,6 +48,8 @@ export default function Login() {
   const navigate = useNavigate()
   const rawRedirectTo = searchParams.get('redirect_to')
   const redirectTo = safeLoginReturn(rawRedirectTo)
+  const returnPath = redirectTo.split(/[?#]/, 1)[0].replace(/\/$/, '').toLowerCase()
+  const returnsToProfile = returnPath === '/recommendations' || returnPath === '/profile'
   const cancelTo = loginCancelTarget(rawRedirectTo, readLastPublicRoute())
 
   const [fullName, setFullName] = useState('')
@@ -201,6 +203,7 @@ export default function Login() {
               <h1 id="auth-title">{successState ? successState.title : l(method === 'signup' ? 'Create Account' : 'Sign in to your account')}</h1>
               <p>{successState ? successState.message : sceneCopy.subtitle}</p>
             </header>
+            {!successState && returnsToProfile && <p className="auth-return-notice">{sceneCopy.recommendationsNotice}</p>}
             {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="auth-return-notice">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
             {successState ? <div className="auth-success" role="status">
               <div className="auth-success-icon"><Mail aria-hidden="true" /></div>

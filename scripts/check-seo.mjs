@@ -190,6 +190,10 @@ assert.deepEqual(before.filter(page => page.universityId).map(page => page.path)
   ['/universities/other-institution', '/universities/sample-university']);
 assert.equal(new Set(before.filter(page => page.universityId).map(page => page.title)).size, 2);
 assert.equal(new Set(before.filter(page => page.universityId).map(page => page.description)).size, 2);
+for (const page of before.filter(page => page.universityId)) {
+  assert.ok(page.actions.some(link => link.href === '/Search'));
+  assert.ok(page.actions.some(link => link.href === '/AdmissionsSurvey'));
+}
 assert.ok(!before.some(page => page.path.includes('never-index')));
 const editorial = [
   { state: 'published', language: 'en', slug: 'guide-en', heading: 'English guide', intro: 'Intro', translationKey: 'guide' },
@@ -202,6 +206,8 @@ const editorial = [
 }));
 const translated = buildDiscoveryPages([], editorial).pages.filter(page => page.path.includes('/guides/'));
 assert.equal(translated.length, 2);
+assert.deepEqual(translated.map(page => page.actions.find(link => link.href === '/AdmissionsSurvey')?.label),
+  ['Find my match', 'Подобрать университеты']);
 for (const page of translated) assert.deepEqual(page.alternates, {
   en: '/guides/guide-en', ru: '/ru/guides/guide-ru', 'x-default': '/guides/guide-en',
 });

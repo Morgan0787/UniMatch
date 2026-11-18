@@ -6,6 +6,7 @@
 - Missing GPA/IELTS/TOPIK may use clearly labelled regional estimates through `EstimatedField`, never a fabricated school-specific number.
 - Missing tuition, acceptance rate, degree levels, or notable programs must display `Not published` unless verified data exists.
 - Never treat an LLM-generated number as fact without `source_url` and `verified`.
+- Search compares an annual EUR tuition limit against confirmed tuition for the displayed programme and intake. It separates above-limit results and cases requiring confirmation, including older prices, other currencies, and fees that depend on an applicant category. Living costs are separate from the Search limit.
 - Do not scrape or reuse competitor databases such as Studyportals.
 
 ## Schema gotchas

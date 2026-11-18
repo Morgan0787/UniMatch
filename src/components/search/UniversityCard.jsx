@@ -4,9 +4,10 @@ import { universityPageUrl } from '@/lib/universityNavigation';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Globe, Bookmark, BookmarkCheck, ArrowRight, Award, GitCompare } from 'lucide-react';
+import { Globe, Bookmark, BookmarkCheck, ArrowRight, Award, GitCompare, LoaderCircle } from 'lucide-react';
 import LanguageReadiness from './LanguageReadiness';
 import { catalogText, catalogValue } from '@/lib/catalogCopy';
+import { catalogSearchCopy } from '@/lib/catalogSearchCopy';
 import EstimatedField from '@/components/ui/EstimatedField';
 import { motion } from 'framer-motion';
 import UniversityCover from '@/components/ui/UniversityCover';
@@ -16,10 +17,12 @@ import SearchProgrammePreview from './SearchProgrammePreview';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
-export default function UniversityCard({ university, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, prioritizePhotoLoading = false, previewOnly = false, children = null }) {
+export default function UniversityCard({ university, programme = comparisonProgrammes(university)[0], budget = undefined, userGpa, userIelts, userTopik, isSaved, saveDisabled = false, savePendingLabel = undefined, onSave, onView = undefined, isComparing, onCompareToggle, compareLimitReached = false, prioritizePhotoLoading = false, previewOnly = false, children = null }) {
     const { t, language } = useLanguage();
     const location = useLocation();
-    const detailUrl = universityPageUrl(university.id, location.pathname + location.search + location.hash);
+    const detailUrl = universityPageUrl(university.id, location.pathname + location.search + location.hash, programme?.id);
+    const searchCopy = catalogSearchCopy(language);
+    const budgetReason = budget?.reason ? searchCopy.budgetReasons[budget.reason] : '';
     const limitLabel = {en:'Limit: 3 universities — remove one first',ru:'Лимит: 3 вуза — сначала уберите один',uz:'Limit: 3 ta universitet — avval bittasini olib tashlang'}[language];
     const hasAdmissionCatalog = university.admissionCatalog !== undefined;
     const limited = !previewOnly && comparisonProgrammes(university).length === 0;
@@ -42,20 +45,23 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                 {/* Header with cover */}
                 <div className="catalog-cover relative overflow-hidden">
                     <UniversityPhoto university={university} language={language} showDetails={false} prioritizeLoading={prioritizePhotoLoading} responsivePreview />
-                    <UniversityCover university={university} size="small" showName actions={
+                    <UniversityCover university={university} size="small" showName locationLabel={!previewOnly && programme ? searchCopy.mainUniversity : ''} actions={
                         <Button
                             variant="ghost"
                             size="icon"
-                            aria-label={`${t(isSaved ? 'university.saved' : 'university.save')}: ${university.name}`}
+                            aria-label={`${savePendingLabel || t(isSaved ? 'university.saved' : 'university.save')}: ${university.name}`}
                             aria-pressed={Boolean(isSaved)}
-                            disabled={previewOnly || saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
+                            aria-busy={Boolean(savePendingLabel)}
+                            disabled={previewOnly || saveDisabled || Boolean(savePendingLabel) || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
                             className="catalog-save hover:bg-white"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onSave(university.id);
                             }}
                         >
-                            {isSaved ? (
+                            {savePendingLabel ? (
+                                <LoaderCircle className="w-4 h-4 motion-safe:animate-spin" aria-hidden="true" />
+                            ) : isSaved ? (
                                 <BookmarkCheck className="w-4 h-4 text-indigo-600" />
                             ) : (
                                 <Bookmark className="w-4 h-4 text-slate-400" />
@@ -79,13 +85,16 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                     {/* Quick stats */}
                     <div className="catalog-card-facts space-y-1.5">
                         {hasAdmissionCatalog ? (
-                            <SearchProgrammePreview admissionCatalog={university.admissionCatalog} language={language} />
+                            programme ? <SearchProgrammePreview programme={programme} budgetReason={budgetReason} language={language} />
+                                : budgetReason && <p className="catalog-budget-reason text-sm">{budgetReason}</p>
                         ) : <>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
                                 <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.tuition')}</p>
                                 <p className="catalog-tuition font-semibold text-slate-800 break-words">
-                                    {hasTuitionMin ? (
+                                    {budgetReason ? (
+                                        <span className="catalog-budget-reason text-sm font-normal">{budgetReason}</span>
+                                    ) : hasTuitionMin ? (
                                         university.tuition_min === 0 ? (
                                             <span className="text-emerald-600">{t('university.free')}</span>
                                         ) : (
@@ -153,7 +162,9 @@ export default function UniversityCard({ university, userGpa, userIelts, userTop
                         <Button asChild
                             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium h-9 text-sm"
                         >
-                            <Link id={`university-link-${university.id}`} to={detailUrl} state={{ fromApp: true }} onClick={() => onView?.(university)}>
+                            <Link id={`university-link-${university.id}`} to={detailUrl} state={{ fromApp: true }} onClick={event => {
+                                if (!event.defaultPrevented && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) onView?.(university);
+                            }}>
                             {{en:'Details',ru:'Подробнее',uz:'Batafsil'}[language] || t('university.viewDetails')}
                             <ArrowRight className="w-3.5 h-3.5 ml-1.5" aria-hidden="true" />
                             </Link>

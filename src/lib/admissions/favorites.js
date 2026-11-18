@@ -3,8 +3,11 @@ import { favoriteStorageId, institutionIdFromFavorite } from './favoriteKeys.js'
 
 const userQueues = new Map();
 
-/** Serialize favorite writes across mounted hooks for one auth user. */
+/** Serialize writes for one account across tabs where Web Locks is available. */
 export async function serializeFavoriteWrite(userId, task) {
+  const locks = globalThis.navigator?.locks;
+  if (locks) return locks.request(`unimatch:favorites:${userId}`, task);
+
   const previous = userQueues.get(userId) || Promise.resolve();
   let release = () => {};
   const current = new Promise(resolve => { release = () => resolve(undefined); });
@@ -23,7 +26,9 @@ export function canonicalFavoriteId(value, institutions = []) {
   if (typeof value !== 'string') return null;
   const key = value.toLowerCase();
   const institution = institutions.find(row => [row.id, ...(row.legacyFavoriteKeys || [])].some(id => id.toLowerCase() === key));
-  return institution?.institutionId || institutionIdFromFavorite(value);
+  if (institution) return institution.institutionId;
+  const frozenId = institutionIdFromFavorite(key);
+  return institutions.some(row => row.institutionId === frozenId) ? null : frozenId;
 }
 
 /** @param {unknown} saved */
@@ -148,8 +153,8 @@ export function clearFavoriteIntent(storage) {
 }
 
 /**
- * Save against an injected profile repository. The read/write/read sequence
- * confirms persistence but cannot prevent a concurrent cross-tab array race.
+ * Save against an injected profile repository. Callers should serialize the
+ * read/write/read sequence so writes use the most recent saved list.
  * @param {{findProfiles: (email: string) => Promise<any[]>, createProfile: (row: any) => Promise<any>, updateProfile: (id: string, row: any) => Promise<any>, readProfile: (id: string) => Promise<any>}} repository
  * @param {{id: string, email: string}} owner
  * @param {string} institutionId
@@ -160,6 +165,7 @@ export async function writeAdmissionFavorite(repository, owner, institutionId, r
   const profiles = await repository.findProfiles(owner.email);
   if (!Array.isArray(profiles) || profiles.length > 1) throw new Error('Your profile could not be selected safely.');
   const profile = profiles[0] || null;
+  if (!profile && remove) throw new Error('Your profile could not be found.');
   if (profile && profile.saved_universities != null && !Array.isArray(profile.saved_universities)) {
     throw new Error('The saved list has an unexpected format.');
   }

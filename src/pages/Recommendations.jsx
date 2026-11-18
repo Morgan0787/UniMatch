@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Target, GraduationCap, Globe, Coins, BookOpen, Pencil, ArrowRight, AlertCircle, GitCompare, SlidersHorizontal, ArrowDownUp, X } from 'lucide-react';
 import UniversityCard from '@/components/search/UniversityCard';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
@@ -427,7 +428,16 @@ export default function Recommendations() {
                             <div className="recommendation-segments" role="group" aria-label={copy.title}>
                                 {[['all',copy.all],['budget',copy.budget],['unknown',copy.unknown]].map(([value,label]) => <button key={value} type="button" aria-pressed={resultFilter === value} onClick={() => changeResults({ filter: value })}>{label}</button>)}
                             </div>
-                            <label className="recommendation-sort"><ArrowDownUp size={18} aria-hidden="true" /><span className="sr-only">{copy.sort}</span><select value={sortOrder} onChange={e => changeResults({ sort: e.target.value })} aria-label={copy.sort}><option value="match">{copy.sort}</option><option value="name">{copy.name}</option></select></label>
+                            <Select value={sortOrder} onValueChange={sort => changeResults({ sort })}>
+                                <SelectTrigger className="recommendation-sort" aria-label={{ en: 'Sort recommendations', ru: 'Сортировка рекомендаций', uz: 'Tavsiyalarni saralash' }[language]}>
+                                    <ArrowDownUp size={18} aria-hidden="true" className="shrink-0" />
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="glass-filter-options recommendation-sort-options" align="end">
+                                    <SelectItem value="match">{copy.sort}</SelectItem>
+                                    <SelectItem value="name">{copy.name}</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <p className="recommendation-result-count" role="status">{visibleUniversities.length} {copy.results}{resultFilter === 'budget' && <span> · {copy.budgetNote}</span>}</p>
                         {visibleUniversities.length === 0 && <div className="recommendation-empty"><h2>{copy.empty}</h2><Button variant="outline" onClick={() => changeResults({ filter: 'all' })}>{copy.reset}</Button></div>}

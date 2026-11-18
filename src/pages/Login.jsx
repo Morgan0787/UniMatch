@@ -13,6 +13,7 @@ import { loginText, loginEmailNotice } from '@/lib/loginCopy'
 import { loginCancelTarget, readLastPublicRoute, safeLoginReturn } from '@/lib/loginReturn'
 import AuthExperience from '@/components/auth/AuthExperience'
 import { authSceneCopy } from '@/components/auth/authCopy'
+import { SURVEY_PROFILE_RETURN } from '@/lib/admissions/surveyProfile'
 import '@/styles/release-pages.css'
 import '@/styles/auth-experience.css'
 
@@ -50,7 +51,8 @@ export default function Login() {
   const redirectTo = safeLoginReturn(rawRedirectTo)
   const returnPath = redirectTo.split(/[?#]/, 1)[0].replace(/\/$/, '').toLowerCase()
   const returnsToProfile = returnPath === '/recommendations' || returnPath === '/profile'
-  const cancelTo = loginCancelTarget(rawRedirectTo, readLastPublicRoute())
+  const savesSurveyProfile = redirectTo === SURVEY_PROFILE_RETURN
+  const cancelTo = savesSurveyProfile ? '/AdmissionsSurvey' : loginCancelTarget(rawRedirectTo, readLastPublicRoute())
 
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -204,7 +206,8 @@ export default function Login() {
               <p>{successState ? successState.message : sceneCopy.subtitle}</p>
             </header>
             {!successState && returnsToProfile && <p className="auth-return-notice">{sceneCopy.recommendationsNotice}</p>}
-            {redirectTo.includes('/AdmissionsSurvey') && <p role="status" className="auth-return-notice">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
+            {savesSurveyProfile ? <p className="auth-return-notice">{sceneCopy.surveyProfileNotice}</p>
+              : returnPath === '/admissionssurvey' && <p role="status" className="auth-return-notice">{{en:'Sign in to save your university. You will return to your results and confirm the save. Your answers stay on this device for up to two hours.',ru:'Войдите, чтобы сохранить вуз. После входа вы вернётесь к результатам и подтвердите сохранение. Ответы хранятся на этом устройстве до двух часов.',uz:'Universitetni saqlash uchun kiring. Natijalarga qaytib, saqlashni tasdiqlaysiz. Javoblar bu qurilmada ikki soatgacha saqlanadi.'}[language]}</p>}
             {successState ? <div className="auth-success" role="status">
               <div className="auth-success-icon"><Mail aria-hidden="true" /></div>
               <Button variant="outline" onClick={() => setSuccessState(null)}>{l('Use a different method')}</Button>

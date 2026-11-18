@@ -16,9 +16,9 @@ const countries = [
     "Nigeria", "Kenya", "Ghana", "Egypt", "Morocco", "Other"
 ];
 
-const languages = ["English", "German", "French", "Russian", "Mixed"];
+const languages = ["English", "Korean", "German", "French", "Polish", "Italian", "Spanish", "Russian", "Mixed"];
 const interests = [
-    "Engineering", "Computer Science", "Business", "Medicine", "Law",
+    "Engineering", "Computer Science", "Information Technology", "Computer Engineering", "Software Engineering", "Business", "Medicine", "Law",
     "Arts & Design", "Natural Sciences", "Social Sciences", "Economics", "Architecture"
 ];
 
@@ -26,16 +26,17 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
     const { t, language } = useLanguage();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
-        gpa: profile?.gpa || 3.0,
-        english_proficiency: profile?.english_proficiency || 0,
-        topikLevel: profile?.topikLevel || "Not taken",
-        budget_max: profile?.budget_max || 10000,
+        gpa: profile ? profile.gpa ?? null : 3.0,
+        english_proficiency: profile ? profile.english_proficiency ?? null : 0,
+        topikLevel: profile ? profile.topikLevel ?? null : 'Not taken',
+        budget_max: profile ? profile.budget_max ?? null : 10000,
         home_country: profile?.home_country || "",
         grade_level: profile?.grade_level || "",
         target_degree: profile?.target_degree || "Bachelor",
         preferred_languages: profile?.preferred_languages || [],
         interests: profile?.interests || []
     });
+    const ieltsScores = [...new Set([5.5, 6, 6.5, 7, formData.english_proficiency].filter(score => score > 0))].sort((a, b) => a - b);
 
     const updateField = (key, value) => {
         setFormData(prev => ({ ...prev, [key]: value }));
@@ -52,7 +53,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
     };
 
     const handleSubmit = () => {
-        onSave(formData);
+        onSave(Object.fromEntries(Object.entries(formData).filter(([, value]) => value !== null)));
     };
 
     const totalSteps = 3;
@@ -102,7 +103,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         <div className="flex items-center gap-4">
                                             <Slider
                                                 aria-labelledby="profile-gpa-label"
-                                                value={[formData.gpa]}
+                                                value={[formData.gpa ?? 1]}
                                                 onValueChange={([val]) => updateField('gpa', val)}
                                                 min={1.0}
                                                 max={4.0}
@@ -110,7 +111,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 className="flex-1"
                                             />
                                             <span className="w-12 text-center font-semibold text-indigo-600 text-lg">
-                                                {formData.gpa.toFixed(1)}
+                                                {formData.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? '—'}
                                             </span>
                                         </div>
                                         <p className="text-xs text-slate-400">
@@ -157,7 +158,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                     <div className="space-y-2">
                                         <Label htmlFor="profile-ielts">{t('profile.englishProficiency')}</Label>
                                         <Select
-                                            value={String(formData.english_proficiency)}
+                                            value={formData.english_proficiency == null ? '' : String(formData.english_proficiency)}
                                             onValueChange={(val) => updateField('english_proficiency', Number(val))}
                                         >
                                             <SelectTrigger id="profile-ielts">
@@ -165,10 +166,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="0">{t('profile.noCertificate')}</SelectItem>
-                                                <SelectItem value="5.5">IELTS 5.5</SelectItem>
-                                                <SelectItem value="6.0">IELTS 6.0</SelectItem>
-                                                <SelectItem value="6.5">IELTS 6.5</SelectItem>
-                                                <SelectItem value="7.0">IELTS 7.0+</SelectItem>
+                                                {ieltsScores.map(score => <SelectItem key={score} value={String(score)}>IELTS {score.toFixed(1)}</SelectItem>)}
                                             </SelectContent>
                                         </Select>
                                         <p className="text-xs text-slate-400">
@@ -179,7 +177,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                     <div className="space-y-2">
                                         <Label htmlFor="profile-topik">{t('profile.koreanProficiency')} 🇰🇷</Label>
                                         <Select
-                                            value={formData.topikLevel || "Not taken"}
+                                            value={formData.topikLevel ?? ''}
                                             onValueChange={(val) => updateField('topikLevel', val)}
                                         >
                                             <SelectTrigger id="profile-topik">
@@ -222,7 +220,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                         <div className="flex items-center gap-4">
                                             <Slider
                                                 aria-labelledby="profile-budget-label"
-                                                value={[formData.budget_max]}
+                                                value={[formData.budget_max ?? 0]}
                                                 onValueChange={([val]) => updateField('budget_max', val)}
                                                 min={0}
                                                 max={50000}
@@ -230,7 +228,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 className="flex-1"
                                             />
                                             <span className="w-20 text-center font-semibold text-indigo-600 text-lg">
-                                                €{formData.budget_max.toLocaleString()}
+                                                {formData.budget_max == null ? '—' : `€${formData.budget_max.toLocaleString(language)}`}
                                             </span>
                                         </div>
                                         <p className="text-xs text-slate-400">

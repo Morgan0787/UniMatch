@@ -6,7 +6,7 @@ The recovery candidate combines Release 18 (1ec35b3) with SEO/domain configurati
 
 ## Product
 
-Browser audit fixes (18 November 2026, local): Search separates annual tuition by verified budget fit and identifies the campus of the displayed programme. Recommendations keep filter and sort in the URL, restore the card on return, and update favorites after confirming the profile write. [Usage](../../../README.md#how-it-works).
+Search identifies the campus of the displayed programme and applies its annual tuition limit in the main list. Recommendations keep filter and sort in the URL, restore the card on return, and update favorites after confirming the profile write. [Usage](../../../README.md#how-it-works).
 
 Recommendations Liquid Glass (8 November 2026): uses the accepted glass reference with responsive one-to-four-column cards, profile metric strip, budget/unknown filters, sorting and a mobile comparison dock. Reuses Search programme/photo presentation; ranking, daily selection and protected access remain unchanged. [Implementation and verification](../../qa/recommendations-glass-2026-11-08.md).
 

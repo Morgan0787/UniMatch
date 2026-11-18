@@ -182,17 +182,17 @@ export default function Profile() {
                     {/* Quick Stats */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
                         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                            <p className="text-2xl sm:text-3xl font-bold">{profile.gpa?.toFixed(1) || '-'}</p>
+                            <p className="text-2xl sm:text-3xl font-bold">{profile.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? '—'}</p>
                             <p className="text-indigo-100 text-xs sm:text-sm">{t('profile.yourGpa')}</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
                             <p className="text-2xl sm:text-3xl font-bold">
-                                {profile.english_proficiency === 0 ? '-' : profile.english_proficiency?.toFixed(1)}
+                                {profile.english_proficiency > 0 ? profile.english_proficiency.toFixed(1) : '—'}
                             </p>
                             <p className="text-indigo-100 text-xs sm:text-sm">{t('profile.ielts')}</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
-                            <p className="text-2xl sm:text-3xl font-bold">€{profile.budget_max?.toLocaleString() || '-'}</p>
+                            <p className="text-2xl sm:text-3xl font-bold">{profile.budget_max == null ? '—' : `€${profile.budget_max.toLocaleString(language)}`}</p>
                             <p className="text-indigo-100 text-xs sm:text-sm">{t('profile.maxBudget')}</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur rounded-xl p-4 text-center">
@@ -355,7 +355,7 @@ export default function Profile() {
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.gpa')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.gpa?.toFixed(1) || t('profile.notSet')}</p>
+                                        <p className="font-semibold text-slate-800 text-lg">{profile.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? t('profile.notSet')}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.englishProficiency')}</p>
@@ -366,12 +366,12 @@ export default function Profile() {
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.koreanProficiency')} 🇰🇷</p>
                                         <p className="font-semibold text-slate-800 text-lg">
-                                            {profile.topikLevel || t('profile.notTaken')}
+                                            {profile.topikLevel || t('profile.notSet')}
                                         </p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.maximumBudget')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">€{profile.budget_max?.toLocaleString() || t('profile.notSet')}/{t('common.year')}</p>
+                                        <p className="font-semibold text-slate-800 text-lg">{profile.budget_max == null ? t('profile.notSet') : `€${profile.budget_max.toLocaleString(language)}/${t('common.year')}`}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-slate-500">{t('profile.homeCountry')}</p>
@@ -397,6 +397,10 @@ export default function Profile() {
                                             )}
                                         </div>
                                     </div>
+                                    {profile.preferred_countries?.length > 0 && <div>
+                                        <p className="text-sm text-slate-500">{t('profile.preferredCountries')}</p>
+                                        <div className="flex flex-wrap gap-1 mt-1">{profile.preferred_countries.map(country => <Badge key={country} variant="secondary">{catalogValue(country, language)}</Badge>)}</div>
+                                    </div>}
                                 </div>
 
                                 {profile.interests?.length > 0 && (

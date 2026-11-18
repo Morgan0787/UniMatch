@@ -26,10 +26,15 @@ async function publishProfile(queryClient, owner, profile) {
 export function saveStudentProfile(queryClient, owner, fields) {
   return serializeFavoriteWrite(owner.id, async () => {
     const [existing] = await readOwnedProfiles(owner);
+    const updates = typeof fields === 'function' ? fields(existing) : fields;
+    if (existing && Object.keys(updates).length === 0) {
+      await publishProfile(queryClient, owner, existing);
+      return existing;
+    }
     const repository = admissionFavoriteRepository(owner);
     const profile = existing
-      ? await repository.updateProfile(existing.id, fields)
-      : await repository.createProfile(fields);
+      ? await repository.updateProfile(existing.id, updates)
+      : await repository.createProfile(updates);
     await publishProfile(queryClient, owner, profile);
     return profile;
   });

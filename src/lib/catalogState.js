@@ -1,5 +1,4 @@
 export const DEFAULT_FILTERS = { gpa: null, ielts: null, topikLevel: null, budget: null, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
-export const CATALOG_BUDGET_GROUPS = /** @type {const} */ (['within', 'above', 'unknown']);
 
 /** @param {Record<string, any>} [value] */
 export function normalizeFilters(value = {}) {
@@ -22,11 +21,9 @@ export function readCatalogState(params, fallback = DEFAULT_FILTERS) {
     let filters = fallback;
     try { if (params.has('filters')) filters = JSON.parse(params.get('filters')); } catch { filters = DEFAULT_FILTERS; }
     const page = Number(params.get('page'));
-    const budgetGroup = params.get('budgetView');
     return {
         query: params.get('q') || '', filters: normalizeFilters(filters),
-        page: Number.isInteger(page) && page > 0 ? page : 1,
-        budgetGroup: budgetGroup === 'above' || budgetGroup === 'unknown' ? budgetGroup : 'within',
+        page: !params.has('budgetView') && Number.isInteger(page) && page > 0 ? page : 1,
     };
 }
 
@@ -36,8 +33,7 @@ export function writeCatalogState(params, patch, fallback) {
     if (state.query) next.set('q', state.query); else next.delete('q');
     const filters = normalizeFilters(state.filters);
     next.set('filters', JSON.stringify(filters));
-    if (filters.budget != null && (state.budgetGroup === 'above' || state.budgetGroup === 'unknown')) next.set('budgetView', state.budgetGroup);
-    else next.delete('budgetView');
+    next.delete('budgetView');
     if (state.page > 1) next.set('page', String(state.page)); else next.delete('page');
     return next;
 }

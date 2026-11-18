@@ -143,8 +143,8 @@ export function selectCatalogSearchResults(universities, filters, searchQuery, c
     if (!candidates.length) return [{ university, programme: null, budget: assessProgrammeBudget(null, null, filters.budget, currentYear) }];
     const options = candidates.map(programme => ({ university, programme, budget: assessProgrammeBudget(programme, university.admissionCatalog, filters.budget, currentYear) }));
     const representative = options.find(option => option.budget.group === 'within')
-      ?? options.find(option => option.budget.group === 'unknown') ?? options[0];
-    return [representative];
+      ?? options.find(option => option.budget.group === 'unknown');
+    return representative ? [representative] : [];
   });
 }
 

@@ -7,6 +7,7 @@ import { admissionCopy } from '@/components/admissions/copy';
 import SurveyFields from '@/components/admissions/SurveyFields';
 import PreliminaryResults from '@/components/admissions/PreliminaryResults';
 import SurveyStory from '@/components/admissions/SurveyStory';
+import SurveyProfileAction from '@/components/admissions/SurveyProfileAction';
 import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites';
 import usePublicAdmissionsCatalog from '@/components/admissions/usePublicAdmissionsCatalog';
 import CatalogStatus from '@/components/admissions/CatalogStatus';
@@ -128,6 +129,7 @@ export default function AdmissionsSurvey() {
         </form> : catalogQuery.isPending || catalog.version === 'db-v1:unavailable'
           ? <button type="button" className="admission-button admission-secondary" onClick={edit}>{c.edit}</button>
           : <PreliminaryResults evaluation={evaluation} answers={answers} onEdit={edit} onApply={apply} errors={errors} c={c} language={language} favorites={favorites} institutions={catalog.institutions} catalogEmpty={catalog.options.length === 0} />}
+        {view === 'results' && <SurveyProfileAction answers={answers} language={language} restored={initial.status === 'restored' && initial.view === 'results'} storage={storage()} />}
       </div>
     </div>
     <footer className="admission-footer"><p>{c.temporary}</p></footer>

@@ -12,13 +12,11 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { Search as SearchIcon, SlidersHorizontal, GraduationCap, X, GitCompare, ChevronLeft, ChevronRight } from 'lucide-react';
 import FilterPanel from '@/components/search/FilterPanel';
 import UniversityCard from '@/components/search/UniversityCard';
-import SearchBudgetResults from '@/components/search/SearchBudgetResults';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
 import { useLanguage } from '@/lib/i18n';
 import { catalogContent, DiscoverySections } from '@/lib/discoveryContent';
 import discoveryLinks from 'virtual:seo-discovery-links';
 import { selectCatalogSearchResults, getCatalogPage } from '@/lib/catalogResults';
-import { catalogSearchCopy } from '@/lib/catalogSearchCopy';
 import { getUniversityPhoto } from '@/lib/admissions/presentation';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { DEFAULT_FILTERS, normalizeFilters, readCatalogState, writeCatalogState } from '@/lib/catalogState';
@@ -69,14 +67,13 @@ export default function Search() {
     }[language] || { title: 'Your world. Your possibilities.', intro: '', hint: 'Add your GPA and language scores to see a personal chance estimate.' };
     const [searchParams, setSearchParams] = useSearchParams();
     const [savedFilters] = useState(loadSavedFilters);
-    const { query: searchQuery, filters, page: resultPage, budgetGroup } = useMemo(() => readCatalogState(searchParams, savedFilters), [searchParams, savedFilters]);
+    const { query: searchQuery, filters, page: resultPage } = useMemo(() => readCatalogState(searchParams, savedFilters), [searchParams, savedFilters]);
     const setFilters = useCallback(update => setSearchParams(params => {
         const previous = readCatalogState(params, savedFilters);
         const next = normalizeFilters(typeof update === 'function' ? update(previous.filters) : update);
-        return writeCatalogState(params, { filters: next, page: 1, budgetGroup: next.budget === previous.filters.budget ? previous.budgetGroup : 'within' }, savedFilters);
+        return writeCatalogState(params, { filters: next, page: 1 }, savedFilters);
     }, { replace: true }), [setSearchParams, savedFilters]);
     const setSearchQuery = query => setSearchParams(params => writeCatalogState(params, { query, page: 1 }, savedFilters), { replace: true });
-    const setBudgetGroup = group => setSearchParams(params => writeCatalogState(params, { budgetGroup: group, page: 1 }, savedFilters));
     const deferredQuery = useDeferredValue(searchQuery);
     const [showFirstVisitHint, setShowFirstVisitHint] = useState(() => {
         if (typeof window === 'undefined') return false;
@@ -114,17 +111,7 @@ export default function Search() {
         }));
     }, [userProfile, searchParams, setFilters]);
 
-    const budgetCopy = catalogSearchCopy(language);
-    const sortedResults = useMemo(() => selectCatalogSearchResults(universities, filters, deferredQuery), [universities, filters, deferredQuery]);
-    const budgetGroups = useMemo(() => {
-        const groups = { within: [], above: [], unknown: [] };
-        for (const result of sortedResults) {
-            if (result.budget) groups[result.budget.group].push(result);
-        }
-        return groups;
-    }, [sortedResults]);
-    const hasBudget = filters.budget != null;
-    const shownResults = hasBudget ? budgetGroups[budgetGroup] : sortedResults;
+    const shownResults = useMemo(() => selectCatalogSearchResults(universities, filters, deferredQuery), [universities, filters, deferredQuery]);
     const pageInfo = getCatalogPage(shownResults, resultPage);
     const showingPreview = canShowPreview && previewRows.length > 0;
     const pageRows = showingPreview ? previewRows.map(university => ({ university, programme: null, budget: null })) : pageInfo.rows;
@@ -207,7 +194,7 @@ export default function Search() {
                             <SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer search-glass-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen">
                                 <SheetTitle className="sr-only">{t('search.filters')}</SheetTitle>
                                 <div className="flex-1 overflow-y-auto p-4 pt-10"><FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} /></div>
-                                <div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({sortedResults.length})</Button></div>
+                                <div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>
                             </SheetContent>
                         </Sheet>
                     </div>
@@ -223,14 +210,13 @@ export default function Search() {
             <p id="catalog-compare-status" role="status" aria-live="polite" className={`max-w-7xl mx-auto px-4 sm:px-6 text-sm text-slate-600 ${compareList.length ? 'pt-4' : 'sr-only'}`}>{compareList.length === 3 ? compareStatus : compareList.length > 0 ? `${compareList.length} / 3` : ''}</p>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
                 <div id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="min-w-0">
-                    {!isLoading && !isError && hasBudget && <SearchBudgetResults budget={filters.budget} groups={budgetGroups} selected={budgetGroup} onSelect={setBudgetGroup} language={language} />}
                     {isLoading && !showingPreview ? (
                         <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100"><Skeleton className="h-32" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div>
                     ) : isError ? (
                         <div role="alert" className="catalog-load-error"><h2>{{en:'Unable to load universities',ru:'Не удалось загрузить университеты',uz:'Universitetlarni yuklab bo‘lmadi'}[language]}</h2><p>{{en:'Your search and filters are kept. Try loading the catalogue again.',ru:'Поиск и фильтры сохранены. Попробуйте загрузить каталог ещё раз.',uz:'Qidiruv va filtrlar saqlandi. Katalogni qayta yuklab ko‘ring.'}[language]}</p><Button disabled={isFetching} onClick={() => void refetch()}>{{en:'Try again',ru:'Попробовать снова',uz:'Qayta urinish'}[language]}</Button></div>
                     ) : pageRows.length ? (
                         <>
-                            {!hasBudget && <h2 className="sr-only">{{en:'University results',ru:'Результаты поиска университетов',uz:'Universitet qidiruvi natijalari'}[language]}</h2>}
+                            <h2 className="sr-only">{{en:'University results',ru:'Результаты поиска университетов',uz:'Universitet qidiruvi natijalari'}[language]}</h2>
                             <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">
                                 {pageRows.map(({ university, programme, budget }) => (
                                     <UniversityCard key={university.id} university={university} programme={programme} budget={budget}
@@ -242,8 +228,6 @@ export default function Search() {
                                 ))}
                             </div>
                         </>
-                    ) : hasBudget && sortedResults.length ? (
-                        <p className="catalog-budget-empty">{budgetCopy.groupEmpty[budgetGroup]}</p>
                     ) : (
                         <div className="text-center py-20"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-slate-400" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{t('search.noResults')}</h3><p className="text-slate-500 mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" onClick={resetFilters}>{t('search.resetFilters')}</Button></div>
                     )}

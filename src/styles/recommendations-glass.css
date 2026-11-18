@@ -29,8 +29,11 @@ body[data-unimatch-theme] .unimatch-app .recommendation-toolbar { display: flex;
 body[data-unimatch-theme] .unimatch-app .recommendation-segments { display: flex; padding: 3px; border: 1px solid #fff; border-radius: 999px; background: #ffffff59; box-shadow: 0 4px 12px #73553a0b; }
 body[data-unimatch-theme] .unimatch-app .recommendation-segments button { min-height: 40px; padding: 7px 28px; border: 1px solid transparent; border-radius: 999px; font-size: 15px; line-height: 1.3; transition: background .18s ease, box-shadow .18s ease; }
 body[data-unimatch-theme] .unimatch-app .recommendation-segments button[aria-pressed="true"] { border-color: #fff; background: linear-gradient(130deg, #fff7e7c9, #f2d4ad75); box-shadow: inset 0 1px #fff, 0 3px 10px #9a643119; color: #423222; font-weight: 600; }
-body[data-unimatch-theme] .unimatch-app .recommendation-sort { display: flex; gap: 10px; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #fff; border-radius: 999px; background: #ffffff66; box-shadow: 0 4px 12px #73553a0b; }
-body[data-unimatch-theme] .unimatch-app .recommendation-sort select { width: 100%; min-height: 42px; background: transparent; border: 0; color: var(--recommendation-ink); font-size: 14px; padding-right: 8px; cursor: pointer; }
+body[data-unimatch-theme] .unimatch-app .recommendation-sort { width: auto; min-width: 13rem; max-width: 100%; gap: 9px; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid #fff; border-radius: 999px; background: #ffffff66; box-shadow: 0 4px 12px #73553a0b; color: var(--recommendation-ink); cursor: pointer; }
+body[data-unimatch-theme] .unimatch-app .recommendation-sort:hover,
+body[data-unimatch-theme] .unimatch-app .recommendation-sort[data-state="open"] { background: #fffdf8; }
+body[data-unimatch-theme] .unimatch-app .recommendation-sort > span { flex: 1; }
+.recommendation-sort-options [data-radix-select-viewport] { height: auto; }
 body[data-unimatch-theme] .unimatch-app .recommendation-result-count { min-height: 20px; margin-bottom: 12px; color: var(--recommendation-muted); font-size: 12px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; align-items: stretch; }
 body[data-unimatch-theme] .unimatch-app .recommendations-grid > * { min-width: 0; }

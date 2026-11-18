@@ -66,7 +66,7 @@ const budgetUniversity = ({ tuition = publicCatalogFact(annualFee), targetIntake
 const budgetStatus = (row, activeFilters = budgetFilters, query = 'Computer Science', currentYear = 2026) =>
   selectCatalogSearchResults([row], activeFilters, query, currentYear)[0]?.budget;
 assert.deepEqual(budgetStatus(budgetUniversity()), { group: 'within', reason: null }, 'the annual EUR maximum is inclusive');
-assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 4001 }) })).group, 'above');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 4001 }) })), undefined, 'confirmed tuition above the limit is excluded');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: '12_months' }) })).group, 'within');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 0 }) }), { ...budgetFilters, budget: 0 }).group, 'within');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'USD' }) })).reason, 'nonEuroTuition');
@@ -102,8 +102,8 @@ korea.location = publicCatalogFact({ country: 'South Korea', region: 'South Kore
 for (const fact of Object.values(korea)) if (fact?.scope) fact.scope.programmeId = korea.id;
 multiProgramme.catalog.programmes.push(korea);
 const programmeRows = [withPublicProgrammeFacts({ ...multiProgramme, admission_requirements: { unimatch_catalog_v1: multiProgramme.catalog } })];
-const multiResult = selectCatalogSearchResults(programmeRows, { ...filters, budget: 4000 }, 'Robotics', 2026)[0];
-assert.equal(multiResult.budget.group, 'above', 'a different affordable programme cannot make the searched programme affordable');
+assert.deepEqual(selectCatalogSearchResults(programmeRows, { ...filters, budget: 4000 }, 'Robotics', 2026), [], 'a different affordable programme cannot make the searched programme affordable');
+const multiResult = selectCatalogSearchResults(programmeRows, { ...filters, budget: 6000 }, 'Robotics', 2026)[0];
 assert.equal(multiResult.programme.id, korea.id);
 assert.equal(multiResult.university.country, 'United States');
 assert.deepEqual(getCatalogueProgrammeLocation(multiResult.programme), { country: 'South Korea', region: 'South Korea', campus: 'SUNY Korea' });
@@ -111,14 +111,14 @@ assert.equal(getCatalogueProgrammeLocation({ location: { ...korea.location, appl
 assert.deepEqual(selectCatalogSearchResults(programmeRows, { ...budgetFilters, degree: 'Master' }, '', 2026), [], 'language and degree from separate programmes cannot form a budget result');
 assert.deepEqual(selectCatalogSearchResults(rows, filters, '').map(result => result.university), results, 'no-budget browsing retains university order and records');
 
-const alternateView = writeCatalogState(new URLSearchParams('q=Robotics&page=3'), { filters: budgetFilters, budgetGroup: 'unknown' });
-assert.equal(readCatalogState(new URLSearchParams()).budgetGroup, 'within');
-assert.equal(readCatalogState(alternateView).budgetGroup, 'unknown');
-assert.equal(readCatalogState(new URLSearchParams('budgetView=invalid')).budgetGroup, 'within');
+const alternateView = writeCatalogState(new URLSearchParams('q=Robotics&budgetView=unknown&page=3'), { filters: budgetFilters });
+assert.equal(readCatalogState(new URLSearchParams('budgetView=unknown&page=3')).page, 1);
+assert.equal(alternateView.has('budgetView'), false);
+assert.equal(readCatalogState(alternateView).query, 'Robotics');
 const zeroLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: 0 } });
 assert.equal(readCatalogState(zeroLimit).filters.budget, 0);
 const clearedLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: null } });
-assert.equal(readCatalogState(clearedLimit).budgetGroup, 'within');
+assert.equal(readCatalogState(clearedLimit).filters.budget, null);
 assert.deepEqual(readCatalogState(clearedLimit).filters.languages, ['English']);
 const detailParams = new URL(universityPageUrl(multiResult.university.id, `/Search?${alternateView}`, multiResult.programme.id), 'https://example.test').searchParams;
 assert.equal(detailParams.get('programme'), korea.id);
@@ -150,4 +150,4 @@ assert.deepEqual(unknownTotal.offsets, [0, 500, 1000]);
 const growing = mockCatalog(2063, { count: 1000 });
 assert.deepEqual(await loadUniversityCatalog(growing.client, 'universities'), catalogRows);
 await assert.rejects(loadUniversityCatalog(mockCatalog(2063, { failAt: 1000 }).client, 'universities'), /page failed/);
-console.log('Catalog checks passed: pagination, stable browse, scoped annual budget groups, programme campus and detail links, and URL state.');
+console.log('Catalog checks passed: pagination, stable browse, annual tuition filter, programme campus and detail links, and URL state.');

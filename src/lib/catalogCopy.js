@@ -43,6 +43,7 @@ const copy = {
 const values = {
   ru: {
     Mixed: 'Несколько языков', English: 'Английский', Korean: 'Корейский', German: 'Немецкий', French: 'Французский', Italian: 'Итальянский', Spanish: 'Испанский', Dutch: 'Нидерландский', Russian: 'Русский',
+    'Information Technology': 'Информационные технологии', 'Computer Engineering': 'Компьютерная инженерия', 'Software Engineering': 'Программная инженерия',
     Bachelor: 'Бакалавриат', Master: 'Магистратура', PhD: 'Докторантура', Lithuania: 'Литва', Latvia: 'Латвия',
     Uzbekistan: 'Узбекистан', Kazakhstan: 'Казахстан', Kyrgyzstan: 'Кыргызстан', Tajikistan: 'Таджикистан', Turkmenistan: 'Туркменистан', Russia: 'Россия', Ukraine: 'Украина', Azerbaijan: 'Азербайджан', Georgia: 'Грузия', Armenia: 'Армения', India: 'Индия', Pakistan: 'Пакистан', Bangladesh: 'Бангладеш', Vietnam: 'Вьетнам', Indonesia: 'Индонезия', Nigeria: 'Нигерия', Kenya: 'Кения', Ghana: 'Гана', Egypt: 'Египет', Morocco: 'Марокко', Other: 'Другое',
     Engineering: 'Инженерное дело', 'Computer Science': 'Информатика', Business: 'Бизнес', Medicine: 'Медицина', Law: 'Право', 'Arts & Design': 'Искусство и дизайн', 'Natural Sciences': 'Естественные науки', 'Social Sciences': 'Общественные науки', Economics: 'Экономика', Architecture: 'Архитектура',
@@ -50,6 +51,7 @@ const values = {
     Europe: 'Европа', 'North America': 'Северная Америка', Asia: 'Азия', 'Middle East': 'Ближний Восток', Oceania: 'Океания', 'South America': 'Южная Америка',
   },
   uz: {
+    'Information Technology': 'Axborot texnologiyalari', 'Computer Engineering': 'Kompyuter muhandisligi', 'Software Engineering': 'Dasturiy injiniring',
     Mixed: 'Bir nechta til', English: 'Ingliz tili', Korean: 'Koreys tili', German: 'Nemis tili', French: 'Fransuz tili', Italian: 'Italyan tili', Spanish: 'Ispan tili', Dutch: 'Niderland tili', Russian: 'Rus tili',
     Bachelor: 'Bakalavriat', Master: 'Magistratura', PhD: 'Doktorantura', Lithuania: 'Litva', Latvia: 'Latviya',
     Uzbekistan: 'O‘zbekiston', Kazakhstan: 'Qozog‘iston', Kyrgyzstan: 'Qirg‘iziston', Tajikistan: 'Tojikiston', Turkmenistan: 'Turkmaniston', Russia: 'Rossiya', Ukraine: 'Ukraina', Azerbaijan: 'Ozarbayjon', Georgia: 'Gruziya', Armenia: 'Armaniston', India: 'Hindiston', Pakistan: 'Pokiston', Bangladesh: 'Bangladesh', Vietnam: 'Vetnam', Indonesia: 'Indoneziya', Nigeria: 'Nigeriya', Kenya: 'Keniya', Ghana: 'Gana', Egypt: 'Misr', Morocco: 'Marokash', Other: 'Boshqa',

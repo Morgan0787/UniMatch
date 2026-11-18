@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Drawer } from 'vaul';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Search as SearchIcon, SlidersHorizontal, GraduationCap, X, GitCompare, ChevronLeft, ChevronRight } from 'lucide-react';
 import FilterPanel from '@/components/search/FilterPanel';
 import UniversityCard from '@/components/search/UniversityCard';
@@ -85,6 +87,7 @@ export default function Search() {
     };
     const location = useLocation();
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const [compareList, setCompareList] = useState(() => location.state?.catalogCompareList || []);
     const [showComparison, setShowComparison] = useState(false);
@@ -161,6 +164,10 @@ export default function Search() {
     const loadingLabel = { en: 'Loading all universities…', ru: 'Загружаем полный каталог…', uz: 'To‘liq katalog yuklanmoqda…' }[language];
     const filterDoneLabel = { en: 'Show results', ru: 'Показать результаты', uz: 'Natijalarni ko‘rsatish' }[language] || 'Show results';
     const unsetLabel = { en: 'Not set', ru: 'Не указано', uz: 'Kiritilmagan' }[language] || 'Not set';
+    const FilterDialog = isMobile ? Drawer.Root : Sheet;
+    const FilterTrigger = isMobile ? Drawer.Trigger : SheetTrigger;
+    const filterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} />;
+    const filterFooter = <div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>;
 
     return (
         <div className="catalog-page search-page min-h-screen bg-slate-50">
@@ -187,16 +194,32 @@ export default function Search() {
                             <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-4 py-6 text-lg bg-slate-50 border-slate-200 rounded-xl focus:bg-white" />
                             {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>}
                         </div>
-                        <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
-                            <SheetTrigger asChild>
+                        <FilterDialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen} {...(isMobile ? { handleOnly: true, autoFocus: true } : {})}>
+                            <FilterTrigger asChild>
                                 <Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-indigo-600 text-white ml-1">{activeFilterCount}</Badge>}</Button>
-                            </SheetTrigger>
-                            <SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer search-glass-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen">
-                                <SheetTitle className="sr-only">{t('search.filters')}</SheetTitle>
-                                <div className="flex-1 overflow-y-auto p-4 pt-10"><FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} /></div>
-                                <div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>
-                            </SheetContent>
-                        </Sheet>
+                            </FilterTrigger>
+                            {isMobile ? (
+                                <Drawer.Portal>
+                                    <Drawer.Overlay className="catalog-filter-overlay product-overlay fixed inset-0 z-50 bg-black/80" />
+                                    <Drawer.Content aria-describedby={undefined} data-lenis-prevent className="catalog-filter-drawer search-glass-drawer fixed inset-x-0 bottom-0 z-50 flex max-h-[calc(100dvh-28px)] flex-col rounded-t-[30px] bg-background">
+                                        <Drawer.Title className="sr-only">{t('search.filters')}</Drawer.Title>
+                                        <Drawer.Handle className="catalog-filter-handle" />
+                                        <Drawer.Close className="product-dialog-close absolute right-4 top-2">
+                                            <X className="h-4 w-4" />
+                                            <span className="sr-only">{t('common.close')}</span>
+                                        </Drawer.Close>
+                                        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4">{filterFields}</div>
+                                        {filterFooter}
+                                    </Drawer.Content>
+                                </Drawer.Portal>
+                            ) : (
+                                <SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer search-glass-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen">
+                                    <SheetTitle className="sr-only">{t('search.filters')}</SheetTitle>
+                                    <div className="flex-1 overflow-y-auto p-4 pt-10">{filterFields}</div>
+                                    {filterFooter}
+                                </SheetContent>
+                            )}
+                        </FilterDialog>
                     </div>
                     <div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4">
                         <p className="text-slate-600" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-slate-800">{shownResults.length}</span> {t('search.results')}</>}</p>

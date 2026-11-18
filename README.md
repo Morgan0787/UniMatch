@@ -23,6 +23,8 @@ Dropdown controls share responsive, keyboard-accessible menus across the survey,
 
 Search uses warm Liquid Glass materials, amber background light, compact programme cards and mobile filter sheets. [Implementation and release verification](docs/qa/search-liquid-glass-2026-11-07.md).
 
+On mobile Search, drag the top handle down to dismiss Filters and keep your selections. Swipe inside the filter list to scroll.
+
 The catalog shows programmes in one list. With a tuition limit, programmes with confirmed annual tuition above the limit are filtered out. Programmes without a comparable confirmed price stay visible. Programme cards identify the campus when sourced details are available.
 
 University Liquid Glass: a full-width pearl card with amber light and visible information sections, matching filter controls and language menus, plus compact mobile navigation with inline EN / RU / UZ and keyboard/outside dismissal. [Implementation and release verification](docs/qa/university-glass-2026-11-07.md).

@@ -249,10 +249,19 @@ body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer :focus-visi
     top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-width: none;
     max-height: calc(100dvh - 28px); border-radius: 30px 30px 0 0;
     padding-bottom: env(safe-area-inset-bottom);
-    --tw-enter-translate-x: 0; --tw-enter-translate-y: 100%;
-    --tw-exit-translate-x: 0; --tw-exit-translate-y: 100%;
   }
 }
+.catalog-filter-drawer[data-vaul-drawer] { touch-action: auto; }
+.catalog-filter-handle[data-vaul-handle] {
+  display: grid; place-items: center; flex: none;
+  width: 80px; height: 56px; background: transparent;
+  touch-action: none; cursor: grab;
+}
+.catalog-filter-handle::before {
+  content: ''; width: 36px; height: 5px; border-radius: 999px;
+  background: #796c60; pointer-events: none;
+}
+.catalog-filter-handle:active { cursor: grabbing; }
 /* Search feedback belongs to the footer, so it never covers a card action. */
 body[data-unimatch-theme] .unimatch-app[data-page="Search"] .product-footer .product-feedback-trigger {
   position: static; width: 44px; height: 44px; flex-shrink: 0; box-shadow: none;
@@ -274,6 +283,7 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .product-footer .pro
   body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer { background: #faf5ef; backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .catalog-filter-overlay[data-vaul-overlay] { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   .unimatch-app[data-page="Search"] *, body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   .unimatch-app .catalog-page.search-page .catalog-card.search-university-card { transform: none !important; }
 }

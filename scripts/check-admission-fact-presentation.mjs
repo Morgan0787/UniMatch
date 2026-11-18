@@ -4,11 +4,11 @@ import { describePublicFact } from '../src/lib/admissions/factPresentation.js';
 const fact = (value, extra = {}) => ({ status: 'current_verified', value, applicability: 'confirmed', sourceIds: ['official'], ...extra });
 
 const tuition = describePublicFact(fact({ amount: 12500, currency: 'USD', period: 'semester', feeYear: '2026–27' }), 'en', 'tuition');
-assert.equal(tuition.value, '12500 USD / semester (2026–27)');
+assert.equal(tuition.value, '12,500 USD / semester (2026–27)');
 assert.deepEqual(tuition.sourceIds, ['official']);
-assert.equal(describePublicFact(fact({ amount: 12345.6789, currency: 'EUR', period: 'credit_hour', feeYear: '2026' }), 'en', 'tuition').value, '12345.6789 EUR / credit hour (2026)');
-assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: 'academic_year_9_months' }), 'en', 'tuition').value, '12000 USD / 9-month academic year');
-assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: '12_months' }), 'en', 'tuition').value, '12000 USD / 12 months');
+assert.equal(describePublicFact(fact({ amount: 12345.6789, currency: 'EUR', period: 'credit_hour', feeYear: '2026' }), 'en', 'tuition').value, '12,345.6789 EUR / credit hour (2026)');
+assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: 'academic_year_9_months' }), 'en', 'tuition').value, '12,000 USD / 9-month academic year');
+assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: '12_months' }), 'en', 'tuition').value, '12,000 USD / 12 months');
 assert.equal(describePublicFact(fact({ amount: null, currency: 'USD', period: null, feeYear: '2026–27' }), 'en', 'tuition').value, 'Amount unknown USD / period unknown (2026–27)');
 assert.equal(describePublicFact(fact({ amount: 9, currency: 'EUR', period: null }), 'ru', 'tuition').value, '9 EUR / период неизвестен');
 assert.match(describePublicFact(fact({ amount: 396.3, currency: 'USD', period: 'credit_hour', label: 'Nonresident undergraduate base tuition; course and mandatory fees are additional.' }), 'en', 'tuition').value, /396.3 USD \/ credit hour.*fees are additional/);
@@ -52,7 +52,7 @@ const historical = describePublicFact({
   status: 'historical_reference', value: null, applicability: 'unconfirmed', sourceIds: [],
   historical: { value: { amount: 9000, currency: 'EUR', period: 'year', feeYear: '2025–26' }, referenceSeason: '2025–26', sourceIds: ['archive'] },
 }, 'en', 'tuition');
-assert.equal(historical.value, '9000 EUR / year (2025–26)');
+assert.equal(historical.value, '9,000 EUR / year (2025–26)');
 assert.match(historical.notice, /Historical reference for 2025–26; current applicability is unconfirmed/);
 assert.deepEqual(historical.sourceIds, ['archive']);
 

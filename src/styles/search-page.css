@@ -194,8 +194,6 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profil
 .unimatch-app .catalog-page.search-page .search-language-conditions summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .unimatch-app .catalog-page.search-page .search-language-conditions p { margin-top: 6px; }
 .unimatch-app .catalog-page.search-page .search-programme-stats .tuition-status { color: #9b5809; }
-.unimatch-app .catalog-page.search-page .search-programme-status { display: flex; align-items: center; gap: 9px; width: fit-content; padding: 6px 13px; margin-bottom: 8px; border: 1px solid #ffedca; border-radius: 999px; background: #ffe4b6b3; color: #a14f00; font-size: 14px; font-weight: 600; box-shadow: 0 2px 4px #8c59200a; }
-.unimatch-app .catalog-page.search-page .search-programme-status svg { flex-shrink: 0; }
 .unimatch-app .catalog-page.search-page .search-programme-review h5 { font-size: 14px; font-weight: 650; margin-bottom: 4px; }
 .unimatch-app .catalog-page.search-page .search-programme-review ul { padding-left: 20px; list-style: disc; font-size: 14px; line-height: 1.45; }
 .unimatch-app .catalog-page.search-page .search-programme-review li::marker { color: #b66b16; }

@@ -1,4 +1,3 @@
-import { CircleAlert } from 'lucide-react';
 import TuitionValue from '@/components/admissions/TuitionValue';
 import { describePublicFact } from '@/lib/admissions/factPresentation';
 import { catalogValue } from '@/lib/catalogCopy';
@@ -6,9 +5,9 @@ import { getCatalogueProgrammeLocation, getCatalogueProgrammeFact } from '@/lib/
 import { catalogSearchCopy } from '@/lib/catalogSearchCopy';
 
 const COPY = {
-  en: { example: 'Programme example', tuition: 'Tuition', language: 'Language requirements', check: 'What to check:', notice: 'Confirm programme conditions', academic: 'Academic requirements', conditions: 'Conditions' },
-  ru: { example: 'Программа (пример)', tuition: 'Стоимость обучения', language: 'Языковые требования', check: 'Что проверить:', notice: 'Нужно уточнить условия', academic: 'Академические требования', conditions: 'Условия' },
-  uz: { example: 'Dastur namunasi', tuition: 'O‘qish haqi', language: 'Til talablari', check: 'Tekshirish kerak:', notice: 'Dastur shartlarini aniqlashtiring', academic: 'Akademik talablar', conditions: 'Shartlar' },
+  en: { example: 'Programme example', tuition: 'Tuition', language: 'Language requirements', check: 'What to check:', academic: 'Academic requirements', conditions: 'Conditions' },
+  ru: { example: 'Программа (пример)', tuition: 'Стоимость обучения', language: 'Языковые требования', check: 'Что проверить:', academic: 'Академические требования', conditions: 'Условия' },
+  uz: { example: 'Dastur namunasi', tuition: 'O‘qish haqi', language: 'Til talablari', check: 'Tekshirish kerak:', academic: 'Akademik talablar', conditions: 'Shartlar' },
 };
 
 /** Search preview only: full validated facts and sources remain on the programme detail page. */
@@ -49,7 +48,6 @@ export default function SearchProgrammePreview({ programme, budgetReason = '', l
       </div>
     </dl>
     <div className="search-programme-review">
-      <p className="search-programme-status"><CircleAlert size={18} aria-hidden="true" />{copy.notice}</p>
       <h5>{copy.check}</h5>
       <ul><li>{copy.academic}: {academic.value}</li></ul>
     </div>

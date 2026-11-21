@@ -60,13 +60,13 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
 
     return (
         <Card className="product-card max-w-2xl mx-auto overflow-hidden">
-            <CardHeader className="product-page-hero border-0 pb-5 sm:pb-6" style={{ backgroundColor: '#f8f6f0', color: '#292823' }}>
+            <CardHeader className="product-page-hero border-0 pb-5 sm:pb-6" >
                 <div className="flex items-center gap-2 mb-2">
                     <Sparkles className="w-5 h-5 text-[#855a36]" aria-hidden="true" />
-                    <span className="text-sm font-medium text-slate-600">{t('profile.personalizedMatching')}</span>
+                    <span className="text-sm font-medium text-[#55504a]">{t('profile.personalizedMatching')}</span>
                 </div>
                 <h1 className="text-2xl font-semibold">{t('profile.buildProfile')}</h1>
-                <CardDescription className="text-slate-600">
+                <CardDescription className="text-[#55504a]">
                     {t('profile.buildProfileDesc')}
                 </CardDescription>
                 {/* Progress */}
@@ -95,7 +95,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             className="space-y-4"
                         >
                             <div>
-                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.academicInfo')}</h2>
+                                <h2 className="font-semibold text-[#292823] mb-4">{t('profile.academicInfo')}</h2>
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
@@ -110,11 +110,11 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 step={0.1}
                                                 className="flex-1"
                                             />
-                                            <span className="w-12 text-center font-semibold text-indigo-600 text-lg">
+                                            <span className="w-12 text-center font-semibold text-[#704a2d] text-lg">
                                                 {formData.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? '—'}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-[#625e59]">
                                             {t('profile.gpaNote')}
                                         </p>
                                     </div>
@@ -146,7 +146,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                     type="button"
                                                     aria-pressed={formData.target_degree === deg}
                                                     variant={formData.target_degree === deg ? "default" : "outline"}
-                                                    className={formData.target_degree === deg ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]" : ""}
+                                                    className={formData.target_degree === deg ? "rounded-full min-h-11 bg-[#252c2f] text-white hover:bg-[#354044]" : ""}
                                                     onClick={() => updateField('target_degree', deg)}
                                                 >
                                                     {catalogValue(deg, language)}
@@ -169,7 +169,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 {ieltsScores.map(score => <SelectItem key={score} value={String(score)}>IELTS {score.toFixed(1)}</SelectItem>)}
                                             </SelectContent>
                                         </Select>
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-[#625e59]">
                                             {t('profile.ieltsNote')}
                                         </p>
                                     </div>
@@ -193,7 +193,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 <SelectItem value="TOPIK 6">TOPIK 6</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-[#625e59]">
                                             {t('profile.topikNote')}
                                         </p>
                                     </div>
@@ -212,7 +212,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             className="space-y-4"
                         >
                             <div>
-                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.budgetBackground')}</h2>
+                                <h2 className="font-semibold text-[#292823] mb-4">{t('profile.budgetBackground')}</h2>
 
                                 <div className="space-y-5">
                                     <div className="space-y-2">
@@ -227,11 +227,11 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                 step={1000}
                                                 className="flex-1"
                                             />
-                                            <span className="w-20 text-center font-semibold text-indigo-600 text-lg">
+                                            <span className="w-20 text-center font-semibold text-[#704a2d] text-lg">
                                                 {formData.budget_max == null ? '—' : `€${formData.budget_max.toLocaleString(language)}`}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-[#625e59]">
                                             {t('profile.budgetNote')}
                                         </p>
                                     </div>
@@ -264,8 +264,8 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                                     variant={formData.preferred_languages.includes(lang) ? "default" : "outline"}
                                                     className={`cursor-pointer transition-all ${
                                                         formData.preferred_languages.includes(lang)
-                                                            ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
-                                                            : "hover:bg-slate-100"
+                                                            ? "rounded-full min-h-11 bg-[#252c2f] text-white hover:bg-[#354044]"
+                                                            : "hover:bg-[#faf5ed]"
                                                     }`}
                                                     onClick={() => toggleArrayField('preferred_languages', lang)}
                                                 >
@@ -292,8 +292,8 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                             className="space-y-4"
                         >
                             <div>
-                                <h2 className="font-semibold text-slate-800 mb-4">{t('profile.yourInterests')}</h2>
-                                <p className="text-sm text-slate-500 mb-4">
+                                <h2 className="font-semibold text-[#292823] mb-4">{t('profile.yourInterests')}</h2>
+                                <p className="text-sm text-[#55504a] mb-4">
                                     {t('profile.interestsNote')}
                                 </p>
 
@@ -306,8 +306,8 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                                             variant={formData.interests.includes(interest) ? "default" : "outline"}
                                             className={`cursor-pointer transition-all py-2 px-3 ${
                                                 formData.interests.includes(interest)
-                                                    ? "bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
-                                                    : "hover:bg-slate-100"
+                                                    ? "rounded-full min-h-11 bg-[#252c2f] text-white hover:bg-[#354044]"
+                                                    : "hover:bg-[#faf5ed]"
                                             }`}
                                             onClick={() => toggleArrayField('interests', interest)}
                                         >
@@ -334,7 +334,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                     </Button>
 
                     {step < totalSteps ? (
-                        <Button onClick={() => setStep(s => s + 1)} className="bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]">
+                        <Button onClick={() => setStep(s => s + 1)} className="rounded-full min-h-11 bg-[#252c2f] text-white hover:bg-[#354044]">
                             {t('profile.continue')}
                             <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
@@ -342,7 +342,7 @@ export default function ProfileBuilder({ profile, onSave, isLoading }) {
                         <Button
                             onClick={handleSubmit}
                             disabled={isLoading}
-                            className="bg-[#292823] text-[#f8f6f0] hover:bg-[#454238]"
+                            className="rounded-full min-h-11 bg-[#252c2f] text-white hover:bg-[#354044]"
                         >
                             {isLoading ? t('profile.saving') : t('profile.completeProfile')}
                             <Sparkles className="w-4 h-4 ml-2" />

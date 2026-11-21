@@ -247,11 +247,11 @@ export default function Login() {
                     />
                   </div>
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-                  <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
+                  <Button type="button" variant="outline" className="w-full rounded-full min-h-11 border-[#d7c7b2] bg-white/85 hover:bg-white text-[#292823]" onClick={handleGoogleSignIn} disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Chrome className="w-4 h-4 mr-2" />}
                     {l("Continue with Google")}
                   </Button>
-                  <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+                  <Button type="submit" className="w-full rounded-full min-h-11 bg-[#252c2f] hover:bg-[#354044] text-white" disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                     {l("Sign In")}
                   </Button>
@@ -273,11 +273,11 @@ export default function Login() {
                     />
                   </div>
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-                  <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+                  <Button type="submit" className="w-full rounded-full min-h-11 bg-[#252c2f] hover:bg-[#354044] text-white" disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Mail className="w-4 h-4 mr-2" />}
                     {l("Send Magic Link")}
                   </Button>
-                  <p className="text-xs text-center text-slate-400">{l("We'll email you a passwordless sign-in link.")}</p>
+                  <p className="text-xs text-center text-[#55504a]">{l("We'll email you a passwordless sign-in link.")}</p>
                 </form>
               </TabsContent>
 
@@ -320,11 +320,11 @@ export default function Login() {
                     />
                   </div>
                   {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-                  <Button type="button" variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={loading}>
+                  <Button type="button" variant="outline" className="w-full rounded-full min-h-11 border-[#d7c7b2] bg-white/85 hover:bg-white text-[#292823]" onClick={handleGoogleSignIn} disabled={loading}>
                     {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Chrome className="w-4 h-4 mr-2" />}
                     {l("Continue with Google")}
                   </Button>
-                  <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={loading}>
+                  <Button type="submit" className="w-full rounded-full min-h-11 bg-[#252c2f] hover:bg-[#354044] text-white" disabled={loading}>
                     {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                     {l("Create Account")}
                   </Button>

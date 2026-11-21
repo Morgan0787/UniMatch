@@ -56,7 +56,12 @@ export default function AdmissionsSurvey() {
   useEffect(() => {
     title.current?.focus({ preventScroll: true });
     if (firstRender.current) { window.scrollTo(0, 0); firstRender.current = false; }
-    else title.current?.scrollIntoView({ block: 'start' });
+    else {
+      const navBottom = document.querySelector('.product-nav')?.getBoundingClientRect().bottom || 84;
+      const target = title.current?.closest('.admissions-page') || form.current?.closest('.admissions-page') || document.querySelector('.admissions-page') || title.current;
+      const top = Math.max(0, (target?.getBoundingClientRect().top || 0) + window.scrollY - navBottom - 16);
+      window.scrollTo({ top, behavior: 'auto' });
+    }
   }, [step, view]);
 
   const update = (name, value) => {
@@ -106,19 +111,23 @@ export default function AdmissionsSurvey() {
         {view === 'survey' && <ol className="admission-stepper" aria-label={c.subtitle}>{c.steps.map((label, index) => <li key={label} data-done={index < step} aria-current={step === index ? 'step' : undefined}><span aria-hidden="true">{index < step ? <Check size={16} /> : String(index + 1).padStart(2, '0')}</span>{index < step ? <button type="button" onClick={() => { setStep(index); setErrors({}); }}>{label}</button> : label}</li>)}</ol>}
         {view === 'survey' && <p className="admission-eyebrow">{`${step + 1} / 3 · ${c.steps[step]}`}</p>}
         <h1 id="admission-title" tabIndex={-1} ref={title}>{view === 'survey' ? c.stepTitles[step] : c.resultsTitle}</h1>
-        {storageStatus === 'restored' && view === 'survey' && <p role="status" className="admission-hint">{c.restored}</p>}
-        {(storageStatus === 'expired' || storageStatus === 'invalid') && <p role="status" className="admission-hint">{c.expired}</p>}
-        {storageStatus === 'unavailable' && <p role="status" className="admission-storage-warning">{c.storageError}</p>}
-        {favorites.error && <div className="admission-save-feedback" role="alert"><p>{c[favorites.error] || c.saveError}</p><button type="button" className="admission-text-button" disabled={favorites.loading} onClick={favorites.retry}>{c.saveRetry}</button></div>}
-        {favorites.notice && <p className="admission-save-feedback" role="status">{c[favorites.notice]}</p>}
-        {(favorites.intentStatus === 'expired' || favorites.intentStatus === 'invalid') && <p role="status" className="admission-hint">{c.saveDraftExpired}</p>}
+        {view === 'survey' && <p className="admission-intro">{c.stepIntros[step]}</p>}
+        {(storageStatus === 'restored' && view === 'survey' || storageStatus === 'expired' || storageStatus === 'invalid' || storageStatus === 'unavailable' || favorites.error || favorites.notice || favorites.intentStatus === 'expired' || favorites.intentStatus === 'invalid' || catalogQuery.isPending || catalogQuery.isError || catalogQuery.isStale || catalogQuery.catalog.issues.length > 0) && (
+          <div className="admission-status-stack">
+            {storageStatus === 'restored' && view === 'survey' && <p role="status" className="admission-hint">{c.restored}</p>}
+            {(storageStatus === 'expired' || storageStatus === 'invalid') && <p role="status" className="admission-hint">{c.expired}</p>}
+            {storageStatus === 'unavailable' && <p role="status" className="admission-storage-warning">{c.storageError}</p>}
+            {favorites.error && <div className="admission-save-feedback" role="alert"><p>{c[favorites.error] || c.saveError}</p><button type="button" className="admission-text-button" disabled={favorites.loading} onClick={favorites.retry}>{c.saveRetry}</button></div>}
+            {favorites.notice && <p className="admission-save-feedback" role="status">{c[favorites.notice]}</p>}
+            {(favorites.intentStatus === 'expired' || favorites.intentStatus === 'invalid') && <p role="status" className="admission-hint">{c.saveDraftExpired}</p>}
+            <CatalogStatus query={catalogQuery} c={c} />
+          </div>
+        )}
         {favorites.resumeIntent && resumeOption && <section className="admission-resume-save" aria-label={c.resumeSave}>
           <p>{c.resumeSave}</p><strong>{resumeOption.university}</strong><p>{resumeOption.name}</p>
           <div className="admission-card-actions"><button type="button" className="admission-button" disabled={favorites.loading || !favorites.canSave} onClick={favorites.confirmResume}>{favorites.pendingId ? c.saving : c.confirmSave}</button><button type="button" className="admission-text-button" disabled={favorites.loading} onClick={favorites.dismissResume}>{c.dismissSave}</button></div>
         </section>}
-        <CatalogStatus query={catalogQuery} c={c} />
         {view === 'survey' ? <form noValidate ref={form} onSubmit={event => { event.preventDefault(); advance(); }}>
-          <p className="admission-intro">{c.stepIntros[step]}</p>
           {Object.values(errors).some(Boolean) && <p role="alert" className="admission-error">{c.errors}</p>}
           <SurveyFields key={step} step={step} answers={answers} onChange={update} errors={errors} c={c} />
           <div className="admission-actions">

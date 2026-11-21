@@ -403,12 +403,12 @@ export default function AdminDataQuality() {
 
     if (!user || user.role !== 'admin') {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-                <Card className="max-w-md">
+            <div className="min-h-screen bg-transparent flex items-center justify-center p-4">
+                <Card className="max-w-md w-full rounded-[24px] border border-white/95 bg-[#fffdf8]/95 shadow-sm">
                     <CardContent className="pt-6 text-center">
                         <ShieldAlert className="w-12 h-12 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-xl font-semibold text-slate-800 mb-2">Access Denied</h2>
-                        <p className="text-slate-600">This page is for administrators only.</p>
+                        <h2 className="text-xl font-semibold text-[#292823] mb-2">Access Denied</h2>
+                        <p className="text-[#55504a]">This page is for administrators only.</p>
                     </CardContent>
                 </Card>
             </div>
@@ -416,21 +416,21 @@ export default function AdminDataQuality() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6">
+        <div className="min-h-screen bg-transparent p-6">
             <div className="max-w-5xl mx-auto space-y-6">
                 {/* Header */}
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2">Data Quality Scanner</h1>
-                    <p className="text-slate-600">
+                    <h1 className="text-3xl font-bold text-[#292823] mb-2">Data Quality Scanner</h1>
+                    <p className="text-[#55504a]">
                         Scan the university database for corrupted text, missing fields, and outdated deadlines
                     </p>
                 </div>
 
                 {/* Scan Control */}
-                <Card>
+                <Card className="rounded-[24px] border border-white/95 bg-[#fffdf8]/95 shadow-sm">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Database className="w-5 h-5 text-indigo-600" />
+                        <CardTitle className="flex items-center gap-2 text-[#292823]">
+                            <Database className="w-5 h-5 text-[#704a2d]" />
                             Database Scanner
                         </CardTitle>
                         <CardDescription>
@@ -460,7 +460,7 @@ export default function AdminDataQuality() {
                             <Button 
                                 onClick={handleScan} 
                                 disabled={isScanning}
-                                className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700"
+                                className="w-full sm:w-auto min-h-11 rounded-full bg-[#252c2f] hover:bg-[#1b2023] text-white"
                             >
                                 {isScanning ? (
                                     <>
@@ -490,11 +490,11 @@ export default function AdminDataQuality() {
                         <CardContent className="space-y-6">
                             {/* Summary */}
                             <div className="grid sm:grid-cols-4 gap-4">
-                                <div className="text-center p-4 bg-slate-50 rounded-lg">
-                                    <p className="text-2xl font-bold text-slate-800">
+                                <div className="text-center p-4 bg-[#f4efe6] rounded-xl border border-[#e3ddd1]">
+                                    <p className="text-2xl font-bold text-[#292823]">
                                         {scanResults.summary.total_scanned}
                                     </p>
-                                    <p className="text-sm text-slate-600">Total Scanned</p>
+                                    <p className="text-sm text-[#55504a]">Total Scanned</p>
                                 </div>
                                 <div className="text-center p-4 bg-amber-50 rounded-lg">
                                     <p className="text-2xl font-bold text-amber-700">
@@ -606,10 +606,10 @@ export default function AdminDataQuality() {
                             )}
 
                             {/* Duplicate Detection */}
-                            <Card>
+                            <Card className="rounded-[24px] border border-white/95 bg-[#fffdf8]/95 shadow-sm">
                             <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-indigo-600" />
+                            <CardTitle className="flex items-center gap-2 text-[#292823]">
+                            <Users className="w-5 h-5 text-[#704a2d]" />
                             Duplicate Detection & Removal
                             </CardTitle>
                             <CardDescription>
@@ -620,7 +620,7 @@ export default function AdminDataQuality() {
                             <Button 
                             onClick={handleRemoveDuplicates}
                             disabled={isRemovingDuplicates}
-                            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700"
+                            className="w-full sm:w-auto min-h-11 rounded-full bg-[#252c2f] hover:bg-[#1b2023] text-white"
                             >
                             {isRemovingDuplicates ? (
                                <>
@@ -654,12 +654,12 @@ export default function AdminDataQuality() {
 
                                {duplicateResults.details.length > 0 && (
                                    <div className="space-y-2">
-                                       <h4 className="font-semibold text-slate-700">Removed Duplicates:</h4>
+                                       <h4 className="font-semibold text-[#292823]">Removed Duplicates:</h4>
                                        <div className="max-h-64 overflow-y-auto space-y-2">
                                            {duplicateResults.details.map((item, idx) => (
-                                               <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                                                   <p className="font-medium text-slate-800">{item.name}</p>
-                                                   <p className="text-xs text-slate-500 mt-1">
+                                               <div key={idx} className="p-3 bg-[#f4efe6] border border-[#dfd9ce] rounded-xl">
+                                                   <p className="font-medium text-[#292823]">{item.name}</p>
+                                                   <p className="text-xs text-[#55504a] mt-1">
                                                        Found {item.total_found} records • Kept 1 • Removed {item.removed.length}
                                                    </p>
                                                </div>

@@ -184,8 +184,8 @@ body[data-unimatch-theme] .essay-page.internal-page {
   padding-bottom: 42px;
 }
 
-body[data-unimatch-theme] .essay-page > div {
-  max-width: 68rem;
+body[data-unimatch-theme] .essay-page > div:not(.essay-gate) {
+  max-width: min(100%, var(--product-shell-max, 1360px));
 }
 
 body[data-unimatch-theme] .essay-page h1 {

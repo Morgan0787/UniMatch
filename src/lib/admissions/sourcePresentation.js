@@ -56,9 +56,15 @@ function readableUrlSegment(url, c) {
     if (/^(?:requirements|entry-requirements)$/i.test(cleaned)) return c.requirements;
     if (/^scholarships?$/i.test(cleaned)) return c.scholarships;
     if (/^(?:admissions?|apply|how-to-apply)$/i.test(cleaned)) return c.admissions;
-    return shorten(cleaned.replace(/[-_]+/g, ' '));
+    const prettified = cleaned.replace(/[-_]+/g, ' ').replace(/(?<=\w)pdf$/i, ' (PDF)');
+    return shorten(prettified.charAt(0).toUpperCase() + prettified.slice(1));
   }
   return `${c.source} · ${url.hostname.replace(/^www\./i, '')}`;
+}
+
+function cleanDisplayTitle(raw) {
+  const cleaned = normalizeIntakeText(raw.trim()).replace(/(?<=\w)pdf$/i, ' (PDF)');
+  return /^[a-z]/.test(cleaned) ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : cleaned;
 }
 
 /** Use document metadata, or a transparent URL-based label when metadata is generic. */
@@ -66,7 +72,7 @@ export function publicSourceTitle(source, language = 'en') {
   const c = COPY[language] || COPY.en;
   const titles = Array.isArray(source?.titles) ? source.titles : typeof source?.title === 'string' ? [source.title] : [];
   const title = titles.find(value => typeof value === 'string' && !isGenericSourceTitle(value));
-  if (title) return shorten(normalizeIntakeText(title.trim()));
+  if (title) return shorten(cleanDisplayTitle(title));
   let url;
   try { url = new URL(source.url); } catch { return c.source; }
   return readableUrlSegment(url, c);

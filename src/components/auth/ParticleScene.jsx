@@ -52,17 +52,17 @@ const FRAGMENT = `
     float specular = pow(max(0.0, dot(normal, normalize(key + vView))), 22.0);
     float rim = pow(1.0 - max(facing, 0.0), 3.0);
     float grainLight = 0.91 + 0.09 * sqrt(1.0 - radius);
-    // Home's near-white, slightly cool pearl palette, with relief-driven shading.
+    // Warm bronze-charcoal sculpted pearl shading legible over the light #f0eae7 canvas.
     float hemisphere = smoothstep(-0.6, 0.9, normal.y);
-    vec3 lit = vColor * (0.66 + diffuse * 0.25 + hemisphere * 0.07);
-    vec3 detail = vec3(0.82, 0.85, 0.83) * (0.66 + diffuse * 0.28 + hemisphere * 0.06);
-    lit = mix(lit, detail, vDetail * 0.42);
-    lit += vec3(0.08, 0.065, 0.04) * warm * 0.16;
-    lit += vec3(0.16, 0.17, 0.165) * specular;
-    lit += vec3(0.08, 0.085, 0.08) * rim;
+    vec3 lit = vColor * (0.48 + diffuse * 0.28 + hemisphere * 0.14);
+    vec3 detail = vec3(0.55, 0.44, 0.34) * (0.45 + diffuse * 0.35 + hemisphere * 0.12);
+    lit = mix(lit, detail, vDetail * 0.48);
+    lit += vec3(0.18, 0.12, 0.06) * warm * 0.28;
+    lit += vec3(0.24, 0.21, 0.18) * specular;
+    lit += vec3(0.12, 0.10, 0.08) * rim;
     float glint = pow(max(0.0, sin(uTime * 0.8 + vSeed * 91.0)), 18.0);
-    lit += vec3(0.13, 0.14, 0.13) * (vEnergy * 0.35 + glint * 0.1);
-    gl_FragColor = vec4(lit * grainLight, (1.0 - smoothstep(0.65, 1.0, radius)) * 0.96);
+    lit += vec3(0.16, 0.13, 0.10) * (vEnergy * 0.35 + glint * 0.1);
+    gl_FragColor = vec4(lit * grainLight, (1.0 - smoothstep(0.65, 1.0, radius)) * 0.92);
     #include <colorspace_fragment>
   }
 `
@@ -86,8 +86,8 @@ function ParticleFigure({ method, pointer }) {
       const seed = ((i * 16807) % 2147483647) / 2147483647
       seeds[i] = (Math.sin(i * 127.1 + 311.7) * 43758.5453) % 1
       seeds[i] -= Math.floor(seeds[i])
-      const variation = .96 + seeds[i] * .04
-      colors.set([.93 * variation, .95 * variation, .94 * variation], i * 3)
+      const variation = .84 + seeds[i] * .12
+      colors.set([.86 * variation, .78 * variation, .69 * variation], i * 3)
       sizes[i] = .42 + seeds[i] * .24
       drift.set([Math.sin(i * 2.39), Math.cos(i * 1.71), Math.sin(seed * 912.5)], i * 3)
     }

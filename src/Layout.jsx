@@ -83,7 +83,7 @@ function LayoutContent({ children, currentPageName }) {
     if (currentPageName === 'Home') return <>{children}<div className="landing-feedback"><FeedbackButton /></div></>;
 
     return (
-        <div className="unimatch-app min-h-screen bg-slate-50" data-page={currentPageName}>
+        <div className="unimatch-app min-h-screen" data-page={currentPageName}>
             <div className="ambient-light-field" aria-hidden="true">
                 <span className="ambient-glow ambient-glow--north" />
                 <span className="ambient-glow ambient-glow--west" />
@@ -92,12 +92,12 @@ function LayoutContent({ children, currentPageName }) {
                 <span className="ambient-glow ambient-glow--south" />
             </div>
             <nav aria-label={navigationCopy[0]} className={`product-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                isScrolled ? 'bg-white/95 backdrop-blur shadow-sm' : 'bg-transparent'
+                isScrolled ? 'is-scrolled' : ''
             }`}>
-                <div className="product-nav-inner max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="flex items-center justify-between h-16">
-                        <Link to="/" className="product-nav-brand flex items-center gap-2">
-                            <div className="w-9 h-9 bg-[#292823] rounded-xl shadow-sm flex items-center justify-center">
+                <div className="product-nav-inner mx-auto px-4 sm:px-6">
+                    <div className="flex items-center justify-between h-16 gap-2">
+                        <Link to="/" className="product-nav-brand flex items-center gap-2 min-h-11">
+                            <div className="w-9 h-9 bg-[#292823] rounded-xl shadow-sm flex items-center justify-center shrink-0">
                                 <GraduationCap className="w-5 h-5 text-white" />
                             </div>
                             <span className="product-wordmark font-bold text-xl text-[#292823]">UniMatch</span>
@@ -109,10 +109,10 @@ function LayoutContent({ children, currentPageName }) {
                                     key={item.name}
                                     to={item.href}
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                    className={`inline-flex items-center min-h-11 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                                         currentPageName === item.path
-                                            ? 'bg-[#f4e4cc]/85 text-[#5c3c1b] rounded-full'
-                                            : 'text-[#47443f] hover:text-[#292823] hover:bg-white/60 rounded-full'
+                                            ? 'bg-white/90 text-[#292823] shadow-sm'
+                                            : 'text-[#47443f] hover:text-[#292823] hover:bg-white/60'
                                     }`}
                                 >
                                     {item.name}
@@ -173,11 +173,12 @@ function LayoutContent({ children, currentPageName }) {
                                 <>
                                     <Button 
                                         variant="ghost" 
+                                        className="min-h-11 rounded-full text-[#292823] hover:bg-white/60"
                                         onClick={() => navigateToLogin()}
                                     >
                                         {t('nav.signIn')}
                                     </Button>
-                                    <Button asChild className="product-nav-guest-cta rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
+                                    <Button asChild className="product-nav-guest-cta min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"><Link to={createPageUrl("AdmissionsSurvey")} aria-current={currentPageName === 'AdmissionsSurvey' ? 'page' : undefined}>{guestCta}</Link></Button>
                                 </>
                             )}
                         </div>
@@ -187,20 +188,20 @@ function LayoutContent({ children, currentPageName }) {
                             aria-label={mobileMenuOpen ? navigationCopy[1] : navigationCopy[2]}
                             aria-expanded={mobileMenuOpen}
                             aria-controls="product-mobile-menu"
-                            className="lg:hidden min-h-11 min-w-11 p-2 rounded-lg hover:bg-slate-100"
+                            className="lg:hidden min-h-11 min-w-11 p-2 rounded-full text-[#292823] hover:bg-white/65 inline-flex items-center justify-center"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             {mobileMenuOpen ? (
-                                <X className="w-6 h-6 text-slate-600" />
+                                <X className="w-6 h-6 text-[#292823]" />
                             ) : (
-                                <Menu className="w-6 h-6 text-slate-600" />
+                                <Menu className="w-6 h-6 text-[#292823]" />
                             )}
                         </button>
                     </div>
                 </div>
 
                 {mobileMenuOpen && (
-                    <div ref={menuPanel} id="product-mobile-menu" className="product-mobile-menu lg:hidden bg-white border-t shadow-lg">
+                    <div ref={menuPanel} id="product-mobile-menu" className="product-mobile-menu lg:hidden shadow-lg">
                         <div className="product-mobile-menu-inner">
                             {navItems.map(item => (
                                 <Link
@@ -225,12 +226,12 @@ function LayoutContent({ children, currentPageName }) {
                                 </div>
                                 {user ? (
                                     <div className="space-y-2">
-                                        <div className="px-4 py-2 text-sm text-slate-500">
-                                            {t('profile.signedInAs')} <span className="font-medium text-slate-700">{user.email}</span>
+                                        <div className="px-4 py-2 text-sm text-[#55504a]">
+                                            {t('profile.signedInAs')} <span className="font-medium text-[#292823]">{user.email}</span>
                                         </div>
                                         <Button 
                                             variant="ghost" 
-                                            className="w-full justify-start text-red-600"
+                                            className="w-full min-h-11 justify-start rounded-xl text-red-700 hover:bg-red-50/70"
                                             onClick={handleLogout}
                                         >
                                             <LogOut className="w-4 h-4 mr-2" />
@@ -239,11 +240,11 @@ function LayoutContent({ children, currentPageName }) {
                                     </div>
                                 ) : (
                                     <div className="product-mobile-guest-actions"><Button
-                                        className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"
+                                        className="w-full min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"
                                         onClick={() => navigateToLogin()}
                                     >
                                         {t('nav.signIn')}
-                                    </Button><Button asChild variant="outline" className="w-full"><Link to={createPageUrl('AdmissionsSurvey')} onClick={() => setMobileMenuOpen(false)}>{guestCta}</Link></Button></div>
+                                    </Button><Button asChild variant="outline" className="w-full min-h-11 rounded-full border-[#d7c7b2] bg-white/80 text-[#292823] hover:bg-white"><Link to={createPageUrl('AdmissionsSurvey')} onClick={() => setMobileMenuOpen(false)}>{guestCta}</Link></Button></div>
                                 )}
                             </div>
                         </div>
@@ -251,7 +252,7 @@ function LayoutContent({ children, currentPageName }) {
                 )}
             </nav>
 
-            <main className="product-main pt-16">
+            <main className="product-main pt-24">
                 {children}
             </main>
 

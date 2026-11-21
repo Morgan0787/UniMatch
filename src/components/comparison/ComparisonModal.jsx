@@ -52,51 +52,51 @@ export default function ComparisonModal({ universities, isOpen, onClose, onRemov
   return <Dialog open={isOpen} onOpenChange={open => { if (!open) onClose(); }}>
     <DialogContent className="release-comparison w-[calc(100%_-_1.5rem)] max-w-6xl max-h-[90dvh] overflow-y-auto rounded-2xl p-4 sm:p-6">
       <DialogHeader className="pr-6"><DialogTitle>{c.title}</DialogTitle><DialogDescription>{c.intro}</DialogDescription></DialogHeader>
-      {universities.length < 2 && <p role="status" className="text-sm text-slate-600">{c.less}</p>}
-      <p className="comparison-scroll-hint text-xs text-slate-600">{{en:'Scroll across to compare universities →',ru:'Прокрутите вправо, чтобы сопоставить вузы →',uz:'Universitetlarni taqqoslash uchun o‘ngga suring →'}[language]}</p>
-      <div className="comparison-scroll overflow-auto rounded-xl border border-slate-200" role="region" aria-label={c.title} tabIndex={0}>
+      {universities.length < 2 && <p role="status" className="text-sm text-[#55504a]">{c.less}</p>}
+      <p className="comparison-scroll-hint text-xs text-[#55504a]">{{en:'Scroll across to compare universities →',ru:'Прокрутите вправо, чтобы сопоставить вузы →',uz:'Universitetlarni taqqoslash uchun o‘ngga suring →'}[language]}</p>
+      <div className="comparison-scroll overflow-auto rounded-xl border border-[#ded5c6]" role="region" aria-label={c.title} tabIndex={0}>
         <table className="comparison-table min-w-full border-collapse text-left text-sm">
           <thead>
             <tr>
-              <th scope="col" className="comparison-label sticky left-0 z-20 min-w-40 bg-slate-100 p-3 text-xs font-semibold uppercase tracking-wide text-slate-600">{c.institution}</th>
-              {columns.map(({ university, programmes, programme }) => <th scope="col" key={university.id} className="comparison-university min-w-64 border-l border-slate-200 bg-white p-3 align-top">
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-semibold text-slate-900">{university.name}</h3>
-                  <Button variant="ghost" size="sm" aria-label={`${c.remove}: ${university.name}`} onClick={() => onRemove(university.id)}>{c.remove}</Button>
+              <th scope="col" className="comparison-label sticky left-0 z-20 min-w-[100px] sm:min-w-40 bg-[#f4efe6] p-3 text-xs font-semibold uppercase tracking-wide text-[#55504a]"><span className="sr-only">{c.title}</span></th>
+              {columns.map(({ university, programmes, programme }) => <th scope="col" key={university.id} className="comparison-university min-w-[205px] sm:min-w-64 border-l border-[#ded5c6] bg-[#fffdf8] p-3 align-top">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="font-semibold text-[#292823] leading-snug">{university.name}</h3>
+                  <Button variant="outline" size="sm" className="shrink-0 rounded-full min-h-9 h-9 px-3 border-[#d7c7b2] text-xs hover:bg-[#faf5ed]" aria-label={`${c.remove}: ${university.name}`} onClick={() => onRemove(university.id)}>{c.remove}</Button>
                 </div>
-                {programmes.length > 1 && <label className="mt-3 block text-xs font-medium text-slate-700">{c.select}
+                {programmes.length > 1 && <label className="mt-3 block text-xs font-medium text-[#47443f]">{c.select}
                   <OptionSelect className="mt-1" value={programme?.id || ''} onValueChange={value => setSelection(previous => ({ ...previous, [university.id]: value }))} options={programmes.map(item => ({ value: item.id, label: comparisonFact(item, 'name', 'programme', language).value }))} />
                 </label>}
               </th>)}
             </tr>
           </thead>
           <tbody>
-            <tr><th scope="rowgroup" colSpan={columns.length + 1} className="bg-slate-50 p-3 text-xs font-semibold uppercase tracking-wide text-slate-600">{c.institution}</th></tr>
-            {['country', 'city', 'website'].map(key => <tr key={key} className="border-t border-slate-100">
-              <th scope="row" className="comparison-label sticky left-0 z-10 bg-white p-3 align-top font-medium text-slate-700">{rowLabel(key)}</th>
+            <tr><th scope="rowgroup" colSpan={columns.length + 1} className="bg-[#efe6d7] p-3 text-xs font-semibold uppercase tracking-wide text-[#5c3c1b]">{c.institution}</th></tr>
+            {['country', 'city', 'website'].map(key => <tr key={key} className="border-t border-[#ece4d8]">
+              <th scope="row" className="comparison-label sticky left-0 z-10 bg-[#faf7ef] p-3 align-top font-medium text-[#47443f]">{rowLabel(key)}</th>
               {columns.map(({ university, institutionFacts }) => {
                 const value = institutionFacts.find(fact => fact.key === key)?.value;
-                return <td key={university.id} className="border-l border-slate-100 p-3 align-top break-words">
+                return <td key={university.id} className="border-l border-[#ece4d8] p-3 align-top break-words">
                   {key === 'website' && value ? <a className="break-all text-[#704a2d] underline hover:text-[#4e311a]" href={value} target="_blank" rel="noopener noreferrer">{value}</a> : value || c.unknown}
                 </td>;
               })}
             </tr>)}
-            <tr><th scope="rowgroup" colSpan={columns.length + 1} className="bg-slate-50 p-3 text-xs font-semibold uppercase tracking-wide text-slate-600">{c.programme}</th></tr>
-            <tr className="border-t border-slate-100">
-              <th scope="row" className="comparison-label sticky left-0 z-10 bg-white p-3 align-top font-medium text-slate-700">{c.programme}</th>
-              {columns.map(({ university, programme }) => <td key={university.id} className="border-l border-slate-100 p-3 align-top font-medium text-slate-900">
+            <tr><th scope="rowgroup" colSpan={columns.length + 1} className="bg-[#efe6d7] p-3 text-xs font-semibold uppercase tracking-wide text-[#5c3c1b]">{c.programme}</th></tr>
+            <tr className="border-t border-[#ece4d8]">
+              <th scope="row" className="comparison-label sticky left-0 z-10 bg-[#faf7ef] p-3 align-top font-medium text-[#47443f]">{c.programme}</th>
+              {columns.map(({ university, programme }) => <td key={university.id} className="border-l border-[#ece4d8] p-3 align-top font-medium text-[#292823]">
                 {programme ? comparisonFact(programme, 'name', 'programme', language).value : c.empty}
               </td>)}
             </tr>
-            {COMPARISON_FIELDS.map(([key]) => <tr key={key} className="border-t border-slate-100">
-              <th scope="row" className="comparison-label sticky left-0 z-10 bg-white p-3 align-top font-medium text-slate-700">{rowLabel(key)}</th>
-              {columns.map(({ university, programme, facts }) => <td key={university.id} className="border-l border-slate-100 p-3 align-top break-words text-slate-900">
+            {COMPARISON_FIELDS.map(([key]) => <tr key={key} className="border-t border-[#ece4d8]">
+              <th scope="row" className="comparison-label sticky left-0 z-10 bg-[#faf7ef] p-3 align-top font-medium text-[#47443f]">{rowLabel(key)}</th>
+              {columns.map(({ university, programme, facts }) => <td key={university.id} className="border-l border-[#ece4d8] p-3 align-top break-words text-[#292823]">
                 {programme ? <ComparisonCell fact={facts.find(fact => fact.key === key)} copy={c} /> : c.unknown}
               </td>)}
             </tr>)}
-            <tr className="border-t border-slate-100">
-              <th scope="row" className="comparison-label sticky left-0 z-10 bg-white p-3 align-top font-medium text-slate-700">{c.source}</th>
-              {columns.map(({ university, sources }) => <td key={university.id} className="border-l border-slate-100 p-3 align-top text-xs text-slate-600">
+            <tr className="border-t border-[#ece4d8]">
+              <th scope="row" className="comparison-label sticky left-0 z-10 bg-[#faf7ef] p-3 align-top font-medium text-[#47443f]">{c.source}</th>
+              {columns.map(({ university, sources }) => <td key={university.id} className="border-l border-[#ece4d8] p-3 align-top text-xs text-[#55504a]">
                 {sources.length ? <OfficialSources sources={sources} language={language} /> : c.unknown}
               </td>)}
             </tr>

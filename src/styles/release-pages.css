@@ -9,6 +9,8 @@ body[data-unimatch-theme] .release-page {
 }
 
 body[data-unimatch-theme] .release-page :is(h1, h2, h3) { color: var(--release-ink); }
+body[data-unimatch-theme] .unimatch-app[data-page] h1.essay-gate-title { font-size: clamp(22px, 2vw, 28px); line-height: 1.2; letter-spacing: -.025em; }
+body[data-unimatch-theme] .unimatch-app[data-page="Profile"] .max-w-5xl { width: min(calc(100% - 32px), var(--product-shell-max, 1360px)); max-width: none; padding-inline: 0; }
 body[data-unimatch-theme] .release-page :is(button, a, input, select, textarea, summary, [role="tab"]):focus-visible {
   outline: 3px solid #855a36;
   outline-offset: 3px;
@@ -120,7 +122,7 @@ body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid >
   box-shadow: inset 0 1px #fff, 0 4px 16px rgba(93, 73, 48, .06);
 }
 body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div > :first-child { color: #292823; }
-body[data-unimatch-theme] .profile-page.release-page .max-w-4xl > .mb-6.bg-gradient-to-br {
+body[data-unimatch-theme] .profile-page.release-page .max-w-5xl > .mb-6.bg-gradient-to-br {
   border-color: var(--release-line);
   border-radius: 22px;
   background: linear-gradient(135deg, rgba(255,253,248,.86), rgba(246,232,212,.58));
@@ -147,14 +149,14 @@ body[data-unimatch-theme] .recommendations-page.release-page .recommendations-he
 
 /* Guest survey keeps its existing step flow while gaining a unified page frame. */
 body[data-unimatch-theme] .admissions-page.release-page {
-  width: min(100% - 32px, 76rem);
-  margin: 28px auto 40px;
-  padding: 18px clamp(14px, 2.5vw, 30px) 22px;
+  width: min(100% - 32px, var(--product-shell-max, 1360px));
+  margin: 18px auto 40px;
+  padding: 20px clamp(16px, 2.5vw, 32px) 26px;
   border: 1px solid rgba(255,255,255,.92);
-  border-radius: 22px;
+  border-radius: 26px;
   background:
     radial-gradient(ellipse at 94% 0%, rgba(248,225,214,.36), transparent 25rem),
-    rgba(255,255,255,.56);
+    rgba(255,255,255,.58);
   box-shadow: 0 12px 36px rgba(93, 73, 48, .06), inset 0 0 0 1px rgba(222, 211, 196, .22);
 }
 body[data-unimatch-theme] .admissions-page.release-page :is(button, input, select, textarea) { font: inherit; }

@@ -56,12 +56,12 @@ export default function FeedbackButton() {
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader><DialogTitle className="flex items-center gap-2"><MessageSquarePlus className="w-5 h-5 text-[#855a36]" />{c.title}</DialogTitle></DialogHeader>
                     {showSuccess ? (
-                        <div className="py-8 text-center"><div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"><CheckCircle2 className="w-8 h-8 text-emerald-600" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{c.thanks}</h3><p className="text-slate-600">{c.sent}</p></div>
+                        <div className="py-8 text-center"><div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4"><CheckCircle2 className="w-8 h-8 text-emerald-600" /></div><h3 className="text-lg font-semibold text-[#292823] mb-2">{c.thanks}</h3><p className="text-[#55504a]">{c.sent}</p></div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2"><Label htmlFor="feedback-type">{c.type}</Label><Select value={feedbackType} onValueChange={setFeedbackType}><SelectTrigger id="feedback-type"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Suggestion">{c.suggestion}</SelectItem><SelectItem value="Bug / Problem">{c.bug}</SelectItem><SelectItem value="General Feedback">{c.general}</SelectItem></SelectContent></Select></div>
                             <div className="space-y-2"><Label htmlFor="message">{c.message} <span className="text-red-500">*</span></Label><Textarea id="message" placeholder={c.placeholder} value={message} onChange={(e) => setMessage(e.target.value)} className="min-h-[120px] resize-none" maxLength={4000} required /></div>
-                            <div className="space-y-2"><Label htmlFor="email">{c.email}</Label><Input id="email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} /><p className="text-xs text-slate-500">{c.contact}</p></div>
+                            <div className="space-y-2"><Label htmlFor="email">{c.email}</Label><Input id="email" type="email" placeholder="your@email.com" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} /><p className="text-xs text-[#55504a]">{c.contact}</p></div>
                             <div className="flex gap-3 pt-2"><Button type="button" variant="outline" onClick={() => setIsOpen(false)} className="flex-1">{c.cancel}</Button><Button type="submit" disabled={isSubmitting} className="flex-1 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">{isSubmitting ? c.sending : c.title}</Button></div>
                         </form>
                     )}

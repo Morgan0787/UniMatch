@@ -64,7 +64,7 @@ export default function FeedbackPanel({ feedback, language }) {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-5 pb-5">
-            <p className="text-sm leading-relaxed text-slate-700">{feedback.clarity_explanation}</p>
+            <p className="text-sm leading-relaxed text-[#47443f]">{feedback.clarity_explanation}</p>
           </CardContent>
         </Card>
       </div>

@@ -41,7 +41,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <Card className="catalog-card search-university-card product-card group overflow-hidden border-[#e3d7c6] hover:border-[#c6a47e] hover:shadow-lg transition-all duration-300 bg-[#fffdf8] h-full flex flex-col">
+            <Card className="catalog-card search-university-card product-card group overflow-hidden border-white/95 hover:border-[#c6a47e] hover:shadow-lg transition-all duration-300 bg-[#fffdf8]/95 h-full flex flex-col">
                 {/* Header with cover */}
                 <div className="catalog-cover relative overflow-hidden">
                     <UniversityPhoto university={university} language={language} showDetails={false} prioritizeLoading={prioritizePhotoLoading} responsivePreview />
@@ -83,20 +83,20 @@ export default function UniversityCard({ university, programme = comparisonProgr
                 <div className="catalog-card-body p-4 flex-1 flex flex-col">
                     {!previewOnly && <>
                     {/* Quick stats */}
-                    <div className="catalog-card-facts space-y-1.5">
+                    <div className="catalog-card-facts flex-1 flex flex-col space-y-1.5">
                         {hasAdmissionCatalog ? (
                             programme ? <SearchProgrammePreview programme={programme} budgetReason={budgetReason} language={language} />
                                 : budgetReason && <p className="catalog-budget-reason text-sm">{budgetReason}</p>
                         ) : <>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.tuition')}</p>
-                                <p className="catalog-tuition font-semibold text-slate-800 break-words">
+                                <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.tuition')}</p>
+                                <p className="catalog-tuition font-semibold text-[#292823] break-words">
                                     {budgetReason ? (
                                         <span className="catalog-budget-reason text-sm font-normal">{budgetReason}</span>
                                     ) : hasTuitionMin ? (
                                         university.tuition_min === 0 ? (
-                                            <span className="text-emerald-600">{t('university.free')}</span>
+                                            <span className="text-emerald-700">{t('university.free')}</span>
                                         ) : (
                                             <>
                                                 €{university.tuition_min.toLocaleString(language)}
@@ -104,32 +104,32 @@ export default function UniversityCard({ university, programme = comparisonProgr
                                             </>
                                         )
                                     ) : (
-                                        <span className="text-slate-500 font-normal">{{en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}</span>
+                                        <span className="text-[#55504a] font-normal">{{en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}</span>
                                     )}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.minGpa')}</p>
+                                <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.minGpa')}</p>
                                 <p className="text-sm">
                                     {showHolisticGpaNote ? (
-                                        <span className="italic text-slate-500" title={catalogText(language, 'holisticNote')}>{catalogText(language, 'holistic')}</span>
+                                        <span className="italic text-[#55504a]" title={catalogText(language, 'holisticNote')}>{catalogText(language, 'holistic')}</span>
                                     ) : (
                                         <EstimatedField value={university.min_gpa} field="gpa" region={university.region} format={(v) => Number(v).toFixed(1)} />
                                     )}
                                 </p>
                             </div>
                         </div>
-                        <div className="text-xs text-slate-600">
-                            <span className="text-slate-500">IELTS:</span>{' '}
+                        <div className="text-xs text-[#55504a]">
+                            <span className="text-[#55504a]">IELTS:</span>{' '}
                             <EstimatedField value={university.required_ielts} field="ielts" region={university.region} unit="+" />
                             {university.language === 'English' && university.required_ielts && userIelts != null && userIelts === 0 && (
-                                <span className="ml-1 text-amber-600">({t('university.required')})</span>
+                                <span className="ml-1 text-[#855a36]">({t('university.required')})</span>
                             )}
                         </div>
                         {university.country === "South Korea" && university.topikLevel ? (
-                            <div className="text-xs text-slate-600">
-                                <span className="text-slate-500">🇰🇷 TOPIK:</span> {university.topikLevel.split(' ')[1]}+
-                                <span className="block text-slate-500">{t('university.forKorean')}</span>
+                            <div className="text-xs text-[#55504a]">
+                                <span className="text-[#55504a]">🇰🇷 TOPIK:</span> {university.topikLevel.split(' ')[1]}+
+                                <span className="block text-[#55504a]">{t('university.forKorean')}</span>
                             </div>
                         ) : null}
                         </>}
@@ -137,7 +137,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
 
                     {/* Tags */}
                     {!hasAdmissionCatalog && <div className="flex flex-wrap gap-1">
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-normal text-[10px] px-1.5 py-0.5">
+                        <Badge variant="secondary" className="bg-[#f4efe6] text-[#47443f] border border-[#e3d7c6] font-normal text-[10px] px-1.5 py-0.5">
                             <Globe className="w-2.5 h-2.5 mr-1" />
                             {catalogValue(university.language, language) || {en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}
                         </Badge>
@@ -160,7 +160,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                     <div className={`catalog-card-actions mt-auto ${compareLimitReached && !isComparing ? 'catalog-card-actions-limited' : ''}`}>
                         {limited && <p className="catalog-coverage">{limitedLabel}</p>}
                         <Button asChild
-                            className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white font-medium h-9 text-sm"
+                            className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white font-medium min-h-11 h-auto py-2 text-sm"
                         >
                             <Link id={`university-link-${university.id}`} to={detailUrl} state={{ fromApp: true }} onClick={event => {
                                 if (!event.defaultPrevented && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) onView?.(university);
@@ -176,7 +176,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                             disabled={previewOnly}
                             aria-disabled={previewOnly || (compareLimitReached && !isComparing)}
                             aria-describedby="catalog-compare-status"
-                            className={`catalog-compare w-full min-h-11 h-auto py-2 whitespace-normal text-xs ${isComparing ? "border-[#c6a47e] bg-[#f4e4cc] text-[#5c3c1b]" : "border-[#d7c7b2] hover:border-[#855a36] hover:bg-[#faf5ed]"}`}
+                            className={`catalog-compare w-full rounded-full min-h-11 h-auto py-2 whitespace-normal text-xs ${isComparing ? "border-[#c6a47e] bg-[#f4e4cc] text-[#5c3c1b]" : "border-[#d7c7b2] bg-white/80 hover:border-[#855a36] hover:bg-[#faf5ed]"}`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onCompareToggle(university.id);

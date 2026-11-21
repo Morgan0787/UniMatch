@@ -39,9 +39,9 @@ export default function ChanceIndicator({ chance, size = "default", reason }) {
         // to score, so the badge stays visually neutral and unscored.
         unknown: {
             label: t('chance.unknown'),
-            color: "bg-slate-50 text-slate-600 border-slate-200",
+            color: "bg-[#f4efe6] text-[#55504a] border-[#dfd9ce]",
             icon: HelpCircle,
-            iconColor: "text-slate-400"
+            iconColor: "text-[#7b746a]"
         }
     };
 

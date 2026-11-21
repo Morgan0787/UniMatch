@@ -167,36 +167,36 @@ export default function Search() {
     const FilterDialog = isMobile ? Drawer.Root : Sheet;
     const FilterTrigger = isMobile ? Drawer.Trigger : SheetTrigger;
     const filterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} />;
-    const filterFooter = <div className="border-t p-4"><Button className="w-full min-h-11" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>;
+    const filterFooter = <div className="border-t border-[#e5dccf] p-4"><Button className="w-full min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>;
 
     return (
-        <div className="catalog-page search-page min-h-screen bg-slate-50">
+        <div className="catalog-page search-page min-h-screen">
             <header className="max-w-7xl mx-auto px-4 sm:px-6 catalog-heading">
                 <h1>{editorial.title}</h1>
                 <p>{editorial.intro}</p>
             </header>
             {showFirstVisitHint && (
-                <div className="search-profile-hint bg-indigo-600 text-white">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-                        <p className="text-sm font-medium">{editorial.hint}</p>
-                        <button aria-label={t('common.close')} onClick={dismissHint} className="text-white/80 hover:text-white flex-shrink-0"><X className="w-4 h-4" /></button>
+                <div className="search-profile-hint max-w-7xl mx-auto px-4 sm:px-6 mb-3">
+                    <div className="rounded-2xl border border-white/95 bg-[#fffaf2]/85 px-4 py-2.5 flex items-center justify-between gap-3 shadow-sm">
+                        <p className="text-sm font-medium text-[#3a342e]">{editorial.hint}</p>
+                        <button aria-label={t('common.close')} onClick={dismissHint} className="min-h-10 min-w-10 rounded-full inline-flex items-center justify-center text-[#55504a] hover:text-[#292823] hover:bg-white/70 flex-shrink-0"><X className="w-4 h-4" /></button>
                     </div>
                 </div>
             )}
             {favoriteAction && favoriteMutation.isError && <p role="alert" className="max-w-7xl mx-auto px-4 py-2 text-sm text-red-700">{favoriteText.saveError}</p>}
             {profileQuery.isError && <div className="max-w-7xl mx-auto px-4 py-2 text-sm"><p role="alert">{favoriteText[profileQuery.error?.message === 'Your profile could not be selected safely.' ? 'saveDuplicates' : 'saveError']}</p><Button variant="outline" onClick={() => void profileQuery.refetch()}>{favoriteText.saveRetry}</Button></div>}
             <p role="status" className="sr-only">{pendingLabel || (favoriteAction && favoriteMutation.isSuccess ? favoriteText[favoriteAction.remove ? 'removedFromAccount' : 'savedInAccount'] : '')}</p>
-            <div className="catalog-toolbar bg-white border-b border-slate-100">
+            <div className="catalog-toolbar">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-                    <div className="flex flex-col md:flex-row gap-4 items-center">
+                    <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
                         <div className="relative flex-1 w-full">
-                            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                            <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-4 py-6 text-lg bg-slate-50 border-slate-200 rounded-xl focus:bg-white" />
-                            {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>}
+                            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#55504a]" />
+                            <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-10 py-6 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
+                            {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 min-h-10 min-w-10 inline-flex items-center justify-center rounded-full text-[#55504a] hover:text-[#292823]"><X className="w-4 h-4" /></button>}
                         </div>
                         <FilterDialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen} {...(isMobile ? { handleOnly: true, autoFocus: true } : {})}>
                             <FilterTrigger asChild>
-                                <Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-1">{activeFilterCount}</Badge>}</Button>
+                                <Button variant="outline" className="search-filter-trigger gap-2 shrink-0 w-full md:w-auto min-h-12 px-5 rounded-full border-white/95 bg-[#fffdf8]/90 text-[#292823] hover:bg-white shadow-sm"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-1">{activeFilterCount}</Badge>}</Button>
                             </FilterTrigger>
                             {isMobile ? (
                                 <Drawer.Portal>
@@ -222,21 +222,21 @@ export default function Search() {
                         </FilterDialog>
                     </div>
                     <div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4">
-                        <p className="text-slate-600" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-slate-800">{shownResults.length}</span> {t('search.results')}</>}</p>
+                        <p className="text-[#55504a]" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-[#292823]">{shownResults.length}</span> {t('search.results')}</>}</p>
                         <div className="flex flex-wrap items-center gap-3">
-                            {compareList.length > 0 && <Button disabled={isLoading} onClick={() => setShowComparison(true)} className="bg-[#252c2f] hover:bg-[#354044] text-white rounded-full gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}
-                            <div className="flex gap-2 items-center text-sm text-[#47443f]"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b]">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div>
+                            {compareList.length > 0 && <Button disabled={isLoading} onClick={() => setShowComparison(true)} className="bg-[#252c2f] hover:bg-[#354044] text-white rounded-full gap-2 min-h-10" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}
+                            <div className="flex gap-2 items-center text-sm text-[#47443f]"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b] border border-[#e3caa6]">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <p id="catalog-compare-status" role="status" aria-live="polite" className={`max-w-7xl mx-auto px-4 sm:px-6 text-sm text-slate-600 ${compareList.length ? 'pt-4' : 'sr-only'}`}>{compareList.length === 3 ? compareStatus : compareList.length > 0 ? `${compareList.length} / 3` : ''}</p>
+            <p id="catalog-compare-status" role="status" aria-live="polite" className={`max-w-7xl mx-auto px-4 sm:px-6 text-sm text-[#55504a] ${compareList.length ? 'pt-4' : 'sr-only'}`}>{compareList.length === 3 ? compareStatus : compareList.length > 0 ? `${compareList.length} / 3` : ''}</p>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
                 <div id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="min-w-0">
                     {isLoading && !showingPreview ? (
-                        <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-white rounded-2xl overflow-hidden border border-slate-100"><Skeleton className="h-32" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div>
+                        <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-[#fffdf8]/85 rounded-[22px] overflow-hidden border border-white/95"><Skeleton className="h-44" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div>
                     ) : isError ? (
-                        <div role="alert" className="catalog-load-error"><h2>{{en:'Unable to load universities',ru:'Не удалось загрузить университеты',uz:'Universitetlarni yuklab bo‘lmadi'}[language]}</h2><p>{{en:'Your search and filters are kept. Try loading the catalogue again.',ru:'Поиск и фильтры сохранены. Попробуйте загрузить каталог ещё раз.',uz:'Qidiruv va filtrlar saqlandi. Katalogni qayta yuklab ko‘ring.'}[language]}</p><Button disabled={isFetching} onClick={() => void refetch()}>{{en:'Try again',ru:'Попробовать снова',uz:'Qayta urinish'}[language]}</Button></div>
+                        <div role="alert" className="catalog-load-error"><h2>{{en:'Unable to load universities',ru:'Не удалось загрузить университеты',uz:'Universitetlarni yuklab bo‘lmadi'}[language]}</h2><p>{{en:'Your search and filters are kept. Try loading the catalogue again.',ru:'Поиск и фильтры сохранены. Попробуйте загрузить каталог ещё раз.',uz:'Qidiruv va filtrlar saqlandi. Katalogni qayta yuklab ko‘ring.'}[language]}</p><Button disabled={isFetching} className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => void refetch()}>{{en:'Try again',ru:'Попробовать снова',uz:'Qayta urinish'}[language]}</Button></div>
                     ) : pageRows.length ? (
                         <>
                             <h2 className="sr-only">{{en:'University results',ru:'Результаты поиска университетов',uz:'Universitet qidiruvi natijalari'}[language]}</h2>
@@ -252,7 +252,7 @@ export default function Search() {
                             </div>
                         </>
                     ) : (
-                        <div className="text-center py-20"><div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-slate-400" /></div><h3 className="text-lg font-semibold text-slate-800 mb-2">{t('search.noResults')}</h3><p className="text-slate-500 mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" onClick={resetFilters}>{t('search.resetFilters')}</Button></div>
+                        <div className="text-center py-20"><div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-[#704a2d]" /></div><h3 className="text-lg font-semibold text-[#292823] mb-2">{t('search.noResults')}</h3><p className="text-[#55504a] mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" className="rounded-full" onClick={resetFilters}>{t('search.resetFilters')}</Button></div>
                     )}
                 </div>
             </div>

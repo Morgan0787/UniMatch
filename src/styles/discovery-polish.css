@@ -77,7 +77,7 @@ body[data-unimatch-theme] .university-detail-header .university-identity { paddi
 :is(.programme-summary, .programme-details) summary:focus-visible { outline: 2px solid #855a36; outline-offset: 3px; border-radius: 3px; }
 
 @media (min-width: 1600px) {
-  .catalog-page > .max-w-7xl, .catalog-toolbar > .max-w-7xl { max-width: 1480px; }
+  .catalog-page > .max-w-7xl, .catalog-toolbar > .max-w-7xl { max-width: var(--product-shell-max, 1440px); }
   .unimatch-app .catalog-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
 }
 @media (max-width: 1099px) {

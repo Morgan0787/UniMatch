@@ -36,9 +36,14 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
     ? describePublicFact(option.facts.languageThreshold, language, 'rule') : null;
   const saved = favorites.savedIds.includes(option.institutionId);
   const pending = favorites.pendingId === option.institutionId;
+  const regionLabel = c.regionNames[option.region];
+  const countryLabel = catalogValue(option.country, language);
+  const placeLabel = regionLabel && countryLabel && regionLabel !== countryLabel
+    ? `${regionLabel} · ${countryLabel}`
+    : countryLabel || regionLabel;
   return <article className="admission-candidate" data-institution={option.institutionId || option.university} data-top={Boolean(isTop)}>
     <div className="admission-candidate-overview">
-    <div className="admission-candidate-meta"><span>{option.university}</span><span>{c.regionNames[option.region]} · {catalogValue(option.country, language)}</span></div>
+    <div className="admission-candidate-meta"><span>{option.university}</span><span>{placeLabel}</span></div>
     {isTop && <p className="admission-top-badge">{c.topBadge}</p>}
     <h2>{option.name}</h2>
     <InstitutionMedia option={option} c={c} compact />

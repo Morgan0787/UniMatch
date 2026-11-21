@@ -1,16 +1,16 @@
 /* Pearl glass and warm reflected light, shared with the approved catalogue. */
 body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] {
-  --recommendation-ink: #2d302f;
-  --recommendation-muted: #4a4742;
+  --recommendation-ink: #292823;
+  --recommendation-muted: #55504a;
   --recommendation-line: #8f765c24;
 }
 body[data-unimatch-theme] .unimatch-app .recommendations-page { color: var(--recommendation-ink); padding-bottom: 100px; }
-body[data-unimatch-theme] .unimatch-app .recommendations-container { width: calc(100% - 80px); max-width: 1840px; margin-inline: auto; }
+body[data-unimatch-theme] .unimatch-app .recommendations-container { width: min(calc(100% - 32px), var(--product-shell-max, 1360px)); max-width: none; margin-inline: auto; }
 body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner { padding: 24px 0 12px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .product-page-hero { border: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading { margin-bottom: 4px; gap: 16px; align-items: start; flex-wrap: nowrap; }
 body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading > div { flex: 1; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { max-width: none; font-size: clamp(30px, 2.9vw, 46px); line-height: 1.12; letter-spacing: -.045em; color: var(--recommendation-ink); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { max-width: none; font-size: var(--product-h1, clamp(28px, 2.7vw, 40px)); line-height: 1.14; letter-spacing: -.035em; color: var(--recommendation-ink); }
 body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner > p { max-width: none; margin-top: 8px; font-size: clamp(15px, 1.4vw, 20px); line-height: 1.45; color: var(--recommendation-muted); }
 body[data-unimatch-theme] .unimatch-app .recommendation-preferences { min-height: 42px; flex-shrink: 0; border: 1px solid #ffffffd9; border-radius: 999px; background: #ffffff59; color: #51483e; }
 body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip {
@@ -45,11 +45,11 @@ body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card.sear
 }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card:hover { border-color: #fff; box-shadow: 0 14px 32px #5f412923, inset 0 1px #fff; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-cover { display: flex; flex-direction: column; overflow: visible; min-width: 0; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-small { order: 0; display: flex; gap: 12px; align-items: start; padding: 16px 20px 12px; background: transparent; min-width: 0; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-small { order: 0; display: flex; gap: 10px; align-items: start; min-height: 76px; padding: 16px 18px 10px; background: transparent; min-width: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .university-monogram { display: none; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy { min-width: 0; flex: 1; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy h3 { color: var(--recommendation-ink); font-size: clamp(21px, 1.65vw, 27px); font-weight: 650; letter-spacing: -.035em; line-height: 1.1; overflow-wrap: anywhere; white-space: normal; -webkit-line-clamp: unset; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy p { margin-top: 5px; color: var(--recommendation-muted); font-size: 14px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy h3 { color: var(--recommendation-ink); font-size: clamp(1.12rem, 1.35vw, 1.28rem); font-weight: 650; letter-spacing: -.03em; line-height: 1.22; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-copy p { margin-top: 4px; color: var(--recommendation-muted); font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .university-identity-actions { flex-shrink: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-save { width: 42px; height: 42px; border: 1px solid #fff; border-radius: 50%; background: #ffffff80; box-shadow: inset 0 1px #fff, 0 4px 12px #70503314; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo { order: 1; width: 100%; padding: 0 12px; background: transparent; }
@@ -82,9 +82,13 @@ body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-coverage 
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-actions a,
 body[data-unimatch-theme] .unimatch-app .recommendation-compare-open {
   min-height: 44px; border: 1px solid #ffffff7a; border-radius: 999px;
-  background: linear-gradient(160deg, #626968d9, #303b3bd9 60%, #313937ed);
-  box-shadow: inset 0 1px 1px #ffffff70, inset 0 -1px 1px #14202166, 0 3px 6px #30251c1a;
-  color: #fff; font-size: 15px; font-weight: 550;
+  background: radial-gradient(ellipse 85% 100% at 35% -40%, rgba(255, 255, 255, .26), transparent 90%), #252c2f;
+  box-shadow: inset 0 1px 1px #ffffff70, inset 0 -1px 1px #14202155, 0 3px 6px #30251c1a;
+  color: #fff; font-size: 14px; font-weight: 550;
+}
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-actions a:hover,
+body[data-unimatch-theme] .unimatch-app .recommendation-compare-open:hover {
+  background-color: #354044;
 }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-compare { min-height: 44px; border: 1px solid #fff; border-radius: 999px; background: #ffffff66; box-shadow: inset 0 1px #fff, 0 3px 8px #70503312; font-size: 14px; color: var(--recommendation-ink); white-space: normal; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-compare[aria-pressed="true"] { background: #f6e3c9; border-color: #d6aa79; color: #62431e; }
@@ -101,29 +105,23 @@ body[data-unimatch-theme] .unimatch-app .recommendation-compare-items svg { flex
 body[data-unimatch-theme] .unimatch-app .recommendation-compare-open { gap: 10px; padding-inline: 22px; flex-shrink: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendation-compare-clear { flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: #ffffff66; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page :is(button,a,select,summary):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
-body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav { top: 14px; left: 24px; right: 24px; width: auto; max-width: 1840px; margin-inline: auto; border: 1px solid #fffffff0; border-radius: 32px; background: linear-gradient(130deg, #ffffff80, #fff9f25c); backdrop-filter: blur(22px) saturate(125%); -webkit-backdrop-filter: blur(22px) saturate(125%); box-shadow: inset 0 1px #fff, 0 8px 28px #5d493014; }
-body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-main { padding-top: 96px; }
-body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav a[aria-current="page"] { border-radius: 999px; background: #ffffff80; box-shadow: inset 0 0 0 1px #ffffffdb; }
 body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-footer { background: #ffffff33; }
-@media (min-width: 2000px) {
-  body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 22px; }
+@media (min-width: 1600px) {
+  body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 20px; }
 }
 @media (max-width: 1199px) {
   body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip { flex-wrap: wrap; border-radius: 26px; gap: 12px 0; }
   body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric { flex: 1 1 25%; padding-inline: 14px; font-size: 14px; gap: 9px; }
   body[data-unimatch-theme] .unimatch-app .recommendation-edit { margin-left: auto; }
   body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  body[data-unimatch-theme] .unimatch-app .recommendation-preferences { font-size: 0; width: 42px; padding: 0; }
-  body[data-unimatch-theme] .unimatch-app .recommendation-preferences svg { width: 18px; height: 18px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-preferences { width: auto; min-height: 44px; padding: 0 14px; font-size: 13px; }
 }
 @media (max-width: 699px) {
   body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"]:has(.recommendation-compare-dock) .product-feedback-trigger { bottom: 152px; }
-  body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav { top: 10px; left: 12px; right: 12px; }
-  body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-nav > div { padding-inline: 16px; }
-  body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading { gap: 8px; }
-  body[data-unimatch-theme] .unimatch-app .recommendations-container { width: calc(100% - 32px); }
+  body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner .product-hero-heading { flex-direction: column; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-container { width: calc(100% - 24px); }
   body[data-unimatch-theme] .unimatch-app .recommendations-hero-inner { padding-top: 20px; }
-  body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { font-size: 30px; }
+  body[data-unimatch-theme] .unimatch-app .recommendations-page.release-page .recommendations-hero-inner h1 { font-size: clamp(24px, 6.2vw, 30px); overflow-wrap: break-word; }
   body[data-unimatch-theme] .unimatch-app .recommendation-profile-strip { padding: 14px 8px 10px; gap: 14px 0; }
   body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric { flex-basis: 50%; padding-inline: 10px; font-size: 13px; gap: 9px; }
   body[data-unimatch-theme] .unimatch-app .recommendation-profile-metric:nth-child(3) { border-left: 0; }
@@ -143,4 +141,8 @@ body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-fo
   body[data-unimatch-theme] .unimatch-app .recommendation-compare-open { grid-column: 1; grid-row: 2; }
   body[data-unimatch-theme] .unimatch-app .recommendation-compare-clear { grid-column: 2; grid-row: 1 / 3; }
   body[data-unimatch-theme] .unimatch-app .recommendations-page { padding-bottom: 135px; }
+}
+@media (max-width: 399px) {
+  body[data-unimatch-theme] .unimatch-app .recommendation-segments { flex-wrap: wrap; gap: 4px; border-radius: 20px; }
+  body[data-unimatch-theme] .unimatch-app .recommendation-segments button { flex: 1 1 auto; min-height: 44px; padding: 8px 12px; }
 }

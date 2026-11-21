@@ -97,7 +97,7 @@ export default function EssayChecker() {
 
   if (!aiEnabled) {
     return (
-      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
+      <main className="release-page min-h-[calc(100dvh-190px)] flex items-center justify-center px-4 py-12">
         <UnavailableState copy={copy} catalogHref={catalogPath(language)} />
       </main>
     );
@@ -105,9 +105,9 @@ export default function EssayChecker() {
 
   if (isLoadingAuth) {
     return (
-      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
-        <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
-          <CardContent className="flex items-center gap-3 p-6 text-sm text-slate-600 sm:p-8" role="status">
+      <main className="release-page min-h-[calc(100dvh-190px)] flex items-center justify-center px-4 py-12">
+        <Card className="mx-auto w-full max-w-xl rounded-[24px] border-white/95 bg-[#fffdf8]/90 shadow-sm">
+          <CardContent className="flex items-center gap-3 p-6 text-sm text-[#55504a] sm:p-8" role="status">
             <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
             {copy.loadingAuth}
           </CardContent>
@@ -118,17 +118,17 @@ export default function EssayChecker() {
 
   if (!isAuthenticated) {
     return (
-      <main className="release-page min-h-screen px-5 py-12 sm:py-16">
-        <Card className="mx-auto max-w-xl border-white/90 bg-[#fffdf8]/90 shadow-sm">
+      <main className="release-page min-h-[calc(100dvh-190px)] flex items-center justify-center px-4 py-12">
+        <Card className="mx-auto w-full max-w-xl rounded-[24px] border-white/95 bg-[#fffdf8]/90 shadow-sm">
           <CardHeader className="p-6 sm:p-8">
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4e4cc] text-[#6e4b2a]">
               <LockKeyhole className="h-6 w-6" aria-hidden="true" />
             </div>
-            <h1 className="text-2xl font-semibold leading-none tracking-tight text-[#292823]">{copy.signInTitle}</h1>
-            <CardDescription className="text-base leading-relaxed">{copy.signInDescription}</CardDescription>
+            <h1 className="essay-gate-title text-2xl font-semibold leading-tight tracking-tight text-[#292823]">{copy.signInTitle}</h1>
+            <CardDescription className="text-base leading-relaxed text-[#55504a]">{copy.signInDescription}</CardDescription>
           </CardHeader>
           <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
-            <Button asChild className="w-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
+            <Button asChild className="w-full min-h-11 rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
               <Link to={LOGIN_URL}>{copy.signIn}</Link>
             </Button>
           </CardContent>
@@ -148,7 +148,7 @@ export default function EssayChecker() {
             <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />
           </div>
           <div className="pt-0.5">
-            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{copy.title}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-[#292823] sm:text-3xl">{copy.title}</h1>
             <p className="mt-2 max-w-2xl leading-relaxed text-[#47443f]">{copy.intro}</p>
           </div>
         </header>
@@ -238,16 +238,16 @@ export default function EssayChecker() {
 
 function UnavailableState({ copy, catalogHref }) {
   return (
-    <Card className="mx-auto max-w-xl border-white/90 bg-[#fffdf8]/90 shadow-sm">
+    <Card className="mx-auto w-full max-w-xl rounded-[24px] border-white/95 bg-[#fffdf8]/90 shadow-sm">
       <CardHeader className="p-6 sm:p-8">
         <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4e4cc] text-[#6e4b2a]">
           <FileText className="h-6 w-6" aria-hidden="true" />
         </div>
-        <h1 className="text-2xl font-semibold leading-none tracking-tight text-[#292823]">{copy.disabledTitle}</h1>
-        <CardDescription className="text-base leading-relaxed">{copy.disabledDescription}</CardDescription>
+        <h1 className="essay-gate-title text-2xl font-semibold leading-tight tracking-tight text-[#292823]">{copy.disabledTitle}</h1>
+        <CardDescription className="text-base leading-relaxed text-[#55504a]">{copy.disabledDescription}</CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
-        <Button asChild className="w-full rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
+        <Button asChild className="w-full min-h-11 rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
           <Link to={catalogHref}>{copy.explore}</Link>
         </Button>
       </CardContent>

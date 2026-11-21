@@ -87,7 +87,7 @@ function MatchScoreIndicator({ score, missingReason }) {
         if (score >= 80) return 'text-emerald-600 bg-emerald-50 border-emerald-200';
         if (score >= 60) return 'text-blue-600 bg-blue-50 border-blue-200';
         if (score >= 40) return 'text-amber-600 bg-amber-50 border-amber-200';
-        return 'text-slate-600 bg-slate-50 border-slate-200';
+        return 'text-[#47443f] bg-[#f4efe6] border-[#ded5c6]';
     };
     
     const getLabel = () => {
@@ -103,7 +103,7 @@ function MatchScoreIndicator({ score, missingReason }) {
                 <Target className="w-4 h-4" />
                 <span>{score}%</span>
             </div>
-            <span className="text-sm text-slate-600">{getLabel()}</span>
+            <span className="text-sm text-[#55504a]">{getLabel()}</span>
         </div>
     );
 }
@@ -113,8 +113,8 @@ function RecommendationCard({ university, profile, matchScore, isSaved, onSave, 
         userTopik={profile.topikLevel} isSaved={isSaved} onSave={onSave} isComparing={isComparing}
         onCompareToggle={onCompareToggle} compareLimitReached={compareLimitReached} onView={onView}
         saveDisabled={saveDisabled} savePendingLabel={savePendingLabel}>
-        {saveError && <p role="alert" className="text-sm text-amber-800">{saveError}</p>}
-        <span role="status" className={savePendingLabel ? 'block text-sm font-medium text-slate-600' : 'sr-only'}>{savePendingLabel || saveNotice}</span>
+        {saveError && <p role="alert" className="text-sm text-[#855a36]">{saveError}</p>}
+        <span role="status" className={savePendingLabel ? 'block text-sm font-medium text-[#55504a]' : 'sr-only'}>{savePendingLabel || saveNotice}</span>
         {university.admissionCatalog === undefined && <MatchScoreIndicator score={matchScore}
             missingReason={describeMissingChanceData(university)?.note} />}
     </UniversityCard>;
@@ -357,7 +357,7 @@ export default function Recommendations() {
                                         <SheetTitle>{t('recommendations.countryWeights')}</SheetTitle>
                                     </SheetHeader>
                                     <div className="mt-6 space-y-6">
-                                        <p className="text-sm text-slate-600">
+                                        <p className="text-sm text-[#55504a]">
                                             {t('recommendations.countryWeightsDesc')}
                                         </p>
                                         {userProfile.preferred_countries.map(country => (
@@ -377,7 +377,7 @@ export default function Recommendations() {
                                                     step={10}
                                                     className="py-2"
                                                 />
-                                                <div className="flex justify-between text-xs text-slate-400">
+                                                <div className="flex justify-between text-xs text-[#55504a]">
                                                     <span>{t('recommendations.notImportant')}</span>
                                                     <span>{t('recommendations.veryImportant')}</span>
                                                 </div>
@@ -388,7 +388,7 @@ export default function Recommendations() {
                             </Sheet>
                         )}
                     </div>
-                    <p className="text-white/90 text-lg max-w-2xl">
+                    <p className="text-[#55504a] text-lg max-w-2xl">
                         {copy.subtitle}
                     </p>
                     

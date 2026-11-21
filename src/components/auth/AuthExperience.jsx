@@ -18,11 +18,11 @@ function StaticFigure({ method }) {
   return (
     <svg viewBox="0 0 600 500" className="auth-static-figure" aria-hidden="true">
       <defs>
-        <radialGradient id="auth-globe" cx="32%" cy="24%" r="80%"><stop stopColor="#ffffff" /><stop offset=".45" stopColor="#f1f3f1" /><stop offset="1" stopColor="#c3ccc8" /></radialGradient>
-        <linearGradient id="auth-metal" x2="1" y2="1"><stop stopColor="#ffffff" /><stop offset=".5" stopColor="#edf0ed" /><stop offset="1" stopColor="#c3ccc8" /></linearGradient>
-        <linearGradient id="auth-gold"><stop stopColor="#fafbf8" /><stop offset="1" stopColor="#a4b0aa" /></linearGradient>
-        <linearGradient id="auth-paper"><stop stopColor="#ffffff" /><stop offset=".48" stopColor="#dbe2dd" /><stop offset="1" stopColor="#fafbf8" /></linearGradient>
-        <filter id="auth-relief" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="2" floodColor="#778d83" floodOpacity=".35" /></filter>
+        <radialGradient id="auth-globe" cx="32%" cy="24%" r="80%"><stop stopColor="#fffdf9" /><stop offset=".45" stopColor="#e9dfd0" /><stop offset="1" stopColor="#baa892" /></radialGradient>
+        <linearGradient id="auth-metal" x2="1" y2="1"><stop stopColor="#fffdf9" /><stop offset=".5" stopColor="#eadfcb" /><stop offset="1" stopColor="#b89f80" /></linearGradient>
+        <linearGradient id="auth-gold"><stop stopColor="#f5e6d1" /><stop offset="1" stopColor="#855a36" /></linearGradient>
+        <linearGradient id="auth-paper"><stop stopColor="#fffdf9" /><stop offset=".48" stopColor="#ece2d2" /><stop offset="1" stopColor="#faf5eb" /></linearGradient>
+        <filter id="auth-relief" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="2" floodColor="#6f5336" floodOpacity=".38" /></filter>
         <clipPath id="auth-sphere"><circle cx="300" cy="246" r="150" /></clipPath>
       </defs>
       {method === 'password' ? <>

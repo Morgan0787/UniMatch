@@ -25,10 +25,16 @@ export default function SearchProgrammePreview({ programme, budgetReason = '', l
   return <section className="search-programme-preview">
     <p className="search-programme-eyebrow">{copy.example}</p>
     <h4>{name.value}</h4>
-    <dl className="search-programme-campus mb-1 text-sm leading-snug">
-      <dt className="font-semibold">{catalogCopy.programmeCampus}</dt>
-      <dd>{location ? [location.campus, catalogValue(location.country, language)].filter(Boolean).join(' · ') : catalogCopy.unknownCampus}</dd>
-    </dl>
+      {location ? (
+        <p className="search-programme-campus mb-2 text-xs leading-snug text-[#55504a]">
+          <span className="font-semibold text-[#292823]">{catalogCopy.programmeCampus}: </span>
+          {[location.campus, catalogValue(location.country, language)].filter(Boolean).join(' · ')}
+        </p>
+      ) : (
+        <p className="search-programme-campus-muted mb-2 text-xs leading-snug text-[#656158]">
+          {catalogCopy.unknownCampus}
+        </p>
+      )}
     <dl className="search-programme-stats">
       <div>
         <dt>{copy.tuition}</dt>

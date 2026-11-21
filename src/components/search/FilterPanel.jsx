@@ -52,30 +52,30 @@ export default function FilterPanel({ filters, setFilters, onReset, universities
                             {t('filters.topik')}: <span className="text-[#704a2d] font-semibold">{filters.topikLevel == null ? unsetLabel : filters.topikLevel === "Not taken" ? t('filters.notTaken') : filters.topikLevel}</span>
                         </Label>
                         <Select value={filters.topikLevel || "unset"} onValueChange={(val) => updateFilter('topikLevel', val === 'unset' ? null : val)}>
-                            <SelectTrigger id={filterId('topik')} className="bg-slate-50 border-slate-200"><SelectValue /></SelectTrigger>
+                            <SelectTrigger id={filterId('topik')} className="bg-[#fffdf8] border-[#dedbd3]"><SelectValue /></SelectTrigger>
                             <SelectContent className="glass-filter-options search-filter-options">
                                 <SelectItem value="unset">{unsetLabel}</SelectItem><SelectItem value="Not taken">{t('filters.notTaken')}</SelectItem>
                                 <SelectItem value="TOPIK 1">TOPIK 1</SelectItem><SelectItem value="TOPIK 2">TOPIK 2</SelectItem><SelectItem value="TOPIK 3">TOPIK 3</SelectItem>
                                 <SelectItem value="TOPIK 4">TOPIK 4</SelectItem><SelectItem value="TOPIK 5">TOPIK 5</SelectItem><SelectItem value="TOPIK 6">TOPIK 6</SelectItem>
                             </SelectContent>
                         </Select>
-                        <p className="text-xs text-slate-400">{t('filters.topikHint')}</p>
+                        <p className="text-xs text-[#55504a]">{t('filters.topikHint')}</p>
                     </div>
                     <div className="space-y-3">
-                        <Label htmlFor={filterId('region')} className="text-sm font-medium text-slate-700">{t('filters.region')}</Label>
+                        <Label htmlFor={filterId('region')} className="text-sm font-medium text-[#292823]">{t('filters.region')}</Label>
                         <Select value={filters.region || ""} onValueChange={(val) => updateFilter('region', val)}>
-                            <SelectTrigger id={filterId('region')} className="bg-slate-50 border-slate-200"><SelectValue placeholder={t('filters.allRegions')} /></SelectTrigger>
+                            <SelectTrigger id={filterId('region')} className="bg-[#fffdf8] border-[#dedbd3]"><SelectValue placeholder={t('filters.allRegions')} /></SelectTrigger>
                             <SelectContent className="glass-filter-options search-filter-options"><SelectItem value="all">{t('filters.allRegions')}</SelectItem>{regions.map(r => <SelectItem key={r} value={r}>{optionLabel(r)}</SelectItem>)}</SelectContent>
                         </Select>
                     </div>
                     <div className="space-y-3">
-                        <Label className="text-sm font-medium text-slate-700">{t('filters.language')}</Label>
+                        <Label className="text-sm font-medium text-[#292823]">{t('filters.language')}</Label>
                         <div className="flex flex-wrap gap-2" role="group" aria-label={t('filters.language')}>
                             {languages.map(lang => <Button key={lang} type="button" variant="outline" aria-pressed={Boolean(filters.languages?.includes(lang))} className={`search-filter-chip ${filters.languages?.includes(lang) ? "is-selected" : ""}`} onClick={() => toggleArrayFilter('languages', lang)}>{optionLabel(lang)}</Button>)}
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <Label className="text-sm font-medium text-slate-700">{t('filters.degree')}</Label>
+                        <Label className="text-sm font-medium text-[#292823]">{t('filters.degree')}</Label>
                         <div className="flex flex-wrap gap-2" role="group" aria-label={t('filters.degree')}>
                             {degrees.map(deg => <Button key={deg} type="button" variant="outline" aria-pressed={filters.degree === deg} className={`search-filter-chip ${filters.degree === deg ? "is-selected" : ""}`} onClick={() => updateFilter('degree', filters.degree === deg ? '' : deg)}>{optionLabel(deg)}</Button>)}
                         </div>

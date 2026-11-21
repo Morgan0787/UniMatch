@@ -34,7 +34,7 @@ export default function AdminFeedback() {
     // Not authorized
     if (!isAdmin && !isLoading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+            <div className="release-page internal-page min-h-screen flex items-center justify-center p-6">
                 <Card className="max-w-md w-full">
                     <CardHeader>
                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -43,7 +43,7 @@ export default function AdminFeedback() {
                         <CardTitle className="text-center text-red-600">Access Denied</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-slate-600 text-center">
+                        <p className="text-[#55504a] text-center">
                             This page is only accessible to administrators.
                         </p>
                     </CardContent>
@@ -66,17 +66,17 @@ export default function AdminFeedback() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="release-page internal-page min-h-screen">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200">
+            <div className="bg-transparent border-b border-[#ded5c6]">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                            <ShieldCheck className="w-5 h-5 text-indigo-600" />
+                        <div className="w-10 h-10 bg-[#f4e4cc] rounded-xl flex items-center justify-center">
+                            <ShieldCheck className="w-5 h-5 text-[#704a2d]" />
                         </div>
-                        <h1 className="text-3xl font-bold text-slate-800">User Feedback</h1>
+                        <h1 className="text-3xl font-bold text-[#292823]">User Feedback</h1>
                     </div>
-                    <p className="text-slate-600">
+                    <p className="text-[#55504a]">
                         View all feedback submitted by users
                     </p>
                 </div>
@@ -99,11 +99,11 @@ export default function AdminFeedback() {
                 ) : feedbackList.length === 0 ? (
                     <Card>
                         <CardContent className="py-12 text-center">
-                            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <MessageSquare className="w-8 h-8 text-slate-400" />
+                            <div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4">
+                                <MessageSquare className="w-8 h-8 text-[#625e59]" />
                             </div>
-                            <h3 className="text-lg font-semibold text-slate-800 mb-2">No feedback yet</h3>
-                            <p className="text-slate-500">
+                            <h3 className="text-lg font-semibold text-[#292823] mb-2">No feedback yet</h3>
+                            <p className="text-[#55504a]">
                                 User feedback will appear here once submitted
                             </p>
                         </CardContent>
@@ -117,7 +117,7 @@ export default function AdminFeedback() {
                                         <Badge className={`${getTypeColor(feedback.feedback_type)} border`}>
                                             {feedback.feedback_type}
                                         </Badge>
-                                        <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <div className="flex items-center gap-2 text-sm text-[#55504a]">
                                             <Calendar className="w-4 h-4" />
                                             <span>
                                                 {format(new Date(feedback.created_date), 'MMM d, yyyy HH:mm')}
@@ -125,19 +125,19 @@ export default function AdminFeedback() {
                                         </div>
                                     </div>
 
-                                    <div className="bg-slate-50 rounded-lg p-4 mb-4">
-                                        <p className="text-slate-800 whitespace-pre-wrap leading-relaxed">
+                                    <div className="bg-[#faf5ed] rounded-xl p-4 mb-4">
+                                        <p className="text-[#292823] whitespace-pre-wrap leading-relaxed">
                                             {feedback.message}
                                         </p>
                                     </div>
 
-                                    <div className="flex flex-wrap gap-4 text-sm text-slate-600">
+                                    <div className="flex flex-wrap gap-4 text-sm text-[#55504a]">
                                         {feedback.email && (
                                             <div className="flex items-center gap-2">
-                                                <Mail className="w-4 h-4 text-slate-400" />
+                                                <Mail className="w-4 h-4 text-[#625e59]" />
                                                 <a 
                                                     href={`mailto:${feedback.email}`} 
-                                                    className="text-indigo-600 hover:underline"
+                                                    className="text-[#704a2d] hover:underline"
                                                 >
                                                     {feedback.email}
                                                 </a>
@@ -145,19 +145,19 @@ export default function AdminFeedback() {
                                         )}
                                         {feedback.page_url && (
                                             <div className="flex items-center gap-2">
-                                                <Globe className="w-4 h-4 text-slate-400" />
+                                                <Globe className="w-4 h-4 text-[#625e59]" />
                                                 <a 
                                                     href={feedback.page_url} 
                                                     target="_blank" 
                                                     rel="noopener noreferrer"
-                                                    className="text-indigo-600 hover:underline truncate max-w-xs"
+                                                    className="text-[#704a2d] hover:underline truncate max-w-xs"
                                                 >
                                                     {feedback.page_url.replace(/^https?:\/\//, '')}
                                                 </a>
                                             </div>
                                         )}
                                         {!feedback.email && (
-                                            <div className="flex items-center gap-2 text-slate-400 italic">
+                                            <div className="flex items-center gap-2 text-[#625e59] italic">
                                                 <Mail className="w-4 h-4" />
                                                 <span>No email provided</span>
                                             </div>

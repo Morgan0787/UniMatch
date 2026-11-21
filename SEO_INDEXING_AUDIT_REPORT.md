@@ -2,7 +2,7 @@
 
 **Роль:** Senior Technical SEO Specialist  
 **Объект:** Продакшн `https://getunimatch.app` · База данных Supabase (104 опубликованные записи) · Репозиторий `UniMatch`  
-**Инструментарий:** SEOmator CLI `v8.0.1`, Chromium + `axe-core 4.14.1` (Playwright, `1280×900` и `390×844`), `curl.exe` HTTP/TLS-диагностика, `scripts/check-seo.mjs`, `tsc`, `eslint`, локальные проверки каталога и мэтчинга  
+**Инструментарий:** SEOmator CLI `v8.0.1`, Chromium + `axe-core 4.14.1` (Playwright, `1920×1080`, `1440×900`, `1280×900`, `768×1024`, `390×844`, `320×568`), `curl.exe` HTTP/TLS-диагностика, `scripts/check-seo.mjs`, `tsc`, `eslint`, локальные проверки каталога и мэтчинга  
 **Дата аудита и исправлений:** 21–22 ноября 2026 г.
 
 ---
@@ -72,10 +72,11 @@
 
 ### B. Унификация UI / дизайна (Liquid Warm Pearl Glass) и WCAG
 - **`src/lib/discoveryContent.js` и `src/index.css`**: страницы `/universities/*`, `/countries/*`, `/study/*`, `/guides/*` переведены с нестилизуемых/чужеродных классов на единую систему Warm Pearl Glass (`.discovery-canvas`, `.discovery-card`, `.discovery-card-link`, `.discovery-link`, `.discovery-cta`, `.discovery-details`).
-- **`src/styles/product-theme.css`, `release-pages.css`, `survey-glass.css`, `search-page.css`, `recommendations-glass.css`, `internal-pages.css`, `auth-experience.css`, `landing.css`**:
-  - `release-pages.css` мигрирован с Cool Slate (`#f4f6f8` / `#263f49` / `#5f8294`) на Warm Pearl Glass (`#292823`, `#faf7ef`, `#855a36`, `#252c2f`).
+- **`src/styles/product-theme.css`, `release-pages.css`, `survey-glass.css`, `search-page.css`, `recommendations-glass.css`, `university-glass.css`, `glass-controls.css`, `internal-pages.css`, `discovery-polish.css`, `auth-experience.css`, `landing.css`, `src/components/admissions/admissions.css`**:
+  - `release-pages.css` и внутренние стили переведены с Cool Slate (`#f4f6f8` / `#263f49` / `#5f8294`) на единую оболочку **Warm Pearl Glass** (`#292823`, `#faf7ef`, `#855a36`, `#252c2f`, `--product-shell-max: 1360px`, на `>=1600px` `1440px`), выровнены ширины `.product-nav`, футера и основных контейнеров по всем экранам от `320px` до `1920px`.
   - Удалены глухие инлайн-фоны `#f8f6f0` в `Profile.jsx`, `Recommendations.jsx`, `EssayChecker.jsx`, `Search.jsx`, чтобы на всех внутренних страницах отображался единый `.ambient-light-field`.
-  - Устранены расхождения палитры (`indigo`, `violet`, `sky`, `teal`, `#294750`) в компонентах (`ComparisonModal.jsx`, `FeedbackPanel.jsx`, `BrainstormPanel.jsx`, `FilterPanel.jsx`, `UniversityCard.jsx`, `UniversityDetailModal.jsx`, `HelpDialog.jsx`, `OfficialSources.jsx`, `PublishedProgrammeFacts.jsx`, `FeedbackButton.jsx`, `OnboardingTour.jsx`).
+  - Устранены расхождения палитры (`slate-*`, `indigo`, `violet`, `sky`, `teal`, `#294750`) в компонентах (`ComparisonModal.jsx`, `FeedbackPanel.jsx`, `BrainstormPanel.jsx`, `FilterPanel.jsx`, `UniversityCard.jsx`, `UniversityDetailModal.jsx`, `HelpDialog.jsx`, `OfficialSources.jsx`, `PublishedProgrammeFacts.jsx`, `FeedbackButton.jsx`, `OnboardingTour.jsx`, `ChanceIndicator.jsx`, `UserNotRegisteredError.jsx`, `AdminDataQuality.jsx`, `AdminFeedback.jsx`, `PageNotFound.jsx`, `ParticleScene.jsx`, `AuthExperience.jsx`).
+  - Исправлены адаптивные и композиционные дефекты: выровнены строки карточек и кнопок на `/Search`, `/Recommendations` и `/AdmissionsSurvey#results`; восстановлена компактная 3-колоночная сводка анкеты на планшетах (`641px–900px`); скрыты закрытые `<details>` контактов в футере (сняты скрытые ссылки за правым краем на `768px`/`1440px`); исправлена прокрутка результатов `/AdmissionsSurvey` (верхняя панель не прячется под фиксированным navbar); выровнено мобильное меню, таблет/tiny (`320px`) табы и касания `>=44px`; исправлен дубль `South Korea · South Korea`, `"Amount unconfirmed (USD)"`, `"Your personal recommendations"` и дубль заголовка `"UNIVERSITY FACTS"` в модалке сравнения.
   - Затемнены вторичные/футерные оттенки и статусы (`.tuition-status` `#854905`, приглушённый текст `#47443f` / `#3b4144` / `#c2cbcf`).
 - **`src/components/i18n/LanguageSwitcher.jsx`**: кнопка выбора языка переведена с переопределяющего `aria-label="Interface language: English"` на `<span>{language.toUpperCase()}</span><span className="sr-only"> — ...</span>` — это полностью сняло ошибку WCAG 2.5.3 `label-content-name-mismatch` во всех десктопных проверках `axe-core`.
 - **`src/pages/EssayChecker.jsx`**: добавлен семантический `<h1>` для состояний отсутствия авторизации и отключённой функции проверки эссе.
@@ -104,7 +105,7 @@
    - `oc90-036` (Poznan PUT таймаут на `maxine.put.poznan.pl`) -> рабочий официальный портал `put.poznan.pl/en/admission-for-international/first-cycle/fees`.
    - `oc90-052` (Pavia таймаут `bai.unipv.it`) -> действующий PDF приёма AI `2026-2027` на `en.unipv.it`.
    - `us-mississippi-state-university`: редиректный URL заменён на канонический `https://www.admissions.msstate.edu/tuition`.
-   *(Примечание: оставшиеся ~39 срабатываний `403`/таймаут из 565 URL в автоматическом прогоне `curl` принадлежат университетским WAF Cloudflare/Akamai/Incapsula вроде `ucas.com`, `swps.pl`, `rtu.lv`, `unito.it`, `herts.ac.uk`, `ntu.ac.uk` — не мёртвым `404`-страницам.)*
+   *(Примечание: оставшиеся **32** срабатывания `403`/таймаут из 565 URL в автоматическом прогоне `curl` принадлежат университетским WAF Cloudflare/Akamai/Incapsula вроде `ucas.com`, `swps.pl`, `rtu.lv`, `unito.it`, `herts.ac.uk`, `ntu.ac.uk` — не мёртвым `404`-страницам.)*
 4. **Бельгийские и итальянские ссылки на `web.archive.org` + гигиена данных**:
    - На `oc90-084` (Ghent), `oc90-085` (Antwerp) и `oc90-051` (Turin) ссылки `name`/`degree` переведены с архивов `web.archive.org` на уже имеющиеся живые официальные источники в БД.
    - Унифицированы **4 записи `UK` -> `United Kingdom`**, очищены **210 внутренних заголовков источников** и **65 склеек в тексте** (`intake`, `tuition.label`, `publicNotes`).
@@ -132,8 +133,8 @@
 4. **`npm run check:admissions`** — **PASS (все 11 скриптов каталога, презентации фактов и движка)**.
 5. **`node scripts/check-catalog.mjs` и `node scripts/check-hero-scene.mjs`** — **PASS**.
 6. **`SEO_FETCH_PUBLIC_CATALOG=1 npm run build` + `SEO_CHECK_ORIGIN=http://127.0.0.1:4173 npm run check:seo`** — **PASS**: `113 indexable pages`, `sitemap.xml`, метаданные, JSON-LD, hreflang, `noindex, follow`, 404 и 308-редиректы.
-7. **Playwright + `axe-core` по 10 маршрутам × 2 viewport (`1280×900` и `390×844`)** — **PASS**: 20/20 без ошибок консоли/JS, `overflowX=0`, `axe=PASS` (WCAG 2.0/2.1 AA), `uuidLinks=0` на профилях, `leaked=false`.
-8. **SEOmator `--crawl -m 150` и `--cwv --mobile` на `http://127.0.0.1:4173`**: полный 113-страничный краул до финальной WCAG-полировки (`LanguageSwitcher.jsx` / `EssayChecker.jsx` / `landing.css`) зафиксировал рост категорий `core` `92 -> 94`, `technical` `99 -> 100`, `schema` `85 -> 89`, `a11y` `95 -> 97`, `js` `80 -> 100` (общий балл `93` на `127.0.0.1` занижен отсутствием HTTPS/HSTS и кросс-доменным canonical на `https://getunimatch.app`); последующий финальный замер `seomator --cwv --mobile` на `/` (`score=91`) и `/universities/oc90-006` (`score=91`) подтвердил `js-h1-modified: PASS`, `a11y-color-contrast: PASS` и снижение AAA-замечаний контрастности с `9` до `2` элементов на `/`.
+7. **Multi-viewport UI/Responsive & `axe-core` аудит (Playwright, `1920×1080`, `1440×900`, `768×1024`, `390×844`, `320×568`)** — **PASS**: проверены публичные маршруты, модалки (`FilterPanel`, `ComparisonModal`), переходы `AdmissionsSurvey` и авторизованные экраны (`/Recommendations`, `/Profile`, `/EssayChecker`); `overflowX=0`, `offscreenCount=0`, нулевое расхождение строк карточек (`0px`), `0` консольных/JS-ошибок и **20/20 `axe=PASS`** (`WCAG 2.0/2.1 AA` на `1280×900` и `390×844`), `uuidLinks=0`, `leaked=false`.
+8. **SEOmator `--crawl -m 150` и `--cwv --mobile` на `http://127.0.0.1:4173`**: базовый краул/CWV-замер до финальной полировки 5 viewport зафиксировал рост категорий `core` `92 -> 94`, `technical` `99 -> 100`, `schema` `85 -> 89`, `a11y` `95 -> 97`, `js` `80 -> 100` (общий балл `93` на `127.0.0.1` занижен отсутствием HTTPS/HSTS и кросс-доменным canonical на `https://getunimatch.app`) и `js-h1-modified: PASS`, `a11y-color-contrast: PASS` на `/` и `/universities/oc90-006` со снижением AAA-замечаний контрастности с `9` до `2` элементов на `/`.
 9. **Независимая существующая ошибка (не связана с правками)**: `node scripts/check-comparison.mjs` падает с кодом `1` на строке `9` (ожидает неформатированное `/17970 GBP/` вместо фактически возвращаемого `'17,970 GBP / year (2027/28)'`).
 
 ---

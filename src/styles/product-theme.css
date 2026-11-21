@@ -228,7 +228,7 @@ body[data-unimatch-theme] .catalog-filter-drawer .product-glass { padding: 16px;
   .unimatch-app .catalog-heading { padding-block: 28px 20px; }
   .unimatch-app .catalog-card .h-28 { height: 180px; }
   .unimatch-app .product-footer { margin-top: 48px; }
-  .unimatch-app .product-main h1 { overflow-wrap: anywhere; }
+  .unimatch-app .product-main h1 { overflow-wrap: break-word; }
   body[data-unimatch-theme] .product-feedback-trigger { width: 44px; height: 44px; right: 12px; bottom: 12px; }
   .unimatch-app [role=tablist] { max-width: 100%; height: auto; flex-wrap: wrap; gap: 4px; }
   .unimatch-app .essay-page .grid { grid-template-columns: minmax(0,1fr); }
@@ -252,18 +252,18 @@ body[data-unimatch-theme] [role=dialog] :is(.bg-indigo-50,.bg-indigo-100) { back
 body[data-unimatch-theme] [role=dialog] :is(.border-slate-100,.border-slate-200,.border-indigo-100,.border-indigo-200) { border-color: var(--product-border); }
 body[data-unimatch-theme] [role=dialog] :is(.text-indigo-400,.text-indigo-500,.text-indigo-600,.text-indigo-700,.text-blue-500,.text-violet-500) { color: #704a2d; }
 body[data-unimatch-theme] [role=dialog] .text-slate-400 { color: #4f4c46; }
-body[data-unimatch-theme] .university-cover { background: radial-gradient(ellipse at 70% 25%,#f5e3cb,transparent 60%),linear-gradient(135deg,#dedfdd,#c8cbc6); }
+body[data-unimatch-theme] .university-cover { background: radial-gradient(ellipse at 70% 25%,#f5e3cb,transparent 65%),linear-gradient(135deg,#efe9de,#e3dacb); }
 body[data-unimatch-theme] .university-cover .bg-gradient-to-t { background: linear-gradient(to top,#faf7ef8c,transparent); }
 body[data-unimatch-theme] .university-cover :is(.text-white,.text-white\/90) { color: #292823; }
 body[data-unimatch-theme] .university-cover h3 { font-weight: 400; }
 .unimatch-app .product-nav { border-bottom: 1px solid #dedbd380; box-shadow: none; }
 .unimatch-app .product-nav .bg-gradient-to-br, .unimatch-app .product-footer .bg-gradient-to-br { background: #292823; }
-.unimatch-app .product-footer { background: #f3f0e8; }
+.unimatch-app .product-footer { background: rgba(247, 241, 232, .86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 .unimatch-app .product-footer button { min-height: 44px; }
-.unimatch-app .login-page { min-height: 78vh; }
-body[data-unimatch-theme] .admissions-page { color: var(--product-ink); background: transparent; border-radius: 0; padding-top: 44px; }
+.unimatch-app .login-page { min-height: calc(100dvh - 110px); }
+body[data-unimatch-theme] .admissions-page { color: var(--product-ink); background: transparent; border-radius: 0; padding-top: 24px; }
 body[data-unimatch-theme] .admissions-page .admission-content { background: #fffdf8; border-color: #dedbd3; box-shadow: 0 10px 30px #29282308; backdrop-filter: none; }
-body[data-unimatch-theme] .admission-story { color: #292823; background: radial-gradient(ellipse at 50% 50%,#f3dfc3,transparent 65%),linear-gradient(135deg,#dedfdd,#ecebe3); }
+body[data-unimatch-theme] .admission-story { color: #292823; background: radial-gradient(ellipse at 50% 50%,#f3dfc3,transparent 65%),linear-gradient(135deg,#efe9de,#ece6db); }
 body[data-unimatch-theme] .admissions-page :is(.admission-intro,.admission-hint,.admission-footer,.admission-story-description,.admission-story-label) { color: #65635c; }
 body[data-unimatch-theme] .admission-button { background: #292823; border-color: #292823; border-radius: 999px; }
 body[data-unimatch-theme] .admission-secondary { background: #fffdf8; color: #292823; border-color: #c9c2b7; }
@@ -458,12 +458,81 @@ body[data-unimatch-theme] [data-ui="select-content"] [role="option"][data-highli
 .catalog-photo-credit p + p { margin-top: 8px; }
 .catalog-photo-credit a { text-decoration: underline; text-underline-offset: 3px; }
 .product-footer-compact { margin-top: 48px; border-top: 1px solid #dedbd3; }
-.product-footer-inner { max-width: 1280px; padding: 28px 24px; margin: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; }
-.product-footer-brand { font-size: 26px; letter-spacing: -.05em; font-weight: 500; }
+.product-footer-inner { max-width: var(--product-shell-max, 1360px); width: calc(100% - 32px); padding: 28px 0; margin: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; }
+.product-footer-brand { display: inline-flex; align-items: center; min-height: 44px; font-size: 26px; letter-spacing: -.05em; font-weight: 500; }
 .product-footer-brand span { font-size: 12px; vertical-align: top; margin-left: 2px; }
 .product-footer-inner > p { font-size: 13px; max-width: 320px; color: #46433e; }
 .product-footer-inner nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-left: auto; font-size: 13px; }
 .product-footer-inner nav :is(a,button,summary) { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; }
-.product-footer-inner details > div { display: grid; gap: 4px; padding-bottom: 12px; }
+.product-footer-inner details { position: relative; }
+.product-footer-inner details:not([open]) > div { display: none; }
+.product-footer-inner details[open] > div { display: grid; gap: 4px; padding-bottom: 12px; }
 .product-footer-inner small { flex-basis: 100%; color: #46433e; font-size: 12px; }
-@media(max-width:767px) { .product-footer-inner nav { margin-left: 0; } }
+@media(max-width:767px) { .product-footer-inner { width: calc(100% - 24px); padding-block: 24px; } .product-footer-inner nav { margin-left: 0; } }
+
+/* Unified Warm Pearl Glass shell tokens shared across all product pages */
+body[data-unimatch-theme] {
+  --product-shell-max: 1360px;
+  --product-ink: #292823;
+  --product-muted: #55504a;
+  --product-accent: #855a36;
+  --product-h1: clamp(28px, 2.7vw, 40px);
+}
+@media (min-width: 1600px) {
+  body[data-unimatch-theme] { --product-shell-max: 1440px; }
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-nav {
+  top: 14px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: min(calc(100% - 32px), var(--product-shell-max));
+  max-width: none;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, .94);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(255, 253, 249, .88), rgba(255, 249, 240, .78));
+  box-shadow: inset 0 1px 1px #fff, 0 8px 26px rgba(93, 73, 48, .08);
+  backdrop-filter: blur(22px) saturate(125%);
+  -webkit-backdrop-filter: blur(22px) saturate(125%);
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-inner {
+  max-width: none;
+  padding-inline: 20px;
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-links > a {
+  padding: 0 16px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-links > a[aria-current="page"] {
+  background: rgba(255, 255, 255, .92);
+  color: #292823;
+  border-color: rgba(255, 255, 255, .98);
+  box-shadow: inset 0 1px 1px #fff, 0 3px 10px rgba(93, 73, 48, .08);
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-guest-cta[aria-current="page"] {
+  background: #f4e4cc;
+  color: #5c3c1b;
+  border: 1px solid #d6aa79;
+}
+body[data-unimatch-theme] .unimatch-app[data-page] .product-main {
+  padding-top: 96px;
+}
+body[data-unimatch-theme] .unimatch-app[data-page] h1 {
+  font-size: var(--product-h1);
+  line-height: 1.14;
+  letter-spacing: -.035em;
+}
+@media (max-width: 1023px) {
+  body[data-unimatch-theme] .unimatch-app[data-page] .product-nav {
+    top: 10px;
+    width: calc(100% - 24px);
+    background: linear-gradient(140deg, rgba(255, 252, 248, .94), rgba(250, 243, 234, .88));
+  }
+  body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-inner { padding-inline: 14px; }
+  body[data-unimatch-theme] .unimatch-app[data-page] .product-main { padding-top: 86px; }
+}

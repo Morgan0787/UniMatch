@@ -45,11 +45,11 @@ function Fact({ label, fact, language, kind = 'text', includeScope = true, compa
   const tuitionDetails = kind === 'tuition' && (fact?.value != null || fact?.historical?.value != null);
   return (
     <div className={tile ? 'programme-stat' : compact && kind !== 'tuition' ? 'programme-inline-fact' : undefined}>
-      <dt className="text-xs text-slate-500">{Icon && <Icon size={16} aria-hidden="true" />}{label}</dt>
-      <dd className={`programme-value font-medium text-slate-800 ${!fact || fact.status === 'unknown' ? 'programme-value-unknown' : ''} ${tuitionDetails ? 'catalog-tuition' : ''}`}>{kind === 'tuition' ? <TuitionValue fact={fact} language={language} concise /> : kind === 'deadline' ? <DeadlineValue fact={fact} language={language} fallback={result.value} /> : ruleValue}</dd>
-      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-amber-800"><details><summary>{compactNotice}</summary><p>{result.notice}</p></details></dd>}
-      {tuitionDetails && <dd className="programme-price-details text-xs text-slate-600"><details><summary>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</summary><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</details></dd>}
-      {scope && !compact && !tuitionDetails && <dd className="text-xs text-slate-600"><details><summary className="cursor-pointer">{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</summary>{scope}</details></dd>}
+      <dt className="text-xs text-[#55504a]">{Icon && <Icon size={16} aria-hidden="true" />}{label}</dt>
+      <dd className={`programme-value font-medium text-[#292823] ${!fact || fact.status === 'unknown' ? 'programme-value-unknown' : ''} ${tuitionDetails ? 'catalog-tuition' : ''}`}>{kind === 'tuition' ? <TuitionValue fact={fact} language={language} concise /> : kind === 'deadline' ? <DeadlineValue fact={fact} language={language} fallback={result.value} /> : ruleValue}</dd>
+      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-[#855a36]"><details><summary>{compactNotice}</summary><p>{result.notice}</p></details></dd>}
+      {tuitionDetails && <dd className="programme-price-details text-xs text-[#55504a]"><details><summary>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</summary><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</details></dd>}
+      {scope && !compact && !tuitionDetails && <dd className="text-xs text-[#55504a]"><details><summary className="cursor-pointer">{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</summary>{scope}</details></dd>}
       {children && <dd className="programme-stat-note">{children}</dd>}
     </div>
   );
@@ -105,7 +105,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
         const scopeLabel = { en: 'Who these programme facts apply to', ru: 'К кому относятся данные программы', uz: 'Dastur ma’lumotlari kimga tegishli' }[language] || 'Who these programme facts apply to';
         return (
           <article key={programme.id || name} className="programme-fact-card rounded-lg border border-slate-200 p-3 space-y-2">
-            <div className={`programme-heading ${focused && programmes.length > 1 ? 'sr-only' : ''}`}><p className="programme-label">{compact ? guide.example : labels.programme}</p>{compact ? <h4 className="font-semibold text-slate-800">{name}</h4> : <h2>{name}</h2>}</div>
+            <div className={`programme-heading ${focused && programmes.length > 1 ? 'sr-only' : ''}`}><p className="programme-label">{compact ? guide.example : labels.programme}</p>{compact ? <h4 className="font-semibold text-[#292823]">{name}</h4> : <h2>{name}</h2>}</div>
             {compact ? <>
               <dl className="programme-preview-facts text-sm">
                 <Fact label={labels.tuition} fact={factFor(programme, 'tuition')} language={language} kind="tuition" compact />

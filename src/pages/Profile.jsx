@@ -155,8 +155,8 @@ export default function Profile() {
         <div className="profile-page release-page internal-page min-h-screen text-[#292823]">
             {/* Header */}
             <div className="product-page-hero text-[#292823]">
-                <div className="profile-hero-inner max-w-4xl mx-auto px-4 sm:px-6 py-12">
-                    <div className="product-hero-heading flex items-start justify-between">
+                <div className="profile-hero-inner max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+                    <div className="product-hero-heading flex flex-wrap items-start justify-between gap-4">
                         <div className="flex items-center gap-4">
                             <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-2xl font-bold">
                                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
@@ -170,8 +170,8 @@ export default function Profile() {
                             </div>
                         </div>
                         <Button 
-                            variant="ghost" 
-                            className="text-white hover:bg-white/20"
+                            variant="outline" 
+                            className="rounded-full min-h-11 border-white/95 bg-white/80 text-[#292823] hover:bg-white shadow-sm shrink-0"
                             onClick={() => setShowProfileBuilder(true)}
                         >
                             <Settings className="w-4 h-4 mr-2" />
@@ -204,29 +204,31 @@ export default function Profile() {
             </div>
 
             {/* Content */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
                 {/* Essay Tools Card */}
                 <Card className="mb-6 bg-gradient-to-br from-[#f9efe1] to-[#fffdf8] border-[#dfcaa9]">
                     <CardContent className="p-6">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 bg-[#252c2f] rounded-xl flex items-center justify-center flex-shrink-0">
-                                <FileText className="w-6 h-6 text-white" />
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 bg-[#252c2f] rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <FileText className="w-6 h-6 text-white" />
+                                </div>
+                                <div className="flex-1">
+                                    <h3 className="font-semibold text-[#292823] mb-1 flex flex-wrap items-center gap-2">
+                                        {t('profile.essayCoach')}
+                                        <Badge variant="secondary" className="text-xs bg-[#f2e4cf] text-[#5c3c1b]">{t('profile.usesAiCredits')}</Badge>
+                                    </h3>
+                                    <p className="text-sm text-[#47443f]">
+                                        {t('profile.essayDesc')}
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex-1">
-                                <h3 className="font-semibold text-[#292823] mb-1 flex items-center gap-2">
-                                    {t('profile.essayCoach')}
-                                    <Badge variant="secondary" className="text-xs bg-[#f2e4cf] text-[#5c3c1b]">{t('profile.usesAiCredits')}</Badge>
-                                </h3>
-                                <p className="text-sm text-[#47443f] mb-3">
-                                    {t('profile.essayDesc')}
-                                </p>
-                                <Button asChild size="sm" className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
-                                    <Link to={createPageUrl("EssayChecker")}>
-                                        <Sparkles className="w-4 h-4 mr-2" />
-                                        {t('profile.openEssay')}
-                                    </Link>
-                                </Button>
-                            </div>
+                            <Button asChild size="sm" className="rounded-full min-h-11 px-5 bg-[#252c2f] hover:bg-[#354044] text-white shrink-0 self-start sm:self-center">
+                                <Link to={createPageUrl("EssayChecker")}>
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    {t('profile.openEssay')}
+                                </Link>
+                            </Button>
                         </div>
                     </CardContent>
                 </Card>
@@ -285,7 +287,19 @@ export default function Profile() {
                                         </div>
                                     </Card>;
                                 })}
-                                {unresolvedSaved.map(key => <Card key={key} className="p-6"><p>{admissionText.savedDetailsMissing}</p><Button variant="ghost" disabled={removeSavedMutation.isPending} onClick={() => removeSavedMutation.mutate(key)}>{admissionText.removeSaved}</Button></Card>)}
+                                {unresolvedSaved.map(key => (
+                                    <Card key={key} className="p-6 flex flex-wrap items-center justify-between gap-4">
+                                        <p className="text-sm text-[#47443f]">{admissionText.savedDetailsMissing}</p>
+                                        <Button
+                                            variant="outline"
+                                            className="rounded-full min-h-11 px-4 border-[#d4cec3] bg-[#faf7ef] hover:bg-[#eee8db] text-[#292823]"
+                                            disabled={removeSavedMutation.isPending}
+                                            onClick={() => removeSavedMutation.mutate(key)}
+                                        >
+                                            {admissionText.removeSaved}
+                                        </Button>
+                                    </Card>
+                                ))}
                                 {savedUniversities.map(uni => (
                                     <Card key={uni.id} className="overflow-hidden hover:shadow-md transition-shadow">
                                         <div className="saved-university-row flex items-center gap-6 p-6">
@@ -293,8 +307,8 @@ export default function Profile() {
                                                 <GraduationCap className="w-8 h-8 text-[#704a2d]" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="font-semibold text-slate-800 truncate">{uni.name}</h3>
-                                                <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                                                <h3 className="font-semibold text-[#292823] truncate">{uni.name}</h3>
+                                                <div className="flex items-center gap-2 text-[#55504a] text-sm mt-1">
                                                     <MapPin className="w-3.5 h-3.5" />
                                                     <span>{uni.city && uni.country ? `${uni.city}, ${uni.country}` : uni.city || uni.country}</span>
                                                     <span className="mx-2">•</span>
@@ -303,14 +317,14 @@ export default function Profile() {
                                                 </div>
                                                 {uni.admissionCatalog ? <div className="mt-3"><PublishedProgrammeFacts admissionCatalog={uni.admissionCatalog} language={language} compact expandable /></div> : <div className="flex items-center gap-4 mt-3">
                                                     <ChanceIndicator chance={calculateChance(uni, profile?.gpa, profile?.english_proficiency || 0, profile?.topikLevel || "Not taken")} reason={describeMissingChanceData(uni)?.note} size="sm" />
-                                                    <span className="text-sm text-slate-600">
+                                                    <span className="text-sm text-[#55504a]">
                                                         {uni.tuition_min === 0 ? (
                                                             <span className="text-emerald-600 font-medium">{t('profile.freeTuition')}</span>
                                                         ) : uni.tuition_min === null || uni.tuition_min === undefined ? (
                                                             // A NULL tuition must not render as a bare "€/year":
                                                             // that reads as a near-zero price, which is the same lie
                                                             // as "Free". Same wording as the comparison table.
-                                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
+                                                            <span className="text-[#625e59] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                                         ) : (
                                                             <>€{uni.tuition_min.toLocaleString()}/{t('common.year')}</>
                                                         )}
@@ -328,7 +342,7 @@ export default function Profile() {
                                                 <Button 
                                                     variant="ghost" 
                                                     size="sm"
-                                                    className="text-slate-400 hover:text-red-500"
+                                                    className="text-[#625e59] hover:text-red-500"
                                                     disabled={favorites.loading || removeSavedMutation.isPending}
                                                     onClick={() => removeSavedMutation.mutate(uni.id)}
                                                     aria-label={`${t('common.delete')}: ${uni.name}`}

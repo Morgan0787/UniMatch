@@ -12,7 +12,7 @@ body[data-unimatch-theme] .login-page.auth-page {
   grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
   align-items: center;
   gap: clamp(28px, 5vw, 96px);
-  max-width: 1840px;
+  max-width: var(--product-shell-max, 1360px);
   margin: 0 auto;
 }
 .auth-art { min-width: 0; align-self: stretch; display: flex; flex-direction: column; justify-content: center; }

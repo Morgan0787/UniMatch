@@ -28,9 +28,9 @@ function UniversityInfoSection({ expanded, title, icon: Icon, children }) {
         <div className="university-info-body">{children}</div>
     </section>;
     return <Collapsible>
-        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-slate-50 rounded-lg">
-            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">{titleContent}</h3>
-            <ChevronRight className="w-5 h-5 text-slate-400" />
+        <CollapsibleTrigger className="flex items-center justify-between w-full p-4 min-h-11 hover:bg-[#faf5ed] rounded-xl transition-colors">
+            <h3 className="text-lg font-semibold text-[#292823] flex items-center gap-2">{titleContent}</h3>
+            <ChevronRight className="w-5 h-5 text-[#55504a]" />
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-4">{children}</CollapsibleContent>
     </Collapsible>;
@@ -79,7 +79,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 aria-pressed={Boolean(isSaved)}
                                 aria-busy={Boolean(savePendingLabel)}
                                 disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
-                                className={isSaved ? "border-[#d6aa79] bg-[#f6e3c9]" : ""}
+                                className={`min-h-11 rounded-full ${isSaved ? "border-[#d6aa79] bg-[#f6e3c9]" : ""}`}
                             >
                                 {savePendingLabel ? (
                                     <><LoaderCircle className="w-4 h-4 mr-2 motion-safe:animate-spin" aria-hidden="true" />{savePendingLabel}</>
@@ -90,7 +90,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 )}
                             </Button>
                             {university.website && (
-                                <Button asChild>
+                                <Button asChild className="min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                                     <a href={university.website} target="_blank" rel="noopener noreferrer">
                                         {t('university.visitWebsite')}
                                         <ExternalLink className="w-4 h-4 ml-2" />
@@ -113,7 +113,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                 <div className="space-y-6 w-full">
                     {!hasAdmissionCatalog && <div className="university-overview flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <p className="text-sm text-slate-500 mb-1">{t('university.admissionChance')}</p>
+                            <p className="text-sm text-[#55504a] mb-1">{t('university.admissionChance')}</p>
                             <LanguageReadiness university={university} ielts={userIelts} topik={userTopik} chance={chance} size="lg" />
                         </div>
                         {actions}
@@ -124,49 +124,49 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                     {!hasAdmissionCatalog && <>
                     {/* Key Stats Grid */}
                             <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                                <div className="p-3 bg-white border border-slate-100 rounded-xl">
-                                    <DollarSign className="w-4 h-4 text-emerald-500 mb-1" />
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.tuition')}</p>
-                                    <p className="font-semibold text-slate-800 text-base break-words">
+                                <div className="p-3 bg-[#fffdf8] border border-[#e3d7c6] rounded-xl">
+                                    <DollarSign className="w-4 h-4 text-[#855a36] mb-1" />
+                                    <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.tuition')}</p>
+                                    <p className="font-semibold text-[#292823] text-base break-words">
                                         {university.tuition_min === 0 ? (
                                             t('university.free')
                                         ) : hasTuitionMin ? (
                                             <>€{university.tuition_min.toLocaleString()}{hasTuitionMax && <>–€{university.tuition_max.toLocaleString()}</>}</>
                                         ) : (
-                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
+                                            <span className="text-[#656158] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}
                                     </p>
                                 </div>
-                                <div className="p-3 bg-white border border-slate-100 rounded-xl">
-                                    <Building2 className="w-4 h-4 text-blue-500 mb-1" />
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.livingCost')}</p>
-                                    <p className="font-semibold text-slate-800 text-base break-words">
+                                <div className="p-3 bg-[#fffdf8] border border-[#e3d7c6] rounded-xl">
+                                    <Building2 className="w-4 h-4 text-[#855a36] mb-1" />
+                                    <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.livingCost')}</p>
+                                    <p className="font-semibold text-[#292823] text-base break-words">
                                         {hasLivingCost ? (
                                             <>€{university.living_cost_estimate.toLocaleString()}/{t('common.year')}</>
                                         ) : (
-                                            <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
+                                            <span className="text-[#656158] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}
                                     </p>
                                 </div>
-                                <div className="p-3 bg-white border border-slate-100 rounded-xl">
-                                    <TrendingUp className="w-4 h-4 text-amber-500 mb-1" />
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.minGpa')}</p>
+                                <div className="p-3 bg-[#fffdf8] border border-[#e3d7c6] rounded-xl">
+                                    <TrendingUp className="w-4 h-4 text-[#855a36] mb-1" />
+                                    <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.minGpa')}</p>
                                     <p className="text-base">
                                         {showHolisticGpaNote ? (
-                                            <span className="italic text-slate-500 text-sm" title={catalogText(language, 'holisticNote')}>
+                                            <span className="italic text-[#55504a] text-sm" title={catalogText(language, 'holisticNote')}>
                                                 {catalogText(language, 'holistic')}
-                                                <span className="ml-1 text-[10px] not-italic uppercase tracking-wide text-slate-400 align-middle">{catalogText(language, 'noFixedGpa')}</span>
+                                                <span className="ml-1 text-[10px] not-italic uppercase tracking-wide text-[#55504a] align-middle">{catalogText(language, 'noFixedGpa')}</span>
                                             </span>
                                         ) : (
                                             <EstimatedField value={university.min_gpa} field="gpa" region={university.region} format={(v) => Number(v).toFixed(1)} />
                                         )}
                                     </p>
                                 </div>
-                                <div className="p-3 bg-white border border-slate-100 rounded-xl">
-                                    <Users className="w-4 h-4 text-violet-500 mb-1" />
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wide">{t('university.intlStudents')}</p>
-                                    <p className="font-semibold text-slate-800 text-base">
-                                        {university.international_students_percent ? `${university.international_students_percent}%` : <span className="text-slate-400 italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>}
+                                <div className="p-3 bg-[#fffdf8] border border-[#e3d7c6] rounded-xl">
+                                    <Users className="w-4 h-4 text-[#855a36] mb-1" />
+                                    <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.intlStudents')}</p>
+                                    <p className="font-semibold text-[#292823] text-base">
+                                        {university.international_students_percent ? `${university.international_students_percent}%` : <span className="text-[#656158] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>}
                                     </p>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     </div>
                                     <p className="text-2xl font-bold text-[#5c3c1b]">
                                         {totalCost === null ? (
-                                            <span className="text-base text-slate-400 italic font-normal">{catalogText(language, 'notPublished')}</span>
+                                            <span className="text-base text-[#656158] italic font-normal">{catalogText(language, 'notPublished')}</span>
                                         ) : (
                                             <>€{totalCost.toLocaleString()}</>
                                         )}
@@ -194,7 +194,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <About className={`university-about ${heading === 'h1' ? 'university-info-section' : 'programme-disclosure'}`}>
                                     <AboutTitle className={heading === 'h1' ? 'university-info-title' : undefined}>{t('university.about')}</AboutTitle>
                                     <div>
-                                        <p className="text-slate-600 leading-relaxed" lang={catalogDescription(university.description, language) === university.description ? 'en' : language}>{catalogDescription(university.description, language)}</p>{language !== 'en' && catalogDescription(university.description, language) === university.description && <p className="text-xs text-slate-500 mt-2">{catalogText(language, 'sourceLanguageNote')}</p>}
+                                        <p className="text-[#47443f] leading-relaxed" lang={catalogDescription(university.description, language) === university.description ? 'en' : language}>{catalogDescription(university.description, language)}</p>{language !== 'en' && catalogDescription(university.description, language) === university.description && <p className="text-xs text-[#55504a] mt-2">{catalogText(language, 'sourceLanguageNote')}</p>}
                                     </div>
                                 </About>
                             )}
@@ -211,7 +211,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     </CardHeader>
                                     <CardContent className="space-y-3">
                                         <div className="flex flex-wrap gap-2">
-                                            <Badge variant="secondary" className="bg-slate-100">
+                                            <Badge variant="secondary" className="bg-[#f4efe6]">
                                                 <Globe className="w-3 h-3 mr-1" />
                                                 {catalogValue(university.language, language)}
                                             </Badge>
@@ -224,7 +224,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         </div>
                                         {university.notable_programs?.length > 0 && (
                                             <div>
-                                                <p className="text-sm font-medium text-slate-700 mb-2">{t('university.notablePrograms')}</p>
+                                                <p className="text-sm font-medium text-[#292823] mb-2">{t('university.notablePrograms')}</p>
                                                 <div className="flex flex-wrap gap-1.5 max-w-full">
                                                     {university.notable_programs.map((prog, i) => (
                                                         <Badge key={i} variant="outline" className="font-normal text-xs break-words">
@@ -247,38 +247,38 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     <CardContent className="space-y-3">
                                         {university.required_ielts ? (
                                             <div>
-                                                <p className="text-sm text-slate-500">{t('university.ieltsRequired')}</p>
-                                                <p className="font-semibold text-slate-800 text-lg">{university.required_ielts}+</p>
+                                                <p className="text-sm text-[#55504a]">{t('university.ieltsRequired')}</p>
+                                                <p className="font-semibold text-[#292823] text-lg">{university.required_ielts}+</p>
                                             </div>
                                         ) : (
                                             <div>
-                                                <p className="text-sm text-slate-500">{t('university.ieltsRequired')}</p>
+                                                <p className="text-sm text-[#55504a]">{t('university.ieltsRequired')}</p>
                                                 <p className="text-lg"><EstimatedField value={null} field="ielts" region={university.region} unit="+" /></p>
                                             </div>
                                         )}
                                         {university.country === "South Korea" && university.topikLevel && (
                                             <div>
-                                                <p className="text-sm text-slate-500">🇰🇷 {t('university.topikRequired')}</p>
+                                                <p className="text-sm text-[#55504a]">🇰🇷 {t('university.topikRequired')}</p>
                                                 <p className="font-semibold text-[#5c3c1b] text-lg">{university.topikLevel}</p>
-                                                <p className="text-xs text-slate-400 mt-1">{t('university.forKorean')}</p>
+                                                <p className="text-xs text-[#625e59] mt-1">{t('university.forKorean')}</p>
                                             </div>
                                         )}
                                         {university.admission_requirements?.english_test && (
                                             <div>
-                                                <p className="text-sm text-slate-500">{t('university.otherTests')}</p>
-                                                <p className="font-medium text-slate-800">{university.admission_requirements.english_test}</p>
+                                                <p className="text-sm text-[#55504a]">{t('university.otherTests')}</p>
+                                                <p className="font-medium text-[#292823]">{university.admission_requirements.english_test}</p>
                                             </div>
                                         )}
                                         {university.application_deadline && (
                                             <div className="pt-3 border-t">
-                                                <p className="text-sm text-slate-500">{t('university.applicationDeadline')}</p>
-                                                <p className="font-medium text-slate-800">{university.application_deadline}</p>
+                                                <p className="text-sm text-[#55504a]">{t('university.applicationDeadline')}</p>
+                                                <p className="font-medium text-[#292823]">{university.application_deadline}</p>
                                             </div>
                                         )}
                                         {university.admission_requirements?.application_fee_eur && (
                                             <div>
-                                                <p className="text-sm text-slate-500">{t('university.applicationFee')}</p>
-                                                <p className="font-medium text-slate-800">€{university.admission_requirements.application_fee_eur}</p>
+                                                <p className="text-sm text-[#55504a]">{t('university.applicationFee')}</p>
+                                                <p className="font-medium text-[#292823]">€{university.admission_requirements.application_fee_eur}</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -303,36 +303,36 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                                                 <div className="space-y-3">
                                                     <div className="flex items-center gap-3">
-                                                        <CheckCircle2 className={`w-5 h-5 ${university.campus_life.housing_available ? 'text-green-500' : 'text-slate-300'}`} />
+                                                        <CheckCircle2 className={`w-5 h-5 ${university.campus_life.housing_available ? 'text-green-500' : 'text-[#b5aba0]'}`} />
                                                         <div>
-                                                            <p className="font-medium text-slate-800">{t('university.studentHousing')}</p>
+                                                            <p className="font-medium text-[#292823]">{t('university.studentHousing')}</p>
                                                             {university.campus_life.housing_available && university.campus_life.housing_cost_monthly && (
-                                                                <p className="text-sm text-slate-500">€{university.campus_life.housing_cost_monthly}/{t('common.month')}</p>
+                                                                <p className="text-sm text-[#55504a]">€{university.campus_life.housing_cost_monthly}/{t('common.month')}</p>
                                                             )}
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
-                                                        <CheckCircle2 className={`w-5 h-5 ${university.campus_life.sports_facilities ? 'text-green-500' : 'text-slate-300'}`} />
-                                                        <p className="font-medium text-slate-800">{t('university.sportsFacilities')}</p>
+                                                        <CheckCircle2 className={`w-5 h-5 ${university.campus_life.sports_facilities ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                        <p className="font-medium text-[#292823]">{t('university.sportsFacilities')}</p>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-3">
                                                     {university.campus_life.student_organizations && (
                                                         <div>
-                                                            <p className="text-sm text-slate-500">{t('university.studentOrganizations')}</p>
-                                                            <p className="font-semibold text-slate-800 text-lg">{university.campus_life.student_organizations}+</p>
+                                                            <p className="text-sm text-[#55504a]">{t('university.studentOrganizations')}</p>
+                                                            <p className="font-semibold text-[#292823] text-lg">{university.campus_life.student_organizations}+</p>
                                                         </div>
                                                     )}
                                                     {university.campus_life.cafeterias && (
                                                         <div>
-                                                            <p className="text-sm text-slate-500">{t('university.campusCafeterias')}</p>
-                                                            <p className="font-semibold text-slate-800 text-lg">{university.campus_life.cafeterias}</p>
+                                                            <p className="text-sm text-[#55504a]">{t('university.campusCafeterias')}</p>
+                                                            <p className="font-semibold text-[#292823] text-lg">{university.campus_life.cafeterias}</p>
                                                         </div>
                                                     )}
                                                 </div>
                                             </div>
                                             {university.campus_life.campus_description && (
-                                                <p className="text-slate-600 leading-relaxed mt-4 pt-4 border-t">
+                                                <p className="text-[#47443f] leading-relaxed mt-4 pt-4 border-t">
                                                     {university.campus_life.campus_description}
                                                 </p>
                                             )}
@@ -347,7 +347,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-slate-600 leading-relaxed">
+                                                <p className="text-[#47443f] leading-relaxed">
                                                     {university.campus_life.city_description}
                                                 </p>
                                             </CardContent>
@@ -355,7 +355,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     )}
                                         </>
                                     ) : (
-                                        <p className="text-slate-500 text-center py-6">{t('university.campusInfoNotAvailable')}</p>
+                                        <p className="text-[#55504a] text-center py-6">{t('university.campusInfoNotAvailable')}</p>
                                     )}
                                 </UniversityInfoSection>
 
@@ -374,29 +374,29 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     <CardContent>
                                         <div className="grid sm:grid-cols-2 gap-3 mb-6">
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.international_office ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.internationalOffice')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.international_office ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.internationalOffice')}</p>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.orientation_program ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.orientationProgram')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.orientation_program ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.orientationProgram')}</p>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.language_courses ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.freeLanguageCourses')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.language_courses ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.freeLanguageCourses')}</p>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.buddy_program ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.buddyProgram')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.buddy_program ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.buddyProgram')}</p>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.career_services ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.careerServices')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.international_support.career_services ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.careerServices')}</p>
                                             </div>
                                         </div>
                                         {university.international_support.support_description && (
                                             <div className="pt-4 border-t">
-                                                <p className="text-slate-600 leading-relaxed">
+                                                <p className="text-[#47443f] leading-relaxed">
                                                     {university.international_support.support_description}
                                                 </p>
                                             </div>
@@ -404,7 +404,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     </CardContent>
                                 </Card>
                             ) : (
-                                <p className="text-slate-500 text-center py-6">{t('university.supportInfoNotAvailable')}</p>
+                                <p className="text-[#55504a] text-center py-6">{t('university.supportInfoNotAvailable')}</p>
                             )}
 
                             {university.contact_info && (
@@ -427,14 +427,14 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         )}
                                         {university.contact_info.phone && (
                                             <div className="flex items-center gap-3">
-                                                <Phone className="w-4 h-4 text-slate-400" />
-                                                <p className="text-slate-700">{university.contact_info.phone}</p>
+                                                <Phone className="w-4 h-4 text-[#625e59]" />
+                                                <p className="text-[#292823]">{university.contact_info.phone}</p>
                                             </div>
                                         )}
                                         {university.contact_info.admissions_office && (
                                             <div className="flex items-start gap-3">
-                                                <Building2 className="w-4 h-4 text-slate-400 mt-1" />
-                                                <p className="text-slate-700">{university.contact_info.admissions_office}</p>
+                                                <Building2 className="w-4 h-4 text-[#625e59] mt-1" />
+                                                <p className="text-[#292823]">{university.contact_info.admissions_office}</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -458,39 +458,39 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     <CardContent>
                                         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                                             <div>
-                                                <p className="text-sm text-slate-500 mb-1">{t('university.visaRequired')}</p>
+                                                <p className="text-sm text-[#55504a] mb-1">{t('university.visaRequired')}</p>
                                                 <Badge variant={university.visa_info.visa_required ? "default" : "secondary"}>
                                                     {university.visa_info.visa_required ? t('university.yes') : t('university.no')}
                                                 </Badge>
                                             </div>
                                             {university.visa_info.processing_time_weeks && (
                                                 <div>
-                                                    <p className="text-sm text-slate-500 mb-1">{t('university.processingTime')}</p>
-                                                    <p className="font-semibold text-slate-800">{university.visa_info.processing_time_weeks} {t('university.weeks')}</p>
+                                                    <p className="text-sm text-[#55504a] mb-1">{t('university.processingTime')}</p>
+                                                    <p className="font-semibold text-[#292823]">{university.visa_info.processing_time_weeks} {t('university.weeks')}</p>
                                                 </div>
                                             )}
                                             {university.visa_info.visa_cost_eur && (
                                                 <div>
-                                                    <p className="text-sm text-slate-500 mb-1">{t('university.visaCost')}</p>
-                                                    <p className="font-semibold text-slate-800">€{university.visa_info.visa_cost_eur}</p>
+                                                    <p className="text-sm text-[#55504a] mb-1">{t('university.visaCost')}</p>
+                                                    <p className="font-semibold text-[#292823]">€{university.visa_info.visa_cost_eur}</p>
                                                 </div>
                                             )}
                                             {university.visa_info.work_allowed_hours && (
                                                 <div>
-                                                    <p className="text-sm text-slate-500 mb-1">{t('university.workAllowed')}</p>
-                                                    <p className="font-semibold text-slate-800">{university.visa_info.work_allowed_hours} {t('university.hoursPerWeek')}</p>
+                                                    <p className="text-sm text-[#55504a] mb-1">{t('university.workAllowed')}</p>
+                                                    <p className="font-semibold text-[#292823]">{university.visa_info.work_allowed_hours} {t('university.hoursPerWeek')}</p>
                                                 </div>
                                             )}
                                         </div>
                                         <div className="mt-6 pt-6 border-t space-y-3">
                                             <div className="flex items-center gap-3">
-                                                <CheckCircle2 className={`w-5 h-5 ${university.visa_info.post_study_work_visa ? 'text-green-500' : 'text-slate-300'}`} />
-                                                <p className="text-slate-700">{t('university.postStudyWorkVisa')}</p>
+                                                <CheckCircle2 className={`w-5 h-5 ${university.visa_info.post_study_work_visa ? 'text-green-500' : 'text-[#b5aba0]'}`} />
+                                                <p className="text-[#292823]">{t('university.postStudyWorkVisa')}</p>
                                             </div>
                                         </div>
                                         {university.visa_info.visa_details && (
                                             <div className="mt-6 pt-6 border-t">
-                                                <p className="text-slate-600 leading-relaxed">{university.visa_info.visa_details}</p>
+                                                <p className="text-[#47443f] leading-relaxed">{university.visa_info.visa_details}</p>
                                             </div>
                                         )}
                                     </CardContent>
@@ -509,27 +509,27 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         </Badge>
                                         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                                             <div>
-                                                <p className="text-sm text-slate-500 mb-1">{t('university.visaRequired')}</p>
+                                                <p className="text-sm text-[#55504a] mb-1">{t('university.visaRequired')}</p>
                                                 <Badge>{t('university.yes')}</Badge>
                                             </div>
                                             <div>
-                                                <p className="text-sm text-slate-500 mb-1">{t('university.workAllowed')}</p>
-                                                <p className="font-semibold text-slate-800">{US_GENERIC_VISA_INFO.work_allowed_hours} {t('university.hoursPerWeek')}</p>
+                                                <p className="text-sm text-[#55504a] mb-1">{t('university.workAllowed')}</p>
+                                                <p className="font-semibold text-[#292823]">{US_GENERIC_VISA_INFO.work_allowed_hours} {t('university.hoursPerWeek')}</p>
                                             </div>
                                         </div>
                                         <div className="mt-6 pt-6 border-t space-y-3">
                                             <div className="flex items-center gap-3">
                                                 <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                                <p className="text-slate-700">{t('university.postStudyWorkVisa')} (OPT)</p>
+                                                <p className="text-[#292823]">{t('university.postStudyWorkVisa')} (OPT)</p>
                                             </div>
                                         </div>
                                         <div className="mt-6 pt-6 border-t">
-                                            <p className="text-slate-600 leading-relaxed">{US_GENERIC_VISA_INFO.visa_details}</p>
+                                            <p className="text-[#47443f] leading-relaxed">{US_GENERIC_VISA_INFO.visa_details}</p>
                                         </div>
                                     </CardContent>
                                 </Card>
                             ) : (
-                                <p className="text-slate-500 text-center py-6">{t('university.visaInfoNotAvailable')}</p>
+                                <p className="text-[#55504a] text-center py-6">{t('university.visaInfoNotAvailable')}</p>
                             )}
                         </UniversityInfoSection>
 
@@ -560,20 +560,20 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                             <CardContent className="space-y-4">
                                                 {scholarship.coverage && (
                                                     <div>
-                                                        <p className="text-sm font-medium text-slate-700 mb-1">{t('university.coverage')}</p>
-                                                        <p className="text-slate-600">{scholarship.coverage}</p>
+                                                        <p className="text-sm font-medium text-[#292823] mb-1">{t('university.coverage')}</p>
+                                                        <p className="text-[#47443f]">{scholarship.coverage}</p>
                                                     </div>
                                                 )}
                                                 {scholarship.eligibility && (
                                                     <div>
-                                                        <p className="text-sm font-medium text-slate-700 mb-1">{t('university.eligibility')}</p>
-                                                        <p className="text-slate-600">{scholarship.eligibility}</p>
+                                                        <p className="text-sm font-medium text-[#292823] mb-1">{t('university.eligibility')}</p>
+                                                        <p className="text-[#47443f]">{scholarship.eligibility}</p>
                                                     </div>
                                                 )}
                                                 {scholarship.deadline && (
                                                     <div className="flex items-center gap-2 text-sm">
-                                                        <Calendar className="w-4 h-4 text-slate-400" />
-                                                        <span className="text-slate-600">{t('university.deadline')}: <strong>{scholarship.deadline}</strong></span>
+                                                        <Calendar className="w-4 h-4 text-[#625e59]" />
+                                                        <span className="text-[#47443f]">{t('university.deadline')}: <strong>{scholarship.deadline}</strong></span>
                                                     </div>
                                                 )}
                                             </CardContent>
@@ -581,7 +581,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-slate-500 text-center py-6">{t('university.noScholarshipInfo')}</p>
+                                <p className="text-[#55504a] text-center py-6">{t('university.noScholarshipInfo')}</p>
                             )}
                         </UniversityInfoSection>
                     </>}

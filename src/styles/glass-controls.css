@@ -74,12 +74,15 @@ body[data-unimatch-theme] .language-inline-options {
 @media (max-width: 1023px) {
   body[data-unimatch-theme] .unimatch-app .product-nav .product-mobile-menu {
     position: absolute; top: calc(100% + 8px); right: 0;
-    width: min(320px, calc(100vw - 24px)); max-height: calc(100dvh - 104px);
+    width: min(340px, 100%); max-height: calc(100dvh - 104px);
     padding: 0;
     border: 1px solid #fffffff0; border-radius: 24px;
     background: linear-gradient(140deg, #fffaf5, #f5eee5);
     box-shadow: inset 0 1px #fff, 0 12px 32px #49372324;
   }
+@media (max-width: 639px) {
+  body[data-unimatch-theme] .unimatch-app .product-nav .product-mobile-menu { left: 0; right: 0; width: 100%; }
+}
   .product-mobile-menu-inner { padding: 10px; }
   body[data-unimatch-theme] .product-mobile-menu .product-mobile-link {
     gap: 10px; min-height: 44px; margin: 0; padding: 8px 12px;

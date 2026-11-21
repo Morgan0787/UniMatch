@@ -99,8 +99,8 @@ export function DiscoveryContent({ page, children = null, standalone = true }) {
         h('a', { href: '/', className: 'discovery-brand' }, 'UniMatch'),
         h('a', { href: '/Search', className: 'discovery-link text-sm font-medium' }, 'Explore catalog')),
       page.breadcrumbs?.length ? h('nav', { 'aria-label': 'Breadcrumb', className: 'discovery-breadcrumb mb-5 text-sm' },
-        h('ol', { className: 'flex flex-wrap gap-x-2 gap-y-1' }, page.breadcrumbs.map(({ href, label }) =>
-          h('li', { key: href }, h('a', { href }, label), ' /')))) : null,
+        h('ol', { className: 'flex flex-wrap gap-x-2 gap-y-1' }, page.breadcrumbs.map(({ href, label }, i) =>
+          h('li', { key: `${href}-${i}`, className: 'inline-flex items-center' }, h('a', { href, className: 'inline-flex items-center min-h-[36px] py-1' }, label))))) : null,
       h('h1', { className: 'text-3xl font-bold sm:text-4xl mb-4' }, page.heading),
       h('p', { className: 'text-lg leading-relaxed mb-6 text-[#47443f]' }, page.intro),
       directory && h('a', {

@@ -71,8 +71,8 @@ export default function University({ publicId } = {}) {
 
   const Heading = publicId ? 'h2' : 'h1';
   return <div className={`university-page release-page catalog-page${publicId ? '' : ' min-h-screen'}`}>
-    <div className="university-page-layout max-w-5xl mx-auto px-4 sm:px-6 py-4">
-      {!publicId && <Link className="university-back inline-flex items-center gap-2 min-h-11 mb-3 text-sm" to={returnTo} onClick={event => {
+    <div className="university-page-layout mx-auto px-4 sm:px-6 py-4">
+      {!publicId && <Link className="university-back inline-flex items-center gap-2 min-h-11 px-4 mb-3 text-sm rounded-full border border-white/90 bg-white/75 text-[#292823] shadow-sm hover:bg-white transition-colors" to={returnTo} onClick={event => {
         if (location.state?.fromApp && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) { event.preventDefault(); navigate(-1); }
       }}><ArrowLeft className="w-4 h-4" aria-hidden="true" />{isRecommendationsReturn(returnTo) ? c.backToRecommendations : c.back}</Link>}
       {savingAction && favoriteMutation.isError && <p role="alert" className="mb-4 text-amber-800">{favoriteText.saveError}</p>}

@@ -82,11 +82,23 @@ function usePreviewRoutes(server) {
     const validPath = /^\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]*(?:\.html)?\/?$/.test(pathname);
     if (!validPath && !/^\/(?:universities|countries|study|guides|(?:ru|uz)\/guides)\//.test(pathname)) return next();
     let path = pathname.replace(/\/+$/, '') || '/';
-    if (validPath && (path === '/Home' || path === '/en/Search' || path !== pathname || path.endsWith('.html'))) {
-      if (path === '/Home') path = '/';
-      else if (path === '/en/Search') path = '/Search';
-      else if (path.endsWith('.html')) path = path.slice(0, -5) || '/';
-      response.writeHead(308, { Location: path + (query ? `?${query}` : '') });
+    const localeRedirects = {
+      '/home': '/',
+      '/en': '/',
+      '/en/search': '/Search',
+      '/search': '/Search',
+      '/ru': '/ru/Search',
+      '/ru/search': '/ru/Search',
+      '/uz': '/uz/Search',
+      '/uz/search': '/uz/Search',
+      '/admissions-survey': '/AdmissionsSurvey',
+      '/admissionssurvey': '/AdmissionsSurvey',
+    };
+    const clean = path.endsWith('.html') ? (path.slice(0, -5) || '/') : path;
+    const mapped = validPath ? localeRedirects[clean.toLowerCase()] : null;
+    const target = mapped && clean !== mapped ? mapped : (path !== pathname || path.endsWith('.html')) ? clean : null;
+    if (validPath && target) {
+      response.writeHead(308, { Location: target + (query ? `?${query}` : '') });
       response.end();
       return;
     }

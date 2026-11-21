@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { loadPublicCatalog } from '../src/lib/admissions/catalog.js';
+import { describePublicFact, normalizeIntakeText } from '../src/lib/admissions/factPresentation.js';
 import { loadUniversityCatalog } from '../src/lib/catalogRepository.js';
 import { normalizeUniversity } from '../src/lib/normalizeUniversity.js';
 import { selectCatalogResults } from '../src/lib/catalogResults.js';
 import { DEFAULT_FILTERS } from '../src/lib/catalogState.js';
+import { canonicalCountry } from '../src/lib/universityGeography.js';
 
 const DEFAULT_TABLE = 'universities';
 const FETCH_TIMEOUT_MS = 15_000;
@@ -19,17 +21,26 @@ function safeText(value) {
 
 function safeHttpsUrl(value) {
   if (typeof value !== 'string' || value.length > 2048 || /[\s\\\u0000-\u001f]/.test(value)) return null;
-  // Reject URL parsers' permissive interpretation of nested protocol strings.
-  if (!/^https:\/\//i.test(value) || /https?:\/\//i.test(value.slice(value.indexOf('://') + 3))) return null;
+  if (!/^https:\/\//i.test(value)) return null;
 
   try {
     const parsed = new URL(value);
     if (parsed.protocol !== 'https:' || !parsed.hostname || parsed.username || parsed.password
       || parsed.hostname === 'http' || parsed.hostname === 'https' || parsed.pathname.startsWith('//')) return null;
+    // Allow Internet Archive snapshots (/web/<timestamp>/https://...) while rejecting accidental double schemes like https://https://.
+    const rest = value.slice(value.indexOf('://') + 3);
+    const isArchiveSnapshot = parsed.hostname === 'web.archive.org' && /^\/web\/\d+(?:[a-z_]+)?\/https?:\/\//i.test(parsed.pathname);
+    if (!isArchiveSnapshot && /https?:\/\//i.test(rest)) return null;
     return parsed.href;
   } catch {
     return null;
   }
+}
+
+function normalizeWebsiteUrl(value) {
+  if (typeof value !== 'string') return null;
+  const cleaned = value.trim().replace(/^(https?:\/\/)+/i, 'https://');
+  return safeHttpsUrl(cleaned);
 }
 
 function isCurrentVerified(fact) {
@@ -49,11 +60,16 @@ function hasBroadProgrammeScope(fact, programmeId, intakeYear) {
     && Number.isInteger(intakeYear) && scope.intakeYear === intakeYear;
 }
 
-function citedSourcesFor(facts, sources) {
+function citedSourcesFor(facts, sources, { requireCurrent = true } = {}) {
   const byUrl = new Map();
   for (const fact of facts) {
-    if (!isCurrentVerified(fact)) continue;
-    for (const sourceId of fact.sourceIds) {
+    if (!isObject(fact)) continue;
+    if (requireCurrent && !isCurrentVerified(fact)) continue;
+    const ids = [
+      ...(Array.isArray(fact.sourceIds) ? fact.sourceIds : []),
+      ...(fact.status === 'historical_reference' && Array.isArray(fact.historical?.sourceIds) ? fact.historical.sourceIds : []),
+    ];
+    for (const sourceId of ids) {
       if (typeof sourceId !== 'string' || !isObject(sources) || !Object.hasOwn(sources, sourceId)) continue;
       const source = sources[sourceId];
       if (!isObject(source)) continue;
@@ -67,6 +83,20 @@ function citedSourcesFor(facts, sources) {
     }
   }
   return [...byUrl.values()].sort((a, b) => a.url.localeCompare(b.url));
+}
+
+function projectDescriptiveFact(fact, kind, sources, { includeScope = true } = {}) {
+  if (!isObject(fact) || fact.status === 'unknown') return null;
+  const resolvedSources = citedSourcesFor([fact], sources, { requireCurrent: false });
+  if (!resolvedSources.length) return null;
+  const described = describePublicFact(fact, 'en', kind, { includeScope });
+  if (!described.value || described.value === 'Unknown') return null;
+  return {
+    value: described.value,
+    notice: described.notice || '',
+    status: fact.status,
+    sources: resolvedSources,
+  };
 }
 
 function projectProgramme(programme, institution, sources, targetIntakeYear) {
@@ -91,7 +121,7 @@ function projectProgramme(programme, institution, sources, targetIntakeYear) {
   const intakeSources = isObject(rawIntake) && hasBroadProgrammeScope(intakeFact, programme.id, targetIntakeYear)
     && (rawIntake.year === null || rawIntake.year === targetIntakeYear)
     ? citedSourcesFor([intakeFact], sources) : [];
-  const intakeText = intakeSources.length ? safeText(rawIntake.text) : null;
+  const intakeText = intakeSources.length ? safeText(normalizeIntakeText(rawIntake.text)) : null;
   const intakeYearsInText = intakeText?.match(/\b(?:19|20|21)\d{2}\b/g) || [];
   const intakeTextMatchesScope = intakeYearsInText.every(year => Number(year) === targetIntakeYear);
   const intake = intakeText && intakeTextMatchesScope ? { year: targetIntakeYear, text: intakeText } : null;
@@ -103,13 +133,28 @@ function projectProgramme(programme, institution, sources, targetIntakeYear) {
   const locationValue = factValue(locationFact);
   const verifiedLocation = isObject(locationValue) && citedSourcesFor([locationFact], sources).length
     ? locationValue : null;
-  const country = safeText(verifiedLocation?.country) || safeText(institution.country);
+  const country = canonicalCountry(safeText(verifiedLocation?.country) || safeText(institution.country));
   const campus = safeText(verifiedLocation?.campus);
+
+  const tuition = projectDescriptiveFact(facts.tuition, 'tuition', sources);
+  const deadline = projectDescriptiveFact(facts.deadline, 'deadline', sources);
+  const academicRequirement = facts.requirementPolicy === null
+    ? projectDescriptiveFact(facts.academicRequirement, 'rule', sources)
+    : null;
+  const languageSourceFact = facts.languageThreshold && facts.languageThreshold.status !== 'unknown'
+    ? facts.languageThreshold
+    : facts.languageRequirement;
+  const languageRequirement = projectDescriptiveFact(languageSourceFact, 'rule', sources);
+
   const includedFacts = [nameFact, degreeFact];
   if (field) includedFacts.push(fieldFact);
   if (verifiedLocation) includedFacts.push(locationFact);
   if (teachingLanguage) includedFacts.push(teachingLanguageFact);
   if (intake) includedFacts.push(intakeFact);
+  if (tuition) includedFacts.push(facts.tuition);
+  if (deadline) includedFacts.push(facts.deadline);
+  if (academicRequirement) includedFacts.push(facts.academicRequirement);
+  if (languageRequirement) includedFacts.push(languageSourceFact);
 
   return {
     name,
@@ -120,15 +165,23 @@ function projectProgramme(programme, institution, sources, targetIntakeYear) {
     teachingLanguage,
     teachingLanguageYear: teachingLanguage ? targetIntakeYear : null,
     intake,
+    tuition: tuition ? { value: tuition.value, notice: tuition.notice, status: tuition.status } : null,
+    deadline: deadline ? { value: deadline.value, notice: deadline.notice } : null,
+    academicRequirement: academicRequirement ? { value: academicRequirement.value, notice: academicRequirement.notice } : null,
+    languageRequirement: languageRequirement ? { value: languageRequirement.value, notice: languageRequirement.notice } : null,
     evidenceSources: [
       ...(teachingLanguage ? teachingLanguageSources.map(source => ({ url: source.url, fact: 'teaching language' })) : []),
       ...(intake ? intakeSources.map(source => ({ url: source.url, fact: 'intake' })) : []),
+      ...(tuition ? tuition.sources.map(source => ({ url: source.url, fact: 'tuition' })) : []),
+      ...(deadline ? deadline.sources.map(source => ({ url: source.url, fact: 'deadline' })) : []),
+      ...(academicRequirement ? academicRequirement.sources.map(source => ({ url: source.url, fact: 'academic requirement' })) : []),
+      ...(languageRequirement ? languageRequirement.sources.map(source => ({ url: source.url, fact: 'language requirement' })) : []),
     ],
-    sources: citedSourcesFor(includedFacts, sources),
+    sources: citedSourcesFor(includedFacts, sources, { requireCurrent: false }),
   };
 }
 
-/** Convert an adapted public catalog into the deliberately small SEO feed. */
+/** Convert an adapted public catalog into the grounded SEO feed. */
 export function projectSeoInstitutions(adapted) {
   if (!isObject(adapted) || !Array.isArray(adapted.institutions)) return [];
   const output = [];
@@ -148,9 +201,9 @@ export function projectSeoInstitutions(adapted) {
       id: institution.id,
       slug: institution.institutionId,
       name: safeText(institution.name),
-      country: safeText(institution.country),
+      country: canonicalCountry(safeText(institution.country)),
       city: safeText(institution.city),
-      website: safeHttpsUrl(institution.media?.homepage) || safeHttpsUrl(institution.website),
+      website: safeHttpsUrl(institution.media?.homepage) || normalizeWebsiteUrl(institution.website),
       programmes,
     });
   }

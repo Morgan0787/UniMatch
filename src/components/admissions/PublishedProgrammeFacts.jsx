@@ -148,7 +148,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
         );
       })}
       {compact && expandable && programmes.length > 0 && <details className="text-sm">
-        <summary className="cursor-pointer rounded text-indigo-700 underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</summary>
+        <summary className="cursor-pointer rounded text-[#704a2d] underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#855a36]">{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</summary>
         <div className="mt-3"><PublishedProgrammeFacts admissionCatalog={admissionCatalog} language={language} /></div>
       </details>}
       {!compact && sources.length > 0 && <details className="programme-disclosure programme-sources">

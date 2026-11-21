@@ -79,12 +79,12 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 aria-pressed={Boolean(isSaved)}
                                 aria-busy={Boolean(savePendingLabel)}
                                 disabled={saveDisabled || (hasAdmissionCatalog && university.admissionCatalog.status !== 'valid')}
-                                className={isSaved ? "border-indigo-200 bg-indigo-50" : ""}
+                                className={isSaved ? "border-[#d6aa79] bg-[#f6e3c9]" : ""}
                             >
                                 {savePendingLabel ? (
                                     <><LoaderCircle className="w-4 h-4 mr-2 motion-safe:animate-spin" aria-hidden="true" />{savePendingLabel}</>
                                 ) : isSaved ? (
-                                    <><BookmarkCheck className="w-4 h-4 mr-2 text-indigo-600" /> {t('university.saved')}</>
+                                    <><BookmarkCheck className="w-4 h-4 mr-2 text-[#704a2d]" /> {t('university.saved')}</>
                                 ) : (
                                     <><Bookmark className="w-4 h-4 mr-2" /> {t('university.save')}</>
                                 )}
@@ -172,13 +172,13 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                             </div>
 
                             {/* Total Cost Highlight */}
-                            <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+                            <div className="p-4 bg-[#f6e3c9]/65 border border-[#d6aa79] rounded-xl">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-indigo-600 font-medium">{t('university.totalCost')}</p>
-                                        <p className="text-xs text-indigo-400 mt-0.5">{t('university.totalCostDesc')}</p>
+                                        <p className="text-sm text-[#704a2d] font-medium">{t('university.totalCost')}</p>
+                                        <p className="text-xs text-[#625e59] mt-0.5">{t('university.totalCostDesc')}</p>
                                     </div>
-                                    <p className="text-2xl font-bold text-indigo-700">
+                                    <p className="text-2xl font-bold text-[#5c3c1b]">
                                         {totalCost === null ? (
                                             <span className="text-base text-slate-400 italic font-normal">{catalogText(language, 'notPublished')}</span>
                                         ) : (
@@ -205,7 +205,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="text-base flex items-center gap-2">
-                                            <BookOpen className="w-4 h-4 text-indigo-600" />
+                                            <BookOpen className="w-4 h-4 text-[#704a2d]" />
                                             {t('university.programs')}
                                         </CardTitle>
                                     </CardHeader>
@@ -216,7 +216,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                                 {catalogValue(university.language, language)}
                                             </Badge>
                                             {university.degree_levels?.map(deg => (
-                                                <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-indigo-50 text-indigo-600">
+                                                <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b]">
                                                     <GraduationCap className="w-3 h-3 mr-1" />
                                                     {catalogValue(deg, language)}
                                                 </Badge>
@@ -240,7 +240,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="text-base flex items-center gap-2">
-                                            <Globe className="w-4 h-4 text-indigo-600" />
+                                            <Globe className="w-4 h-4 text-[#704a2d]" />
                                             {t('university.languageReq')}
                                         </CardTitle>
                                     </CardHeader>
@@ -259,7 +259,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         {university.country === "South Korea" && university.topikLevel && (
                                             <div>
                                                 <p className="text-sm text-slate-500">🇰🇷 {t('university.topikRequired')}</p>
-                                                <p className="font-semibold text-indigo-700 text-lg">{university.topikLevel}</p>
+                                                <p className="font-semibold text-[#5c3c1b] text-lg">{university.topikLevel}</p>
                                                 <p className="text-xs text-slate-400 mt-1">{t('university.forKorean')}</p>
                                             </div>
                                         )}
@@ -295,7 +295,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                     <Card>
                                         <CardHeader>
                                             <CardTitle className="flex items-center gap-2">
-                                                <Home className="w-5 h-5 text-indigo-600" />
+                                                <Home className="w-5 h-5 text-[#704a2d]" />
                                                 {t('university.campusFacilities')}
                                             </CardTitle>
                                         </CardHeader>
@@ -342,7 +342,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         <Card>
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
-                                                    <MapPin className="w-5 h-5 text-indigo-600" />
+                                                    <MapPin className="w-5 h-5 text-[#704a2d]" />
                                                     {t('university.lifeIn')} {university.city}
                                                 </CardTitle>
                                             </CardHeader>
@@ -367,7 +367,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
-                                            <Heart className="w-5 h-5 text-indigo-600" />
+                                            <Heart className="w-5 h-5 text-[#704a2d]" />
                                             {t('university.support')}
                                         </CardTitle>
                                     </CardHeader>
@@ -412,15 +412,15 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
-                                            <Phone className="w-5 h-5 text-indigo-600" />
+                                            <Phone className="w-5 h-5 text-[#704a2d]" />
                                             {t('university.contact')}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-3">
                                         {university.contact_info.email && (
                                             <div className="flex items-center gap-3">
-                                                <Mail className="w-4 h-4 text-slate-400" />
-                                                <a href={`mailto:${university.contact_info.email}`} className="text-indigo-600 hover:underline">
+                                                <Mail className="w-4 h-4 text-[#625e59]" />
+                                                <a href={`mailto:${university.contact_info.email}`} className="text-[#704a2d] hover:underline">
                                                     {university.contact_info.email}
                                                 </a>
                                             </div>
@@ -451,7 +451,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
-                                            <Shield className="w-5 h-5 text-indigo-600" />
+                                            <Shield className="w-5 h-5 text-[#704a2d]" />
                                             {t('university.visaWorkPermit')}
                                         </CardTitle>
                                     </CardHeader>
@@ -499,7 +499,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
-                                            <Shield className="w-5 h-5 text-indigo-600" />
+                                            <Shield className="w-5 h-5 text-[#704a2d]" />
                                             {t('university.visaWorkPermit')}
                                         </CardTitle>
                                     </CardHeader>
@@ -547,7 +547,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                                     <div>
                                                         <CardTitle className="text-lg">{scholarship.name}</CardTitle>
                                                         {scholarship.amount_eur && (
-                                                            <p className="text-2xl font-bold text-indigo-600 mt-2">
+                                                            <p className="text-2xl font-bold text-[#704a2d] mt-2">
                                                                 €{scholarship.amount_eur.toLocaleString()}
                                                             </p>
                                                         )}

@@ -28,7 +28,7 @@ export default function LanguageSwitcher({ inline = false }) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" aria-label={`${label}: ${currentLang?.name}`} className="language-glass-trigger language-switcher-trigger"><Globe aria-hidden="true" className="language-switcher-globe" /><span>{language.toUpperCase()}</span></Button>
+                <Button variant="ghost" size="sm" className="language-glass-trigger language-switcher-trigger"><Globe aria-hidden="true" className="language-switcher-globe" /><span>{language.toUpperCase()}</span><span className="sr-only"> — {label}: {currentLang?.name}</span></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="language-switcher-menu" onEscapeKeyDown={event => event.stopPropagation()}>
                 <DropdownMenuRadioGroup value={language} onValueChange={setLanguage}>

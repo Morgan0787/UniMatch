@@ -1,4 +1,18 @@
 import { withPublicProgrammeFacts } from './admissions/universityCatalog.js';
+import { canonicalCountry } from './universityGeography.js';
+
+const safeWebsiteUrl = (value) => {
+  if (typeof value !== 'string') return '';
+  let candidate = value.trim().replace(/^(https?:\/\/)+/i, match => (/https:\/\//i.test(match) ? 'https://' : 'http://'));
+  if (!candidate) return '';
+  try {
+    const parsed = new URL(candidate);
+    if (!['https:', 'http:'].includes(parsed.protocol) || !parsed.hostname) return '';
+    return parsed.href;
+  } catch {
+    return '';
+  }
+};
 
 const parseJsonString = (value) => {
   if (typeof value !== 'string') return value;
@@ -48,11 +62,11 @@ export const normalizeUniversity = (university) => {
     ...row,
     id: row.id ?? null,
     name: asString(row.name, 'Unknown university'),
-    country: asString(row.country),
+    country: canonicalCountry(asString(row.country)),
     city: asString(row.city),
     region: asString(row.region),
     language: asString(row.language),
-    website: asString(row.website),
+    website: safeWebsiteUrl(asString(row.website)),
     image_url: asString(row.image_url),
     description: asString(row.description),
     application_deadline: asString(row.application_deadline),

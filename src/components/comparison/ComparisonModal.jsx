@@ -24,7 +24,7 @@ function ComparisonCell({ fact, copy }) {
     <span>{fact?.value || copy.unknown}</span>
     {fact?.notice && fact.value !== copy.unknown && <p className="mt-1 text-xs text-amber-800">{fact.notice}</p>}
     {fact?.detail && <details className="mt-2 text-xs text-slate-600">
-      <summary className="cursor-pointer text-teal-800">{copy.scope}</summary>
+      <summary className="cursor-pointer text-[#704a2d] underline-offset-2 hover:underline">{copy.scope}</summary>
       {fact.detail && <p className="mt-2">{fact.detail}</p>}
     </details>}
   </>;
@@ -77,7 +77,7 @@ export default function ComparisonModal({ universities, isOpen, onClose, onRemov
               {columns.map(({ university, institutionFacts }) => {
                 const value = institutionFacts.find(fact => fact.key === key)?.value;
                 return <td key={university.id} className="border-l border-slate-100 p-3 align-top break-words">
-                  {key === 'website' && value ? <a className="break-all text-teal-800 underline" href={value} target="_blank" rel="noopener noreferrer">{value}</a> : value || c.unknown}
+                  {key === 'website' && value ? <a className="break-all text-[#704a2d] underline hover:text-[#4e311a]" href={value} target="_blank" rel="noopener noreferrer">{value}</a> : value || c.unknown}
                 </td>;
               })}
             </tr>)}

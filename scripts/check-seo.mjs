@@ -124,7 +124,10 @@ for (const file of builtPages) {
     assert.ok(body.includes('<p'), `${file}: introductory content must exist without JavaScript`);
     if (route.startsWith('/universities/')) {
       assert.ok(body.includes('Programmes in the UniMatch catalog') && body.includes('Official sources'));
-      assert.match(body, /href="\/University\?id=[a-f0-9-]{36}"/i, `${file}: legacy interactive details link missing`);
+      assert.ok(!/href="\/University\?id=/i.test(body), `${file}: profile pages must not link to duplicate noindex UUID URLs`);
+      const visibleText = body.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ');
+      assert.ok(!/Accepted(?:\s+bachelor)?\s+field\s+source:|Manager-accepted|!W_HU_MENU|\b(?:January|February|March|April|May|June|July|August|September|October|November|December)20\d{2}\b/i.test(visibleText),
+        `${file}: leaked internal source labels or intake typos must not appear in public text`);
     }
     for (const [, href] of body.matchAll(/<a\b[^>]*\bhref="(\/[^"?]*)"/gi)) {
       assert.ok(sitemapLocations.includes(SITE_URL + href), `${file}: internal discovery link not emitted: ${href}`);
@@ -166,6 +169,10 @@ assert.equal(config.cleanUrls, true, 'Static HTML routes should use clean URLs')
 assert.equal(config.trailingSlash, false);
 assert.ok(config.redirects.some(rule => rule.source === '/en/Search' && rule.destination === '/Search' && rule.permanent === true),
   'English search path should redirect permanently to the canonical search route');
+assert.ok(config.redirects.some(rule => rule.source === '/ru' && rule.destination === '/ru/Search' && rule.permanent === true),
+  'Shorthand Russian path should redirect permanently to the canonical Search route');
+assert.ok(config.headers.some(rule => rule.source === '/assets/(.*)' && rule.headers?.some(h => h.key === 'Cache-Control' && /immutable/.test(h.value))),
+  'Fingerprinted build assets must send immutable Cache-Control');
 assert.ok(config.rewrites.some(rule => rule.destination === '/seo/private'), 'Private routes should resolve to the noindex shell');
 const privateRewrite = config.rewrites.find(rule => rule.destination === '/seo/private');
 assert.ok(privateRewrite && privateRewrite.source.includes('University') && PRIVATE_PATHS.every(route => privateRewrite.source.includes(route.slice(1))),
@@ -213,8 +220,11 @@ assert.match(sampleProfile.description, /taught in English/);
 assert.match(sampleProfile.description, /Autumn 2027/);
 assert.match(programmeSection.items[0], /Teaching language: English/);
 assert.match(programmeSection.items[0], /Intake: Autumn 2027/);
+assert.match(programmeSection.items[0], /12,000 EUR \/ year \(2027\)/);
+assert.match(programmeSection.items[0], /2027-05-01 \(Europe\/London\)/);
+assert.match(programmeSection.items[0], /minimum 3 on the original 4-point scale/);
 assert.ok(!programmeSection.items[0].includes('Capital'), 'Institution city must not be presented as programme campus');
-assert.match(sourceSection.links[0].detail, /BSc Computer Science \(teaching language, intake\)/,
+assert.match(sourceSection.links[0].detail, /BSc Computer Science \(teaching language, intake, tuition, deadline, academic requirement\)/,
   'Official source links must identify the programme and associated facts');
 assert.equal(new Set(sourceSection.links.map(link => link.href)).size, sourceSection.links.length,
   'Official source URLs must be de-duplicated');
@@ -260,7 +270,15 @@ const renamed = structuredClone(published);
 renamed.name = 'Renamed University';
 assert.equal(project([renamed]).find(page => page.universityId).path, '/universities/sample-university');
 assert.ok(!project([draft, incomplete]).some(page => page.universityId), 'Removed/unpublished profiles must disappear from the next build');
-assert.ok(!JSON.stringify(before).includes('12000'), 'Private or nonprojected catalog fields must never be serialized');
+const serialized = JSON.stringify(before);
+assert.ok(!serialized.includes('legacyFavoriteKeys') && !serialized.includes('"revision"'), 'Private or internal catalog metadata must never be serialized');
+const leakedPrefix = publicAdmissionCatalogRow({ id: '00000000-0000-4000-8000-000000000009', slug: 'clean-source', alias: '10000000-0000-4000-8000-000000000009' });
+leakedPrefix.catalog.sources['official_main-2027'].title = 'Accepted bachelor field source: Sample University';
+leakedPrefix.catalog.programmes[0].intake.value = { year: 2027, text: 'September2027' };
+const cleanedProfile = project([leakedPrefix]).find(page => page.universityId);
+assert.ok(!cleanedProfile.sections.find(s => s.heading === 'Official sources').links[0].label.includes('Accepted bachelor field source'),
+  'Internal source prefixes must be cleaned before output');
+assert.match(cleanedProfile.description, /September 2027/, 'Concatenated intake dates must be separated cleanly');
 assert.equal(safePublicLoginReturn('/universities/sample-university'), '/universities/sample-university');
 assert.equal(safePublicLoginReturn('/uz/Search?q=cs'), '/uz/Search?q=cs');
 assert.equal(universityReturnPath('/ru/Search?q=cs'), '/ru/Search?q=cs');
@@ -291,10 +309,21 @@ if (process.env.SEO_CHECK_ORIGIN) {
     assert.equal(response.status, 200, route);
     assert.match(await response.text(), /noindex, follow/);
   }
-  for (const route of ['/Search/', '/Search.html', '/en/Search']) {
+  for (const [route, destination] of [
+    ['/Search/', '/Search'],
+    ['/Search.html', '/Search'],
+    ['/en/Search', '/Search'],
+    ['/search', '/Search'],
+    ['/en', '/'],
+    ['/ru', '/ru/Search'],
+    ['/ru/search', '/ru/Search'],
+    ['/uz', '/uz/Search'],
+    ['/uz/search', '/uz/Search'],
+    ['/admissions-survey', '/AdmissionsSurvey'],
+  ]) {
     const response = await request(route);
     assert.equal(response.status, 308, route);
-    assert.equal(response.headers.get('location'), '/Search', route);
+    assert.equal(response.headers.get('location'), destination, route);
     await response.body?.cancel();
   }
 }

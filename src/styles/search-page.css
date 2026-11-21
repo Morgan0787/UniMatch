@@ -1,7 +1,7 @@
 /* Search overrides carry the app/catalogue classes so shared legacy rules cannot win by specificity. */
 body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
   --search-ink: #292e30;
-  --search-muted: #62615e;
+  --search-muted: #47443f;
   --search-line: rgba(106, 89, 72, .15);
   color: var(--search-ink);
   background: transparent;
@@ -165,23 +165,23 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profil
 
 /* The reference card has three clear bands: identity/photo, programme/stats, review/actions. */
 .unimatch-app .catalog-page.search-page .search-programme-preview { display: flex; flex-direction: column; gap: 5px; color: #292e30; }
-.unimatch-app .catalog-page.search-page .search-programme-eyebrow { font-size: 13px; color: #65605a; }
+.unimatch-app .catalog-page.search-page .search-programme-eyebrow { font-size: 13px; color: #47443f; }
 .unimatch-app .catalog-page.search-page .search-programme-preview h4 { margin: 0; font-size: 18px; font-weight: 650; line-height: 1.18; letter-spacing: -.025em; min-height: 43px; white-space: normal; overflow-wrap: anywhere; }
-.unimatch-app .catalog-page.search-page .search-programme-campus { color: #51483f; }
+.unimatch-app .catalog-page.search-page .search-programme-campus { color: #474038; }
 .unimatch-app .catalog-page.search-page .search-programme-stats { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; padding-block: 9px; border-block: 1px solid #8f765c24; }
 .unimatch-app .catalog-page.search-page .search-programme-stats > div { min-width: 0; }
 .unimatch-app .catalog-page.search-page .search-programme-stats > div + div { border-left: 1px solid #8f765c24; padding-left: 14px; }
-.unimatch-app .catalog-page.search-page .search-programme-stats dt { font-size: 13px; line-height: 1.3; color: #625e59; margin-bottom: 4px; }
+.unimatch-app .catalog-page.search-page .search-programme-stats dt { font-size: 13px; line-height: 1.3; color: #47443f; margin-bottom: 4px; }
 .unimatch-app .catalog-page.search-page .search-programme-stats dd { margin: 0; font-size: 17px; font-weight: 650; line-height: 1.2; overflow-wrap: anywhere; }
 .unimatch-app .catalog-page.search-page .search-programme-stats small { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.35; }
-.unimatch-app .catalog-page.search-page .search-language-conditions { margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #625e59; }
+.unimatch-app .catalog-page.search-page .search-language-conditions { margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #47443f; }
 .unimatch-app .catalog-page.search-page .search-language-conditions summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .unimatch-app .catalog-page.search-page .search-language-conditions p { margin-top: 6px; }
-.unimatch-app .catalog-page.search-page .search-programme-stats .tuition-status { color: #9b5809; }
+.unimatch-app .catalog-page.search-page .search-programme-stats .tuition-status { color: #854905; }
 .unimatch-app .catalog-page.search-page .search-programme-review h5 { font-size: 14px; font-weight: 650; margin-bottom: 4px; }
 .unimatch-app .catalog-page.search-page .search-programme-review ul { padding-left: 20px; list-style: disc; font-size: 14px; line-height: 1.45; }
 .unimatch-app .catalog-page.search-page .search-programme-review li::marker { color: #b66b16; }
-.unimatch-app .catalog-page.search-page .search-programme-note { font-size: 11px; color: #756d65; line-height: 1.35; }
+.unimatch-app .catalog-page.search-page .search-programme-note { font-size: 11px; color: #4f4841; line-height: 1.35; }
 .unimatch-app .catalog-page.search-page .catalog-card-facts { border-top: 0; padding-top: 0; }
 .unimatch-app .catalog-page.search-page .catalog-card-actions { padding-top: 12px; grid-template-columns: 1.35fr 1fr; }
 .unimatch-app .catalog-page.search-page .catalog-card-actions :is(a,button) { min-height: 46px; font-size: 16px; }

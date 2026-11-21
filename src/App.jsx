@@ -101,15 +101,18 @@ function AppContent({ publicPage }) {
   const { isLoadingAuth } = useAuth();
   const [detailsOpen, setDetailsOpen] = useState(false);
   if (publicPage?.path !== pathname) return <AuthenticatedApp />;
-  return <DiscoveryContent page={publicPage}>
-    <details className="mt-8 border-t border-slate-200 pt-4" onToggle={event => setDetailsOpen(event.currentTarget.open)}>
-      <summary className="cursor-pointer py-2 font-semibold">Show details and save this university</summary>
-      {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> :
-        <Suspense fallback={<p role="status">Loading university…</p>}>
-          <Pages.University publicId={publicPage.universityId} />
-        </Suspense>)}
-    </details>
+  const content = <DiscoveryContent page={publicPage} standalone={false}>
+    {publicPage.universityId && (
+      <details className="discovery-details" onToggle={event => setDetailsOpen(event.currentTarget.open)}>
+        <summary>Show details and save this university</summary>
+        {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> :
+          <Suspense fallback={<p role="status">Loading university…</p>}>
+            <Pages.University publicId={publicPage.universityId} />
+          </Suspense>)}
+      </details>
+    )}
   </DiscoveryContent>;
+  return Layout ? <Layout currentPageName="Discovery">{content}</Layout> : content;
 }
 
 function App() {

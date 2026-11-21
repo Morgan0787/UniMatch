@@ -41,7 +41,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
         >
-            <Card className="catalog-card search-university-card product-card group overflow-hidden border-slate-100 hover:border-indigo-200 hover:shadow-lg transition-all duration-300 bg-white h-full flex flex-col">
+            <Card className="catalog-card search-university-card product-card group overflow-hidden border-[#e3d7c6] hover:border-[#c6a47e] hover:shadow-lg transition-all duration-300 bg-[#fffdf8] h-full flex flex-col">
                 {/* Header with cover */}
                 <div className="catalog-cover relative overflow-hidden">
                     <UniversityPhoto university={university} language={language} showDetails={false} prioritizeLoading={prioritizePhotoLoading} responsivePreview />
@@ -62,9 +62,9 @@ export default function UniversityCard({ university, programme = comparisonProgr
                             {savePendingLabel ? (
                                 <LoaderCircle className="w-4 h-4 motion-safe:animate-spin" aria-hidden="true" />
                             ) : isSaved ? (
-                                <BookmarkCheck className="w-4 h-4 text-indigo-600" />
+                                <BookmarkCheck className="w-4 h-4 text-[#855a36]" />
                             ) : (
-                                <Bookmark className="w-4 h-4 text-slate-400" />
+                                <Bookmark className="w-4 h-4 text-[#625e59]" />
                             )}
                         </Button>
                     }>
@@ -142,7 +142,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                             {catalogValue(university.language, language) || {en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}
                         </Badge>
                         {university.degree_levels?.slice(0, 2).map(deg => (
-                            <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-indigo-50 text-indigo-600 font-normal text-[10px] px-1.5 py-0.5">
+                            <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b] font-normal text-[10px] px-1.5 py-0.5">
                                 {catalogValue(deg, language)}
                             </Badge>
                         ))}
@@ -160,7 +160,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                     <div className={`catalog-card-actions mt-auto ${compareLimitReached && !isComparing ? 'catalog-card-actions-limited' : ''}`}>
                         {limited && <p className="catalog-coverage">{limitedLabel}</p>}
                         <Button asChild
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium h-9 text-sm"
+                            className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white font-medium h-9 text-sm"
                         >
                             <Link id={`university-link-${university.id}`} to={detailUrl} state={{ fromApp: true }} onClick={event => {
                                 if (!event.defaultPrevented && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) onView?.(university);
@@ -176,7 +176,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                             disabled={previewOnly}
                             aria-disabled={previewOnly || (compareLimitReached && !isComparing)}
                             aria-describedby="catalog-compare-status"
-                            className={`catalog-compare w-full min-h-11 h-auto py-2 whitespace-normal text-xs ${isComparing ? "border-indigo-600 bg-indigo-50 text-indigo-700" : "border-slate-200 hover:border-indigo-600 hover:bg-indigo-50"}`}
+                            className={`catalog-compare w-full min-h-11 h-auto py-2 whitespace-normal text-xs ${isComparing ? "border-[#c6a47e] bg-[#f4e4cc] text-[#5c3c1b]" : "border-[#d7c7b2] hover:border-[#855a36] hover:bg-[#faf5ed]"}`}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onCompareToggle(university.id);

@@ -17,9 +17,9 @@ export default function BrainstormPanel({ interests, onInterestsChange, onSubmit
   };
 
   return (
-    <Card className="border-white/80 bg-white/90 shadow-sm">
+    <Card className="border-white/90 bg-[#fffdf8]/90 shadow-sm">
       <CardHeader className="p-5 sm:p-7">
-        <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[#edf1ee] text-[#416158]">
+        <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[#f4e4cc] text-[#6e4b2a]">
           <Lightbulb className="h-5 w-5" aria-hidden="true" />
         </div>
         <CardTitle className="text-xl">{copy.brainstormingTitle}</CardTitle>
@@ -27,7 +27,7 @@ export default function BrainstormPanel({ interests, onInterestsChange, onSubmit
       </CardHeader>
       <CardContent className="space-y-5 px-5 pb-5 sm:px-7 sm:pb-7">
         <fieldset disabled={pending} className="min-w-0 space-y-3">
-          <legend className="mb-3 text-sm font-medium text-slate-800">{copy.interestsLabel}</legend>
+          <legend className="mb-3 text-sm font-medium text-[#292823]">{copy.interestsLabel}</legend>
           {interests.map((interest, index) => (
             <div key={index} className="flex items-center gap-2">
               <label className="sr-only" htmlFor={`essay-interest-${index}`}>
@@ -40,9 +40,9 @@ export default function BrainstormPanel({ interests, onInterestsChange, onSubmit
                 onChange={(event) => updateInterest(index, event.target.value)}
                 placeholder={copy.interestPlaceholder}
                 maxLength={80}
-                className="h-10 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5f8294] disabled:cursor-not-allowed disabled:bg-slate-50"
+                className="h-10 min-w-0 flex-1 rounded-xl border border-[#d6ccc0] bg-[#fffdf8] px-3 text-sm text-[#292823] shadow-sm placeholder:text-[#6e6a63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#855a36] disabled:cursor-not-allowed disabled:bg-[#f4efe6]"
               />
-              <span className="w-10 shrink-0 text-right text-xs tabular-nums text-slate-500" aria-live="polite">{interest.length}/80</span>
+              <span className="w-10 shrink-0 text-right text-xs tabular-nums text-[#47443f]" aria-live="polite">{interest.length}/80</span>
               <Button
                 type="button"
                 variant="outline"
@@ -60,7 +60,7 @@ export default function BrainstormPanel({ interests, onInterestsChange, onSubmit
             {copy.addInterest}
           </Button>
         </fieldset>
-        <Button type="button" onClick={onSubmit} disabled={pending} aria-busy={pending} className="w-full bg-[#294750] text-white hover:bg-[#203b43] sm:w-auto">
+        <Button type="button" onClick={onSubmit} disabled={pending} aria-busy={pending} className="w-full rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
           {pending ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
           {pending ? copy.workingBrainstorm : copy.brainstormAction}
         </Button>
@@ -72,16 +72,16 @@ export default function BrainstormPanel({ interests, onInterestsChange, onSubmit
 function BrainstormResults({ ideas, copy }) {
   return (
     <div className="space-y-5" aria-live="polite">
-      <h2 className="flex items-center gap-2 text-xl font-semibold text-slate-800">
-        <Sparkles className="h-5 w-5 text-[#416158]" aria-hidden="true" />
+      <h2 className="flex items-center gap-2 text-xl font-semibold text-[#292823]">
+        <Sparkles className="h-5 w-5 text-[#704a2d]" aria-hidden="true" />
         {copy.brainstormingResult}
       </h2>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {ideas.topic_ideas.map((topic, index) => (
-          <Card key={`${topic.title}-${index}`} className="border-white/80 bg-white/90 shadow-sm">
+          <Card key={`${topic.title}-${index}`} className="border-white/90 bg-[#fffdf8]/90 shadow-sm">
             <CardHeader className="p-5">
               <div className="flex items-start gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#e5edf0] text-sm font-semibold text-[#294750]" aria-hidden="true">{index + 1}</span>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#f4e4cc] text-sm font-semibold text-[#5c3c1b]" aria-hidden="true">{index + 1}</span>
                 <div className="min-w-0">
                   <CardTitle className="text-base leading-snug">{topic.title}</CardTitle>
                   <CardDescription className="mt-2 leading-relaxed">{topic.description}</CardDescription>
@@ -89,19 +89,19 @@ function BrainstormResults({ ideas, copy }) {
               </div>
             </CardHeader>
             <CardContent className="space-y-4 px-5 pb-5">
-              <div className="rounded-xl bg-[#f0f4f1] p-3.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[#416158]">{copy.whyItWorks}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-700">{topic.why_it_works}</p>
+              <div className="rounded-xl bg-[#f7efe4] p-3.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-[#704a2d]">{copy.whyItWorks}</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[#292823]">{topic.why_it_works}</p>
               </div>
               <div>
-                <h3 className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                  <BookOpen className="h-4 w-4 text-[#416158]" aria-hidden="true" />
+                <h3 className="flex items-center gap-2 text-sm font-medium text-[#292823]">
+                  <BookOpen className="h-4 w-4 text-[#704a2d]" aria-hidden="true" />
                   {copy.startingQuestions}
                 </h3>
                 <ul className="mt-2 space-y-2">
                   {topic.starting_questions.map((question, questionIndex) => (
-                    <li key={questionIndex} className="flex gap-2 text-sm leading-relaxed text-slate-600">
-                      <span aria-hidden="true" className="text-[#719084]">•</span>
+                    <li key={questionIndex} className="flex gap-2 text-sm leading-relaxed text-[#47443f]">
+                      <span aria-hidden="true" className="text-[#855a36]">•</span>
                       <span>{question}</span>
                     </li>
                   ))}
@@ -111,10 +111,10 @@ function BrainstormResults({ ideas, copy }) {
           </Card>
         ))}
       </div>
-      <Card className="border-white/80 bg-white/90 shadow-sm">
+      <Card className="border-white/90 bg-[#fffdf8]/90 shadow-sm">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
-            <BookOpen className="h-4 w-4 text-[#416158]" aria-hidden="true" />
+            <BookOpen className="h-4 w-4 text-[#704a2d]" aria-hidden="true" />
             {copy.commonPrompts}
           </CardTitle>
         </CardHeader>

@@ -26,6 +26,8 @@ export const guides = [
     state: 'published',
     slug: 'check-university-application-requirements',
     language: 'en',
+    datePublished: '2026-11-11',
+    dateModified: '2026-11-22',
     heading: 'How to check university application requirements',
     intro: 'Turn an overseas university shortlist into a checklist you can verify. Keep one record per programme and intake so requirements for different degrees or applicant groups do not get mixed together.',
     sections: [

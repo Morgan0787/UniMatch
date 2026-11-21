@@ -208,7 +208,7 @@ export default function UniMatchHero() {
             <div className="um-hero__pin">
                 <div className="um-hero__layout">
                     <div className="um-hero__copy">
-                        <h1 id="um-hero-title">{copy.headline[0]}<span>{copy.headline[1]}</span></h1>
+                        <h1 id="um-hero-title">{copy.headline[0]}{' '}<span>{copy.headline[1]}</span></h1>
                         <p className="um-hero__description">{t('home.subtitle')}</p>
                         <div className="um-hero__actions">
                             <Link className="um-hero__primary" to={createPageUrl('Search')}><Search size={18} aria-hidden="true" />{t('home.findMyUniversities')}<ArrowRight size={17} aria-hidden="true" /></Link>
@@ -257,7 +257,7 @@ export function UniMatchInterlude() {
             <div className="um-interlude__glow" aria-hidden="true" />
             <div className="um-interlude__content">
                 <p>{copy.eyebrow}</p>
-                <h2 id="um-interlude-title">{copy.first}<br /><span>{copy.second}</span></h2>
+                <h2 id="um-interlude-title">{copy.first}{' '}<br /><span>{copy.second}</span></h2>
             </div>
         </section>
     );

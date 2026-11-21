@@ -310,19 +310,19 @@ export default function Recommendations() {
 
     if (!userProfile && !isLoading && !profileQuery.isError) {
         return (
-            <div className="recommendations-page recommendations-gate min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="recommendations-page recommendations-gate min-h-screen flex items-center justify-center p-6 text-[#292823]">
                 <Card className="product-card max-w-md w-full">
                     <CardHeader>
-                        <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <AlertCircle className="w-6 h-6 text-indigo-600" />
+                        <div className="w-12 h-12 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4">
+                            <AlertCircle className="w-6 h-6 text-[#704a2d]" />
                         </div>
                         <h1 className="text-center text-2xl font-semibold">{t('recommendations.completeProfile')}</h1>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <p className="text-slate-600 text-center">
+                        <p className="text-[#47443f] text-center">
                             {t('recommendations.completeProfileDesc')}
                         </p>
-                        <Button asChild className="w-full bg-indigo-600 hover:bg-indigo-700">
+                        <Button asChild className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                             <Link to={createPageUrl('Profile')}>
                                 {t('recommendations.goToProfile')}
                                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -335,9 +335,9 @@ export default function Recommendations() {
     }
     
     return (
-        <div className="recommendations-page release-page internal-page min-h-screen text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+        <div className="recommendations-page release-page internal-page min-h-screen text-[#292823]">
             {/* Header */}
-            <div className="product-page-hero text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="product-page-hero text-[#292823]">
                 <div className="recommendations-hero-inner recommendations-container">
                     <div className="product-hero-heading flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
@@ -364,7 +364,7 @@ export default function Recommendations() {
                                             <div key={country} className="space-y-2">
                                                 <div className="flex items-center justify-between">
                                                     <Label id={`country-weight-label-${country.replace(/[^a-z0-9]+/gi, '-')}`} className="text-sm font-medium">{catalogValue(country, language)}</Label>
-                                                    <span className="text-sm font-semibold text-indigo-600">
+                                                    <span className="text-sm font-semibold text-[#704a2d]">
                                                         {countryWeights[country] ?? 100}%
                                                     </span>
                                                 </div>

@@ -119,16 +119,16 @@ export default function EssayChecker() {
   if (!isAuthenticated) {
     return (
       <main className="release-page min-h-screen px-5 py-12 sm:py-16">
-        <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
+        <Card className="mx-auto max-w-xl border-white/90 bg-[#fffdf8]/90 shadow-sm">
           <CardHeader className="p-6 sm:p-8">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e5edf0] text-[#294750]">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4e4cc] text-[#6e4b2a]">
               <LockKeyhole className="h-6 w-6" aria-hidden="true" />
             </div>
-            <CardTitle className="text-2xl">{copy.signInTitle}</CardTitle>
+            <h1 className="text-2xl font-semibold leading-none tracking-tight text-[#292823]">{copy.signInTitle}</h1>
             <CardDescription className="text-base leading-relaxed">{copy.signInDescription}</CardDescription>
           </CardHeader>
           <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
-            <Button asChild className="w-full sm:w-auto">
+            <Button asChild className="w-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
               <Link to={LOGIN_URL}>{copy.signIn}</Link>
             </Button>
           </CardContent>
@@ -144,40 +144,40 @@ export default function EssayChecker() {
     <main className="release-page internal-page essay-page min-h-screen [overflow-wrap:anywhere] px-4 py-8 sm:px-6 sm:py-12">
       <div className="mx-auto max-w-5xl space-y-7">
         <header className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#294750] text-white shadow-sm sm:h-14 sm:w-14">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#252c2f] text-white shadow-sm sm:h-14 sm:w-14">
             <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" aria-hidden="true" />
           </div>
           <div className="pt-0.5">
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{copy.title}</h1>
-            <p className="mt-2 max-w-2xl leading-relaxed text-slate-600">{copy.intro}</p>
+            <p className="mt-2 max-w-2xl leading-relaxed text-[#47443f]">{copy.intro}</p>
           </div>
         </header>
 
-        <div className="rounded-2xl border border-[#d7e0e3] bg-white/75 p-4 text-sm leading-relaxed text-slate-700 sm:p-5">
-          <p className="font-semibold text-[#294750]">{copy.privacyTitle}</p>
+        <div className="rounded-2xl border border-[#e3d7c6] bg-[#fffdf8]/80 p-4 text-sm leading-relaxed text-[#47443f] sm:p-5">
+          <p className="font-semibold text-[#5c3c1b]">{copy.privacyTitle}</p>
           <p className="mt-1.5">{copy.privacy}</p>
         </div>
 
         <Tabs value={action} onValueChange={changeAction} className="space-y-5">
-          <TabsList className="grid h-auto w-full max-w-lg grid-cols-2 rounded-xl border border-slate-200 bg-white/80 p-1">
-            <TabsTrigger value="review" disabled={pending} className="min-h-11 whitespace-normal rounded-lg px-3 py-2 text-sm">
+          <TabsList className="grid h-auto w-full max-w-lg grid-cols-2 rounded-full border border-[#e3d7c6] bg-[#fffdf8]/85 p-1">
+            <TabsTrigger value="review" disabled={pending} className="min-h-11 whitespace-normal rounded-full px-3 py-2 text-sm">
               <FileText className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" />
               {copy.reviewTab}
             </TabsTrigger>
-            <TabsTrigger value="brainstorm" disabled={pending} className="min-h-11 whitespace-normal rounded-lg px-3 py-2 text-sm">
+            <TabsTrigger value="brainstorm" disabled={pending} className="min-h-11 whitespace-normal rounded-full px-3 py-2 text-sm">
               <Sparkles className="mr-2 h-4 w-4 shrink-0" aria-hidden="true" />
               {copy.brainstormTab}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="review" className="mt-0 space-y-5">
-            <Card className="border-white/80 bg-white/90 shadow-sm">
+            <Card className="border-white/90 bg-[#fffdf8]/90 shadow-sm">
               <CardHeader className="p-5 sm:p-7">
                 <CardTitle className="text-xl">{copy.reviewTitle}</CardTitle>
                 <CardDescription>{copy.reviewDescription}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4 px-5 pb-5 sm:px-7 sm:pb-7">
-                <label htmlFor="essay-draft" className="text-sm font-medium text-slate-800">{copy.essayLabel}</label>
+                <label htmlFor="essay-draft" className="text-sm font-medium text-[#292823]">{copy.essayLabel}</label>
                 <textarea
                   id="essay-draft"
                   value={essay}
@@ -186,13 +186,13 @@ export default function EssayChecker() {
                   maxLength={12000}
                   disabled={pending}
                   aria-describedby="essay-count essay-minimum"
-                  className="min-h-[260px] w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-base leading-relaxed text-slate-800 shadow-sm placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5f8294] disabled:cursor-not-allowed disabled:bg-slate-50 sm:min-h-[360px]"
+                  className="min-h-[260px] w-full resize-y rounded-2xl border border-[#d6ccc0] bg-[#fffdf8] px-4 py-3 text-base leading-relaxed text-[#292823] shadow-sm placeholder:text-[#6e6a63] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#855a36] disabled:cursor-not-allowed disabled:bg-[#f4efe6] sm:min-h-[360px]"
                 />
-                <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-slate-500">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-[#47443f]">
                   <span>{copy.wordCount.replace('{count}', String(wordCount))}</span>
                   <span id="essay-count" aria-live="polite">{copy.charCount.replace('{count}', String(essay.length))}</span>
                 </div>
-                <p id="essay-minimum" className="text-sm text-slate-500">
+                <p id="essay-minimum" className="text-sm text-[#47443f]">
                   {essay.trim().length < 50 ? copy.minLength : copy.maxLength}
                 </p>
                 <Button
@@ -200,7 +200,7 @@ export default function EssayChecker() {
                   onClick={submit}
                   disabled={pending || essay.trim().length < 50 || essay.trim().length > 12000}
                   aria-busy={pending}
-                  className="w-full bg-[#294750] text-white hover:bg-[#203b43] sm:w-auto"
+                  className="w-full rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto"
                 >
                   {pending ? <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" /> : <FileText className="h-4 w-4" aria-hidden="true" />}
                   {pending ? copy.workingReview : copy.reviewAction}
@@ -238,16 +238,16 @@ export default function EssayChecker() {
 
 function UnavailableState({ copy, catalogHref }) {
   return (
-    <Card className="mx-auto max-w-xl border-white/80 bg-white/90 shadow-sm">
+    <Card className="mx-auto max-w-xl border-white/90 bg-[#fffdf8]/90 shadow-sm">
       <CardHeader className="p-6 sm:p-8">
-        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e5edf0] text-[#294750]">
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4e4cc] text-[#6e4b2a]">
           <FileText className="h-6 w-6" aria-hidden="true" />
         </div>
-        <CardTitle className="text-2xl">{copy.disabledTitle}</CardTitle>
+        <h1 className="text-2xl font-semibold leading-none tracking-tight text-[#292823]">{copy.disabledTitle}</h1>
         <CardDescription className="text-base leading-relaxed">{copy.disabledDescription}</CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
-        <Button asChild className="w-full sm:w-auto">
+        <Button asChild className="w-full rounded-full bg-[#252c2f] text-white hover:bg-[#354044] sm:w-auto">
           <Link to={catalogHref}>{copy.explore}</Link>
         </Button>
       </CardContent>

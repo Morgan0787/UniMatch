@@ -22,7 +22,7 @@ body[data-unimatch-theme] .unimatch-app[data-page="AdmissionsSurvey"] .language-
 .unimatch-app[data-page="AdmissionsSurvey"] .product-footer { background: #ffffff33; border-color: #ffffffa6; }
 body[data-unimatch-theme] .unimatch-app .admissions-page.survey-glass {
   --survey-ink: #292e30;
-  --survey-muted: #625e59;
+  --survey-muted: #47443f;
   --survey-line: #a78b6b30;
   width: calc(100% - 48px); max-width: none;
   margin: 0 auto 48px; padding: 0;

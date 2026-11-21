@@ -11,39 +11,39 @@ const TOUR_STEPS = [
         title: "Welcome to UniMatch! 🎓",
         description: "Let's take a quick tour to help you find your perfect university abroad. This will only take a minute!",
         icon: Sparkles,
-        color: "text-indigo-600"
+        color: "text-[#855a36]"
     },
     {
         title: "Complete Your Profile",
         description: "First, tell us about your GPA, IELTS score, budget, and preferred countries. This helps us show you the most relevant universities and calculate your admission chances.",
         icon: User,
-        color: "text-violet-600",
+        color: "text-[#704a2d]",
         action: { label: "Go to Profile", link: "Profile" }
     },
     {
         title: "Search & Filter Universities",
         description: "Use our powerful search to find universities by country, budget, language, degree level, and more. We'll show you universities where you have the best chances!",
         icon: Search,
-        color: "text-blue-600"
+        color: "text-[#292823]"
     },
     {
         title: "Get Personalized Recommendations",
         description: "Based on your profile, we'll recommend universities that match your preferences and qualifications. Check the Recommendations page for your best matches!",
         icon: Sparkles,
-        color: "text-amber-600",
+        color: "text-[#855a36]",
         action: { label: "View Recommendations", link: "Recommendations" }
     },
     {
         title: "Save & Compare Universities",
         description: "Bookmark universities you like and add them to comparison to see detailed side-by-side analysis. This helps you make the best decision!",
         icon: Bookmark,
-        color: "text-emerald-600"
+        color: "text-[#5c3c1b]"
     },
     {
         title: "Share Your Feedback",
         description: "See something we can improve? Use the floating feedback button (bottom-right corner) to send us suggestions, report bugs, or share your thoughts!",
         icon: MessageSquarePlus,
-        color: "text-rose-600"
+        color: "text-[#704a2d]"
     }
 ];
 
@@ -93,7 +93,7 @@ export default function OnboardingTour() {
 
                 <DialogHeader>
                     <div className="flex items-center justify-center mb-4">
-                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center`}>
+                        <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f4e4cc] to-[#e9dfd0] flex items-center justify-center`}>
                             <Icon className={`w-8 h-8 ${step.color}`} />
                         </div>
                     </div>
@@ -101,7 +101,7 @@ export default function OnboardingTour() {
                 </DialogHeader>
 
                 <div className="py-6">
-                    <p className="text-slate-600 text-center leading-relaxed">
+                    <p className="text-[#47443f] text-center leading-relaxed">
                         {step.description}
                     </p>
 
@@ -119,7 +119,7 @@ export default function OnboardingTour() {
 
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <div className="flex justify-between text-xs text-slate-500">
+                        <div className="flex justify-between text-xs text-[#47443f]">
                             <span>Step {currentStep + 1} of {TOUR_STEPS.length}</span>
                             <span>{Math.round(progress)}%</span>
                         </div>
@@ -130,7 +130,7 @@ export default function OnboardingTour() {
                         <Button variant="ghost" onClick={handleSkip}>
                             Skip Tour
                         </Button>
-                        <Button onClick={handleNext} className="bg-indigo-600 hover:bg-indigo-700">
+                        <Button onClick={handleNext} className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                             {currentStep < TOUR_STEPS.length - 1 ? "Next" : "Get Started"}
                             <ChevronRight className="w-4 h-4 ml-1" />
                         </Button>

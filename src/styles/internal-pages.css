@@ -1,10 +1,10 @@
 /* Quiet, warm surfaces for account tools and other authenticated pages. */
 body[data-unimatch-theme] .internal-page {
   --internal-ink: #292823;
-  --internal-muted: #65635c;
+  --internal-muted: #4a4742;
   --internal-border: #dedbd3;
-  --internal-copper: #855a36;
-  background: #f4f1eb;
+  --internal-copper: #704a2d;
+  background: transparent;
   color: var(--internal-ink);
 }
 

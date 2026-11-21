@@ -196,7 +196,7 @@ export default function Search() {
                         </div>
                         <FilterDialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen} {...(isMobile ? { handleOnly: true, autoFocus: true } : {})}>
                             <FilterTrigger asChild>
-                                <Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-indigo-600 text-white ml-1">{activeFilterCount}</Badge>}</Button>
+                                <Button variant="outline" className="gap-2 shrink-0 min-h-11"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-1">{activeFilterCount}</Badge>}</Button>
                             </FilterTrigger>
                             {isMobile ? (
                                 <Drawer.Portal>
@@ -224,8 +224,8 @@ export default function Search() {
                     <div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4">
                         <p className="text-slate-600" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-slate-800">{shownResults.length}</span> {t('search.results')}</>}</p>
                         <div className="flex flex-wrap items-center gap-3">
-                            {compareList.length > 0 && <Button disabled={isLoading} onClick={() => setShowComparison(true)} className="bg-indigo-600 hover:bg-indigo-700 gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}
-                            <div className="flex gap-2 items-center text-sm text-slate-500"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-indigo-100 text-indigo-700">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div>
+                            {compareList.length > 0 && <Button disabled={isLoading} onClick={() => setShowComparison(true)} className="bg-[#252c2f] hover:bg-[#354044] text-white rounded-full gap-2" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}
+                            <div className="flex gap-2 items-center text-sm text-[#47443f]"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b]">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div>
                         </div>
                     </div>
                 </div>

@@ -100,7 +100,7 @@ export default function Profile() {
 
     if (userLoading || profileLoading) {
         return (
-            <div className="min-h-screen p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="min-h-screen p-6 text-[#292823]">
                 <div className="max-w-4xl mx-auto space-y-6">
                     <Skeleton className="h-40 rounded-2xl" />
                     <Skeleton className="h-80 rounded-2xl" />
@@ -111,7 +111,7 @@ export default function Profile() {
 
     if (profileError && !profile) {
         return (
-            <div className="min-h-screen p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="min-h-screen p-6 text-[#292823]">
                 <div className="max-w-4xl mx-auto space-y-4">
                     <p role="alert">{admissionText[favorites.error] || admissionText.saveError}</p>
                     <Button variant="outline" onClick={() => void refetchProfile()}>{admissionText.saveRetry}</Button>
@@ -122,16 +122,16 @@ export default function Profile() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="min-h-screen flex items-center justify-center p-6 text-[#292823]">
                 <Card className="product-card max-w-md w-full text-center p-8">
-                    <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <User className="w-8 h-8 text-indigo-600" />
+                    <div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <User className="w-8 h-8 text-[#704a2d]" />
                     </div>
-                    <h1 className="text-2xl font-semibold text-slate-800 mb-2">{t('profile.signInRequired')}</h1>
-                    <p className="text-slate-600 mb-6">
+                    <h1 className="text-2xl font-semibold text-[#292823] mb-2">{t('profile.signInRequired')}</h1>
+                    <p className="text-[#47443f] mb-6">
                         {t('profile.createAccount')}
                     </p>
-                    <Button onClick={() => apiClient.auth.redirectToLogin()} className="bg-indigo-600 hover:bg-indigo-700">
+                    <Button onClick={() => apiClient.auth.redirectToLogin()} className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                         {t('profile.signUp')}
                     </Button>
                 </Card>
@@ -141,7 +141,7 @@ export default function Profile() {
 
     if (!profile || showProfileBuilder) {
         return (
-            <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 text-[#292823]">
                 <ProfileBuilder 
                     profile={profile}
                     onSave={(data) => saveProfileMutation.mutate(data)}
@@ -152,9 +152,9 @@ export default function Profile() {
     }
 
     return (
-        <div className="profile-page release-page internal-page min-h-screen text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+        <div className="profile-page release-page internal-page min-h-screen text-[#292823]">
             {/* Header */}
-            <div className="product-page-hero text-[#292823]" style={{ backgroundColor: '#f8f6f0' }}>
+            <div className="product-page-hero text-[#292823]">
                 <div className="profile-hero-inner max-w-4xl mx-auto px-4 sm:px-6 py-12">
                     <div className="product-hero-heading flex items-start justify-between">
                         <div className="flex items-center gap-4">
@@ -206,21 +206,21 @@ export default function Profile() {
             {/* Content */}
             <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
                 {/* Essay Tools Card */}
-                <Card className="mb-6 bg-gradient-to-br from-violet-50 to-indigo-50 border-violet-100">
+                <Card className="mb-6 bg-gradient-to-br from-[#f9efe1] to-[#fffdf8] border-[#dfcaa9]">
                     <CardContent className="p-6">
                         <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div className="w-12 h-12 bg-[#252c2f] rounded-xl flex items-center justify-center flex-shrink-0">
                                 <FileText className="w-6 h-6 text-white" />
                             </div>
                             <div className="flex-1">
-                                <h3 className="font-semibold text-slate-800 mb-1 flex items-center gap-2">
+                                <h3 className="font-semibold text-[#292823] mb-1 flex items-center gap-2">
                                     {t('profile.essayCoach')}
-                                    <Badge variant="secondary" className="text-xs">{t('profile.usesAiCredits')}</Badge>
+                                    <Badge variant="secondary" className="text-xs bg-[#f2e4cf] text-[#5c3c1b]">{t('profile.usesAiCredits')}</Badge>
                                 </h3>
-                                <p className="text-sm text-slate-600 mb-3">
+                                <p className="text-sm text-[#47443f] mb-3">
                                     {t('profile.essayDesc')}
                                 </p>
-                                <Button asChild size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                                <Button asChild size="sm" className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                                     <Link to={createPageUrl("EssayChecker")}>
                                         <Sparkles className="w-4 h-4 mr-2" />
                                         {t('profile.openEssay')}
@@ -232,12 +232,12 @@ export default function Profile() {
                 </Card>
 
                 <Tabs defaultValue="saved" className="space-y-6">
-                    <TabsList className="bg-white border">
-                        <TabsTrigger value="saved" className="gap-2">
+                    <TabsList className="bg-[#fffdf8]/90 border border-[#e3d7c6] rounded-full p-1">
+                        <TabsTrigger value="saved" className="gap-2 rounded-full">
                             <Bookmark className="w-4 h-4" />
                             {t('profile.savedUniversities')}
                         </TabsTrigger>
-                        <TabsTrigger value="profile" className="gap-2">
+                        <TabsTrigger value="profile" className="gap-2 rounded-full">
                             <User className="w-4 h-4" />
                             {t('profile.myProfile')}
                         </TabsTrigger>
@@ -245,19 +245,19 @@ export default function Profile() {
 
                     <TabsContent value="saved">
                         <CatalogStatus query={catalogQuery} c={admissionText} />
-                        {favorites.loading && <p role="status" className="text-sm text-slate-500">{admissionText.saveLoading}</p>}
+                        {favorites.loading && <p role="status" className="text-sm text-[#47443f]">{admissionText.saveLoading}</p>}
                         {favorites.error && <p role="alert" className="text-sm text-red-600">{admissionText[favorites.error] || admissionText.saveError} <button type="button" className="underline" onClick={() => void favorites.retry()}>{admissionText.saveRetry}</button></p>}
                         {favorites.notice && <p role="status" className="text-sm text-emerald-700">{admissionText[favorites.notice]}</p>}
                         {favorites.loading && !favorites.pendingId ? <div aria-hidden="true" className="min-h-12" /> : savedUniversities.length === 0 && admissionFavorites.length === 0 && unresolvedSaved.length === 0 ? (
                             <Card className="text-center p-12">
-                                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Bookmark className="w-8 h-8 text-slate-400" />
+                                <div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Bookmark className="w-8 h-8 text-[#704a2d]" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-800 mb-2">{t('profile.noSaved')}</h3>
-                                <p className="text-slate-500 mb-6">
+                                <h3 className="text-lg font-semibold text-[#292823] mb-2">{t('profile.noSaved')}</h3>
+                                <p className="text-[#47443f] mb-6">
                                     {t('profile.startExploring')}
                                 </p>
-                                <Button asChild className="bg-indigo-600 hover:bg-indigo-700">
+                                <Button asChild className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white">
                                     <Link to={catalogPath(language)}>
                                         <Search className="w-4 h-4 mr-2" />
                                         {t('profile.browse')}
@@ -273,13 +273,13 @@ export default function Profile() {
                                                 <InstitutionMedia option={option} c={admissionText} />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs uppercase tracking-wide text-indigo-700">{admissionText.savedInstitution}</p>
-                                                <h3 className="font-semibold text-slate-800">{option.university}</h3>
-                                                <p className="text-sm text-slate-500 mt-1">{option.country} · {admissionText.regionNames?.[option.region] || option.region}</p>
+                                                <p className="text-xs uppercase tracking-wide text-[#704a2d]">{admissionText.savedInstitution}</p>
+                                                <h3 className="font-semibold text-[#292823]">{option.university}</h3>
+                                                <p className="text-sm text-[#47443f] mt-1">{option.country} · {admissionText.regionNames?.[option.region] || option.region}</p>
                                                 <div className="mt-4"><PublishedProgrammeFacts admissionCatalog={{ status: 'valid', programmes: institution.programmes, sources: institution.sources }} language={language} compact expandable /></div>
                                                 <InstitutionLinks option={option} c={admissionText} />
                                             </div>
-                                            <Button variant="ghost" size="sm" className="text-slate-400 hover:text-red-500" disabled={favorites.loading || !favorites.canSave || removeSavedMutation.isPending} aria-busy={favorites.pendingId === institutionId} onClick={() => void favorites.requestSave(option, false)} aria-label={`${favorites.pendingId ===institutionId ? admissionText.removing : admissionText.removeSaved}: ${option.university}`}>
+                                            <Button variant="ghost" size="sm" className="text-[#625e59] hover:text-red-600" disabled={favorites.loading || !favorites.canSave || removeSavedMutation.isPending} aria-busy={favorites.pendingId === institutionId} onClick={() => void favorites.requestSave(option, false)} aria-label={`${favorites.pendingId ===institutionId ? admissionText.removing : admissionText.removeSaved}: ${option.university}`}>
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
                                         </div>
@@ -289,8 +289,8 @@ export default function Profile() {
                                 {savedUniversities.map(uni => (
                                     <Card key={uni.id} className="overflow-hidden hover:shadow-md transition-shadow">
                                         <div className="saved-university-row flex items-center gap-6 p-6">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                                <GraduationCap className="w-8 h-8 text-indigo-600" />
+                                            <div className="w-16 h-16 bg-gradient-to-br from-[#f4e4cc] to-[#e9dfd0] rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <GraduationCap className="w-8 h-8 text-[#704a2d]" />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <h3 className="font-semibold text-slate-800 truncate">{uni.name}</h3>
@@ -347,68 +347,68 @@ export default function Profile() {
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-indigo-600" />
+                                    <Sparkles className="w-5 h-5 text-[#704a2d]" />
                                     {t('profile.profileDetails')}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.gpa')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? t('profile.notSet')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.gpa')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">{profile.gpa?.toLocaleString(language, { maximumFractionDigits: 2 }) ?? t('profile.notSet')}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.englishProficiency')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">
+                                        <p className="text-sm text-[#47443f]">{t('profile.englishProficiency')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">
                                             {profile.english_proficiency === 0 ? t('profile.noCertificate') : profile.english_proficiency?.toFixed(1) || t('profile.notSet')}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.koreanProficiency')} 🇰🇷</p>
-                                        <p className="font-semibold text-slate-800 text-lg">
+                                        <p className="text-sm text-[#47443f]">{t('profile.koreanProficiency')} 🇰🇷</p>
+                                        <p className="font-semibold text-[#292823] text-lg">
                                             {profile.topikLevel || t('profile.notSet')}
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.maximumBudget')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.budget_max == null ? t('profile.notSet') : `€${profile.budget_max.toLocaleString(language)}/${t('common.year')}`}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.maximumBudget')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">{profile.budget_max == null ? t('profile.notSet') : `€${profile.budget_max.toLocaleString(language)}/${t('common.year')}`}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.homeCountry')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.home_country ? catalogValue(profile.home_country, language) : t('profile.notSet')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.homeCountry')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">{profile.home_country ? catalogValue(profile.home_country, language) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.gradeLevel')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.grade_level ? gradeLevelLabel(profile.grade_level) : t('profile.notSet')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.gradeLevel')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">{profile.grade_level ? gradeLevelLabel(profile.grade_level) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.targetDegree')}</p>
-                                        <p className="font-semibold text-slate-800 text-lg">{profile.target_degree ? catalogValue(profile.target_degree, language) : t('profile.notSet')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.targetDegree')}</p>
+                                        <p className="font-semibold text-[#292823] text-lg">{profile.target_degree ? catalogValue(profile.target_degree, language) : t('profile.notSet')}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-slate-500">{t('profile.studyLanguages')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.studyLanguages')}</p>
                                         <div className="flex flex-wrap gap-1 mt-1">
                                             {profile.preferred_languages?.length > 0 ? (
                                                 profile.preferred_languages.map(lang => (
                                                     <Badge key={lang} variant="secondary">{catalogValue(lang, language)}</Badge>
                                                 ))
                                             ) : (
-                                                <span className="text-slate-400">{t('profile.notSet')}</span>
+                                                <span className="text-[#625e59]">{t('profile.notSet')}</span>
                                             )}
                                         </div>
                                     </div>
                                     {profile.preferred_countries?.length > 0 && <div>
-                                        <p className="text-sm text-slate-500">{t('profile.preferredCountries')}</p>
+                                        <p className="text-sm text-[#47443f]">{t('profile.preferredCountries')}</p>
                                         <div className="flex flex-wrap gap-1 mt-1">{profile.preferred_countries.map(country => <Badge key={country} variant="secondary">{catalogValue(country, language)}</Badge>)}</div>
                                     </div>}
                                 </div>
 
                                 {profile.interests?.length > 0 && (
                                     <div>
-                                        <p className="text-sm text-slate-500 mb-2">{t('profile.interests')}</p>
+                                        <p className="text-sm text-[#47443f] mb-2">{t('profile.interests')}</p>
                                         <div className="flex flex-wrap gap-2">
                                             {profile.interests.map(interest => (
-                                                <Badge key={interest} className="bg-indigo-100 text-indigo-700 border-0">
+                                                <Badge key={interest} className="bg-[#f4e4cc] text-[#5c3c1b] border-0">
                                                     {catalogValue(interest, language)}
                                                 </Badge>
                                             ))}

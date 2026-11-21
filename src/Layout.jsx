@@ -97,10 +97,10 @@ function LayoutContent({ children, currentPageName }) {
                 <div className="product-nav-inner max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex items-center justify-between h-16">
                         <Link to="/" className="product-nav-brand flex items-center gap-2">
-                            <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
+                            <div className="w-9 h-9 bg-[#292823] rounded-xl shadow-sm flex items-center justify-center">
                                 <GraduationCap className="w-5 h-5 text-white" />
                             </div>
-                            <span className="product-wordmark font-bold text-xl text-slate-800">UniMatch</span>
+                            <span className="product-wordmark font-bold text-xl text-[#292823]">UniMatch</span>
                         </Link>
 
                         <div className="product-nav-links hidden lg:flex items-center gap-1">
@@ -111,8 +111,8 @@ function LayoutContent({ children, currentPageName }) {
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                                         currentPageName === item.path
-                                            ? 'bg-indigo-50 text-indigo-700'
-                                            : 'text-slate-600 hover:text-slate-800 hover:bg-slate-100'
+                                            ? 'bg-[#f4e4cc]/85 text-[#5c3c1b] rounded-full'
+                                            : 'text-[#47443f] hover:text-[#292823] hover:bg-white/60 rounded-full'
                                     }`}
                                 >
                                     {item.name}
@@ -126,11 +126,11 @@ function LayoutContent({ children, currentPageName }) {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="gap-2">
-                                            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                            <div className="w-8 h-8 bg-gradient-to-br from-[#292823] to-[#6e4b2a] rounded-full flex items-center justify-center text-white text-sm font-medium">
                                                 {user.full_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                                             </div>
                                             <span className="max-w-[100px] truncate">{user.full_name || user.email}</span>
-                                            <ChevronDown className="w-4 h-4 text-slate-400" />
+                                            <ChevronDown className="w-4 h-4 text-[#625e59]" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-48">
@@ -177,7 +177,7 @@ function LayoutContent({ children, currentPageName }) {
                                     >
                                         {t('nav.signIn')}
                                     </Button>
-                                    <Button asChild className="product-nav-guest-cta bg-indigo-600 hover:bg-indigo-700"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
+                                    <Button asChild className="product-nav-guest-cta rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"><Link to={createPageUrl("AdmissionsSurvey")}>{guestCta}</Link></Button>
                                 </>
                             )}
                         </div>
@@ -210,8 +210,8 @@ function LayoutContent({ children, currentPageName }) {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`product-mobile-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
                                         currentPageName === item.path
-                                            ? 'bg-indigo-50 text-indigo-700'
-                                            : 'text-slate-600 hover:bg-slate-100'
+                                            ? 'bg-[#f4e4cc]/85 text-[#5c3c1b]'
+                                            : 'text-[#47443f] hover:bg-white/70'
                                     }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -239,7 +239,7 @@ function LayoutContent({ children, currentPageName }) {
                                     </div>
                                 ) : (
                                     <div className="product-mobile-guest-actions"><Button
-                                        className="w-full bg-indigo-600 hover:bg-indigo-700"
+                                        className="w-full rounded-full bg-[#252c2f] hover:bg-[#354044] text-white"
                                         onClick={() => navigateToLogin()}
                                     >
                                         {t('nav.signIn')}

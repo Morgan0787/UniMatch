@@ -1,24 +1,22 @@
-/* Shared release polish: carry Search's pearl palette through the product's working pages. */
+/* Shared release polish: unify working pages with the Warm Pearl Glass palette. */
 body[data-unimatch-theme] .release-page {
-  --release-ink: #182a32;
-  --release-muted: #5f6d75;
-  --release-line: rgba(88, 108, 119, .17);
-  --release-paper: rgba(255, 255, 255, .88);
+  --release-ink: #292823;
+  --release-muted: #4a4742;
+  --release-line: rgba(133, 90, 54, .18);
+  --release-paper: rgba(255, 253, 248, .88);
   color: var(--release-ink);
-  background:
-    radial-gradient(ellipse at 84% 4%, rgba(248, 225, 214, .42), transparent 30rem),
-    linear-gradient(135deg, #f4f6f8 0%, #edf0f4 58%, #f4f4f5 100%) !important;
+  background: transparent !important;
 }
 
 body[data-unimatch-theme] .release-page :is(h1, h2, h3) { color: var(--release-ink); }
 body[data-unimatch-theme] .release-page :is(button, a, input, select, textarea, summary, [role="tab"]):focus-visible {
-  outline: 3px solid #5f8294;
+  outline: 3px solid #855a36;
   outline-offset: 3px;
 }
 
 /* Public university details */
 body[data-unimatch-theme] .university-page.release-page .max-w-5xl > .university-back {
-  color: #314951;
+  color: #4f463d;
   border-radius: 999px;
   padding: 0 12px;
   transition: background-color .16s ease;
@@ -31,21 +29,21 @@ body[data-unimatch-theme] .release-login-shell { width: min(100%, 29rem); }
 body[data-unimatch-theme] .release-login-shell > .text-center { padding: 4px 0 8px; }
 body[data-unimatch-theme] .release-login-shell > .text-center > div,
 body[data-unimatch-theme] .release-login-card :is(.bg-indigo-600, .bg-indigo-100) {
-  background: #dce7eb;
-  color: #284650;
+  background: #f2e4cf;
+  color: #5e3c1b;
 }
-body[data-unimatch-theme] .release-login-shell > .text-center > div svg { color: #284650; }
+body[data-unimatch-theme] .release-login-shell > .text-center > div svg { color: #5e3c1b; }
 body[data-unimatch-theme] .release-login-card {
   border: 1px solid rgba(255,255,255,.94);
   border-radius: 22px;
-  background: rgba(255,255,255,.86);
-  box-shadow: 0 14px 42px rgba(35, 53, 63, .09), inset 0 0 0 1px rgba(197,208,216,.2);
+  background: rgba(255,253,248,.86);
+  box-shadow: 0 14px 42px rgba(93, 73, 48, .09), inset 0 0 0 1px rgba(222,211,196,.35);
 }
-body[data-unimatch-theme] .release-login-card [role="tablist"] { border: 1px solid var(--release-line); background: #f1f4f6; }
-body[data-unimatch-theme] .release-login-card input { min-height: 44px; border-color: #cbd5da; background: #fff; }
+body[data-unimatch-theme] .release-login-card [role="tablist"] { border: 1px solid var(--release-line); background: #f4efe6; }
+body[data-unimatch-theme] .release-login-card input { min-height: 44px; border-color: #d6ccc0; background: #fffdf8; }
 body[data-unimatch-theme] .release-login-card button:is([type="submit"], [type="button"]) { min-height: 42px; }
-body[data-unimatch-theme] .release-login-card button.bg-indigo-600 { background: #263f49; color: white; }
-body[data-unimatch-theme] .release-login-card button.bg-indigo-600:hover { background: #34545f; }
+body[data-unimatch-theme] .release-login-card button.bg-indigo-600 { background: #252c2f; color: white; }
+body[data-unimatch-theme] .release-login-card button.bg-indigo-600:hover { background: #354044; }
 
 /* Equal grid layers keep the centered card and its tabs still in every method. */
 .login-method-panels { display: grid; }
@@ -104,35 +102,33 @@ body[data-unimatch-theme] .release-login-card .login-method-tabs > [role="tab"] 
   }
 }
 
-/* Authenticated pages share a low contrast hero and restrained paper surfaces. */
+/* Authenticated pages share a warm glass surface over the application ambient light. */
 body[data-unimatch-theme] .release-page.internal-page .product-page-hero {
   border-bottom: 1px solid var(--release-line);
-  background:
-    radial-gradient(ellipse at 80% 0%, rgba(249, 227, 217, .58), transparent 28rem),
-    linear-gradient(120deg, #eaf0f3, #f5f6f7 68%, #f1f2f3) !important;
+  background: transparent !important;
 }
 body[data-unimatch-theme] .release-page.internal-page .product-page-hero :is(.text-white, .text-white\/90, .text-indigo-100) { color: var(--release-muted); }
-body[data-unimatch-theme] .release-page.internal-page .product-page-hero .bg-white\/20 { background: rgba(255,255,255,.72); }
+body[data-unimatch-theme] .release-page.internal-page .product-page-hero .bg-white\/20 { background: rgba(255,253,248,.76); }
 body[data-unimatch-theme] .release-page.internal-page .product-page-hero .bg-white\/20.border-white\/30 { border-color: var(--release-line); }
 body[data-unimatch-theme] .release-page.internal-page .product-page-hero :is(button, a).text-white { color: var(--release-ink); }
 
 body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div {
   min-width: 0;
-  border-color: rgba(255,255,255,.95);
-  border-radius: 15px;
-  background: rgba(255,255,255,.8);
-  box-shadow: 0 4px 16px rgba(37,54,65,.045);
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 18px;
+  background: rgba(255,253,248,.78);
+  box-shadow: inset 0 1px #fff, 0 4px 16px rgba(93, 73, 48, .06);
 }
-body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div > :first-child { color: #24434e; }
+body[data-unimatch-theme] .profile-page.release-page .profile-hero-inner .grid > div > :first-child { color: #292823; }
 body[data-unimatch-theme] .profile-page.release-page .max-w-4xl > .mb-6.bg-gradient-to-br {
   border-color: var(--release-line);
-  border-radius: 17px;
-  background: rgba(255,255,255,.74);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255,253,248,.86), rgba(246,232,212,.58));
 }
 body[data-unimatch-theme] .release-page.internal-page :is(.product-card, [data-slot="card"], .recommendation-card) {
-  border-color: var(--release-line);
+  border-color: rgba(255,255,255,.92);
   background: var(--release-paper);
-  box-shadow: 0 5px 20px rgba(37,54,65,.045);
+  box-shadow: inset 0 1px #fff, 0 8px 24px rgba(93, 73, 48, .07);
 }
 
 body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner h1 { max-width: 22ch; }
@@ -143,11 +139,11 @@ body[data-unimatch-theme] .recommendations-page.release-page .recommendation-car
   transition: border-color .16s ease, box-shadow .16s ease;
 }
 body[data-unimatch-theme] .recommendations-page.release-page .recommendation-card:hover {
-  border-color: rgba(115, 143, 155, .48);
-  box-shadow: 0 10px 28px rgba(37,54,65,.09);
+  border-color: rgba(198, 152, 96, .55);
+  box-shadow: 0 12px 30px rgba(93, 73, 48, .1);
 }
 body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner .bg-indigo-600,
-body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner button.bg-indigo-600 { background: #294750; color: white; }
+body[data-unimatch-theme] .recommendations-page.release-page .recommendations-hero-inner button.bg-indigo-600 { background: #252c2f; color: white; }
 
 /* Guest survey keeps its existing step flow while gaining a unified page frame. */
 body[data-unimatch-theme] .admissions-page.release-page {
@@ -159,23 +155,23 @@ body[data-unimatch-theme] .admissions-page.release-page {
   background:
     radial-gradient(ellipse at 94% 0%, rgba(248,225,214,.36), transparent 25rem),
     rgba(255,255,255,.56);
-  box-shadow: 0 12px 36px rgba(37,54,65,.05), inset 0 0 0 1px rgba(196,207,215,.16);
+  box-shadow: 0 12px 36px rgba(93, 73, 48, .06), inset 0 0 0 1px rgba(222, 211, 196, .22);
 }
 body[data-unimatch-theme] .admissions-page.release-page :is(button, input, select, textarea) { font: inherit; }
 body[data-unimatch-theme] .admissions-page.release-page :is(button, input, select, textarea):focus-visible { outline-offset: 2px; }
 
-/* Comparison is portaled, so it carries its own explicit release class. */
+/* Comparison is portaled, so it carries its own Warm Pearl class. */
 body[data-unimatch-theme] .release-comparison {
-  --release-line: rgba(88, 108, 119, .17);
+  --release-line: rgba(133, 90, 54, .18);
   border: 1px solid rgba(255,255,255,.94);
-  background: #f7f8f9;
-  box-shadow: 0 24px 70px rgba(23,39,48,.2);
+  background: #faf7ef;
+  box-shadow: 0 24px 70px rgba(41, 40, 35, .2);
 }
-body[data-unimatch-theme] .release-comparison .comparison-scroll { border-color: var(--release-line); background: white; }
-body[data-unimatch-theme] .release-comparison .comparison-table thead th { background: #f2f5f6; }
+body[data-unimatch-theme] .release-comparison .comparison-scroll { border-color: var(--release-line); background: #fffdf8; }
+body[data-unimatch-theme] .release-comparison .comparison-table thead th { background: #f4efe6; }
 body[data-unimatch-theme] .release-comparison .comparison-table :is(td, th) { border-color: var(--release-line); }
-body[data-unimatch-theme] .release-comparison .comparison-label { background: #f7f8f9; }
-body[data-unimatch-theme] .release-comparison .comparison-table tbody > tr > th[scope="rowgroup"] { background: #eaf0f2; color: #354e58; }
+body[data-unimatch-theme] .release-comparison .comparison-label { background: #faf7ef; }
+body[data-unimatch-theme] .release-comparison .comparison-table tbody > tr > th[scope="rowgroup"] { background: #efe6d7; color: #5c3c1b; }
 
 @media (max-width: 640px) {
   body[data-unimatch-theme] .release-page.internal-page .recommendations-hero-inner,

@@ -1,7 +1,7 @@
 /* A quiet form beside an education scene; the application's ambient light shows through. */
 body[data-unimatch-theme] .login-page.auth-page {
   --auth-ink: #2c3232;
-  --auth-muted: #656560;
+  --auth-muted: #4a4742;
   color: var(--auth-ink);
   min-height: calc(100svh - 80px);
   padding: clamp(20px, 3vh, 44px) clamp(24px, 4vw, 96px) 28px;

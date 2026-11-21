@@ -1,5 +1,8 @@
 import { SITE_URL } from '../src/lib/seo.js';
 import { homeHero } from '../src/lib/discoveryContent.js';
+import { normalizeIntakeText } from '../src/lib/admissions/factPresentation.js';
+import { namedPublicSources } from '../src/lib/admissions/sourcePresentation.js';
+import { canonicalCountry } from '../src/lib/universityGeography.js';
 import { countries, guides } from './seo-editorial.mjs';
 
 const home = { href: '/', label: 'UniMatch' };
@@ -14,7 +17,7 @@ const countryPath = key => `/countries/${key}`;
 const location = institution => [...new Set([institution.city, institution.country].filter(Boolean))].join(', ');
 const profileLabel = institution => `${institution.name} — ${location(institution)}`;
 const institutionLink = institution => ({ href: universityPath(institution), label: institution.name, detail: location(institution) });
-const matchesCountry = (name, country) => name?.trim().toLowerCase() === country.toLowerCase();
+const matchesCountry = (name, country) => canonicalCountry(name)?.toLowerCase() === canonicalCountry(country)?.toLowerCase();
 const ABSOLUTE = /^https:\/\//;
 
 export function buildAppFallback(path, catalogLinks) {
@@ -56,7 +59,8 @@ function page(path, heading, intro, crumbs, sections, { actions = [catalog], ...
 }
 
 function displayIntake({ text, year }) {
-  return text.includes(String(year)) ? text : `${text} ${year}`;
+  const normalized = normalizeIntakeText(text);
+  return normalized.includes(String(year)) ? normalized : `${normalized} ${year}`;
 }
 
 function profile(institution, countryLink, needsDisambiguation) {
@@ -69,36 +73,53 @@ function profile(institution, countryLink, needsDisambiguation) {
       ? `The programme is taught in ${programme.teachingLanguage}${!programme.intake && programme.teachingLanguageYear ? ` for the ${programme.teachingLanguageYear} intake` : ''}.`
       : null,
     programme.intake ? `Its published intake is ${displayIntake(programme.intake)}.` : null,
+    programme.tuition
+      ? `Published tuition: ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}.`
+      : null,
     'Review the official programme sources before applying.',
   ].filter(Boolean).join(' ');
-  const programmes = institution.programmes.map(programme => {
+  const programmes = institution.programmes.map(item => {
     return [
-      programme.name, programme.degree, programme.campus, programme.country,
-      programme.teachingLanguage ? `Teaching language${programme.intake ? '' : ` (${programme.teachingLanguageYear})`}: ${programme.teachingLanguage}` : null,
-      programme.intake ? `Intake: ${displayIntake(programme.intake)}` : null,
+      `${item.name} (${item.degree})`, item.campus, item.country,
+      item.teachingLanguage ? `Teaching language${item.intake ? '' : ` (${item.teachingLanguageYear})`}: ${item.teachingLanguage}` : null,
+      item.intake ? `Intake: ${displayIntake(item.intake)}` : null,
+      item.tuition ? `Tuition: ${item.tuition.value}${item.tuition.notice ? ` — ${item.tuition.notice}` : ''}` : 'Tuition: Not published / confirm on official site',
+      item.deadline ? `Deadline: ${item.deadline.value}${item.deadline.notice ? ` — ${item.deadline.notice}` : ''}` : null,
+      item.languageRequirement ? `Language: ${item.languageRequirement.value}${item.languageRequirement.notice ? ` — ${item.languageRequirement.notice}` : ''}` : null,
+      item.academicRequirement ? `Academic requirements: ${item.academicRequirement.value}${item.academicRequirement.notice ? ` — ${item.academicRequirement.notice}` : ''}` : null,
     ].filter(Boolean).join(' · ');
   });
   const sourcesByUrl = new Map();
-  for (const programme of institution.programmes) {
-    for (const source of programme.sources) {
+  for (const item of institution.programmes) {
+    for (const source of item.sources) {
       const entry = sourcesByUrl.get(source.url) || { ...source, associations: new Set() };
-      const facts = [...new Set((programme.evidenceSources || [])
+      const facts = [...new Set((item.evidenceSources || [])
         .filter(evidence => evidence.url === source.url).map(evidence => evidence.fact))];
-      entry.associations.add(`${programme.name}${facts.length ? ` (${facts.join(', ')})` : ''}`);
+      entry.associations.add(`${item.name}${facts.length ? ` (${facts.join(', ')})` : ''}`);
       sourcesByUrl.set(source.url, entry);
     }
   }
-  const sources = [...sourcesByUrl.values()].map(source => ({
+  const rawSources = [...sourcesByUrl.values()].map(source => ({
     ...source,
     associations: [...source.associations],
   }));
+  const cleanSources = namedPublicSources(rawSources, 'en');
   const name = institution.name;
+  const overviewItems = [
+    where ? `Location: ${where}` : null,
+    institution.website ? `Official website: ${institution.website}` : null,
+    `Catalogued programmes: ${institution.programmes.length}`,
+    programme.tuition ? `Lead programme tuition (${programme.name}): ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}` : null,
+    programme.deadline ? `Lead programme deadline (${programme.name}): ${programme.deadline.value}` : null,
+    programme.languageRequirement ? `Lead language condition (${programme.name}): ${programme.languageRequirement.value}` : null,
+    programme.academicRequirement ? `Lead academic condition (${programme.name}): ${programme.academicRequirement.value}` : null,
+  ].filter(Boolean);
   return page(path, name, intro, [home, universityIndex], [
     { heading: 'Programmes in the UniMatch catalog', items: programmes },
-    { heading: 'Official sources', links: sources.map(source => ({
+    { heading: 'Institution overview & admissions notes', items: overviewItems },
+    { heading: 'Official sources', links: cleanSources.map(source => ({
       href: source.url,
-      label: sources.some(other => other !== source && other.title === source.title)
-        ? `${source.title} — ${new URL(source.url).pathname.split('/').filter(Boolean).at(-1) || new URL(source.url).hostname}` : source.title,
+      label: source.title,
       detail: `${source.associations.join(' · ')} · Checked ${source.checkedAt}`,
     })) },
   ], {
@@ -110,12 +131,11 @@ function profile(institution, countryLink, needsDisambiguation) {
       ...(countryLink ? [countryLink] : []),
       catalog,
       survey,
-      { href: `/University?id=${encodeURIComponent(institution.id)}`, label: 'Open interactive university details' },
     ],
     schema: [{
       '@type': 'CollegeOrUniversity', '@id': `${SITE_URL}${path}#university`, name,
       url: institution.website || SITE_URL + path,
-      address: { '@type': 'PostalAddress', addressCountry: institution.country,
+      address: { '@type': 'PostalAddress', addressCountry: canonicalCountry(institution.country),
         ...(institution.city ? { addressLocality: institution.city } : {}) },
     }],
   });
@@ -190,6 +210,8 @@ export function buildDiscoveryPages(institutions, editorial = guides) {
       ...(alternates ? { alternates } : {}),
       schema: [{
         '@type': 'Article', headline: heading, description: intro, inLanguage: language,
+        ...(guide.datePublished ? { datePublished: guide.datePublished } : {}),
+        ...(guide.dateModified ? { dateModified: guide.dateModified } : {}),
         author: { '@id': `${SITE_URL}/#organization` },
         publisher: { '@id': `${SITE_URL}/#organization` },
         mainEntityOfPage: SITE_URL + path,

@@ -1,7 +1,7 @@
 /* Pearl glass and warm reflected light, shared with the approved catalogue. */
 body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] {
   --recommendation-ink: #2d302f;
-  --recommendation-muted: #69645f;
+  --recommendation-muted: #4a4742;
   --recommendation-line: #8f765c24;
 }
 body[data-unimatch-theme] .unimatch-app .recommendations-page { color: var(--recommendation-ink); padding-bottom: 100px; }

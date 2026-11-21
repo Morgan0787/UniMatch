@@ -1,5 +1,6 @@
 import { institutionIdFromFavorite } from './favoriteKeys.js';
 import { publishedAcademicReference } from './academicReference.js';
+import { canonicalCountry } from '../universityGeography.js';
 
 const REGIONS = new Set(['Europe', 'USA', 'South Korea', 'UK', 'Canada']);
 const FIELDS = new Set(['business', 'it', 'computer_engineering', 'software_engineering', 'computer_science']);
@@ -386,8 +387,11 @@ export function adaptPublicCatalog(rows) {
   for (const item of parsed) {
     if (item.quarantined) continue;
     const { row, cat, sources, programmes } = item;
-    const institution = { id: row.id, institutionId: cat.institutionId, targetIntakeYear: cat.targetIntakeYear, name: row.name, country: row.country,
-      city: row.city, region: row.region, website: row.website, legacyFavoriteKeys: [...cat.legacyFavoriteKeys],
+    const cleanWebsite = typeof row.website === 'string'
+      ? row.website.trim().replace(/^(https?:\/\/)+/i, 'https://')
+      : row.website;
+    const institution = { id: row.id, institutionId: cat.institutionId, targetIntakeYear: cat.targetIntakeYear, name: row.name, country: canonicalCountry(row.country),
+      city: row.city, region: row.region, website: cleanWebsite, legacyFavoriteKeys: [...cat.legacyFavoriteKeys],
       media: publicMedia(cat.media), sources: structuredClone(sources), programmes };
     institutions.push(institution);
     for (const programme of programmes) {

@@ -89,12 +89,31 @@ function renderRule(rule, language, nested = false) {
   return `${c.unknown}${scoped ? ` (${scoped})` : ''}`;
 }
 
+export function normalizeIntakeText(value) {
+  if (typeof value !== 'string') return '';
+  return value
+    .replace(/([A-Za-z])(\d+(?:st|nd|rd|th)?(?:September|October|November|December|January|February|March|April|May|June|July|August))/g, '$1 $2')
+    .replace(/(\d)(September|October|November|December|January|February|March|April|May|June|July|August|Spring|Autumn|Fall|Winter|Summer)/g, '$1 $2')
+    .replace(/([A-Za-z])(20\d{2}\b)/g, '$1 $2')
+    .replace(/;(?=\S)/g, '; ')
+    .replace(/,(?=[A-Za-z])/g, ', ')
+    .replace(/\b(eachband|minimum|overall|confirm|IELTS|TOEFL|PTE|DET|EUR|USD|GBP|PLN|KRW|ECTS|Cambridge|Trinity|ISE|Paper|computer|Grade|band|at|by|gives|listed|from|and|for)(\d)/g, '$1 $2')
+    .replace(/\b(minimum)(B2|B1|C1|C2|A2)\b/g, '$1 $2')
+    .replace(/([a-z])([A-Z][a-z]+\d+)\b/g, '$1 $2')
+    .replace(/(\d)(years?|months?|weeks?|days?|ECTS)\b/gi, '$1 $2')
+    .replace(/\beachband\b/gi, 'each band')
+    .replace(/\bTrinityISEII\b/g, 'Trinity ISE II')
+    .replace(/\.{2}(?=\s+[A-Z])/g, '.')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function renderValue(value, kind, language) {
   const c = copy(language);
   if (value === null || value === undefined) return c.unknown;
   if (kind === 'programme') return typeof value === 'string' ? value : c.unknown;
   if (kind === 'location') return typeof value.country === 'string' ? [value.campus, catalogValue(value.country, language)].filter(Boolean).join(' · ') : c.unknown;
-  if (kind === 'intake') return typeof value.text === 'string' ? value.text : c.unknown;
+  if (kind === 'intake') return typeof value.text === 'string' ? normalizeIntakeText(value.text) : c.unknown;
   if (kind === 'rule') return renderRule(value, language);
   if (kind === 'degree') {
     if (typeof value === 'string') return catalogValue(value, language);
@@ -109,7 +128,8 @@ function renderValue(value, kind, language) {
     const periodNames = { year: c.year, semester: c.semester, credit_hour: c.creditHour, academic_year_9_months: c.nineMonthYear, '12_months': c.twelveMonths };
     const period = periodNames[value.period] || c.unknownPeriod;
     const feeYear = typeof value.feeYear === 'string' && value.feeYear ? ` (${value.feeYear})` : '';
-    const label = typeof value.label === 'string' && value.label.trim() ? ` · ${value.label}` : '';
+    const cleanLabel = typeof value.label === 'string' && value.label.trim() ? normalizeIntakeText(value.label) : '';
+    const label = cleanLabel ? ` · ${cleanLabel}` : '';
     return `${amount}${currency ? ` ${currency}` : ''} / ${period}${feeYear}${label}`;
   }
   if (kind === 'deadline') {
@@ -127,7 +147,8 @@ function renderValue(value, kind, language) {
     if (typeof value.date !== 'string') return c.unknown;
     return `${value.date} (${typeof value.timezone === 'string' ? value.timezone : c.timezoneUnknown})`;
   }
-  if (typeof value === 'string' || typeof value === 'number') return catalogValue(String(value), language);
+  if (typeof value === 'string') return catalogValue(normalizeIntakeText(value), language);
+  if (typeof value === 'number') return catalogValue(String(value), language);
   return c.unknown;
 }
 

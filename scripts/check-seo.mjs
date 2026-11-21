@@ -50,6 +50,7 @@ function getMeta(html, name) {
 }
 
 const builtPages = await htmlFiles(dist);
+const publicEntryRoutes = new Set([...PUBLIC_PATHS, '/ru/Search', '/uz/Search']);
 for (const required of ['index.html', 'Search.html', 'AdmissionsSurvey.html', 'ru/Search.html', 'uz/Search.html', '404.html', 'seo/private.html']) {
   assert.ok(builtPages.includes(required), `Missing built HTML page: ${required}`);
 }
@@ -71,6 +72,17 @@ const descriptions = new Set();
 for (const file of builtPages) {
   const html = await readFile(path.join(dist, file), 'utf8');
   const route = routeForFile(file);
+  const bodyMarkup = html.split('<body>')[1]?.replace(/<script\b[\s\S]*?<\/script>/gi, '') || '';
+  if (publicEntryRoutes.has(route)) {
+    const entryStart = bodyMarkup.indexOf('<div id="public-entry">');
+    const rootStart = bodyMarkup.indexOf('<div id="root"></div>');
+    assert.ok(entryStart >= 0 && rootStart > entryStart, `${file}: meaningful public entry must precede the empty app root`);
+    const fallback = bodyMarkup.slice(entryStart, rootStart);
+    assert.match(fallback, /<h1\b[^>]*>\s*[^<]+<\/h1>/i, `${file}: public entry must contain a heading`);
+    assert.match(fallback, /<p\b[^>]*>\s*[^<]+<\/p>/i, `${file}: public entry must contain introductory copy`);
+  } else {
+    assert.ok(!bodyMarkup.includes('<div id="public-entry">'), `${file}: standalone page must not include the public app placeholder`);
+  }
   const title = singleMatch(html, /<title>(.*?)<\/title>/s, file)[1];
   assert.ok(title.trim(), `${file}: title must not be empty`);
   assert.ok(html.includes('google-site-verification'), file);
@@ -107,7 +119,7 @@ for (const file of builtPages) {
     assert.ok(types.includes('BreadcrumbList'), `${file}: discovery page schema needs breadcrumbs`);
   }
   {
-    const body = html.split('<body>')[1]?.replace(/<script\b[\s\S]*?<\/script>/gi, '') || '';
+    const body = bodyMarkup;
     singleMatch(body, /<h1\b[^>]*>\s*[^<]+<\/h1>/i, `${file}: meaningful initial heading`);
     assert.ok(body.includes('<p'), `${file}: introductory content must exist without JavaScript`);
     if (route.startsWith('/universities/')) {
@@ -194,6 +206,39 @@ for (const page of before.filter(page => page.universityId)) {
   assert.ok(page.actions.some(link => link.href === '/Search'));
   assert.ok(page.actions.some(link => link.href === '/AdmissionsSurvey'));
 }
+const sampleProfile = before.find(page => page.path === '/universities/sample-university');
+const programmeSection = sampleProfile.sections.find(section => section.heading === 'Programmes in the UniMatch catalog');
+const sourceSection = sampleProfile.sections.find(section => section.heading === 'Official sources');
+assert.match(sampleProfile.description, /taught in English/);
+assert.match(sampleProfile.description, /Autumn 2027/);
+assert.match(programmeSection.items[0], /Teaching language: English/);
+assert.match(programmeSection.items[0], /Intake: Autumn 2027/);
+assert.ok(!programmeSection.items[0].includes('Capital'), 'Institution city must not be presented as programme campus');
+assert.match(sourceSection.links[0].detail, /BSc Computer Science \(teaching language, intake\)/,
+  'Official source links must identify the programme and associated facts');
+assert.equal(new Set(sourceSection.links.map(link => link.href)).size, sourceSection.links.length,
+  'Official source URLs must be de-duplicated');
+
+const staleVerified = publicAdmissionCatalogRow({
+  id: '00000000-0000-4000-8000-000000000005', slug: 'stale-verified', alias: '10000000-0000-4000-8000-000000000005',
+});
+const staleFacts = staleVerified.catalog.programmes[0];
+staleFacts.intake.value = { year: 2024, text: 'Autumn 2024' };
+staleFacts.intake.scope.intakeYear = 2024;
+staleFacts.teachingLanguage.scope.intakeYear = 2024;
+const staleProjection = projectSeoInstitutions(adaptPublicCatalog([staleVerified]));
+assert.equal(staleProjection[0].programmes[0].intake, null, 'Stale intake facts must not be projected');
+assert.equal(staleProjection[0].programmes[0].teachingLanguage, null, 'Stale teaching language must not be projected');
+
+const unmatchedSourceProjection = adaptPublicCatalog([publicAdmissionCatalogRow()]);
+unmatchedSourceProjection.institutions[0].programmes[0].facts.teachingLanguage.sourceIds = ['missing-source'];
+assert.equal(projectSeoInstitutions(unmatchedSourceProjection)[0].programmes[0].teachingLanguage, null,
+  'Teaching language must be omitted when its source cannot be resolved');
+
+const narrowScopeProjection = adaptPublicCatalog([publicAdmissionCatalogRow()]);
+narrowScopeProjection.institutions[0].programmes[0].facts.teachingLanguage.scope.studentCategory = 'international_freshman';
+assert.equal(projectSeoInstitutions(narrowScopeProjection)[0].programmes[0].teachingLanguage, null,
+  'Applicant-specific teaching language must not be presented as general programme information');
 assert.ok(!before.some(page => page.path.includes('never-index')));
 const editorial = [
   { state: 'published', language: 'en', slug: 'guide-en', heading: 'English guide', intro: 'Intro', translationKey: 'guide' },

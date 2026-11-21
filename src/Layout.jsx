@@ -31,10 +31,10 @@ function LayoutContent({ children, currentPageName }) {
     const guestCta = {en:'Find my university',ru:'Подобрать университет',uz:'Universitet tanlash'}[language];
     
     const navItems = [
-        { name: t('nav.home'), path: 'Home', icon: Home },
-        { name: t('nav.findUniversities'), path: 'Search', icon: Search },
-        { name: t('nav.recommendations'), path: 'Recommendations', icon: Sparkles },
-        { name: t('nav.myProfile'), path: 'Profile', icon: User },
+        { name: t('nav.home'), path: 'Home', href: '/', icon: Home },
+        { name: t('nav.findUniversities'), path: 'Search', href: catalogPath(language), icon: Search },
+        { name: t('nav.recommendations'), path: 'Recommendations', href: '/Recommendations', icon: Sparkles },
+        { name: t('nav.myProfile'), path: 'Profile', href: '/Profile', icon: User },
     ];
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
@@ -96,7 +96,7 @@ function LayoutContent({ children, currentPageName }) {
             }`}>
                 <div className="product-nav-inner max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex items-center justify-between h-16">
-                        <Link to={createPageUrl("Home")} className="product-nav-brand flex items-center gap-2">
+                        <Link to="/" className="product-nav-brand flex items-center gap-2">
                             <div className="w-9 h-9 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center">
                                 <GraduationCap className="w-5 h-5 text-white" />
                             </div>
@@ -107,7 +107,7 @@ function LayoutContent({ children, currentPageName }) {
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
-                                    to={item.path === 'Search' ? catalogPath(language) : createPageUrl(item.path)}
+                                    to={item.href}
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
                                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                                         currentPageName === item.path
@@ -205,7 +205,7 @@ function LayoutContent({ children, currentPageName }) {
                             {navItems.map(item => (
                                 <Link
                                     key={item.name}
-                                    to={item.path === 'Search' ? catalogPath(language) : createPageUrl(item.path)}
+                                    to={item.href}
                                     aria-current={currentPageName === item.path ? 'page' : undefined}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`product-mobile-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium ${
@@ -259,7 +259,7 @@ function LayoutContent({ children, currentPageName }) {
 
             <footer className="product-footer product-footer-compact">
                 <div className="product-footer-inner">
-                    <Link to={createPageUrl('Home')} className="product-footer-brand">UniMatch<span>®</span></Link>
+                    <Link to="/" className="product-footer-brand">UniMatch<span>®</span></Link>
                     <p>{t('footer.tagline')}</p>
                     <nav aria-label={t('footer.quickLinks')}>
                         {currentPageName === 'Search' && <FeedbackButton />}

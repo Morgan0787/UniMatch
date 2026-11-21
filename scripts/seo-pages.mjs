@@ -1,4 +1,5 @@
 import { SITE_URL } from '../src/lib/seo.js';
+import { homeHero } from '../src/lib/discoveryContent.js';
 import { countries, guides } from './seo-editorial.mjs';
 
 const home = { href: '/', label: 'UniMatch' };
@@ -19,8 +20,7 @@ const ABSOLUTE = /^https:\/\//;
 export function buildAppFallback(path, catalogLinks) {
   if (path === '/') {
     return {
-      path, language: 'en', heading: 'Find your university abroad',
-      intro: 'Explore international programmes and build a shortlist based on what you want to study, where you want to live and which requirements you can meet.',
+      path, language: 'en', heading: homeHero.en.lines.join(' '), intro: homeHero.en.intro,
       sections: [
         { heading: 'Explore your options', links: [catalog, { href: '/AdmissionsSurvey', label: 'Find options for your academic profile' }, ...catalogLinks] },
         { heading: 'Confirm the details before applying', paragraphs: ['Start with the published programme sources. Use UniMatch to compare your options, then confirm the application conditions with the university for your chosen intake.'] },
@@ -55,15 +55,43 @@ function page(path, heading, intro, crumbs, sections, { actions = [catalog], ...
   return result;
 }
 
+function displayIntake({ text, year }) {
+  return text.includes(String(year)) ? text : `${text} ${year}`;
+}
+
 function profile(institution, countryLink, needsDisambiguation) {
   const where = location(institution);
   const path = universityPath(institution);
   const programme = institution.programmes[0];
-  const intro = `Explore ${institution.name} in ${where}, including ${programme.name}. See the official programme sources before you apply.`;
-  const programmes = institution.programmes.map(programme =>
-    [programme.name, programme.degree, programme.campus, programme.country].filter(Boolean).join(' · '));
-  const sources = [...new Map(institution.programmes.flatMap(programme => programme.sources)
-    .map(source => [source.url, source])).values()];
+  const intro = [
+    `Explore ${programme.name} at ${institution.name} (${where}).`,
+    programme.teachingLanguage
+      ? `The programme is taught in ${programme.teachingLanguage}${!programme.intake && programme.teachingLanguageYear ? ` for the ${programme.teachingLanguageYear} intake` : ''}.`
+      : null,
+    programme.intake ? `Its published intake is ${displayIntake(programme.intake)}.` : null,
+    'Review the official programme sources before applying.',
+  ].filter(Boolean).join(' ');
+  const programmes = institution.programmes.map(programme => {
+    return [
+      programme.name, programme.degree, programme.campus, programme.country,
+      programme.teachingLanguage ? `Teaching language${programme.intake ? '' : ` (${programme.teachingLanguageYear})`}: ${programme.teachingLanguage}` : null,
+      programme.intake ? `Intake: ${displayIntake(programme.intake)}` : null,
+    ].filter(Boolean).join(' · ');
+  });
+  const sourcesByUrl = new Map();
+  for (const programme of institution.programmes) {
+    for (const source of programme.sources) {
+      const entry = sourcesByUrl.get(source.url) || { ...source, associations: new Set() };
+      const facts = [...new Set((programme.evidenceSources || [])
+        .filter(evidence => evidence.url === source.url).map(evidence => evidence.fact))];
+      entry.associations.add(`${programme.name}${facts.length ? ` (${facts.join(', ')})` : ''}`);
+      sourcesByUrl.set(source.url, entry);
+    }
+  }
+  const sources = [...sourcesByUrl.values()].map(source => ({
+    ...source,
+    associations: [...source.associations],
+  }));
   const name = institution.name;
   return page(path, name, intro, [home, universityIndex], [
     { heading: 'Programmes in the UniMatch catalog', items: programmes },
@@ -71,7 +99,7 @@ function profile(institution, countryLink, needsDisambiguation) {
       href: source.url,
       label: sources.some(other => other !== source && other.title === source.title)
         ? `${source.title} — ${new URL(source.url).pathname.split('/').filter(Boolean).at(-1) || new URL(source.url).hostname}` : source.title,
-      detail: `Checked ${source.checkedAt}`,
+      detail: `${source.associations.join(' · ')} · Checked ${source.checkedAt}`,
     })) },
   ], {
     title: `${profileLabel(institution)}${needsDisambiguation ? ` (${institution.slug})` : ''} | UniMatch`,

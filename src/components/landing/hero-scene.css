@@ -1,6 +1,5 @@
 /* The approved pearl particle story occupies the space above the existing hero copy. */
 .unimatch-landing .hero-visual { position: absolute; inset: 0; }
-.unimatch-landing.hero-loader-host { position: fixed; inset: 0; z-index: 100; min-height: 0; }
 .unimatch-landing .site-header.is-away {
   opacity: 0 !important;
   visibility: hidden !important;
@@ -15,25 +14,38 @@
   pointer-events: none;
 }
 .unimatch-landing .hero-loading-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
+  position: absolute;
+  z-index: 2;
+  top: clamp(92px, 13vh, 132px);
+  right: clamp(16px, 3vw, 42px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(310px, calc(100% - 32px));
+  padding: 10px 14px;
+  border: 1px solid #ffffff80;
+  border-radius: 999px;
+  background: #fffaf0a6;
+  box-shadow: 0 4px 18px #6653420d;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  text-align: left;
+  color: #665342;
+}
+.unimatch-landing .hero-loading-copy {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  padding: 28px;
-  text-align: center;
-  color: #665342;
-  background: radial-gradient(ellipse at center, #efdfcb, #faf7ef 65%);
+  align-items: flex-start;
+  gap: 2px;
+  font-size: 12px;
+  line-height: 1.25;
 }
-.unimatch-landing .hero-loading-brand { font-size: 12px; letter-spacing: .28em; }
-.unimatch-landing .hero-loading-screen p { margin: 0; font-size: clamp(18px, 3vw, 25px); line-height: 1.4; }
-.unimatch-landing .hero-loading-note { font-size: 12px; opacity: .8; }
+.unimatch-landing .hero-loading-note { font-size: 10px; opacity: .8; }
 .unimatch-landing .hero-loading-orbit {
-  width: 52px;
-  height: 52px;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
   border: 1px solid #b4834e44;
   border-top-color: #ae7950;
   border-radius: 50%;
@@ -57,7 +69,7 @@
   transform: translateZ(0);
 }
 .unimatch-landing .hero-explorer.pearl-story::before { display: none; }
-.unimatch-landing .hero-explorer.scene-loading { z-index: 50; }
+.unimatch-landing .hero-explorer.scene-loading { z-index: 0; }
 .unimatch-landing .hero-scene-stage {
   position: absolute;
   inset: 0;
@@ -178,6 +190,9 @@
 }
 .unimatch-landing .hero-university-options button[aria-pressed="true"] { background: #66513f; color: #fffaf2; }
 @media (max-width: 760px) {
+  .unimatch-landing .hero-loading-screen { top: 88px; right: 14px; gap: 8px; padding: 8px 11px; }
+  .unimatch-landing .hero-loading-copy { font-size: 11px; }
+  .unimatch-landing .hero-loading-note { font-size: 9px; }
   .unimatch-landing .hero-subject-label { max-width: 140px; padding: 5px 8px; font-size: 11px; }
   .unimatch-landing button.hero-university-label { min-height: 36px; }
   .unimatch-landing .pearl-story .scene-instructions { top: 76px; font-size: 8px; letter-spacing: 0.04em; }

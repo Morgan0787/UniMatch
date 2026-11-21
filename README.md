@@ -67,6 +67,8 @@ npm run dev
 
 The Vite build generates the sitemap, sourced university profiles, country and subject pages, and published application guides. Vercel Preview and Production builds read the published catalog using the existing public Supabase settings. For a local build with current catalog data, opt in with `SEO_FETCH_PUBLIC_CATALOG=1`. See the [SEO publishing and verification guide](docs/seo.md).
 
+The homepage links to the published university directory, destinations and guides even when JavaScript is disabled. Its main heading and navigation remain available while the interactive globe loads.
+
 ## Vercel monitoring
 
 Web Analytics and Speed Insights run on `https://getunimatch.app` for published pages. The integration excludes query strings, fragments, private routes, Preview, and local runs. No custom events are sent.

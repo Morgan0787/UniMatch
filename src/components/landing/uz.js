@@ -21,8 +21,6 @@ export const uzCopy = {
   footerText:'Universitet tanlashga puxta yondashuv.\nQiziquvchanlar va maqsadlilar uchun.',
 };
 export const uzEditorial = {
-  hero:['Sizga mos kelajak.','O‘sish uchun joy.'],
-  description:'Universitetni ongli tanlang. Qiziqishlaringiz va orzularingizni sizga mos joy bilan bog‘laymiz.',
   side:['Qayerdadir o‘zingizni uydagidek his qiladigan kampus bor.','Sizni ilhomlantiradigan fan. Sizga tegishli kelajak.'],
   pills:['QIZIQISHLARINGIZ','SIZNING DUNYONGIZ','KELAJAGINGIZ'],
   introLabel:'HAR BIR KELAJAK BIRINCHI QADAMDAN BOSHLANADI',

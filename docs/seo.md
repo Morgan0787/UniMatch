@@ -6,6 +6,11 @@ Vite emits the canonical HTML and sitemap from the same set of routes. Public UR
 
 - Production release [`9d97ba0`](https://github.com/Morgan0787/UniMatch/commit/9d97ba0e328147ace5341c724aa3fbb734a2da41) served 114 canonical URLs, including 102 university profiles. All 114 returned HTTP 200 without `noindex` on `getunimatch.app`. The missing profile check returned HTTP 404. Tested Vercel aliases redirected to the public domain or required Vercel Authentication and returned `X-Robots-Tag: noindex`.
 - On 2026-11-12, Search Console successfully processed the resubmitted `sitemap.xml` and reported 114 discovered URLs. Google had indexed the homepage and selected it as its canonical. Google accepted indexing requests for `/Search`, `/ru/Search`, `/uz/Search`, `/universities` and `/universities/oc90-032`. Follow actual indexing in the [Pages report](https://search.google.com/search-console/index?resource_id=https%3A%2F%2Fgetunimatch.app%2F).
+- On 2026-11-21 the live sitemap listed 111 URLs, including 99 university profiles. All 111 GET requests returned HTTP 200 with an H1, a matching canonical and no `noindex` in the HTML or HTTP headers. The supplied [mobile PageSpeed report](https://pagespeed.web.dev/analysis/https-getunimatch-app/8zcr394dak?form_factor=mobile) measured LCP at 4.96 s and identified the hero description as the LCP element. These measurements describe production before the local changes.
+
+## Public route loading
+
+Home, the three catalog languages and the admissions survey display their generated HTML while the browser restores the session and loads the interactive route. Home shares its English heading and introduction between both versions. Its links to published directories remain available after React starts. The 3D scene loads inside the hero, and the first catalog request starts when the visitor scrolls or focuses the discovery section or its link. The saved-profile and administration routes retain their existing access rules.
 
 ## Build and test
 
@@ -50,7 +55,7 @@ If the Vercel project disables system environment variables for builds, set `SEO
 
 ## Publishing rules
 
-- The public route uses the catalog's durable `institutionId` slug and retains the university UUID internally. Do not reassign published slugs. Titles, headings and source URLs are projected from the validated publication data. Each profile needs at least one sourced programme with confirmed name and degree. The generated page omits fees, deadlines, requirements and other facts outside that projection.
+- The public route uses the catalog's durable `institutionId` slug and retains the university UUID internally. Do not reassign published slugs. Titles, headings and source URLs are projected from the validated publication data. Each profile needs at least one sourced programme with confirmed name and degree. A profile can show the teaching language and intake when the publication feed confirms the fact for that programme and target year, with a suitable applicant scope and a dated source. Official links identify the programmes they support. The generated page omits fees, deadlines, requirements and other facts outside that projection.
 - To remove a profile, follow the approved catalog publication process and rebuild. A successful build drops its HTML and sitemap entry, so its clean URL reaches Vercel's HTTP 404. A deployed static build retains its old snapshot until the next successful deployment.
 - `/University?id=<uuid>` stays available for saved links and universities outside the SEO feed. That route and the app's account/admin shells remain `noindex, follow`. Parameterized Search URLs point at their language's canonical catalog; the sitemap lists only clean URLs. Crawlers can read noindex directives. On Vercel, noncanonical hosts receive `X-Robots-Tag: noindex`.
 - Country pages need reviewed copy and at least three eligible profiles. The Poland computer science page uses a small list of specifically reviewed institutions and requires at least two matching bachelor’s programmes with a verified field. There is no automatic country/subject matrix.

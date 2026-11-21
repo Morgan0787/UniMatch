@@ -37,13 +37,8 @@ export function usePageMotion(root, language, blocked) {
         if (!el)
             return;
         const ctx = gsap.context(() => {
-            const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-            intro
-                .from(".site-header", { opacity: 0, y: -12, duration: 0.9 }, 0)
-                .from(".hero-title .line-inner", { yPercent: 110, duration: 1.2, stagger: 0.12 }, 0.15)
-                .from(".hero-description", { opacity: 0, y: 22, duration: 1 }, 0.45)
-                .from(".hero-action", { opacity: 0, y: 20, duration: 1 }, 0.6)
-                .from(".hero-side", { opacity: 0, y: 22, duration: 1.1 }, 0.5);
+            // Keep the headline, LCP paragraph and navigation visible from first paint.
+            gsap.from(".hero-side", { opacity: 0, y: 22, duration: 1.1, ease: "power3.out" });
             // Whole headings preserve natural wrapping; copy enters separately.
             const editorialScreens = [
                 el.querySelector(".intro-upper"),

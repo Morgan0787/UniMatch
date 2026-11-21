@@ -41,6 +41,14 @@ function factValue(fact) {
   return isCurrentVerified(fact) ? fact.value : null;
 }
 
+function hasBroadProgrammeScope(fact, programmeId, intakeYear) {
+  const scope = fact?.scope;
+  return isCurrentVerified(fact) && isObject(scope) && scope.programmeId === programmeId
+    && (scope.route === null || scope.route === 'direct')
+    && scope.studentCategory === null && scope.schoolCountry === null && scope.credential === null
+    && Number.isInteger(intakeYear) && scope.intakeYear === intakeYear;
+}
+
 function citedSourcesFor(facts, sources) {
   const byUrl = new Map();
   for (const fact of facts) {
@@ -61,7 +69,7 @@ function citedSourcesFor(facts, sources) {
   return [...byUrl.values()].sort((a, b) => a.url.localeCompare(b.url));
 }
 
-function projectProgramme(programme, institution, sources) {
+function projectProgramme(programme, institution, sources, targetIntakeYear) {
   if (!isObject(programme) || !isObject(programme.facts)) return null;
   const facts = programme.facts;
   const nameFact = facts.name;
@@ -78,15 +86,30 @@ function projectProgramme(programme, institution, sources) {
   const fieldFact = facts.field;
   const fieldSources = citedSourcesFor([fieldFact], sources);
   const field = fieldSources.length ? safeText(factValue(fieldFact)) : null;
+  const intakeFact = facts.intake;
+  const rawIntake = factValue(intakeFact);
+  const intakeSources = isObject(rawIntake) && hasBroadProgrammeScope(intakeFact, programme.id, targetIntakeYear)
+    && (rawIntake.year === null || rawIntake.year === targetIntakeYear)
+    ? citedSourcesFor([intakeFact], sources) : [];
+  const intakeText = intakeSources.length ? safeText(rawIntake.text) : null;
+  const intakeYearsInText = intakeText?.match(/\b(?:19|20|21)\d{2}\b/g) || [];
+  const intakeTextMatchesScope = intakeYearsInText.every(year => Number(year) === targetIntakeYear);
+  const intake = intakeText && intakeTextMatchesScope ? { year: targetIntakeYear, text: intakeText } : null;
+  const teachingLanguageFact = facts.teachingLanguage;
+  const teachingLanguageSources = hasBroadProgrammeScope(teachingLanguageFact, programme.id, targetIntakeYear)
+    ? citedSourcesFor([teachingLanguageFact], sources) : [];
+  const teachingLanguage = teachingLanguageSources.length ? safeText(factValue(teachingLanguageFact)) : null;
   const locationFact = programme.location;
   const locationValue = factValue(locationFact);
   const verifiedLocation = isObject(locationValue) && citedSourcesFor([locationFact], sources).length
     ? locationValue : null;
   const country = safeText(verifiedLocation?.country) || safeText(institution.country);
-  const campus = safeText(verifiedLocation?.campus) || safeText(institution.city);
+  const campus = safeText(verifiedLocation?.campus);
   const includedFacts = [nameFact, degreeFact];
   if (field) includedFacts.push(fieldFact);
   if (verifiedLocation) includedFacts.push(locationFact);
+  if (teachingLanguage) includedFacts.push(teachingLanguageFact);
+  if (intake) includedFacts.push(intakeFact);
 
   return {
     name,
@@ -94,6 +117,13 @@ function projectProgramme(programme, institution, sources) {
     field,
     country,
     campus,
+    teachingLanguage,
+    teachingLanguageYear: teachingLanguage ? targetIntakeYear : null,
+    intake,
+    evidenceSources: [
+      ...(teachingLanguage ? teachingLanguageSources.map(source => ({ url: source.url, fact: 'teaching language' })) : []),
+      ...(intake ? intakeSources.map(source => ({ url: source.url, fact: 'intake' })) : []),
+    ],
     sources: citedSourcesFor(includedFacts, sources),
   };
 }
@@ -109,7 +139,7 @@ export function projectSeoInstitutions(adapted) {
       || !Array.isArray(institution.programmes)) continue;
 
     const programmes = institution.programmes
-      .map(programme => projectProgramme(programme, institution, institution.sources))
+      .map(programme => projectProgramme(programme, institution, institution.sources, institution.targetIntakeYear))
       .filter(Boolean)
       .sort((a, b) => a.name.localeCompare(b.name) || a.degree.localeCompare(b.degree));
     if (programmes.length === 0) continue;

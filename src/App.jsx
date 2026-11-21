@@ -3,7 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { Suspense, useState } from 'react';
+import { Suspense, useLayoutEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -23,12 +23,27 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const PROTECTED_PAGES = new Set(['Profile', 'Recommendations']);
 
 function PageLoading() {
+  if (document.getElementById('public-entry')) return null;
   return <div className="grid min-h-screen place-items-center" aria-busy="true">
     <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-800" />
   </div>;
 }
 
+function PublicEntryReady() {
+  useLayoutEffect(() => {
+    document.getElementById('public-entry')?.remove();
+  }, []);
+  return null;
+}
+
 function LayoutWrapper({ children, currentPageName }) {
+  const [hasPublicEntry] = useState(() => Boolean(document.getElementById('public-entry')));
+  if (hasPublicEntry) {
+    return <Suspense fallback={<PageLoading />}>
+      <PublicEntryReady />
+      <Layout currentPageName={currentPageName}>{children}</Layout>
+    </Suspense>;
+  }
   const content = <Suspense fallback={<PageLoading />}>{children}</Suspense>;
   return Layout ? <Layout currentPageName={currentPageName}>{content}</Layout> : content;
 }
@@ -37,11 +52,7 @@ const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <PageLoading />;
   }
 
   if (authError) {

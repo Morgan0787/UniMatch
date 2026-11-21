@@ -1,21 +1,16 @@
-import { Component, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { Component } from 'react';
 import { getLandingLabels } from './labels';
 import './hero-scene.css';
 
 export function HeroLoadingScreen({ language }) {
   const copy = getLandingLabels(language);
-  useEffect(() => {
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = previous; };
-  }, []);
-  return createPortal(<div className="unimatch-landing hero-loader-host"><div className="hero-loading-screen" role="status" aria-live="polite" data-lenis-prevent>
-    <span className="hero-loading-brand" aria-hidden="true">UNIMATCH</span>
+  return <div className="hero-loading-screen" role="status" aria-live="polite">
     <span className="hero-loading-orbit" aria-hidden="true" />
-    <p>{copy.building}</p>
-    <span className="hero-loading-note">{copy.sceneLoadingNote}</span>
-  </div></div>, document.body);
+    <span className="hero-loading-copy">
+      <span>{copy.building}</span>
+      <span className="hero-loading-note">{copy.sceneLoadingNote}</span>
+    </span>
+  </div>;
 }
 
 // A failed lazy chunk must never remove the page, catalog or navigation.

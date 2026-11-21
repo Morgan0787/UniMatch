@@ -73,8 +73,8 @@ export default function HeroExplorer({ heroRef, language, blocked, onDetail, uni
     let disposed = false, request = 0, hasFrame = false, frameCount = 0;
     const draw = () => {
       request = 0;
-      // A history return can mount Home below the hero. Its first frame must
-      // release the page-wide loader before offscreen rendering is suspended.
+      // A history return can mount Home below the hero. Render its first frame
+      // before suspending offscreen rendering; the scene stays non-blocking.
       if (disposed || !renderer || (hasFrame && !visible.current) || blockedRef.current || document.hidden) return;
       try {
         const drawStarted = performance.now();

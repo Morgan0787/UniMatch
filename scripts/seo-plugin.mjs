@@ -52,7 +52,10 @@ function withContent(html, page, { standalone = false, interactive = false } = {
   const root = '<div id="root"></div>';
   if (!html.includes(root)) throw new Error('Missing app root in SEO template');
   const content = renderToStaticMarkup(createElement(DiscoveryContent, { page, standalone }));
-  let output = html.replace(root, () => `<div id="root">${content}</div>`);
+  // Keep the initial document navigable while a public app route is starting.
+  const markup = standalone ? `<div id="root">${content}</div>`
+    : `<div id="public-entry">${content}</div>\n    ${root}`;
+  let output = html.replace(root, () => markup);
   if (standalone && !interactive) {
     output = output.replace(/<script\b[^>]*\btype="module"[^>]*><\/script>/g, '')
       .replace(/<link\b[^>]*\brel="modulepreload"[^>]*>/g, '');
@@ -141,7 +144,10 @@ export default function seoPlugin() {
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
       const preloadCatalog = html => html.replace('<head>', '<head>\n    <link rel="preload" href="/assets/catalog-preview.json" as="fetch" crossorigin />');
       if (catalogPreview) emit('assets/catalog-preview.json', JSON.stringify(catalogPreview));
-      entry.source = withContent(html, buildAppFallback('/', discovery.catalogLinks));
+      const homeChunk = Object.values(bundle).find(file => file.type === 'chunk' && file.name === 'Home');
+      const homeHtml = homeChunk ? html.replace('</head>',
+        `<link rel="modulepreload" crossorigin href="/${escape(homeChunk.fileName)}" />\n  </head>`) : html;
+      entry.source = withContent(homeHtml, buildAppFallback('/', discovery.catalogLinks));
       for (const path of basePaths.filter(path => path !== '/')) {
         const language = catalogLanguage(path);
         let output = withSeo(html, path);

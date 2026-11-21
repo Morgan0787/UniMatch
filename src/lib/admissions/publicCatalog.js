@@ -386,7 +386,7 @@ export function adaptPublicCatalog(rows) {
   for (const item of parsed) {
     if (item.quarantined) continue;
     const { row, cat, sources, programmes } = item;
-    const institution = { id: row.id, institutionId: cat.institutionId, name: row.name, country: row.country,
+    const institution = { id: row.id, institutionId: cat.institutionId, targetIntakeYear: cat.targetIntakeYear, name: row.name, country: row.country,
       city: row.city, region: row.region, website: row.website, legacyFavoriteKeys: [...cat.legacyFavoriteKeys],
       media: publicMedia(cat.media), sources: structuredClone(sources), programmes };
     institutions.push(institution);

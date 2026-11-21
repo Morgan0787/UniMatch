@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/apiClient';
@@ -18,11 +18,27 @@ export function useDiscovery(language) {
   const c = language === 'uz' ? uzCopy : copy[language === 'ru' ? 'ru' : 'en'];
   const labels = getLandingLabels(language);
   const [filter, setFilter] = useState(0);
+  const [catalogEnabled, setCatalogEnabled] = useState(() => window.scrollY > 0 || window.location.hash === '#discover');
   const detail = null;
   const setDetail = row => { if (row?.id) navigate(universityPageUrl(row.id, '/Home'), { state: { fromApp: true } }); };
   const [notice, setNotice] = useState('');
   const [legal, setLegal] = useState(null);
-  const query = useQuery({ queryKey: ['universities'], queryFn: () => apiClient.entities.University.list() });
+  useEffect(() => {
+    if (catalogEnabled) return;
+    const activate = () => setCatalogEnabled(true);
+    const onScroll = () => { if (window.scrollY > 0) activate(); };
+    const onFocusIn = event => {
+      if (event.target instanceof Element && event.target.closest('#discover, a[href="#discover"]')) activate();
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('focusin', onFocusIn);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('focusin', onFocusIn);
+    };
+  }, [catalogEnabled]);
+  const query = useQuery({ queryKey: ['universities'], queryFn: () => apiClient.entities.University.list(), enabled: catalogEnabled });
   const profile = useQuery(studentProfileQueryOptions(user));
   const currentProfile = profile.data?.[0];
   const rows = query.data ?? [];
@@ -57,7 +73,8 @@ export function useDiscovery(language) {
     setOnlySaved: next => { if (next) navigate('/Profile'); }, toggleSave, detail, setDetail,
     quiz: false, legal, setLegal,
     openQuiz: () => navigate('/AdmissionsSurvey'),
-    isLoading: query.isLoading, isError: query.isError, refetch: () => query.refetch(),
+    isLoading: catalogEnabled && query.isLoading, isError: catalogEnabled && query.isError,
+    isLoaded: query.isSuccess, refetch: () => query.refetch(),
     notice, isSaving: mutation.isPending,
     userProfile: currentProfile,
   };

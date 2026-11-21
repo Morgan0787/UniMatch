@@ -25,6 +25,12 @@ export const catalogAlternates = Object.fromEntries([
 
 export const LANGUAGE_NAMES = { en: 'English', ru: 'Русский', uz: 'Oʻzbekcha' };
 
+export const homeHero = {
+  en: { lines: ['Find your university', 'abroad.'], intro: 'Compare universities by subject, destination and entry requirements. Explore programmes and build your shortlist for studying abroad.' },
+  ru: { lines: ['Найдите свой вуз', 'за рубежом.'], intro: 'Сравнивайте университеты по специальности, стране и требованиям к поступлению. Изучайте программы и сохраняйте подходящие варианты.' },
+  uz: { lines: ['Xorijda o‘qing.', 'Universitet tanlang.'], intro: 'Universitetlarni yo‘nalish, mamlakat va qabul talablari bo‘yicha solishtiring. Dasturlarni ko‘rib chiqing va mos variantlarni saqlang.' },
+};
+
 const catalogCopy = {
   en: {
     heading: 'Explore universities abroad',
@@ -52,15 +58,21 @@ const catalogCopy = {
   },
 };
 
+/** @param {string} language @param {DiscoveryLink[]} links */
+export function localizedDiscoveryLinks(language, links) {
+  const copy = catalogCopy[language] || catalogCopy.en;
+  const labels = Object.fromEntries(['/universities', '/countries', '/guides'].map((path, i) => [path, copy.links[i]]));
+  return links.map(link => ({ ...link, label: labels[link.href] || link.label }));
+}
+
 /** @param {string} language @param {DiscoveryLink[]} links @returns {DiscoveryPage} */
 export function catalogContent(language, links) {
   const copy = catalogCopy[language] || catalogCopy.en;
-  const labels = Object.fromEntries(['/universities', '/countries', '/guides'].map((path, i) => [path, copy.links[i]]));
   return {
     path: catalogPath(language), language, heading: copy.heading, intro: copy.intro, alternates: catalogAlternates,
     sections: [
       { heading: copy.checklist, paragraphs: [copy.advice] },
-      ...(links.length ? [{ heading: copy.explore, links: links.map(link => ({ ...link, label: labels[link.href] || link.label })) }] : []),
+      ...(links.length ? [{ heading: copy.explore, links: localizedDiscoveryLinks(language, links) }] : []),
     ],
   };
 }

@@ -7,15 +7,14 @@ import { usePageMotion } from "./usePageMotion";
 import { useDiscovery, DiscoveryDialogs } from "./Discovery";
 import { Action, Lines } from "./ui";
 import { useLanguage } from "@/lib/i18n";
-import { catalogPath } from "@/lib/discoveryContent";
+import { catalogPath, homeHero, localizedDiscoveryLinks } from "@/lib/discoveryContent";
+import discoveryLinks from 'virtual:seo-discovery-links';
 import "./landing.css";
 import "./story.css";
 import { uzEditorial } from './uz';
 import { getLandingLabels } from './labels';
 const editorial = {
     en: {
-        hero: ["A future that fits.", "A place to become."],
-        description: "Thoughtful university discovery. Connecting your interests, ambitions, and curiosity with a place that feels like you.",
         side: [
             "Somewhere, there’s a campus that feels like home.",
             "A subject that sparks something. A future that’s unmistakably yours.",
@@ -53,8 +52,6 @@ const editorial = {
         play: "Play video",
     },
     ru: {
-        hero: ["Будущее для вас.", "Место для роста."],
-        description: "Осознанный выбор университета. Найдите место, где ваши интересы, амбиции и любопытство могут расцвести.",
         side: [
             "Где-то есть кампус, в котором вы почувствуете себя дома.",
             "Предмет, который вдохновит. Будущее, которое станет вашим.",
@@ -114,10 +111,10 @@ export default function App() {
           <div className="hero-content">
             <div className="hero-copy">
               <h1 id="hero-title" className="hero-title">
-                <Lines lines={p.hero}/>
+                <Lines lines={homeHero[language].lines}/>
               </h1>
-              <p className="hero-description">{p.description}</p>
-              <Action className="hero-action" onClick={match}>
+              <p className="hero-description">{homeHero[language].intro}</p>
+              <Action className="hero-action" href="/AdmissionsSurvey">
                 {c.match.toUpperCase()}
               </Action>
             </div>
@@ -180,7 +177,10 @@ export default function App() {
             <p className="experience-lead">{p.centerBody}</p>
           </div>
           <div className="experience-media">
-            <img src="/images/hero.jpg" alt={labels.mediaAlt} loading="lazy" data-parallax/>
+            <img src="/images/graduates-1920.webp"
+              srcSet="/images/graduates-1080.webp 1080w, /images/graduates-1920.webp 1920w"
+              sizes="100vw" width={1920} height={1280} alt={labels.mediaAlt}
+              loading="lazy" decoding="async" data-parallax/>
             {videoAvailable && (<video ref={video} className="experience-video" src="/video.mp4" autoPlay muted loop playsInline poster="/images/hero.jpg" onError={() => setVideoAvailable(false)}/>)}
             <div className="experience-media-shade"/>
             <span className="media-eyebrow">{p.mediaLabel}</span>
@@ -349,7 +349,7 @@ export default function App() {
                 <span className="university-tag">{u.tags[l]}</span>
               </article>))}
           </div>
-          {!d.isLoading && !d.isError && filtered.length === 0 && (<div className="empty-state">
+          {d.isLoaded && filtered.length === 0 && (<div className="empty-state">
               <Bookmark size={25}/>
               <p>{c.empty}</p>
               <button className="text-link" onClick={() => {
@@ -417,6 +417,9 @@ export default function App() {
               <a href="#discover">{labels.universities}</a>
               <a href="#approach">{labels.approach}</a>
               <a href="#experience">{labels.experience}</a>
+              {localizedDiscoveryLinks(language, discoveryLinks).map(link => (
+                <a key={link.href} href={link.href}>{link.label}</a>
+              ))}
             </nav>
             <div className="footer-summary">
               <span className="eyebrow">{p.discover}</span>

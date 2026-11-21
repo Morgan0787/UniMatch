@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
 import { Suspense, useLayoutEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -104,7 +105,7 @@ function AppContent({ publicPage }) {
   const content = <DiscoveryContent page={publicPage} standalone={false}>
     {publicPage.universityId && (
       <details className="discovery-details" onToggle={event => setDetailsOpen(event.currentTarget.open)}>
-        <summary>Show details and save this university</summary>
+        <summary className="inline-flex items-center gap-2"><span>Show details and save this university</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
         {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> :
           <Suspense fallback={<p role="status">Loading university…</p>}>
             <Pages.University publicId={publicPage.universityId} />

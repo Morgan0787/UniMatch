@@ -267,7 +267,7 @@ function LayoutContent({ children, currentPageName }) {
                         <Link to={catalogPath(language)}>{t('footer.findUniversities')}</Link>
                         <Link to={createPageUrl('AdmissionsSurvey')}>{guestCta}</Link>
                         <button type="button" onClick={() => setHelpOpen(true)}>{t('footer.helpCenter')}</button>
-                        <details><summary>{t('footer.contactUs')}</summary><div>
+                        <details><summary className="inline-flex items-center gap-1.5"><span>{t('footer.contactUs')}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><div>
                             <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer">Telegram: @qebzo</a>
                             <a href="https://t.me/Abubakr_786" target="_blank" rel="noopener noreferrer">Telegram: @Abubakr_786</a>
                             <a href="https://t.me/Mr_xomidov" target="_blank" rel="noopener noreferrer">Telegram: @Mr_xomidov</a>

@@ -80,8 +80,8 @@ export default function FeedbackPanel({ feedback, language }) {
           {feedback.grammar_issues.length ? (
             <ul className="space-y-2.5">
               {feedback.grammar_issues.map((issue, index) => (
-                <li key={index} className="flex gap-2.5 text-sm leading-relaxed text-[#292823]">
-                  <span aria-hidden="true" className="text-[#855a36]">•</span><span>{issue}</span>
+                <li key={index} className="flex items-start gap-2.5 text-sm leading-relaxed text-[#292823]">
+                  <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-[#855a36] shrink-0" /><span>{issue}</span>
                 </li>
               ))}
             </ul>

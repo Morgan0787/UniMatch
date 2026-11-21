@@ -1,6 +1,6 @@
 import React, { useId, useState } from 'react';
 import OptionSelect from '@/components/ui/OptionSelect';
-import { Calendar, DollarSign, GraduationCap, Languages } from 'lucide-react';
+import { Calendar, ChevronDown, DollarSign, GraduationCap, Languages } from 'lucide-react';
 import { describePublicFact, describePublicScope } from '@/lib/admissions/factPresentation';
 import { groupPublicSources } from '@/lib/admissions/sourcePresentation';
 import TuitionValue from './TuitionValue';
@@ -29,7 +29,7 @@ function DeadlineValue({ fact, language, fallback }) {
   const parsed = new Date(`${date}T00:00:00Z`);
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) return fallback;
   const formatted = new Intl.DateTimeFormat(language === 'uz' ? 'uz-UZ' : language, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(parsed);
-  return <><time dateTime={date}>{formatted}</time><details className="programme-date-details"><summary>{{en:'Deadline conditions',ru:'Условия срока подачи',uz:'Ariza muddati shartlari'}[language]}</summary><p>{fallback}</p></details></>;
+  return <><time dateTime={date}>{formatted}</time><details className="programme-date-details"><summary className="inline-flex items-center gap-1"><span>{{en:'Deadline conditions',ru:'Условия срока подачи',uz:'Ariza muddati shartlari'}[language]}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{fallback}</p></details></>;
 }
 
 function Fact({ label, fact, language, kind = 'text', includeScope = true, compact = false, tile = false, icon: Icon = null, children = null }) {
@@ -41,15 +41,15 @@ function Fact({ label, fact, language, kind = 'text', includeScope = true, compa
   const ieltsParts = kind === 'rule' && /^(IELTS|минимальный IELTS)/.test(result.value) ? result.value.split(';') : [];
   const value = ieltsParts.length > 1 ? <><span className="programme-rule-main">{ieltsParts[0]}</span><span className="programme-rule-detail">{ieltsParts.slice(1).join(';').trim()}</span></> : result.value;
   const longRule = compact && kind === 'rule' && result.value.length > 100;
-  const ruleValue = longRule ? <details className="programme-rule-conditions"><summary>{{en:'See full requirements',ru:'Смотреть все требования',uz:'Barcha talablarni ko‘rish'}[language] || 'See full requirements'}</summary><p>{value}</p></details> : value;
+  const ruleValue = longRule ? <details className="programme-rule-conditions"><summary className="inline-flex items-center gap-1"><span>{{en:'See full requirements',ru:'Смотреть все требования',uz:'Barcha talablarni ko‘rish'}[language] || 'See full requirements'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{value}</p></details> : value;
   const tuitionDetails = kind === 'tuition' && (fact?.value != null || fact?.historical?.value != null);
   return (
     <div className={tile ? 'programme-stat' : compact && kind !== 'tuition' ? 'programme-inline-fact' : undefined}>
       <dt className="text-xs text-[#55504a]">{Icon && <Icon size={16} aria-hidden="true" />}{label}</dt>
       <dd className={`programme-value font-medium text-[#292823] ${!fact || fact.status === 'unknown' ? 'programme-value-unknown' : ''} ${tuitionDetails ? 'catalog-tuition' : ''}`}>{kind === 'tuition' ? <TuitionValue fact={fact} language={language} concise /> : kind === 'deadline' ? <DeadlineValue fact={fact} language={language} fallback={result.value} /> : ruleValue}</dd>
-      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-[#855a36]"><details><summary>{compactNotice}</summary><p>{result.notice}</p></details></dd>}
-      {tuitionDetails && <dd className="programme-price-details text-xs text-[#55504a]"><details><summary>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</summary><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</details></dd>}
-      {scope && !compact && !tuitionDetails && <dd className="text-xs text-[#55504a]"><details><summary className="cursor-pointer">{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</summary>{scope}</details></dd>}
+      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-[#855a36]"><details><summary className="inline-flex items-center gap-1"><span>{compactNotice}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{result.notice}</p></details></dd>}
+      {tuitionDetails && <dd className="programme-price-details text-xs text-[#55504a]"><details><summary className="inline-flex items-center gap-1"><span>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</details></dd>}
+      {scope && !compact && !tuitionDetails && <dd className="text-xs text-[#55504a]"><details><summary className="inline-flex items-center gap-1 cursor-pointer"><span>{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>{scope}</details></dd>}
       {children && <dd className="programme-stat-note">{children}</dd>}
     </div>
   );
@@ -59,8 +59,8 @@ function CostReference({ fact, label, language, labels }) {
   const value = fact?.historical?.value ?? fact?.value;
   return <div className="sm:col-span-2 grid sm:grid-cols-2 gap-x-4 gap-y-2">
     <Fact label={label} fact={fact} language={language} kind="tuition" />
-    {Array.isArray(value?.includedFees) && value.includedFees.length > 0 && <p className="text-xs text-slate-600">{labels.includes}: {value.includedFees.join(', ')}</p>}
-    {Array.isArray(value?.excludedFees) && value.excludedFees.length > 0 && <p className="text-xs text-slate-600">{labels.excludes}: {value.excludedFees.join(', ')}</p>}
+    {Array.isArray(value?.includedFees) && value.includedFees.length > 0 && <p className="text-xs text-[#55504a]">{labels.includes}: {value.includedFees.join(', ')}</p>}
+    {Array.isArray(value?.excludedFees) && value.excludedFees.length > 0 && <p className="text-xs text-[#55504a]">{labels.excludes}: {value.excludedFees.join(', ')}</p>}
   </div>;
 }
 
@@ -71,15 +71,15 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
   if (!admissionCatalog) return null;
   const labels = LABELS[language] || LABELS.en;
   const extra = { en:{notes:'Published conditions',location:'Programme campus',intake:'Intake'},ru:{notes:'Опубликованные условия',location:'Кампус программы',intake:'Набор'},uz:{notes:'E’lon qilingan shartlar',location:'Dastur kampusi',intake:'Qabul davri'} }[language] || {notes:'Published conditions',location:'Programme campus',intake:'Intake'};
-  const guide = { en: { example: 'Programme example', requirements: 'Entry requirements', more: 'Other published conditions', see: 'See entry requirements in details', cost: 'Tuition only; other expenses may apply.', many: 'More programmes in details' }, ru: { example: 'Пример программы', requirements: 'Требования для поступления', more: 'Другие опубликованные условия', see: 'Требования — в подробностях', cost: 'Только обучение; могут быть другие расходы.', many: 'Другие программы — в подробностях' }, uz: { example: 'Dastur namunasi', requirements: 'Qabul talablari', more: 'Boshqa e’lon qilingan shartlar', see: 'Qabul talablarini tafsilotlarda ko‘ring', cost: 'Faqat o‘qish haqi; boshqa xarajatlar bo‘lishi mumkin.', many: 'Boshqa dasturlar tafsilotlarda' } }[language] || { example: 'Programme example', requirements: 'Entry requirements', more: 'Other published conditions', see: 'See entry requirements in details', cost: 'Tuition only; other expenses may apply.', many: 'More programmes in details' };
+  const guide = { en: { example: 'Programme example', requirements: 'Entry requirements', more: 'Other published conditions', see: 'See entry requirements in details', cost: 'Tuition only; excludes living expenses.', many: 'More programmes in details' }, ru: { example: 'Пример программы', requirements: 'Требования для поступления', more: 'Другие опубликованные условия', see: 'Требования — в подробностях', cost: 'Только обучение; проживание не включено.', many: 'Другие программы — в подробностях' }, uz: { example: 'Dastur namunasi', requirements: 'Qabul talablari', more: 'Boshqa e’lon qilingan shartlar', see: 'Qabul talablarini tafsilotlarda ko‘ring', cost: 'Faqat o‘qish haqi; yashash xarajatlari alohida.', many: 'Boshqa dasturlar tafsilotlarda' } }[language] || { example: 'Programme example', requirements: 'Entry requirements', more: 'Other published conditions', see: 'See entry requirements in details', cost: 'Tuition only; excludes living expenses.', many: 'More programmes in details' };
   const programmes = Array.isArray(admissionCatalog.programmes) ? admissionCatalog.programmes : [];
   const selectedProgramme = programmes.find(programme => programme.id === selectedId) || programmes[0];
   const shown = compact ? programmes.slice(0, 1) : focused ? (selectedProgramme ? [selectedProgramme] : []) : programmes;
   const help = {
-    en: { choose: 'Choose a programme', scope: 'Prices and requirements below apply to this programme. Other programmes may differ.', budget: 'Plan your budget', cost: 'This is tuition, not the full cost of studying. Check housing, living expenses and additional fees separately.', dates: 'Plan your application', read: 'How to compare with your results', results: 'Compare GPA in the scale stated in the requirement. If IELTS, SAT or another exam is not listed, that does not mean it is not required. Confirm missing conditions with the university.', count: 'Programmes in this profile', more: 'Other programmes in details' },
-    ru: { choose: 'Выберите программу', scope: 'Ниже — стоимость и требования этой программы. У других программ условия могут отличаться.', budget: 'Оцените бюджет', cost: 'Это стоимость обучения, а не полный бюджет. Жильё, повседневные расходы и дополнительные сборы нужно уточнить отдельно.', dates: 'Спланируйте подачу', read: 'Как сравнить со своими результатами', results: 'Сравнивайте GPA в шкале, указанной в требовании. Если IELTS, SAT или другой экзамен не указан, это не означает, что он не нужен. Неизвестные условия уточните в вузе.', count: 'Программ в карточке', more: 'Другие программы — в подробностях' },
-    uz: { choose: 'Dasturni tanlang', scope: 'Quyidagi narx va talablar shu dasturga tegishli. Boshqa dastur shartlari farq qilishi mumkin.', budget: 'Budjetni baholang', cost: 'Bu umumiy budjet emas, o‘qish haqi. Turar joy, kundalik xarajatlar va qo‘shimcha to‘lovlarni alohida aniqlang.', dates: 'Arizani rejalashtiring', read: 'Natijalaringiz bilan qanday solishtirish kerak', results: 'GPAni talabda ko‘rsatilgan shkala bo‘yicha solishtiring. IELTS, SAT yoki boshqa imtihon ko‘rsatilmagan bo‘lsa, bu u talab qilinmaydi degani emas. Noma’lum shartlarni universitetdan aniqlang.', count: 'Profildagi dasturlar', more: 'Boshqa dasturlar tafsilotlarda' },
-  }[language] || { choose: 'Choose a programme', scope: 'Prices and requirements apply to this programme.', budget: 'Plan your budget', cost: 'Tuition only; check other expenses separately.', dates: 'Plan your application', read: 'How to compare with your results', results: 'Use the stated GPA scale. Missing exam requirements need confirmation.', count: 'Programmes in this profile', more: 'Other programmes in details' };
+    en: { choose: 'Choose a programme', scope: 'Tuition and entry criteria apply to this programme.', budget: 'Plan your budget', cost: 'Tuition only; check living expenses and additional fees separately.', dates: 'Plan your application', read: 'How to compare with your results', results: 'Compare GPA using the stated scale. Confirm any unlisted exam criteria directly with the university.', count: 'Programmes', more: 'Other programmes in details' },
+    ru: { choose: 'Выберите программу', scope: 'Стоимость и условия указаны для этой программы.', budget: 'Оцените бюджет', cost: 'Только стоимость обучения; проживание и сборы уточняйте отдельно.', dates: 'Спланируйте подачу', read: 'Как сравнить со своими результатами', results: 'Сравнивайте GPA по указанной шкале. Неуказанные экзамены уточните напрямую в вузе.', count: 'Программ', more: 'Другие программы — в подробностях' },
+    uz: { choose: 'Dasturni tanlang', scope: 'Narx va qabul shartlari shu dasturga tegishli.', budget: 'Budjetni baholang', cost: 'Faqat o‘qish haqi; yashash va qo‘shimcha to‘lovlarni alohida aniqlang.', dates: 'Arizani rejalashtiring', read: 'Natijalaringiz bilan solishtirish', results: 'GPAni ko‘rsatilgan shkala bo‘yicha solishtiring. Ko‘rsatilmagan imtihonlarni universitetdan aniqlang.', count: 'Dasturlar', more: 'Boshqa dasturlar tafsilotlarda' },
+  }[language] || { choose: 'Choose a programme', scope: 'Tuition and entry criteria apply to this programme.', budget: 'Plan your budget', cost: 'Tuition only; check living expenses separately.', dates: 'Plan your application', read: 'How to compare with your results', results: 'Compare GPA using the stated scale.', count: 'Programmes', more: 'Other programmes in details' };
   const sourceMap = admissionCatalog.sources && typeof admissionCatalog.sources === 'object' ? admissionCatalog.sources : {};
   const sources = groupPublicSources(shown.flatMap(programme => {
     const facts = programme?.facts || programme || {};
@@ -95,7 +95,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
       {focused && programmes.length > 1 && <div className="programme-picker">
         <label htmlFor={selectorId}>{help.choose}<span>{help.count}: {programmes.length}</span></label><OptionSelect id={selectorId} value={selectedProgramme.id} onValueChange={setSelectedId} options={programmes.map(programme => ({ value: programme.id, label: describePublicFact(factFor(programme, 'name'), language, 'programme').value }))} />
       </div>}
-      {shown.length === 0 ? <p className="text-sm text-slate-500">{labels.empty}</p> : shown.map(programme => {
+      {shown.length === 0 ? <p className="text-sm text-[#55504a]">{labels.empty}</p> : shown.map(programme => {
         const name = describePublicFact(factFor(programme, 'name'), language, 'programme').value;
         const scopeFields = [['tuition', labels.tuition], ['teachingLanguage', labels.teaching], ['degree', labels.degree], ['location', extra.location], ['intake', extra.intake], ['deadline', labels.deadline], ['academicRequirement', labels.academic], ['languageRequirement', labels.language], ['languageThreshold', labels.languageLevel]].map(([key, label]) => ({ key, label, scope: describePublicScope(factFor(programme, key)?.scope, language) })).filter(item => item.scope);
         const languageFact = factFor(programme, 'languageRequirement');
@@ -104,7 +104,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
         const toConfirm = [['academicRequirement', labels.academic], ['languageRequirement', labels.language], ['teachingLanguage', labels.teaching]].map(([key, label]) => ({ label, fact: factFor(programme, key) })).filter(({fact}) => needsConfirmation(fact));
         const scopeLabel = { en: 'Who these programme facts apply to', ru: 'К кому относятся данные программы', uz: 'Dastur ma’lumotlari kimga tegishli' }[language] || 'Who these programme facts apply to';
         return (
-          <article key={programme.id || name} className="programme-fact-card rounded-lg border border-slate-200 p-3 space-y-2">
+          <article key={programme.id || name} className="programme-fact-card rounded-lg border border-[#dfd9ce] p-3 space-y-2">
             <div className={`programme-heading ${focused && programmes.length > 1 ? 'sr-only' : ''}`}><p className="programme-label">{compact ? guide.example : labels.programme}</p>{compact ? <h4 className="font-semibold text-[#292823]">{name}</h4> : <h2>{name}</h2>}</div>
             {compact ? <>
               <dl className="programme-preview-facts text-sm">
@@ -113,7 +113,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
                 <Fact label={labels.language} fact={languageFact} language={language} kind="rule" includeScope={false} compact />
                 <Fact label={labels.teaching} fact={factFor(programme, 'teachingLanguage')} language={language} includeScope={false} compact />
               </dl>
-              {toConfirm.length > 0 && <details className="programme-confirmation programme-fact-status"><summary>{{en:'Conditions to confirm',ru:'Какие условия нужно уточнить',uz:'Aniqlashtiriladigan shartlar'}[language]}</summary><ul>{toConfirm.map(({label, fact}) => <li key={label}><strong>{label}:</strong> {describePublicFact(fact, language).notice}</li>)}</ul></details>}
+              {toConfirm.length > 0 && <details className="programme-confirmation programme-fact-status"><summary className="inline-flex items-center gap-1.5"><span>{{en:'Conditions to confirm',ru:'Какие условия нужно уточнить',uz:'Aniqlashtiriladigan shartlar'}[language]}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><ul>{toConfirm.map(({label, fact}) => <li key={label}><strong>{label}:</strong> {describePublicFact(fact, language).notice}</li>)}</ul></details>}
               <p className="programme-summary-hint">{programmes.length > 1 ? help.more : guide.cost}</p>
             </> : <>
             <p className="programme-context">{help.scope}</p>
@@ -124,7 +124,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
               </Fact>
               <Fact label={labels.academic} fact={factFor(programme, 'academicRequirement')} language={language} kind="rule" includeScope={false} tile icon={GraduationCap} />
               <Fact label={labels.deadline} fact={factFor(programme, 'deadline')} language={language} kind="deadline" includeScope={false} tile icon={Calendar}>
-                <details className="programme-intake-details"><summary>{extra.intake}</summary><dl className="programme-intake"><Fact label={extra.intake} fact={factFor(programme, 'intake')} language={language} kind="intake" includeScope={false} /></dl></details>
+                <details className="programme-intake-details"><summary className="inline-flex items-center gap-1"><span>{extra.intake}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><dl className="programme-intake"><Fact label={extra.intake} fact={factFor(programme, 'intake')} language={language} kind="intake" includeScope={false} /></dl></details>
               </Fact>
             </dl>
             <dl className="programme-meta text-sm">
@@ -132,7 +132,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
               <Fact label={labels.degree} fact={factFor(programme, 'degree')} language={language} kind="degree" includeScope={false} />
               {factFor(programme, 'location') && <Fact label={extra.location} fact={factFor(programme, 'location')} language={language} kind="location" includeScope={false} />}
             </dl>
-            <details className="programme-disclosure"><summary>{{en:'Details & conditions',ru:'Подробности и условия',uz:'Tafsilotlar va shartlar'}[language] || 'Details & conditions'}</summary>
+            <details className="programme-disclosure"><summary className="inline-flex items-center gap-1.5"><span>{{en:'Details & conditions',ru:'Подробности и условия',uz:'Tafsilotlar va shartlar'}[language] || 'Details & conditions'}</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
             <div className="space-y-4">
             <p>{help.results}</p>
             {(repeatedThreshold || !thresholdFact || thresholdFact.status === 'unknown') && <dl>
@@ -148,11 +148,11 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
         );
       })}
       {compact && expandable && programmes.length > 0 && <details className="text-sm">
-        <summary className="cursor-pointer rounded text-[#704a2d] underline underline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#855a36]">{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</summary>
+        <summary className="inline-flex items-center gap-1.5 cursor-pointer rounded text-[#704a2d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#855a36]"><span>{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
         <div className="mt-3"><PublishedProgrammeFacts admissionCatalog={admissionCatalog} language={language} /></div>
       </details>}
       {!compact && sources.length > 0 && <details className="programme-disclosure programme-sources">
-        <summary>{labels.sources}<span>{sources.length}</span></summary>
+        <summary className="inline-flex items-center gap-2"><span>{labels.sources}</span><span>{sources.length}</span><ChevronDown size={15} className="disclosure-chevron shrink-0 ml-auto" aria-hidden="true" /></summary>
         <OfficialSources sources={sources} language={language} />
       </details>}
     </section>

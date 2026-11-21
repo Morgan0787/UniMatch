@@ -61,12 +61,19 @@ body[data-unimatch-theme] .university-page .catalog-photo { margin: 16px 28px 6p
 body[data-unimatch-theme] .university-page .catalog-photo > img {
   display: block; width: 100%; height: clamp(200px, 24vw, 310px); object-fit: cover; border-radius: 18px;
 }
-body[data-unimatch-theme] .university-page .catalog-photo :is(figcaption, details, summary) { background: transparent; border: 0; }
+body[data-unimatch-theme] .university-page .catalog-photo :is(figcaption, details) { background: transparent; border: 0; }
+body[data-unimatch-theme] .university-page .catalog-photo figcaption { display: flex; justify-content: flex-end; margin-top: 8px; }
+body[data-unimatch-theme] .university-page .catalog-photo details { width: fit-content; max-width: 100%; }
+body[data-unimatch-theme] .university-page .catalog-photo details[open] { width: 100%; }
 body[data-unimatch-theme] .university-page .catalog-photo summary {
-  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
   width: fit-content; margin-left: auto;
-  min-height: 44px; padding-inline: 10px; cursor: pointer; font-size: 12px; color: #55504a;
+  min-height: 44px; padding: 6px 14px; cursor: pointer;
+  border-radius: 999px; border: 1px solid #e3dbd0; background: #fffdf8cc;
+  font-size: 12px; color: #55504a;
 }
+body[data-unimatch-theme] .university-page .catalog-photo summary:hover { border-color: #c8b69d; background: #fffdf8; }
+body[data-unimatch-theme] .university-page .catalog-photo summary > span { flex: 0 0 auto; }
 body[data-unimatch-theme] .university-page .catalog-photo-credit { padding: 14px; border: 1px solid #fff; border-radius: 18px; background: #ffffff80; font-size: 13px; overflow-wrap: anywhere; }
 body[data-unimatch-theme] .university-page .catalog-photo-credit p { margin-top: 8px; }
 body[data-unimatch-theme] .university-page .catalog-photo-credit a { text-decoration: underline; }

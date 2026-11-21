@@ -246,7 +246,7 @@ const en = {
     support: 'Support',
     helpCenter: 'Help Center',
     contactUs: 'Contact Us',
-    copyright: 'UniMatch. Made with ❤️ for students worldwide.',
+    copyright: 'UniMatch. Built for students worldwide.',
   },
   recommendations: {
     title: 'Your Personalized Recommendations',
@@ -523,7 +523,7 @@ const ru = {
     support: 'Поддержка',
     helpCenter: 'Центр помощи',
     contactUs: 'Связаться с нами',
-    copyright: 'UniMatch. Сделано с ❤️ для студентов по всему миру.',
+    copyright: 'UniMatch. Для студентов по всему миру.',
   },
   recommendations: {
     title: 'Ваши персональные рекомендации',
@@ -800,7 +800,7 @@ const uz = {
     support: 'Yordam',
     helpCenter: 'Yordam markazi',
     contactUs: 'Biz bilan bog‘laning',
-    copyright: 'UniMatch. Dunyo bo‘ylab talabalar uchun ❤️ bilan yaratilgan.',
+    copyright: 'UniMatch. Butun dunyo talabalari uchun.',
   },
   recommendations: {
     title: 'Siz uchun tavsiyalar',

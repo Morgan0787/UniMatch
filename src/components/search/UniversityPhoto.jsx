@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Camera, ChevronDown } from 'lucide-react';
 import { getUniversityPhoto } from '@/lib/admissions/presentation';
 
 const getWikimediaResponsiveSources = (url) => {
@@ -44,7 +44,7 @@ export default function UniversityPhoto({ university, language, showDetails = tr
     {showDetails && <figcaption>
       <details>
         <summary aria-label={`${creditLabel}: ${caption}`}>
-          <span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span><ChevronDown size={14} aria-hidden="true" />
+          <Camera size={13} className="shrink-0" aria-hidden="true" /><span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" />
         </summary>
         <div className="catalog-photo-credit">
           <img className="catalog-photo-original" src={image.url} width={image.width} height={image.height}

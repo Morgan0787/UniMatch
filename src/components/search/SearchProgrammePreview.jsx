@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react';
 import TuitionValue from '@/components/admissions/TuitionValue';
 import { describePublicFact } from '@/lib/admissions/factPresentation';
 import { catalogValue } from '@/lib/catalogCopy';
@@ -46,7 +47,7 @@ export default function SearchProgrammePreview({ programme, budgetReason = '', l
         <dd>{languageParts[0]}</dd>
         {(languageParts.length > 1 || languageFact.notice) && <dd>
           <details className="search-language-conditions">
-            <summary>{copy.conditions}</summary>
+            <summary className="inline-flex items-center gap-1"><span>{copy.conditions}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
             {languageParts.length > 1 && <p>{languageParts.slice(1).join(';').trim()}</p>}
             {languageFact.notice && <p>{languageFact.notice}</p>}
           </details>

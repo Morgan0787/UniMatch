@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ArrowUpRight, Camera, ChevronDown } from 'lucide-react';
 import { getInstitutionPresentation } from '@/lib/admissions/presentation';
 
 export default function InstitutionMedia({ option, c, compact = false }) {
@@ -12,7 +13,7 @@ export default function InstitutionMedia({ option, c, compact = false }) {
     <figcaption>
       {visible && <>
         {!compact && <><p>{caption?.caption || image.caption}</p><p>{c.photoScope}: {caption?.scope || image.matchScope}</p></>}
-        <details><summary>{c.photoCredit}</summary>
+        <details><summary><Camera size={13} className="shrink-0" aria-hidden="true" /><span>{c.photoCredit}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
           {compact && <><p>{caption?.caption || image.caption}</p><p>{c.photoScope}: {caption?.scope || image.matchScope}</p></>}
           <p><a href={image.sourcePage} target="_blank" rel="noopener noreferrer">{image.title}</a> — {image.creator} · <a href={image.license.url} target="_blank" rel="noopener noreferrer">{image.license.id}</a></p>
           <p>{image.attribution}</p><p>{image.changes}</p><p>{image.rightsNotes}</p>
@@ -25,7 +26,7 @@ export default function InstitutionMedia({ option, c, compact = false }) {
 export function InstitutionLinks({ option, c }) {
   const media = getInstitutionPresentation(option);
   return <div className="admission-official-links">
-    {media.homepage && <a href={media.homepage} target="_blank" rel="noopener noreferrer">{c.officialHomepage} ↗</a>}
-    {media.programLink && <a href={media.programLink} target="_blank" rel="noopener noreferrer">{c.officialProgramme} ↗</a>}
+    {media.homepage && <a className="inline-flex items-center gap-1" href={media.homepage} target="_blank" rel="noopener noreferrer"><span>{c.officialHomepage}</span><ArrowUpRight size={14} className="shrink-0" aria-hidden="true" /></a>}
+    {media.programLink && <a className="inline-flex items-center gap-1" href={media.programLink} target="_blank" rel="noopener noreferrer"><span>{c.officialProgramme}</span><ArrowUpRight size={14} className="shrink-0" aria-hidden="true" /></a>}
   </div>;
 }

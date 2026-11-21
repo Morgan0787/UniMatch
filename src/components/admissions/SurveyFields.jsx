@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { BriefcaseBusiness, Monitor, Settings, Layers2, Code2, Compass, Ellipsis } from 'lucide-react';
+import { BriefcaseBusiness, Monitor, Settings, Layers2, Code2, Compass, Ellipsis, ChevronDown } from 'lucide-react';
 import OptionSelect from '@/components/ui/OptionSelect';
 
 const directionIcons = { business: BriefcaseBusiness, it: Monitor, computer_engineering: Settings, software_engineering: Layers2, computer_science: Code2, other: Ellipsis };
@@ -65,7 +65,7 @@ export default function SurveyFields({ step, answers, onChange, errors, c }) {
     })}
     <p className="admission-hint">{c.examHint}</p>
     <details open={gradesOpen} onToggle={event => setGradesOpen(event.currentTarget.open)}>
-      <summary>{c.gradesToggle}</summary>
+      <summary className="inline-flex items-center gap-1.5"><span>{c.gradesToggle}</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
       <QualificationFields answers={answers} field={field} c={c} />
       <div className="admission-pair">{field('grade', c.grade, { type: 'number', min: 0, max: answers.scale ? Number(answers.scale) : undefined, step: 'any' })}{field('scale', c.scale, { options: c.scales })}</div>
       <p className="admission-hint">{c.gradeHint}</p>
@@ -85,7 +85,7 @@ export function RefineAnswers({ answers, onApply, c, errors }) {
   const update = (name, value) => { setRefinement(previous => ({ ...previous, [name]: value })); setApplied(false); };
   const field = (name, label, extras = {}) => <AnswerField name={name} label={label} value={refinement[name]} onChange={update} error={errors[name]} c={c} {...extras} />;
   return <details className="admission-refine">
-    <summary>{c.refine}</summary><p className="admission-hint">{!answers.credential ? c.refinePriority : c.refineIntro}</p>
+    <summary className="flex items-center justify-between w-full"><span>{c.refine}</span><ChevronDown size={16} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p className="admission-hint">{!answers.credential ? c.refinePriority : c.refineIntro}</p>
     <form ref={form} noValidate onSubmit={event => {
       event.preventDefault();
       const accepted = onApply(refinement);

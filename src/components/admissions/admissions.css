@@ -43,7 +43,8 @@
 .admission-skip { flex-basis: 100%; }
 .admission-footer { font-size: 12px; margin-top: 42px; border-top: 1px solid #ded8ce; padding-top: 20px; }
 .admission-error { font-size: 13px; color: #9a311e; }.admission-storage-warning { padding: 14px; border-left: 3px solid #98500e; background: #f3e7d5; font-size: 13px; }
-.admissions-page details { margin-top: 20px; }.admissions-page summary { cursor: pointer; padding-block: 12px; min-height: 44px; font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.admissions-page details { margin-top: 16px; }.admissions-page summary { cursor: pointer; padding-block: 10px; min-height: 44px; font-size: 14px; list-style: none; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.admissions-page summary::-webkit-details-marker { display: none; }
 .admissions-page summary:focus-visible { outline: 2px solid #98500e; outline-offset: 3px; }
 .admission-candidate { min-width: 0; padding: 20px; border: 1px solid #fffef7; border-radius: 20px; background: linear-gradient(130deg,#fffef7eb,#f6f2e4c9); box-shadow: inset 0 1px #fff,0 7px 18px #29493a09; }
 .admission-candidate-meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 12px; color: #59666c; }
@@ -191,7 +192,5 @@ body[data-unimatch-theme]:has(.admissions-page) .product-feedback-trigger { posi
 .admission-candidate > .admission-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .admission-candidate > .admission-facts > div:nth-child(2) { grid-column: 1 / -1; grid-row: 1; }
 .admission-candidate > .admission-facts > div:nth-child(2) dd { font-size: 20px; font-weight: 600; line-height: 1.35; }
-.admission-candidate > details { border-top: 1px solid #dedbd3; padding-top: 12px; }
-.admission-candidate > details > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
-.admission-candidate > details > summary::before { content: '+'; margin-right: 10px; }
-.admission-candidate > details[open] > summary::before { content: '−'; }
+.admission-candidate > details { border-top: 1px solid #dedbd3; padding-top: 10px; }
+.admission-candidate > details > summary { min-height: 44px; width: 100%; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-decoration: none; font-weight: 500; color: #292823; }

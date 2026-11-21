@@ -1,7 +1,7 @@
 import React, { useId } from 'react';
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
-import { Globe } from 'lucide-react';
+import { Check, Globe } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import '@/styles/glass-controls.css';
 
@@ -35,7 +35,7 @@ export default function LanguageSwitcher({ inline = false }) {
                     {languages.map(lang => (
                         <DropdownMenuRadioItem key={lang.code} value={lang.code} className="language-switcher-option">
                             {lang.name}
-                            {language === lang.code && <span className="language-switcher-check" aria-hidden="true">✓</span>}
+                            {language === lang.code && <Check size={14} strokeWidth={2.4} className="language-switcher-check shrink-0" aria-hidden="true" />}
                         </DropdownMenuRadioItem>
                     ))}
                 </DropdownMenuRadioGroup>

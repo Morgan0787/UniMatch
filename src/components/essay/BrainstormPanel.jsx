@@ -100,8 +100,8 @@ function BrainstormResults({ ideas, copy }) {
                 </h3>
                 <ul className="mt-2 space-y-2">
                   {topic.starting_questions.map((question, questionIndex) => (
-                    <li key={questionIndex} className="flex gap-2 text-sm leading-relaxed text-[#47443f]">
-                      <span aria-hidden="true" className="text-[#855a36]">•</span>
+                    <li key={questionIndex} className="flex items-start gap-2 text-sm leading-relaxed text-[#47443f]">
+                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-[#855a36] shrink-0" />
                       <span>{question}</span>
                     </li>
                   ))}

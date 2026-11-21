@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from "react";
-import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe2, Sprout, Instagram, Linkedin, ArrowRight, Play, Pause, } from "lucide-react";
+import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe2, Sprout, Instagram, Linkedin, ArrowRight, Play, Pause, Plus } from "lucide-react";
 import { Header } from "./Header";
 import { HeroSceneBoundary, HeroLoadingScreen } from './HeroSceneFallback';
 const HeroExplorer = lazy(() => import("./HeroExplorer"));
@@ -273,7 +273,7 @@ export default function App() {
             {[3, 4, 1].map((value, i) => (<div className="stat" key={i} data-reveal>
                 <span className="stat-number">
                   <span data-counter={value}>0{value}</span>
-                  <span>{i === 2 ? "↗" : "+"}</span>
+                  <span>{i === 2 ? <ArrowUpRight size={22} aria-hidden="true" /> : <Plus size={22} aria-hidden="true" />}</span>
                 </span>
                 <p>{c.stats[i]}</p>
               </div>))}

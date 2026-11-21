@@ -120,7 +120,7 @@ export default function AdmissionsSurvey() {
             {favorites.error && <div className="admission-save-feedback" role="alert"><p>{c[favorites.error] || c.saveError}</p><button type="button" className="admission-text-button" disabled={favorites.loading} onClick={favorites.retry}>{c.saveRetry}</button></div>}
             {favorites.notice && <p className="admission-save-feedback" role="status">{c[favorites.notice]}</p>}
             {(favorites.intentStatus === 'expired' || favorites.intentStatus === 'invalid') && <p role="status" className="admission-hint">{c.saveDraftExpired}</p>}
-            <CatalogStatus query={catalogQuery} c={c} />
+            <CatalogStatus query={catalogQuery} c={c} showPartial={view === 'results'} />
           </div>
         )}
         {favorites.resumeIntent && resumeOption && <section className="admission-resume-save" aria-label={c.resumeSave}>

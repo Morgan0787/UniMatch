@@ -1,4 +1,4 @@
-import { Compass, GraduationCap, Wallet } from 'lucide-react';
+import { ArrowUpRight, Compass, GraduationCap, Wallet } from 'lucide-react';
 
 // Pearl route geometry from the accepted UX05r2 artifact; static and decorative.
 const routeShape = 'M65 256 C39 121 322 335 319 159 C316 48 134 6 113 112 C95 203 364 268 373 81';
@@ -52,7 +52,7 @@ export default function SurveyStory({ step, view, answers, c }) {
       <span className="admission-story-route admission-story-route-end">{story.labels[2]}</span>
     </div>
     <div className="admission-story-current">
-      <span className="admission-story-marker" aria-hidden="true">{resultView ? '↗' : String(index + 1).padStart(2, '0')}</span>
+      <span className="admission-story-marker" aria-hidden="true">{resultView ? <ArrowUpRight size={16} strokeWidth={2} /> : String(index + 1).padStart(2, '0')}</span>
       <div>
         <span className="admission-story-current-label">{currentLabel}</span>
         <p>{selection || story.openRoute}</p>

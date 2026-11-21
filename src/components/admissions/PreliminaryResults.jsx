@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AlertCircle, Check, ChevronDown, HelpCircle, Info } from 'lucide-react';
 import { catalogValue } from '@/lib/catalogCopy';
 import { resultBudgetState, RESULT_COPY } from '@/lib/admissions/resultPresentation';
 import { RefineAnswers } from './SurveyFields';
@@ -16,8 +17,9 @@ const compareLimitCopy = {
 };
 
 function Reason({ reason, c }) {
+  const Icon = reason.status === 'met' ? Check : reason.status === 'unmet' ? AlertCircle : HelpCircle;
   return <li className={`admission-reason admission-reason-${reason.status}`}>
-    <span aria-hidden="true">{reason.status === 'met' ? '✓' : reason.status === 'unmet' ? '!' : '?'}</span>
+    <span aria-hidden="true"><Icon size={14} strokeWidth={2.2} /></span>
     <div>{c.reasons[reason.code] || c.incomplete}</div>
   </li>;
 }
@@ -63,7 +65,7 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
       <button type="button" className="admission-button admission-secondary" aria-pressed={saved} aria-label={`${saved ? c.removeSaved : c.save}: ${option.university}`} aria-busy={pending} disabled={favorites.loading || !favorites.canSave} onClick={() => favorites.requestSave(option)}>{pending ? (saved ? c.removing : c.saving) : saved ? c.removeSaved : c.save}</button>
     </div>
     <details>
-      <summary>{ui.details}</summary>
+      <summary><span>{ui.details}</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
     {knownReason && <p className="admission-known-reason">{c.cardReasons[knownReason.code]}</p>}
     {languageReference && <p className="admission-language-reference">{c.languageReference}: {languageReference.value}. {languageReference.notice} {c.languageReferenceLimit}</p>}
     {row.academicReferences?.length > 0 && <p className="admission-language-reference">{c.academicReference}: {[...new Set(row.academicReferences.map(reference => `${reference.minimum}/${reference.scale}${reference.season ? ` (${reference.season})` : ''}`))].join(', ')}. {c.academicReferenceLimit}</p>}
@@ -98,9 +100,8 @@ export default function PreliminaryResults({ evaluation, answers, onEdit, onAppl
       {compared.length > 0 && <button type="button" className="admission-button" disabled={compared.length < 2} onClick={() => setComparisonOpen(true)}>{compareCopy} ({compared.length}/3)</button>}
       <button type="button" className="admission-button admission-secondary" onClick={onEdit}>{c.edit}</button>
     </div>
-    <p id="admission-compare-status" role="status" aria-live="polite" className="admission-hint">{compared.length === 3 ? compareLimitCopy[language] : ui.comparison.replace('{count}', String(compared.length))}</p>
-    <details className="admission-coverage"><summary>{c.coverageSummary.replace('{shown}', String(shown))}</summary><p>{c.resultsIntro}</p><p>{evaluation.mode === 'ranked' ? c.topExplanation : c.exploreExplanation}</p><p>{c.coverage.replace('{shown}', String(shown))}</p></details>
-    {!favorites.isAuthenticated && <p className="admission-hint">{c.signInToSave}</p>}
+    {compared.length > 0 && <p id="admission-compare-status" role="status" aria-live="polite" className="admission-hint">{compared.length === 3 ? compareLimitCopy[language] : ui.comparison.replace('{count}', String(compared.length))}</p>}
+    <details className="admission-coverage"><summary><Info size={14} className="shrink-0" aria-hidden="true" /><span>{c.coverageSummary.replace('{shown}', String(shown))}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{c.resultsIntro}</p><p>{evaluation.mode === 'ranked' ? c.topExplanation : c.exploreExplanation}</p><p>{c.coverage.replace('{shown}', String(shown))}</p></details>
     {favorites.loading && !favorites.pendingId && <p role="status" className="admission-hint">{c.saveLoading}</p>}
     {Object.keys(errors).length > 0 && <p role="alert" className="admission-error">{c.errors}</p>}
     {!shown && <section className="admission-empty" aria-labelledby="admission-empty-title">

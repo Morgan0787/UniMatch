@@ -57,14 +57,19 @@ function readableUrlSegment(url, c) {
     if (/^scholarships?$/i.test(cleaned)) return c.scholarships;
     if (/^(?:admissions?|apply|how-to-apply)$/i.test(cleaned)) return c.admissions;
     const prettified = cleaned.replace(/[-_]+/g, ' ').replace(/(?<=\w)pdf$/i, ' (PDF)');
-    return shorten(prettified.charAt(0).toUpperCase() + prettified.slice(1));
+    return shorten(formatDisplayWords(prettified));
   }
   return `${c.source} · ${url.hostname.replace(/^www\./i, '')}`;
 }
 
+const ACRONYMS = /\b(eer|dacs|bsc|msc|phd|ai|it|cs|uk|eu|us|gpa|ielts|toefl|topik|ects)\b/gi;
+function formatDisplayWords(text) {
+  const formatted = text.replace(ACRONYMS, m => m.toUpperCase()).replace(/\bb\b/g, 'B');
+  return /^[a-z]/.test(formatted) ? formatted.charAt(0).toUpperCase() + formatted.slice(1) : formatted;
+}
 function cleanDisplayTitle(raw) {
   const cleaned = normalizeIntakeText(raw.trim()).replace(/(?<=\w)pdf$/i, ' (PDF)');
-  return /^[a-z]/.test(cleaned) ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : cleaned;
+  return formatDisplayWords(cleaned);
 }
 
 /** Use document metadata, or a transparent URL-based label when metadata is generic. */

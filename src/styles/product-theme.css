@@ -346,7 +346,7 @@ body[data-unimatch-theme] .university-identity-small { padding: 16px; gap: 12px;
 .programme-inline-fact dd.text-xs { flex-basis: 100%; }
 .catalog-card .catalog-tuition { font-size: 19px; line-height: 1.35; letter-spacing: -.025em; }
 .programme-summary .tuition-status { font-size: 12px; line-height: 1.5; letter-spacing: 0; }
-.programme-compact-scope summary { min-height: 32px; display: list-item; align-content: center; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.programme-compact-scope summary { min-height: 36px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: #704a2d; text-decoration: none; }
 .programme-compact-scope p { padding-block: 4px 8px; line-height: 1.5; }
 .programme-summary-hint, .programme-cost-note { color: #625f58; font-size: 13px; line-height: 1.55; }
 .programme-summary-hint { padding-top: 4px; }
@@ -448,11 +448,11 @@ body[data-unimatch-theme] [data-ui="select-content"] [role="option"][data-highli
 .catalog-photo { margin: 0; background: #f0eee9; }
 .catalog-photo > img { display: block; width: 100%; height: 164px; object-fit: contain; }
 .catalog-photo figcaption { background: #faf9f6; border-bottom: 1px solid #e8e5de; }
-.catalog-photo summary { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 7px 18px; cursor: pointer; color: #656158; font-size: 11px; line-height: 1.45; list-style: none; }
+.catalog-photo summary { display: flex; align-items: center; justify-content: flex-end; gap: 6px; min-height: 44px; padding: 7px 14px; cursor: pointer; color: #55504a; font-size: 11px; line-height: 1.45; list-style: none; }
 .catalog-photo summary::-webkit-details-marker { display: none; }
-.catalog-photo summary > span { flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.catalog-photo summary > svg { flex-shrink: 0; }
-.catalog-photo details[open] summary > svg { transform: rotate(180deg); }
+.catalog-photo summary > span { flex: 0 1 auto; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.catalog-photo summary > svg { flex-shrink: 0; transition: transform .2s ease; }
+.catalog-photo details[open] summary > svg.disclosure-chevron { transform: rotate(180deg); }
 .catalog-photo summary:focus-visible { outline: 2px solid #855a36; outline-offset: -3px; }
 .catalog-photo-credit { padding: 0 18px 14px; color: #656158; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
 .catalog-photo-credit p + p { margin-top: 8px; }
@@ -535,4 +535,20 @@ body[data-unimatch-theme] .unimatch-app[data-page] h1 {
   }
   body[data-unimatch-theme] .unimatch-app[data-page] .product-nav-inner { padding-inline: 14px; }
   body[data-unimatch-theme] .unimatch-app[data-page] .product-main { padding-top: 86px; }
+}
+/* Strip raw native disclosure markers globally in favor of Lucide chevrons. */
+body[data-unimatch-theme] :is(.unimatch-app, [role="dialog"]) summary {
+  list-style: none;
+  text-decoration: none;
+}
+body[data-unimatch-theme] :is(.unimatch-app, [role="dialog"]) summary::-webkit-details-marker,
+body[data-unimatch-theme] :is(.unimatch-app, [role="dialog"]) summary::marker {
+  display: none;
+  content: "";
+}
+body[data-unimatch-theme] :is(.unimatch-app, [role="dialog"]) details > summary .disclosure-chevron {
+  transition: transform 0.2s ease;
+}
+body[data-unimatch-theme] :is(.unimatch-app, [role="dialog"]) details[open] > summary .disclosure-chevron {
+  transform: rotate(180deg);
 }

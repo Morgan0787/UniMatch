@@ -2,7 +2,7 @@
 export const polishCopy = {
   en: {
     catalogLoading: 'Loading researched programmes…', catalogError: 'We could not refresh the catalogue. Your answers are kept; saving is unavailable until a successful refresh.', catalogRetry: 'Refresh catalogue', catalogStale: 'Loaded over a minute ago. Refresh before saving a university.', catalogPartial: 'Some catalogue records could not be verified and are excluded from these results.', catalogEmptyTitle: 'No researched programmes are available yet.', catalogEmpty: 'The database has no published programmes ready for this survey. Your answers remain in this tab.', catalogUnavailable: 'Refresh the catalogue before saving.', savedDetailsMissing: 'Saved university details are unavailable. Your saved entry is kept.',
-    unknown: 'Admission conditions need clarification',
+    unknown: 'Check entry criteria',
     fieldDescriptions: {
       business: 'Management, economics and how companies work.',
       it: 'Practical systems, networks and IT services.',
@@ -25,7 +25,7 @@ export const polishCopy = {
   },
   ru: {
     catalogLoading: 'Загружаем программы с проверенными источниками…', catalogError: 'Не удалось обновить каталог. Ответы сохранены; сохранение вуза станет доступно после успешного обновления.', catalogRetry: 'Обновить каталог', catalogStale: 'Каталог загружен больше минуты назад. Обновите его перед сохранением вуза.', catalogPartial: 'Некоторые записи каталога не удалось проверить. Они исключены из подборки.', catalogEmptyTitle: 'В каталоге пока нет готовых программ.', catalogEmpty: 'В базе пока нет опубликованных программ для этого опроса. Ответы остаются в этой вкладке.', catalogUnavailable: 'Обновите каталог перед сохранением.', savedDetailsMissing: 'Сведения о сохранённом вузе недоступны. Запись в избранном сохранена.',
-    unknown: 'Условия поступления нужно уточнить',
+    unknown: 'Проверьте требования',
     fieldDescriptions: {
       business: 'Управление, экономика и работа компаний.',
       it: 'Практические системы, сети и IT-сервисы.',
@@ -48,7 +48,7 @@ export const polishCopy = {
   },
   uz: {
     catalogLoading: 'Manbalari tekshirilgan dasturlar yuklanmoqda…', catalogError: 'Katalog yangilanmadi. Javoblaringiz saqlangan; universitetni saqlash uchun katalogni yangilang.', catalogRetry: 'Katalogni yangilash', catalogStale: 'Katalog bir daqiqadan oldin yuklangan. Saqlashdan oldin yangilang.', catalogPartial: 'Katalogdagi ayrim yozuvlar tekshirilmadi va tanlovga kiritilmadi.', catalogEmptyTitle: 'Katalogda tayyor dasturlar hali yo‘q.', catalogEmpty: 'Bazadan bu so‘rovnoma uchun e’lon qilingan dasturlar hali topilmadi. Javoblar shu varaqda qoladi.', catalogUnavailable: 'Saqlashdan oldin katalogni yangilang.', savedDetailsMissing: 'Saqlangan universitet ma’lumoti mavjud emas. Saqlangan yozuv o‘z joyida.',
-    unknown: 'Qabul shartlarini aniqlashtirish kerak',
+    unknown: 'Kirish talablarini tekshiring',
     fieldDescriptions: {
       business: 'Boshqaruv, iqtisodiyot va kompaniyalar faoliyati.',
       it: 'Amaliy tizimlar, tarmoqlar va IT xizmatlari.',

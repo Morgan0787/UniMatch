@@ -1,11 +1,12 @@
 import { Component } from 'react';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { getLandingLabels } from './labels';
 import './hero-scene.css';
 
 export function HeroLoadingScreen({ language }) {
   const copy = getLandingLabels(language);
   return <div className="hero-loading-screen" role="status" aria-live="polite">
-    <span className="hero-loading-orbit" aria-hidden="true" />
+    <ParticleLoader variant="orbit" size={30} label="" decorative />
     <span className="hero-loading-copy">
       <span>{copy.building}</span>
       <span className="hero-loading-note">{copy.sceneLoadingNote}</span>

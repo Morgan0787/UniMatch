@@ -42,15 +42,6 @@
   line-height: 1.25;
 }
 .unimatch-landing .hero-loading-note { font-size: 10px; opacity: .8; }
-.unimatch-landing .hero-loading-orbit {
-  flex: 0 0 22px;
-  width: 22px;
-  height: 22px;
-  border: 1px solid #b4834e44;
-  border-top-color: #ae7950;
-  border-radius: 50%;
-  animation: hero-loading-turn 1.4s linear infinite;
-}
 .unimatch-landing .hero-scene-retry {
   position: absolute;
   top: 112px;
@@ -62,7 +53,6 @@
   background: #fff9;
   color: #594b3e;
 }
-@keyframes hero-loading-turn { to { transform: rotate(360deg); } }
 .unimatch-landing .hero-explorer.pearl-story {
   background: radial-gradient(ellipse 49% 63% at 51% 43%, #d6d7d7 0%, #e2e3e2 49%, #f3f2ed 82%, #faf7ef 100%);
   isolation: isolate;

@@ -12,6 +12,7 @@ import { Search as SearchIcon, SlidersHorizontal, GraduationCap, X, GitCompare, 
 import FilterPanel from '@/components/search/FilterPanel';
 import UniversityCard from '@/components/search/UniversityCard';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { useLanguage } from '@/lib/i18n';
 import { catalogContent, DiscoverySections } from '@/lib/discoveryContent';
 import discoveryLinks from 'virtual:seo-discovery-links';
@@ -223,7 +224,7 @@ export default function Search() {
                         </Button>
                     </div>
                     <div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4">
-                        <p className="text-[#55504a]" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-[#292823]">{shownResults.length}</span> {t('search.results')}</>}</p>
+                        <div className="text-[#55504a]" role="status">{isLoading ? <ParticleLoader variant="pill" label={loadingLabel} decorative /> : <><span className="font-semibold text-[#292823]">{shownResults.length}</span> {t('search.results')}</>}</div>
                         <div className="flex flex-wrap items-center gap-3">
                             {compareList.length > 0 && <Button disabled={isLoading} onClick={() => setShowComparison(true)} className="bg-[#252c2f] hover:bg-[#354044] text-white rounded-full gap-2 min-h-10" size="sm"><GitCompare className="w-4 h-4" />{t('search.compare')} ({compareList.length})</Button>}
                             <div className="flex gap-2 items-center text-sm text-[#47443f]"><span>{t('search.yourGpa')}:</span><Badge variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b] border border-[#e3caa6]">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</Badge></div>

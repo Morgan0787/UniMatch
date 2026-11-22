@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Target, GraduationCap, Globe, Coins, BookOpen, Pencil, ArrowRight, AlertCircle, GitCompare, SlidersHorizontal, ArrowDownUp, X } from 'lucide-react';
 import UniversityCard from '@/components/search/UniversityCard';
 import ComparisonModal from '@/components/comparison/ComparisonModal';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
@@ -405,17 +406,20 @@ export default function Recommendations() {
             {/* Recommendations */}
             <div className="recommendations-container recommendations-results">
                 {isLoading ? (
-                    <div className="recommendations-grid">
-                        {[1,2,3,4,5,6].map(i => (
-                            <Card key={i}>
-                                <Skeleton className="h-40" />
-                                <CardContent className="p-5 space-y-3">
-                                    <Skeleton className="h-6 w-3/4" />
-                                    <Skeleton className="h-4 w-1/2" />
-                                    <Skeleton className="h-20" />
-                                </CardContent>
-                            </Card>
-                        ))}
+                    <div className="space-y-4">
+                        <ParticleLoader variant="pill" label={t('common.loading')} />
+                        <div className="recommendations-grid">
+                            {[1,2,3,4,5,6].map(i => (
+                                <Card key={i}>
+                                    <Skeleton className="h-40" />
+                                    <CardContent className="p-5 space-y-3">
+                                        <Skeleton className="h-6 w-3/4" />
+                                        <Skeleton className="h-4 w-1/2" />
+                                        <Skeleton className="h-20" />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     </div>
                 ) : isError || profileQuery.isError ? (
                     <div className="recommendation-empty" role="alert">

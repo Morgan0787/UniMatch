@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FeedbackPanel from '@/components/essay/FeedbackPanel';
 import BrainstormPanel from '@/components/essay/BrainstormPanel';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { invokeAI } from '@/lib/aiService';
 import { useAuth } from '@/lib/AuthContext';
 import { getEssayCopy } from '@/lib/essayCopy';
@@ -106,12 +107,7 @@ export default function EssayChecker() {
   if (isLoadingAuth) {
     return (
       <main className="release-page min-h-[calc(100dvh-190px)] flex items-center justify-center px-4 py-12">
-        <Card className="mx-auto w-full max-w-xl rounded-[24px] border-white/95 bg-[#fffdf8]/90 shadow-sm">
-          <CardContent className="flex items-center gap-3 p-6 text-sm text-[#55504a] sm:p-8" role="status">
-            <LoaderCircle className="h-5 w-5 animate-spin" aria-hidden="true" />
-            {copy.loadingAuth}
-          </CardContent>
-        </Card>
+        <ParticleLoader variant="card" className="mx-auto w-full max-w-xl" label={copy.loadingAuth} />
       </main>
     );
   }

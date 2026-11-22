@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { useLanguage } from '@/lib/i18n';
 import { UniversityDetails } from '@/components/search/UniversityDetailModal';
 import { Button } from '@/components/ui/button';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { admissionCopy } from '@/components/admissions/copy';
 import { readCatalogState } from '@/lib/catalogState';
 import { isRecommendationsReturn, universityReturnPath } from '@/lib/universityNavigation';
@@ -80,11 +81,7 @@ export default function University({ publicId } = {}) {
       {savingAction && favoriteMutation.isError && <p role="alert" className="university-inline-alert mb-4 text-amber-900">{favoriteText.saveError}</p>}
       <span role="status" className="sr-only">{savePendingLabel || (savingAction && favoriteMutation.isSuccess ? favoriteText[savingAction.remove ? 'removedFromAccount' : 'savedInAccount'] : '')}</span>
       {validId && query.isLoading ? (
-        <div className="university-status-card" role="status" aria-busy="true">
-          <div className="university-skeleton university-skeleton-title" />
-          <div className="university-skeleton university-skeleton-sub" />
-          <p className="text-sm text-[#55504a] mt-3">{c.loading}</p>
-        </div>
+        <ParticleLoader variant="card" label={c.loading} />
       ) : query.isError ? (
         <div className="university-status-card" role="alert">
           <Heading className="text-xl font-semibold text-[#292823]">{c.error}</Heading>

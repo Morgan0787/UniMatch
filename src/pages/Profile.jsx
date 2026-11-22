@@ -16,6 +16,7 @@ import {
 import { toast } from 'sonner';
 import ProfileBuilder from '@/components/profile/ProfileBuilder';
 import ChanceIndicator from '@/components/ui/ChanceIndicator';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { useLanguage } from '@/lib/i18n';
 import { admissionCopy } from '@/components/admissions/copy';
 import { calculateChance, describeMissingChanceData } from '@/lib/matching';
@@ -103,6 +104,7 @@ export default function Profile() {
         return (
             <div className="min-h-screen p-6 text-[#292823]">
                 <div className="max-w-4xl mx-auto space-y-6">
+                    <ParticleLoader variant="pill" label={t('common.loading')} />
                     <Skeleton className="h-40 rounded-2xl" />
                     <Skeleton className="h-80 rounded-2xl" />
                 </div>

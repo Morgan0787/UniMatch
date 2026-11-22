@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import ParticleLoader from '@/components/ui/ParticleLoader';
 import { MessageSquare, Mail, Globe, Calendar, AlertCircle, ShieldCheck } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -86,6 +87,7 @@ export default function AdminFeedback() {
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
                 {isLoading ? (
                     <div className="space-y-4">
+                        <ParticleLoader variant="pill" label="Loading feedback…" />
                         {[1, 2, 3].map(i => (
                             <Card key={i}>
                                 <CardContent className="p-6">

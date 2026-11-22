@@ -16,6 +16,7 @@ import RouteSeo from '@/lib/RouteSeo';
 import VercelTelemetry from '@/lib/VercelTelemetry';
 import { CATALOG_LANGUAGES, catalogPath, DiscoveryContent } from '@/lib/discoveryContent';
 import { readPublicUniversityPage } from '@/lib/publicUniversityPage';
+import ParticleLoader from '@/components/ui/ParticleLoader';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -25,9 +26,7 @@ const PROTECTED_PAGES = new Set(['Profile', 'Recommendations']);
 
 function PageLoading() {
   if (document.getElementById('public-entry')) return null;
-  return <div className="grid min-h-screen place-items-center" aria-busy="true">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-800" />
-  </div>;
+  return <ParticleLoader variant="full" />;
 }
 
 function PublicEntryReady() {
@@ -106,8 +105,8 @@ function AppContent({ publicPage }) {
     {publicPage.universityId && (
       <details className="discovery-details" onToggle={event => setDetailsOpen(event.currentTarget.open)}>
         <summary className="inline-flex items-center gap-2"><span>Show details and save this university</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
-        {detailsOpen && (isLoadingAuth ? <p role="status">Loading university…</p> :
-          <Suspense fallback={<p role="status">Loading university…</p>}>
+        {detailsOpen && (isLoadingAuth ? <ParticleLoader variant="card" size={104} label={{ en: 'Loading university…', ru: 'Загружаем университет…', uz: 'Universitet yuklanmoqda…' }[publicPage.language] || 'Loading university…'} /> :
+          <Suspense fallback={<ParticleLoader variant="card" size={104} label={{ en: 'Loading university…', ru: 'Загружаем университет…', uz: 'Universitet yuklanmoqda…' }[publicPage.language] || 'Loading university…'} />}>
             <Pages.University publicId={publicPage.universityId} />
           </Suspense>)}
       </details>

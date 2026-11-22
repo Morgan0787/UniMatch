@@ -42,12 +42,6 @@ body[data-unimatch-theme] .university-page .university-rail-card {
 body[data-unimatch-theme] .university-page .university-status-card {
   padding: 32px;
 }
-body[data-unimatch-theme] .university-page .university-skeleton {
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(226, 218, 206, .55), rgba(255, 253, 248, .85), rgba(226, 218, 206, .55));
-}
-body[data-unimatch-theme] .university-page .university-skeleton-title { height: 32px; width: min(360px, 80%); }
-body[data-unimatch-theme] .university-page .university-skeleton-sub { height: 18px; width: min(200px, 55%); margin-top: 12px; }
 body[data-unimatch-theme] .university-page .university-detail-content.university-detail-standalone {
   border: 0;
   border-radius: 0;

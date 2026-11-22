@@ -176,17 +176,17 @@ body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) {
 }
 .unimatch-app .catalog-cover .bg-gradient-to-t { background: linear-gradient(to top, #63544120, transparent); }
 .unimatch-app .catalog-cover .opacity-10 { opacity: .22; }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(.bg-indigo-600, .bg-indigo-500) { background-color: var(--catalog-ink); }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(.bg-indigo-600, .bg-indigo-500):hover { background-color: #454238; }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(.text-indigo-600, .text-indigo-700) { color: var(--catalog-copper); }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(.bg-indigo-50, .bg-indigo-100) { background-color: #eee3d3; }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(.border-indigo-200, .border-indigo-600) { border-color: #b99570; }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) :is(input, [role=combobox]) { background-color: #fffdf8; border-color: var(--catalog-border); }
-body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer) input[type=checkbox] { accent-color: var(--catalog-copper); }
-body[data-unimatch-theme] .catalog-filter-drawer input.catalog-scholarship-switch { background-color: #e8e0d5; border-color: #cfc3b2; }
-body[data-unimatch-theme] .catalog-filter-drawer input.catalog-scholarship-switch:checked { background-color: #855a36; border-color: #855a36; }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(.bg-indigo-600, .bg-indigo-500) { background-color: var(--catalog-ink); }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(.bg-indigo-600, .bg-indigo-500):hover { background-color: #454238; }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(.text-indigo-600, .text-indigo-700) { color: var(--catalog-copper); }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(.bg-indigo-50, .bg-indigo-100) { background-color: #eee3d3; }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(.border-indigo-200, .border-indigo-600) { border-color: #b99570; }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) :is(input, [role=combobox]) { background-color: #fffdf8; border-color: var(--catalog-border); }
+body[data-unimatch-theme] :is(.catalog-page, .catalog-filter-drawer, .search-filter-surface) input[type=checkbox] { accent-color: var(--catalog-copper); }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface) input.catalog-scholarship-switch { background-color: #e8e0d5; border-color: #cfc3b2; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface) input.catalog-scholarship-switch:checked { background-color: #855a36; border-color: #855a36; }
 body[data-unimatch-theme] .catalog-filter-drawer { background: #faf7ef; }
-body[data-unimatch-theme] .catalog-filter-drawer .product-glass { background: transparent; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface) .product-glass { background: transparent; }
 /* Fix the overly condensed Latin display font while keeping the landing composition. */
 body[data-unimatch-theme] .unimatch-landing { font-family: var(--product-font); min-width: 0; }
 body[data-unimatch-theme] .unimatch-landing section[id] { scroll-margin-top: 80px; }
@@ -217,7 +217,7 @@ body[data-unimatch-theme] .unimatch-landing .scene-node {
   .unimatch-app .catalog-card .grid-cols-2 { grid-template-columns: minmax(0,1.7fr) minmax(0,1fr); }
   .unimatch-app .catalog-card p.truncate { white-space: normal; overflow: visible; font-size: 12px; }
 }
-body[data-unimatch-theme] .catalog-filter-drawer .product-glass { padding: 16px; border: 0; box-shadow: none; backdrop-filter: none; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface) .product-glass { padding: 18px 20px; border: 0; box-shadow: none; backdrop-filter: none; }
 @media (min-width: 1280px) {
   .unimatch-app .catalog-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
 }

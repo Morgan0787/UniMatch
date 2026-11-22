@@ -8,9 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Drawer } from 'vaul';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { Search as SearchIcon, SlidersHorizontal, GraduationCap, X, GitCompare, ChevronLeft, ChevronRight } from 'lucide-react';
 import FilterPanel from '@/components/search/FilterPanel';
 import UniversityCard from '@/components/search/UniversityCard';
@@ -87,8 +84,27 @@ export default function Search() {
     };
     const location = useLocation();
     const navigate = useNavigate();
-    const isMobile = useIsMobile();
-    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+    const [isDesktopViewport, setIsDesktopViewport] = useState(() => (typeof window === 'undefined' ? true : window.matchMedia('(min-width: 1024px)').matches));
+    const [desktopFiltersOpen, setDesktopFiltersOpen] = useState(true);
+    const [compactFiltersOpen, setCompactFiltersOpen] = useState(false);
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const mql = window.matchMedia('(min-width: 1024px)');
+        const onChange = () => setIsDesktopViewport(mql.matches);
+        mql.addEventListener('change', onChange);
+        setIsDesktopViewport(mql.matches);
+        return () => mql.removeEventListener('change', onChange);
+    }, []);
+    useEffect(() => {
+        if (!compactFiltersOpen || isDesktopViewport) return undefined;
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') setCompactFiltersOpen(false);
+        };
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [compactFiltersOpen, isDesktopViewport]);
+    const filtersExpanded = isDesktopViewport ? desktopFiltersOpen : compactFiltersOpen;
+    const toggleFilters = () => (isDesktopViewport ? setDesktopFiltersOpen(open => !open) : setCompactFiltersOpen(open => !open));
     const [compareList, setCompareList] = useState(() => location.state?.catalogCompareList || []);
     const [showComparison, setShowComparison] = useState(false);
 
@@ -164,10 +180,9 @@ export default function Search() {
     const loadingLabel = { en: 'Loading all universities…', ru: 'Загружаем полный каталог…', uz: 'To‘liq katalog yuklanmoqda…' }[language];
     const filterDoneLabel = { en: 'Show results', ru: 'Показать результаты', uz: 'Natijalarni ko‘rsatish' }[language] || 'Show results';
     const unsetLabel = { en: 'Not set', ru: 'Не указано', uz: 'Kiritilmagan' }[language] || 'Not set';
-    const FilterDialog = isMobile ? Drawer.Root : Sheet;
-    const FilterTrigger = isMobile ? Drawer.Trigger : SheetTrigger;
-    const filterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} />;
-    const filterFooter = <div className="border-t border-[#e5dccf] p-4"><Button className="w-full min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => setMobileFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>;
+    const desktopFilterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} />;
+    const inlineFilterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} onClose={() => setCompactFiltersOpen(false)} />;
+    const inlineFilterFooter = <div className="search-inline-filter-footer"><Button type="button" className="w-full min-h-11 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => setCompactFiltersOpen(false)}>{filterDoneLabel} ({shownResults.length})</Button></div>;
 
     return (
         <div className="catalog-page search-page min-h-screen">
@@ -194,32 +209,18 @@ export default function Search() {
                             <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-12 pl-12 pr-10 py-0 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
                             {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 min-h-10 min-w-10 inline-flex items-center justify-center rounded-full text-[#55504a] hover:text-[#292823]"><X className="w-4 h-4" /></button>}
                         </div>
-                        <FilterDialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen} {...(isMobile ? { handleOnly: true, autoFocus: true } : {})}>
-                            <FilterTrigger asChild>
-                                <Button variant="outline" className="search-filter-trigger gap-2 shrink-0 w-full md:w-auto h-12 min-h-12 px-5 rounded-full border-white/95 bg-[#fffdf8]/90 text-[#292823] hover:bg-white shadow-sm"><SlidersHorizontal className="w-4 h-4" /><span>{t('search.filters')}</span>{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-0.5 min-w-6 h-6 px-1.5 rounded-full justify-center font-semibold tabular-nums">{activeFilterCount}</Badge>}</Button>
-                            </FilterTrigger>
-                            {isMobile ? (
-                                <Drawer.Portal>
-                                    <Drawer.Overlay className="catalog-filter-overlay product-overlay fixed inset-0 z-50 bg-black/80" />
-                                    <Drawer.Content aria-describedby={undefined} data-lenis-prevent className="catalog-filter-drawer search-glass-drawer fixed inset-x-0 bottom-0 z-50 flex max-h-[calc(100dvh-28px)] flex-col rounded-t-[30px] bg-background">
-                                        <Drawer.Title className="sr-only">{t('search.filters')}</Drawer.Title>
-                                        <Drawer.Handle className="catalog-filter-handle" />
-                                        <Drawer.Close className="product-dialog-close absolute right-4 top-2">
-                                            <X className="h-4 w-4" />
-                                            <span className="sr-only">{t('common.close')}</span>
-                                        </Drawer.Close>
-                                        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4">{filterFields}</div>
-                                        {filterFooter}
-                                    </Drawer.Content>
-                                </Drawer.Portal>
-                            ) : (
-                                <SheetContent side="right" aria-describedby={undefined} className="catalog-filter-drawer search-glass-drawer w-full sm:w-96 p-0 flex flex-col max-h-screen">
-                                    <SheetTitle className="sr-only">{t('search.filters')}</SheetTitle>
-                                    <div className="flex-1 overflow-y-auto p-4 pt-10">{filterFields}</div>
-                                    {filterFooter}
-                                </SheetContent>
-                            )}
-                        </FilterDialog>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            aria-expanded={filtersExpanded}
+                            aria-controls={isDesktopViewport ? 'catalog-filters-sidebar' : 'catalog-filters-inline'}
+                            onClick={toggleFilters}
+                            className={`search-filter-trigger gap-2 shrink-0 w-full md:w-auto h-12 min-h-12 px-5 rounded-full border-white/95 text-[#292823] shadow-sm ${filtersExpanded ? 'is-open bg-[#f6ead8] border-[#dfbe93]' : 'bg-[#fffdf8]/90 hover:bg-white'}`}
+                        >
+                            <SlidersHorizontal className="w-4 h-4" />
+                            <span>{t('search.filters')}</span>
+                            {activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-0.5 min-w-6 h-6 px-1.5 rounded-full justify-center font-semibold tabular-nums">{activeFilterCount}</Badge>}
+                        </Button>
                     </div>
                     <div className="catalog-results flex flex-wrap items-center justify-between mt-4 gap-4">
                         <p className="text-[#55504a]" role="status">{isLoading ? loadingLabel : <><span className="font-semibold text-[#292823]">{shownResults.length}</span> {t('search.results')}</>}</p>
@@ -230,44 +231,59 @@ export default function Search() {
                     </div>
                 </div>
             </div>
+            {compactFiltersOpen && (
+                <section id="catalog-filters-inline" aria-label={t('search.filters')} className="lg:hidden search-inline-filters max-w-7xl mx-auto">
+                    <div className="search-filter-surface search-glass-drawer">
+                        {inlineFilterFields}
+                        {inlineFilterFooter}
+                    </div>
+                </section>
+            )}
             <p id="catalog-compare-status" role="status" aria-live="polite" className={`max-w-7xl mx-auto px-4 sm:px-6 text-sm text-[#55504a] ${compareList.length ? 'pt-4' : 'sr-only'}`}>{compareList.length === 3 ? compareStatus : compareList.length > 0 ? `${compareList.length} / 3` : ''}</p>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
-                <div id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="min-w-0">
-                    {isLoading && !showingPreview ? (
-                        <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-[#fffdf8]/85 rounded-[22px] overflow-hidden border border-white/95"><Skeleton className="h-44" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div>
-                    ) : isError ? (
-                        <div role="alert" className="catalog-load-error"><h2>{{en:'Unable to load universities',ru:'Не удалось загрузить университеты',uz:'Universitetlarni yuklab bo‘lmadi'}[language]}</h2><p>{{en:'Your search and filters are kept. Try loading the catalogue again.',ru:'Поиск и фильтры сохранены. Попробуйте загрузить каталог ещё раз.',uz:'Qidiruv va filtrlar saqlandi. Katalogni qayta yuklab ko‘ring.'}[language]}</p><Button disabled={isFetching} className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => void refetch()}>{{en:'Try again',ru:'Попробовать снова',uz:'Qayta urinish'}[language]}</Button></div>
-                    ) : pageRows.length ? (
-                        <>
-                            <h2 className="sr-only">{{en:'University results',ru:'Результаты поиска университетов',uz:'Universitet qidiruvi natijalari'}[language]}</h2>
-                            <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">
-                                {pageRows.map(({ university, programme, budget }) => (
-                                    <UniversityCard key={university.id} university={university} programme={programme} budget={budget}
-                                        userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversityFavorite(savedUniversities, university)}
-                                        saveDisabled={saving || profileQuery.isLoading || profileQuery.isError} savePendingLabel={favoriteAction?.university.id === university.id ? pendingLabel : undefined}
-                                        onSave={handleSave} onView={rememberCatalogPosition} isComparing={compareList.includes(university.id)}
-                                        compareLimitReached={compareList.length >= 3} onCompareToggle={handleCompareToggle} previewOnly={showingPreview}
-                                        prioritizePhotoLoading={university.id === priorityPhotoId} />
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <div className="text-center py-20"><div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-[#704a2d]" /></div><h3 className="text-lg font-semibold text-[#292823] mb-2">{t('search.noResults')}</h3><p className="text-[#55504a] mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" className="rounded-full" onClick={resetFilters}>{t('search.resetFilters')}</Button></div>
-                    )}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 catalog-workspace" data-filters-open={desktopFiltersOpen ? 'true' : 'false'}>
+                {desktopFiltersOpen && (
+                    <aside id="catalog-filters-sidebar" aria-label={t('search.filters')} className="hidden lg:block catalog-filter-sidebar search-filter-surface search-glass-drawer">
+                        {desktopFilterFields}
+                    </aside>
+                )}
+                <div className="catalog-results-column min-w-0">
+                    <div id="catalog-items" aria-busy={searchQuery !== deferredQuery} className="min-w-0">
+                        {isLoading && !showingPreview ? (
+                            <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="bg-[#fffdf8]/85 rounded-[22px] overflow-hidden border border-white/95"><Skeleton className="h-44" /><div className="p-5 space-y-3"><Skeleton className="h-6 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-16" /><Skeleton className="h-8 w-24" /></div></div>)}</div>
+                        ) : isError ? (
+                            <div role="alert" className="catalog-load-error"><h2>{{en:'Unable to load universities',ru:'Не удалось загрузить университеты',uz:'Universitetlarni yuklab bo‘lmadi'}[language]}</h2><p>{{en:'Your search and filters are kept. Try loading the catalogue again.',ru:'Поиск и фильтры сохранены. Попробуйте загрузить каталог ещё раз.',uz:'Qidiruv va filtrlar saqlandi. Katalogni qayta yuklab ko‘ring.'}[language]}</p><Button disabled={isFetching} className="rounded-full bg-[#252c2f] hover:bg-[#354044] text-white" onClick={() => void refetch()}>{{en:'Try again',ru:'Попробовать снова',uz:'Qayta urinish'}[language]}</Button></div>
+                        ) : pageRows.length ? (
+                            <>
+                                <h2 className="sr-only">{{en:'University results',ru:'Результаты поиска университетов',uz:'Universitet qidiruvi natijalari'}[language]}</h2>
+                                <div className="catalog-grid grid grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {pageRows.map(({ university, programme, budget }) => (
+                                        <UniversityCard key={university.id} university={university} programme={programme} budget={budget}
+                                            userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversityFavorite(savedUniversities, university)}
+                                            saveDisabled={saving || profileQuery.isLoading || profileQuery.isError} savePendingLabel={favoriteAction?.university.id === university.id ? pendingLabel : undefined}
+                                            onSave={handleSave} onView={rememberCatalogPosition} isComparing={compareList.includes(university.id)}
+                                            compareLimitReached={compareList.length >= 3} onCompareToggle={handleCompareToggle} previewOnly={showingPreview}
+                                            prioritizePhotoLoading={university.id === priorityPhotoId} />
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center py-20"><div className="w-16 h-16 bg-[#f4e4cc] rounded-full flex items-center justify-center mx-auto mb-4"><GraduationCap className="w-8 h-8 text-[#704a2d]" /></div><h3 className="text-lg font-semibold text-[#292823] mb-2">{t('search.noResults')}</h3><p className="text-[#55504a] mb-6">{t('search.tryAdjusting')}</p><Button variant="outline" className="rounded-full" onClick={resetFilters}>{t('search.resetFilters')}</Button></div>
+                        )}
+                    </div>
+                    {!isLoading && shownResults.length > 0 && <nav aria-label={pagingLabels[2]} className="catalog-pagination pt-8 pb-2">
+                        <div className="catalog-pagination-controls">
+                            <Button variant="outline" className="catalog-page-previous" disabled={pageInfo.page === 1} onClick={() => changePage(pageInfo.page - 1)}><ChevronLeft aria-hidden="true" />{pagingLabels[0]}</Button>
+                            <ul className="catalog-page-numbers">
+                                {pageNumbers.map((page, index) => <React.Fragment key={page}>
+                                    {index > 0 && page - pageNumbers[index - 1] > 1 && <li aria-hidden="true"><span className="catalog-page-ellipsis">…</span></li>}
+                                    <li><Button variant="outline" className="catalog-page-number" aria-label={`${pageLabel} ${page}`} aria-current={page === pageInfo.page ? 'page' : undefined} onClick={() => changePage(page)}>{page}</Button></li>
+                                </React.Fragment>)}
+                            </ul>
+                            <Button variant="outline" className="catalog-page-next" disabled={pageInfo.page === pageInfo.pages} onClick={() => changePage(pageInfo.page + 1)}>{pagingLabels[1]}<ChevronRight aria-hidden="true" /></Button>
+                        </div>
+                    </nav>}
                 </div>
             </div>
-            {!isLoading && shownResults.length > 0 && <nav aria-label={pagingLabels[2]} className="catalog-pagination max-w-7xl mx-auto px-4 sm:px-6 pb-8">
-                <div className="catalog-pagination-controls">
-                    <Button variant="outline" className="catalog-page-previous" disabled={pageInfo.page === 1} onClick={() => changePage(pageInfo.page - 1)}><ChevronLeft aria-hidden="true" />{pagingLabels[0]}</Button>
-                    <ul className="catalog-page-numbers">
-                        {pageNumbers.map((page, index) => <React.Fragment key={page}>
-                            {index > 0 && page - pageNumbers[index - 1] > 1 && <li aria-hidden="true"><span className="catalog-page-ellipsis">…</span></li>}
-                            <li><Button variant="outline" className="catalog-page-number" aria-label={`${pageLabel} ${page}`} aria-current={page === pageInfo.page ? 'page' : undefined} onClick={() => changePage(page)}>{page}</Button></li>
-                        </React.Fragment>)}
-                    </ul>
-                    <Button variant="outline" className="catalog-page-next" disabled={pageInfo.page === pageInfo.pages} onClick={() => changePage(pageInfo.page + 1)}>{pagingLabels[1]}<ChevronRight aria-hidden="true" /></Button>
-                </div>
-            </nav>}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
                 <DiscoverySections sections={catalogContent(language, discoveryLinks).sections} />
             </div>

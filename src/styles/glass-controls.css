@@ -100,10 +100,10 @@ body[data-unimatch-theme] .language-inline-options {
   }
 }
 
-/* The drawer supplies the glass material; its controls do not add another blurred layer. */
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel h3 { color: #292e30; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-value { color: #9a5d18; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [data-ui="select-trigger"] {
+/* The surface supplies the glass material; its controls do not add another blurred layer. */
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel h3 { color: #292e30; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-value { color: #9a5d18; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel [data-ui="select-trigger"] {
   min-height: 48px;
   border-color: #ffffffed;
   border-radius: 15px;
@@ -111,20 +111,20 @@ body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-fil
   color: #302d29;
   box-shadow: inset 0 1px 1px #fff, 0 4px 12px #5d49300a;
 }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [data-ui="select-trigger"]:hover { background: #ffffffed; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel [data-ui="select-trigger"]:hover { background: #ffffffed; }
 body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"] { min-height: 44px; border-radius: 11px; color: #34302b; }
 body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"][data-highlighted] { background: #efe5d8; color: #34291e; }
 body[data-unimatch-theme] .glass-filter-options[data-ui="select-content"] [role="option"][data-state="checked"] { background: #f4dfc1; color: #65451f; font-weight: 650; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [data-orientation="horizontal"] { height: 7px; background: #c7b69f80; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [data-orientation="horizontal"] > span { background: #c38742; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-slider [role="slider"] {
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-slider [data-orientation="horizontal"] { height: 7px; background: #c7b69f80; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-slider [data-orientation="horizontal"] > span { background: #c38742; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-slider [role="slider"] {
   width: 20px;
   height: 20px;
   border: 2px solid #fff;
   background: #bd7b30;
   box-shadow: 0 2px 7px #5d493033, inset 0 1px #ffffffb3;
 }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip {
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel .search-filter-chip {
   min-height: 40px;
   border-color: #ffffffed;
   border-radius: 999px;
@@ -132,20 +132,20 @@ body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-fil
   color: #544d44;
   box-shadow: inset 0 1px #fff, 0 3px 9px #5d49300a;
 }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip:hover { background: #ffffffd9; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel .search-filter-chip.is-selected {
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel .search-filter-chip:hover { background: #ffffffd9; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel .search-filter-chip.is-selected {
   border-color: #fff4e4;
   background: #f1d8b4;
   color: #65451f;
   box-shadow: inset 0 1px #fff9, 0 3px 9px #8a5d2917;
 }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [aria-expanded] {
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel [aria-expanded] {
   border-color: #ffffffed;
   background: #ffffff80;
   color: #423a31;
 }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel [aria-expanded]:hover { background: #ffffffd9; }
-body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer .search-filter-panel :focus-visible,
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel [aria-expanded]:hover { background: #ffffffd9; }
+body[data-unimatch-theme] :is(.catalog-filter-drawer, .search-filter-surface).search-glass-drawer .search-filter-panel :focus-visible,
 body[data-unimatch-theme] .language-switcher-menu[role="menu"] :focus-visible,
 .glass-filter-options :focus-visible { outline: 3px solid #966433; outline-offset: 2px; }
 

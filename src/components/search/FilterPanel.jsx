@@ -3,7 +3,7 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ChevronDown } from 'lucide-react';
+import { RotateCcw, ChevronDown, X } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { catalogValue } from '@/lib/catalogCopy';
 import { catalogSearchCopy, formatCatalogueBudget } from '@/lib/catalogSearchCopy';
@@ -14,7 +14,7 @@ const languages = ["English", "German", "French", "Spanish", "Italian", "Dutch",
 const regions = ["Europe", "North America", "Asia", "Middle East", "Oceania", "South America"];
 const degrees = ["Bachelor", "Master", "PhD"];
 
-export default function FilterPanel({ filters, setFilters, onReset, universities = [] }) {
+export default function FilterPanel({ filters, setFilters, onReset, universities = [], onClose = undefined }) {
     const { t, language } = useLanguage();
     const budgetCopy = catalogSearchCopy(language);
     const unsetLabel = { en: 'Not set', ru: 'Не указано', uz: 'Kiritilmagan' }[language] || 'Not set';
@@ -33,7 +33,13 @@ export default function FilterPanel({ filters, setFilters, onReset, universities
 
     return (
         <div className="product-glass search-filter-panel bg-[#fffdf8]/90 rounded-2xl border border-[#e3d7c6] p-6 space-y-6 shadow-sm">
-            <div className="flex items-center justify-between"><h3 className="font-semibold text-[#292823]">{t('search.filters')}</h3>{activeFilterCount > 0 && <Button variant="ghost" size="sm" onClick={onReset} className="text-[#47443f] hover:text-[#292823]"><RotateCcw className="w-4 h-4 mr-1" />{t('filters.reset')}</Button>}</div>
+            <div className="flex items-center justify-between gap-2">
+                <h3 className="font-semibold text-[#292823]">{t('search.filters')}</h3>
+                <div className="flex items-center gap-1">
+                    {activeFilterCount > 0 && <Button variant="ghost" size="sm" onClick={onReset} className="text-[#47443f] hover:text-[#292823]"><RotateCcw className="w-4 h-4 mr-1" />{t('filters.reset')}</Button>}
+                    {onClose && <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label={t('common.close')} className="min-h-10 min-w-10 rounded-full text-[#47443f] hover:text-[#292823]"><X className="w-4 h-4" /></Button>}
+                </div>
+            </div>
             <div className="space-y-3"><Label id={filterId('gpa-label')} className="text-sm font-medium text-[#292823]">{t('filters.gpa')}: <span className="search-filter-value text-[#704a2d] font-semibold">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</span></Label><Slider aria-labelledby={filterId('gpa-label')} value={[filters.gpa ?? 1.0]} onValueChange={([val]) => updateFilter('gpa', val)} min={1.0} max={4.0} step={0.1} className="search-filter-slider py-2" /><div className="flex justify-between text-xs text-[#625e59]"><span>1.0</span><span>4.0</span></div></div>
             <div className="space-y-3"><Label id={filterId('ielts-label')} htmlFor={filterId('ielts')} className="text-sm font-medium text-[#292823]">{t('filters.ielts')}: <span className="search-filter-value text-[#704a2d] font-semibold">{filters.ielts == null ? unsetLabel : filters.ielts === 0 ? t('filters.noCertificate') : filters.ielts.toFixed(1)}</span></Label><Select value={filters.ielts == null ? 'unset' : String(filters.ielts)} onValueChange={(val) => updateFilter('ielts', val === 'unset' ? null : Number(val))}><SelectTrigger id={filterId('ielts')} className="bg-[#fffdf8] border-[#dedbd3]"><SelectValue /></SelectTrigger><SelectContent className="glass-filter-options search-filter-options" matchTriggerWidth align="start"><SelectItem value="unset">{unsetLabel}</SelectItem><SelectItem value="0">{t('filters.noCertificate')}</SelectItem><SelectItem value="5.5">IELTS 5.5</SelectItem><SelectItem value="6">IELTS 6.0</SelectItem><SelectItem value="6.5">IELTS 6.5</SelectItem><SelectItem value="7">IELTS 7.0+</SelectItem></SelectContent></Select></div>
             <div className="space-y-2">

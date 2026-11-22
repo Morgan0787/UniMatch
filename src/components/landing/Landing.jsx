@@ -1,7 +1,8 @@
 import { lazy, Suspense, useRef, useState } from "react";
-import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe, Globe2, Sprout, Sparkles, Instagram, Linkedin, ArrowRight, Play, Pause, Plus } from "lucide-react";
+import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe, Globe2, Sprout, Sparkles, SlidersHorizontal, Instagram, Linkedin, ArrowRight, Play, Pause, Plus } from "lucide-react";
 import { Header } from "./Header";
 import { HeroSceneBoundary, HeroLoadingScreen } from './HeroSceneFallback';
+import ParticleLoader from "@/components/ui/ParticleLoader";
 const HeroExplorer = lazy(() => import("./HeroExplorer"));
 import { usePageMotion } from "./usePageMotion";
 import { useDiscovery, DiscoveryDialogs } from "./Discovery";
@@ -323,24 +324,30 @@ export default function App() {
             </Action>
           </div>
           <div className="collection-controls" data-reveal>
-            <div className="filters" aria-label={labels.destinations}>
-              {c.filters.map((f, i) => (<button key={i} className={filter === i && !onlySaved ? "active" : ""} aria-pressed={filter === i && !onlySaved} onClick={() => {
-                setFilter(i);
-                setOnlySaved(false);
-            }}>
-                  {f.toUpperCase()}
-                </button>))}
+            <div className="filters-toolbar">
+              <span className="filters-label">
+                <SlidersHorizontal size={14} strokeWidth={1.85} aria-hidden="true"/>
+                <span>{labels.destinations}</span>
+              </span>
+              <div className="filters" role="group" aria-label={labels.destinations}>
+                {c.filters.map((f, i) => (<button type="button" key={i} className={filter === i && !onlySaved ? "active" : ""} aria-pressed={filter === i && !onlySaved} onClick={() => {
+                    setFilter(i);
+                    setOnlySaved(false);
+                }}>
+                    {f}
+                  </button>))}
+              </div>
             </div>
-            <button className={`saved-filter ${onlySaved ? "active" : ""}`} aria-pressed={onlySaved} onClick={() => {
+            <button type="button" className={`saved-filter ${onlySaved ? "active" : ""}`} aria-pressed={onlySaved} onClick={() => {
             setOnlySaved(!onlySaved);
             setFilter(0);
         }}>
-              <Bookmark size={15}/>
+              <Bookmark size={15} strokeWidth={1.9} fill={onlySaved ? "currentColor" : "none"} aria-hidden="true"/>
               {c.viewSaved}
-              <span>{saved.length}</span>
+              <span className="saved-count">{saved.length}</span>
             </button>
           </div>
-          {d.isLoading && <p className="catalog-status" role="status">{labels.loading}</p>}
+          {d.isLoading && <div className="catalog-status catalog-status-loading"><ParticleLoader variant="pill" label={labels.loading}/></div>}
           {d.isError && <div className="catalog-status" role="alert"><p>{labels.unavailable}</p><button className="text-link" onClick={d.refetch}>{labels.retry}</button></div>}
           <div className="university-grid">
             {filtered.map((u, i) => (<article className="university-card" key={u.id}>

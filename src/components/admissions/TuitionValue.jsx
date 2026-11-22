@@ -21,5 +21,5 @@ export default function TuitionValue({ fact, language = 'en', concise = false })
   const mainLabel = concise && value && typeof value === 'object' && !Number.isFinite(value.amount) && fact?.status !== 'unknown'
     ? unknownAmountText
     : describePublicFact(displayFact, language, 'tuition').value;
-  return <><span>{mainLabel}</span>{concise && yearLabel && <small className="tuition-year block mt-1 text-xs font-normal text-[#55504a]">{yearLabel}</small>}{status && <small className="tuition-status block mt-1 text-xs font-normal text-[#855a36]">{status}</small>}</>;
+  return <><span className="tuition-amount">{mainLabel}</span>{(concise && yearLabel || status) && <span className="tuition-meta">{concise && yearLabel && <small className="tuition-year">{yearLabel}</small>}{status && <small className="tuition-status">{status}</small>}</span>}</>;
 }

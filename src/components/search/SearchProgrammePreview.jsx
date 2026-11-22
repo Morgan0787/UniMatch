@@ -27,36 +27,38 @@ export default function SearchProgrammePreview({ programme, budgetReason = '', l
     <p className="search-programme-eyebrow">{copy.example}</p>
     <h4>{name.value}</h4>
       {location ? (
-        <p className="search-programme-campus mb-2 text-xs leading-snug text-[#55504a]">
-          <span className="font-semibold text-[#292823]">{catalogCopy.programmeCampus}: </span>
+        <p className="search-programme-campus">
+          <span>{catalogCopy.programmeCampus}: </span>
           {[location.campus, catalogValue(location.country, language)].filter(Boolean).join(' · ')}
         </p>
       ) : (
-        <p className="search-programme-campus-muted mb-2 text-xs leading-snug text-[#656158]">
+        <p className="search-programme-campus search-programme-campus-muted">
           {catalogCopy.unknownCampus}
         </p>
       )}
     <dl className="search-programme-stats">
-      <div>
+      <div className="search-stat-item">
         <dt>{copy.tuition}</dt>
         <dd><TuitionValue fact={fact('tuition')} language={language} concise /></dd>
         {budgetReason && <dd><small className="catalog-budget-reason">{budgetReason}</small></dd>}
       </div>
-      <div>
+      <div className="search-stat-item">
         <dt>{copy.language}</dt>
         <dd>{languageParts[0]}</dd>
         {(languageParts.length > 1 || languageFact.notice) && <dd>
           <details className="search-language-conditions">
-            <summary className="inline-flex items-center gap-1"><span>{copy.conditions}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
-            {languageParts.length > 1 && <p>{languageParts.slice(1).join(';').trim()}</p>}
-            {languageFact.notice && <p>{languageFact.notice}</p>}
+            <summary><span>{copy.conditions}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
+            <div className="search-language-conditions-body">
+              {languageParts.length > 1 && <p>{languageParts.slice(1).join(';').trim()}</p>}
+              {languageFact.notice && <p>{languageFact.notice}</p>}
+            </div>
           </details>
         </dd>}
       </div>
     </dl>
     <div className="search-programme-review">
       <h5>{copy.check}</h5>
-      <ul><li>{copy.academic}: {academic.value}</li></ul>
+      <p className="search-programme-check-item"><span>{copy.academic}:</span> {academic.value}</p>
     </div>
   </section>;
 }

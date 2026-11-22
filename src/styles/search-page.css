@@ -24,20 +24,20 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 }
 .unimatch-app .catalog-page.search-page .catalog-card.search-university-card:hover { border-color: #fff; box-shadow: 0 16px 36px rgba(74,53,34,.12), inset 0 1px 1px #fff; }
 .unimatch-app .catalog-page.search-page .catalog-cover { display: flex; flex-direction: column; min-width: 0; overflow: visible; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { order: 0; display: flex; align-items: flex-start; min-width: 0; gap: 10px; min-height: 94px; padding: 16px 18px 10px; background: transparent; }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { order: 0; display: flex; align-items: flex-start; min-width: 0; gap: 12px; min-height: 98px; padding: 18px 18px 12px; background: transparent; height: auto; position: relative; }
 .unimatch-app .catalog-page.search-page .university-identity-small .university-monogram { display: none; }
-.unimatch-app .catalog-page.search-page .university-identity-copy { min-width: 0; flex: 1; }
-.unimatch-app .catalog-page.search-page .university-identity-copy h3 { margin: 0; color: var(--search-ink); font-size: clamp(1.12rem, 1.35vw, 1.28rem); font-weight: 650; letter-spacing: -.03em; line-height: 1.22; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.unimatch-app .catalog-page.search-page .university-identity-copy p { margin-top: 4px; color: var(--search-muted); font-size: .82rem; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.unimatch-app .catalog-page.search-page .university-identity-copy { min-width: 0; flex: 1; align-self: flex-start; }
+.unimatch-app .catalog-page.search-page .university-identity-copy h3 { margin: 0; color: var(--search-ink); font-size: clamp(17px, 1.25vw, 18.5px); font-weight: 600; letter-spacing: -.02em; line-height: 1.25; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.unimatch-app .catalog-page.search-page .university-identity-copy p { margin-top: 4px; color: var(--search-muted); font-size: 13px; font-weight: 400; line-height: 1.4; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .unimatch-app .catalog-page.search-page .university-identity-actions { position: static; flex: 0 0 auto; }
 .unimatch-app .catalog-page.search-page .catalog-save { width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: rgba(255,255,255,.72); box-shadow: inset 0 1px #fff, 0 4px 12px #5d493014; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover > .catalog-photo { order: 1; width: 100%; padding-inline: 14px; background: transparent; }
-.unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { display: block; width: 100%; height: 170px; object-fit: cover; border-radius: 14px; background: transparent; }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover > .catalog-photo { order: 1; width: 100%; padding-inline: 16px; background: transparent; }
+.unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { display: block; width: 100%; height: 160px; object-fit: cover; border-radius: 14px; background: transparent; }
 .unimatch-app .catalog-page.search-page .catalog-photo-original { display: block; width: 100%; height: auto; margin-block: 8px; border-radius: 10px; object-fit: contain; }
-.unimatch-app .catalog-page.search-page .catalog-photo figcaption { border: 0; background: rgba(255,255,255,.5); }
+.unimatch-app .catalog-page.search-page .catalog-photo figcaption { border: 0; background: transparent; }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { min-height: 32px; padding: 4px 16px; font-size: 11px; }
 .unimatch-app .catalog-page.search-page .catalog-photo-credit { padding: 0 16px 8px; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { min-width: 0; padding: 0 16px 12px; gap: 8px; }
+.unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { min-width: 0; padding: 12px 18px 18px; gap: 10px; }
 .unimatch-app .catalog-page.search-page .catalog-card-facts { border-top: 1px solid var(--search-line); padding-top: 8px; }
 .unimatch-app .catalog-page.search-page .programme-summary { min-width: 0; }
 .unimatch-app .catalog-page.search-page .catalog-card .programme-fact-card { padding: 0; border: 0; border-radius: 0; background: transparent; }
@@ -118,16 +118,15 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 @media (max-width: 639px) {
   .unimatch-app .catalog-page.search-page .catalog-heading { padding-block: 24px 16px; }
   .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 14px; }
-  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { padding: 12px 15px 9px; min-height: 0; }
-  .unimatch-app .catalog-page.search-page .university-identity-copy h3 { font-size: 1.2rem; }
+  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { padding: 16px 16px 10px; min-height: 0; }
+  .unimatch-app .catalog-page.search-page .university-identity-copy h3 { font-size: 18px; }
   .unimatch-app .catalog-page.search-page .catalog-save { width: 44px; height: 44px; }
-  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 0 15px 12px; }
-  .unimatch-app .catalog-page.search-page .programme-preview-facts { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px 10px; }
+  .unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 10px 16px 16px; }
   .unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 180px; }
   .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 15px; }
 }
 @media (max-width: 359px) {
-  .unimatch-app .catalog-page.search-page .programme-preview-facts { grid-template-columns: minmax(0,1fr); }
+  .unimatch-app .catalog-page.search-page .search-programme-stats { padding: 10px 12px; }
 }
 
 /* Search shares one viewport light field across its glass surfaces. */
@@ -135,15 +134,9 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .catalog-page .max-w
 .unimatch-app .catalog-page.search-page .search-profile-hint > div { padding-block: 0; }
 .unimatch-app .catalog-page.search-page .catalog-heading p { font-size: 1.12rem; }
 .unimatch-app .catalog-page.search-page .catalog-results { margin-top: 10px; }
-.unimatch-app .catalog-page.search-page .catalog-card-actions { gap: 10px; padding-top: 16px; }
-.unimatch-app .catalog-page.search-page .catalog-card-actions :is(a,button) { font-size: 15px; font-weight: 600; }
-.unimatch-app .catalog-page.search-page .programme-preview-facts { margin-block: 12px; gap: 12px 18px; }
+.unimatch-app .catalog-page.search-page .catalog-card-actions { gap: 10px; padding-top: 12px; }
+.unimatch-app .catalog-page.search-page .catalog-card-actions :is(a,button) { font-size: 14px; font-weight: 600; }
 .unimatch-app .catalog-page.search-page .programme-confirmation > summary { width: fit-content; padding: 6px 12px; border: 1px solid #f5ce954f; border-radius: 999px; background: #ffe2ae99; color: #9b5809; font-weight: 600; text-decoration: none; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { min-height: 96px; padding: 12px 20px 10px; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-card-body { padding: 8px 20px 16px; }
-.unimatch-app .catalog-page.search-page .catalog-photo figcaption { background: transparent; }
-.unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 144px; }
-.unimatch-app .catalog-page.search-page .catalog-card > .catalog-cover .university-identity-small { height: auto; position: relative; }
 .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 8px; }
 .unimatch-app .catalog-page.search-page .catalog-grid { gap: 18px; }
 /* Shared shell in product-theme.css owns .product-nav and .product-footer geometry across all routes. */
@@ -194,28 +187,31 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profil
 
 .unimatch-app .search-page .catalog-budget-reason { color: #79501e; }
 
-/* The reference card has three clear bands: identity/photo, programme/stats, review/actions. */
-.unimatch-app .catalog-page.search-page .search-programme-preview { flex: 1; display: flex; flex-direction: column; gap: 5px; color: #292823; }
-.unimatch-app .catalog-page.search-page .search-programme-eyebrow { font-size: 12px; color: #55504a; }
-.unimatch-app .catalog-page.search-page .search-programme-preview h4 { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.25; letter-spacing: -.02em; min-height: 40px; white-space: normal; overflow-wrap: anywhere; }
-.unimatch-app .catalog-page.search-page .search-programme-campus { color: #55504a; }
-.unimatch-app .catalog-page.search-page .search-programme-stats { display: grid; grid-template-columns: 1.15fr 1fr; gap: 14px; padding-block: 9px; border-block: 1px solid #8f765c24; }
+/* Harmonized card preview: single type family scale, spacious full-width stat rows, bottom-anchored actions. */
+.unimatch-app .catalog-page.search-page .search-programme-preview { flex: 1; display: flex; flex-direction: column; gap: 8px; color: var(--search-ink); }
+.unimatch-app .catalog-page.search-page .search-programme-eyebrow { margin: 0; font-size: 12px; font-weight: 500; color: #655b50; }
+.unimatch-app .catalog-page.search-page .search-programme-preview h4 { margin: 0; font-size: 15.5px; font-weight: 600; line-height: 1.3; letter-spacing: -.015em; min-height: 41px; white-space: normal; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .search-programme-campus { margin: 0; font-size: 12.5px; font-weight: 400; line-height: 1.4; color: #55504a; min-height: 18px; }
+.unimatch-app .catalog-page.search-page .search-programme-campus > span { font-weight: 500; color: #3c3934; }
+.unimatch-app .catalog-page.search-page .search-programme-campus-muted { color: #656158; }
+.unimatch-app .catalog-page.search-page .search-programme-stats { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin: 2px 0 0; padding: 12px 14px; border: 1px solid rgba(133, 90, 54, .14); border-radius: 16px; background: rgba(250, 247, 239, .78); }
 .unimatch-app .catalog-page.search-page .search-programme-stats > div { min-width: 0; }
-.unimatch-app .catalog-page.search-page .search-programme-stats > div + div { border-left: 1px solid #8f765c24; padding-left: 14px; }
-.unimatch-app .catalog-page.search-page .search-programme-stats dt { font-size: 12px; line-height: 1.3; color: #55504a; margin-bottom: 4px; }
-.unimatch-app .catalog-page.search-page .search-programme-stats dd { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.25; overflow-wrap: anywhere; }
-.unimatch-app .catalog-page.search-page .search-programme-stats small { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; line-height: 1.35; }
-.unimatch-app .catalog-page.search-page .search-language-conditions { margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #55504a; }
-.unimatch-app .catalog-page.search-page .search-language-conditions summary { cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.unimatch-app .catalog-page.search-page .search-language-conditions p { margin-top: 6px; }
-.unimatch-app .catalog-page.search-page .search-programme-stats .tuition-status { color: #855a36; }
-.unimatch-app .catalog-page.search-page .search-programme-review { margin-top: auto; padding-top: 4px; }
-.unimatch-app .catalog-page.search-page .search-programme-review h5 { font-size: 13px; font-weight: 650; margin-bottom: 4px; }
-.unimatch-app .catalog-page.search-page .search-programme-review ul { padding-left: 18px; list-style: disc; font-size: 13px; line-height: 1.45; }
-.unimatch-app .catalog-page.search-page .search-programme-review li::marker { color: #b66b16; }
-.unimatch-app .catalog-page.search-page .search-programme-note { font-size: 11px; color: #55504a; line-height: 1.35; }
+.unimatch-app .catalog-page.search-page .search-programme-stats > div + div { border-top: 1px solid rgba(133, 90, 54, .12); padding-top: 10px; }
+.unimatch-app .catalog-page.search-page .search-programme-stats dt { font-size: 12px; font-weight: 500; line-height: 1.35; color: #5c564e; margin-bottom: 3px; }
+.unimatch-app .catalog-page.search-page .search-programme-stats dd { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.35; color: var(--search-ink); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.unimatch-app .catalog-page.search-page .search-programme-stats .catalog-budget-reason { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #79501e; }
+.unimatch-app .catalog-page.search-page .search-language-conditions { margin-top: 6px; font-size: 12.5px; font-weight: 400; line-height: 1.45; color: #4a4742; }
+.unimatch-app .catalog-page.search-page .search-language-conditions > summary { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border: 1px solid rgba(133, 90, 54, .2); border-radius: 999px; background: rgba(255, 255, 255, .86); font-size: 12.5px; font-weight: 500; color: #5c3c1b; text-decoration: none; cursor: pointer; transition: background-color .16s ease, border-color .16s ease; }
+.unimatch-app .catalog-page.search-page .search-language-conditions > summary:hover { background: #fff; border-color: rgba(133, 90, 54, .36); }
+.unimatch-app .catalog-page.search-page .search-language-conditions-body { margin-top: 8px; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, .74); font-size: 12.5px; line-height: 1.45; color: #4a4742; }
+.unimatch-app .catalog-page.search-page .search-language-conditions-body p + p { margin-top: 4px; }
+.unimatch-app .catalog-page.search-page .search-programme-review { padding: 2px 2px 0; }
+.unimatch-app .catalog-page.search-page .search-programme-review h5 { margin: 0 0 3px; font-size: 12.5px; font-weight: 600; color: var(--search-ink); }
+.unimatch-app .catalog-page.search-page .search-programme-check-item { margin: 0; font-size: 12.5px; line-height: 1.45; color: #55504a; }
+.unimatch-app .catalog-page.search-page .search-programme-check-item > span { font-weight: 500; color: #3c3934; }
+.unimatch-app .catalog-page.search-page .search-programme-note { font-size: 12px; color: #55504a; line-height: 1.4; }
 .unimatch-app .catalog-page.search-page .catalog-card-facts { border-top: 0; padding-top: 0; }
-.unimatch-app .catalog-page.search-page .catalog-card-actions { padding-top: 12px; grid-template-columns: 1.35fr 1fr; }
+.unimatch-app .catalog-page.search-page .catalog-card-actions { margin-top: auto; padding-top: 12px; grid-template-columns: 1.35fr 1fr; }
 .unimatch-app .catalog-page.search-page .catalog-card-actions :is(a,button) { min-height: 44px; font-size: 14px; }
 .unimatch-app .catalog-page.search-page .catalog-cover:not(:has(> .catalog-photo)) .university-identity-actions { position: static; }
 .unimatch-app .catalog-page.search-page .catalog-photo { position: relative; }
@@ -292,8 +288,6 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .product-footer .pro
   position: static; width: 44px; height: 44px; flex-shrink: 0; box-shadow: none;
 }
 @media (max-width: 359px) {
-  .unimatch-app .catalog-page.search-page .search-programme-stats { grid-template-columns: 1fr; gap: 10px; }
-  .unimatch-app .catalog-page.search-page .search-programme-stats > div + div { padding: 10px 0 0; border-left: 0; border-top: 1px solid #8f765c24; }
   .unimatch-app .catalog-page.search-page .catalog-card-actions { grid-template-columns: 1fr; }
 }
 .unimatch-app .catalog-page.search-page .search-filter-surface {

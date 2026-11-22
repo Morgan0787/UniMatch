@@ -128,7 +128,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                         </div>
                         {university.country === "South Korea" && university.topikLevel ? (
                             <div className="text-xs text-[#55504a]">
-                                <span className="text-[#55504a]">🇰🇷 TOPIK:</span> {university.topikLevel.split(' ')[1]}+
+                                <span className="text-[#55504a]">TOPIK:</span> {university.topikLevel.split(' ')[1]}+
                                 <span className="block text-[#55504a]">{t('university.forKorean')}</span>
                             </div>
                         ) : null}

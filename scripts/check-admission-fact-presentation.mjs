@@ -1,17 +1,34 @@
 import assert from 'node:assert/strict';
 import { describePublicFact } from '../src/lib/admissions/factPresentation.js';
+import { formatUsd, toUsd, TUITION_RATE_DATE } from '../src/lib/tuitionCurrency.js';
+import { legacyTuitionPresentation } from '../src/lib/legacyTuitionPresentation.js';
 
 const fact = (value, extra = {}) => ({ status: 'current_verified', value, applicability: 'confirmed', sourceIds: ['official'], ...extra });
 
 const tuition = describePublicFact(fact({ amount: 12500, currency: 'USD', period: 'semester', feeYear: '2026–27' }), 'en', 'tuition');
 assert.equal(tuition.value, '12,500 USD / semester (2026–27)');
 assert.deepEqual(tuition.sourceIds, ['official']);
-assert.equal(describePublicFact(fact({ amount: 12345.6789, currency: 'EUR', period: 'credit_hour', feeYear: '2026' }), 'en', 'tuition').value, '12,345.6789 EUR / credit hour (2026)');
+const eur = { amount: 12345.6789, currency: 'EUR', period: 'credit_hour', feeYear: '2026' };
+const eurQuote = describePublicFact(fact(eur), 'en', 'tuition');
+assert.equal(eurQuote.value, `Approx. ${formatUsd(toUsd(eur.amount, eur.currency), 'en')} / credit hour (2026)`);
+assert.equal(eurQuote.tuitionReference, `12,345.6789 EUR · ECB ${TUITION_RATE_DATE}`);
 assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: 'academic_year_9_months' }), 'en', 'tuition').value, '12,000 USD / 9-month academic year');
 assert.equal(describePublicFact(fact({ amount: 12000, currency: 'USD', period: '12_months' }), 'en', 'tuition').value, '12,000 USD / 12 months');
 assert.equal(describePublicFact(fact({ amount: null, currency: 'USD', period: null, feeYear: '2026–27' }), 'en', 'tuition').value, 'Amount unknown USD / period unknown (2026–27)');
-assert.equal(describePublicFact(fact({ amount: 9, currency: 'EUR', period: null }), 'ru', 'tuition').value, '9 EUR / период неизвестен');
-assert.match(describePublicFact(fact({ amount: 396.3, currency: 'USD', period: 'credit_hour', label: 'Nonresident undergraduate base tuition; course and mandatory fees are additional.' }), 'en', 'tuition').value, /396.3 USD \/ credit hour.*fees are additional/);
+const smallEur = { amount: 9, currency: 'EUR', period: null };
+const smallEurQuote = describePublicFact(fact(smallEur), 'ru', 'tuition');
+assert.equal(smallEurQuote.value, `Примерно ${formatUsd(toUsd(smallEur.amount, smallEur.currency), 'ru')} / период неизвестен`);
+assert.equal(smallEurQuote.tuitionReference, `9 EUR · ЕЦБ ${TUITION_RATE_DATE}`);
+assert.equal(describePublicFact(fact({ ...eur, currency: 'UZS' }), 'en', 'tuition').value, '12,345.6789 UZS / credit hour (2026)');
+assert.match(describePublicFact(fact({ amount: 396.3456, currency: 'USD', period: 'credit_hour', label: 'Nonresident undergraduate base tuition; course and mandatory fees are additional.' }), 'en', 'tuition').value, /396\.3456 USD \/ credit hour.*fees are additional/);
+assert.equal(describePublicFact(fact({ amount: 4000, currency: 'UZS', period: 'year' }), 'en', 'tuition').value, '4,000 UZS / year');
+const legacyTuition = legacyTuitionPresentation(10000, 12000, 'en');
+assert.equal(legacyTuition.amount, `≈ ${formatUsd(toUsd(10000, 'EUR'), 'en')}–${formatUsd(toUsd(12000, 'EUR'), 'en')}`);
+assert.equal(legacyTuition.originalRange, '€10,000.00–€12,000.00');
+assert.ok(legacyTuition.note.includes(TUITION_RATE_DATE));
+assert.equal(legacyTuitionPresentation(10000, null, 'en').originalRange, '€10,000.00');
+assert.equal(legacyTuitionPresentation(10000, null, 'en').note, `Original tuition in EUR · ECB reference rate ${TUITION_RATE_DATE}`);
+assert.equal(legacyTuitionPresentation(-1, null, 'en'), null);
 
 assert.equal(describePublicFact(fact({ level: 'Master', award: 'Master of Science' }), 'en', 'degree').value, 'Master of Science');
 assert.equal(describePublicFact(fact({ level: 'Master', award: null }), 'en', 'degree').value, 'Master');
@@ -52,7 +69,8 @@ const historical = describePublicFact({
   status: 'historical_reference', value: null, applicability: 'unconfirmed', sourceIds: [],
   historical: { value: { amount: 9000, currency: 'EUR', period: 'year', feeYear: '2025–26' }, referenceSeason: '2025–26', sourceIds: ['archive'] },
 }, 'en', 'tuition');
-assert.equal(historical.value, '9,000 EUR / year (2025–26)');
+assert.equal(historical.value, `Approx. ${formatUsd(toUsd(9000, 'EUR'))} / year (2025–26)`);
+assert.equal(historical.tuitionReference, `9,000 EUR · ECB ${TUITION_RATE_DATE}`);
 assert.match(historical.notice, /Historical reference for 2025–26; current applicability is unconfirmed/);
 assert.deepEqual(historical.sourceIds, ['archive']);
 

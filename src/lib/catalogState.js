@@ -1,3 +1,5 @@
+import { toUsd } from './tuitionCurrency.js';
+
 export const DEFAULT_FILTERS = { gpa: null, ielts: null, topikLevel: null, budget: null, region: '', country: '', languages: [], degree: '', scholarshipsOnly: false };
 
 /** @param {Record<string, any>} [value] */
@@ -17,9 +19,23 @@ export function normalizeFilters(value = {}) {
     };
 }
 
+/** @param {Record<string, any>} [value] */
+export function readStoredCatalogFilters(value) {
+    const filters = normalizeFilters(value);
+    if (filters.budget == null || value?.budgetCurrency === 'USD') return filters;
+    const budget = toUsd(filters.budget, 'EUR');
+    return { ...filters, budget: budget == null ? null : Number(budget.toFixed(2)) };
+}
+
+/** @param {Record<string, any>} value */
+export function serializeCatalogFilters(value) {
+    const filters = normalizeFilters(value);
+    return JSON.stringify(filters.budget == null ? filters : { ...filters, budgetCurrency: 'USD' });
+}
+
 export function readCatalogState(params, fallback = DEFAULT_FILTERS) {
     let filters = fallback;
-    try { if (params.has('filters')) filters = JSON.parse(params.get('filters')); } catch { filters = DEFAULT_FILTERS; }
+    try { if (params.has('filters')) filters = readStoredCatalogFilters(JSON.parse(params.get('filters'))); } catch { filters = DEFAULT_FILTERS; }
     const page = Number(params.get('page'));
     return {
         query: params.get('q') || '', filters: normalizeFilters(filters),
@@ -31,8 +47,7 @@ export function writeCatalogState(params, patch, fallback) {
     const next = new URLSearchParams(params);
     const state = { ...readCatalogState(params, fallback), ...patch };
     if (state.query) next.set('q', state.query); else next.delete('q');
-    const filters = normalizeFilters(state.filters);
-    next.set('filters', JSON.stringify(filters));
+    next.set('filters', serializeCatalogFilters(state.filters));
     next.delete('budgetView');
     if (state.page > 1) next.set('page', String(state.page)); else next.delete('page');
     return next;

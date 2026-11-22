@@ -18,7 +18,7 @@ import discoveryLinks from 'virtual:seo-discovery-links';
 import { selectCatalogSearchResults, getCatalogPage } from '@/lib/catalogResults';
 import { getUniversityPhoto } from '@/lib/admissions/presentation';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
-import { DEFAULT_FILTERS, normalizeFilters, readCatalogState, writeCatalogState } from '@/lib/catalogState';
+import { DEFAULT_FILTERS, normalizeFilters, readCatalogState, readStoredCatalogFilters, serializeCatalogFilters, writeCatalogState } from '@/lib/catalogState';
 import '@/styles/search-page.css';
 
 const loadSavedFilters = () => {
@@ -28,7 +28,7 @@ const loadSavedFilters = () => {
         const saved = window.localStorage.getItem('uniAdmitFilters');
         const parsed = saved ? JSON.parse(saved) : {};
 
-        return normalizeFilters(parsed);
+        return readStoredCatalogFilters(parsed);
     } catch {
         return DEFAULT_FILTERS;
     }
@@ -108,7 +108,7 @@ export default function Search() {
     const [compareList, setCompareList] = useState(() => location.state?.catalogCompareList || []);
     const [showComparison, setShowComparison] = useState(false);
 
-    useEffect(() => { localStorage.setItem('uniAdmitFilters', JSON.stringify(filters)); }, [filters]);
+    useEffect(() => { localStorage.setItem('uniAdmitFilters', serializeCatalogFilters(filters)); }, [filters]);
     useEffect(() => {
         if (showFirstVisitHint && (filters.gpa != null || filters.ielts != null)) {
             dismissHint();

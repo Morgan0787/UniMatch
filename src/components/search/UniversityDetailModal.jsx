@@ -20,6 +20,7 @@ import { US_GENERIC_VISA_INFO } from '@/lib/usGenericInfo';
 import { calculateChance } from '@/lib/matching';
 import PublishedProgrammeFacts from '@/components/admissions/PublishedProgrammeFacts';
 import UniversityPhoto from './UniversityPhoto';
+import { legacyTuitionPresentation } from '@/lib/legacyTuitionPresentation';
 
 function UniversityInfoSection({ expanded, title, icon: Icon, children }) {
     const titleContent = <><Icon className="w-5 h-5" aria-hidden="true" />{title}</>;
@@ -51,6 +52,9 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
     // dropping that data entirely.
     const hasTuitionMin = university.tuition_min !== null && university.tuition_min !== undefined;
     const hasTuitionMax = university.tuition_max !== null && university.tuition_max !== undefined && university.tuition_max !== university.tuition_min;
+    const legacyTuition = hasTuitionMin && university.tuition_min !== 0
+        ? legacyTuitionPresentation(university.tuition_min, hasTuitionMax ? university.tuition_max : null, language)
+        : null;
     const hasLivingCost = university.living_cost_estimate !== null && university.living_cost_estimate !== undefined;
 
     // A total is only a total when both operands are real. The old
@@ -131,7 +135,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         {university.tuition_min === 0 ? (
                                             t('university.free')
                                         ) : hasTuitionMin ? (
-                                            <>€{university.tuition_min.toLocaleString()}{hasTuitionMax && <>–€{university.tuition_max.toLocaleString()}</>}</>
+                                            <>{legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}{legacyTuition && <small className="block mt-0.5 text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}</>
                                         ) : (
                                             <span className="text-[#656158] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}

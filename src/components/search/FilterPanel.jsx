@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, ChevronDown, X } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import { catalogValue } from '@/lib/catalogCopy';
-import { catalogSearchCopy, formatCatalogueBudget } from '@/lib/catalogSearchCopy';
+import { catalogSearchCopy } from '@/lib/catalogSearchCopy';
+import { formatUsd } from '@/lib/tuitionCurrency';
+
+const MAX_TUITION_USD = 100000;
 import '@/styles/glass-controls.css';
 
 const countries = ["Germany", "Netherlands", "Czech Republic", "Poland", "Hungary", "Austria", "France", "Italy", "Spain", "Portugal", "Belgium", "Sweden", "Finland", "Norway", "Denmark", "Switzerland", "United Kingdom", "Ireland", "USA", "Canada", "Australia", "China", "South Korea", "Japan", "Singapore", "Malaysia", "UAE"];
@@ -43,10 +46,10 @@ export default function FilterPanel({ filters, setFilters, onReset, universities
             <div className="space-y-3"><Label id={filterId('gpa-label')} className="text-sm font-medium text-[#292823]">{t('filters.gpa')}: <span className="search-filter-value text-[#704a2d] font-semibold">{filters.gpa == null ? unsetLabel : filters.gpa.toFixed(1)}</span></Label><Slider aria-labelledby={filterId('gpa-label')} value={[filters.gpa ?? 1.0]} onValueChange={([val]) => updateFilter('gpa', val)} min={1.0} max={4.0} step={0.1} className="search-filter-slider py-2" /><div className="flex justify-between text-xs text-[#625e59]"><span>1.0</span><span>4.0</span></div></div>
             <div className="space-y-3"><Label id={filterId('ielts-label')} htmlFor={filterId('ielts')} className="text-sm font-medium text-[#292823]">{t('filters.ielts')}: <span className="search-filter-value text-[#704a2d] font-semibold">{filters.ielts == null ? unsetLabel : filters.ielts === 0 ? t('filters.noCertificate') : filters.ielts.toFixed(1)}</span></Label><Select value={filters.ielts == null ? 'unset' : String(filters.ielts)} onValueChange={(val) => updateFilter('ielts', val === 'unset' ? null : Number(val))}><SelectTrigger id={filterId('ielts')} className="bg-[#fffdf8] border-[#dedbd3]"><SelectValue /></SelectTrigger><SelectContent className="glass-filter-options search-filter-options" matchTriggerWidth align="start"><SelectItem value="unset">{unsetLabel}</SelectItem><SelectItem value="0">{t('filters.noCertificate')}</SelectItem><SelectItem value="5.5">IELTS 5.5</SelectItem><SelectItem value="6">IELTS 6.0</SelectItem><SelectItem value="6.5">IELTS 6.5</SelectItem><SelectItem value="7">IELTS 7.0+</SelectItem></SelectContent></Select></div>
             <div className="space-y-2">
-                <Label id={filterId('budget-label')} className="text-sm font-medium text-[#292823]">{budgetCopy.budgetLimit} <span className="search-filter-value text-[#704a2d] font-semibold">{filters.budget == null ? unsetLabel : formatCatalogueBudget(filters.budget, language)}</span></Label>
+                <Label id={filterId('budget-label')} className="text-sm font-medium text-[#292823]">{budgetCopy.budgetLimit} <span className="search-filter-value text-[#704a2d] font-semibold">{filters.budget == null ? unsetLabel : formatUsd(filters.budget, language)}</span></Label>
                 <p className="text-xs text-[#47443f]">{budgetCopy.budgetHint}</p>
-                <Slider aria-labelledby={filterId('budget-label')} value={[filters.budget ?? 0]} onValueChange={([val]) => updateFilter('budget', val)} min={0} max={50000} step={500} className="search-filter-slider py-2" />
-                <div className="flex justify-between text-xs text-[#47443f]"><span>{formatCatalogueBudget(0, language)}</span><span>{formatCatalogueBudget(50000, language)}</span></div>
+                <Slider aria-labelledby={filterId('budget-label')} value={[Math.min(filters.budget ?? 0, MAX_TUITION_USD)]} onValueChange={([val]) => updateFilter('budget', val)} min={0} max={MAX_TUITION_USD} step={500} className="search-filter-slider py-2" />
+                <div className="flex justify-between text-xs text-[#47443f]"><span>{formatUsd(0, language)}</span><span>{formatUsd(MAX_TUITION_USD, language)}</span></div>
                 {filters.budget != null && <button type="button" className="min-h-11 text-sm font-medium text-[#292823] underline underline-offset-4" onClick={() => updateFilter('budget', null)}>{budgetCopy.clearBudget}</button>}
             </div>
             <div className="space-y-3"><Label htmlFor={filterId('country')} className="text-sm font-medium text-[#292823]">{t('filters.country')}</Label><Select value={filters.country || ""} onValueChange={(val) => updateFilter('country', val)}><SelectTrigger id={filterId('country')} className="bg-[#fffdf8] border-[#dedbd3]"><SelectValue placeholder={t('filters.allCountries')} /></SelectTrigger><SelectContent className="glass-filter-options search-filter-options"><SelectItem value="all">{t('filters.allCountries')}</SelectItem>{availableCountries.map(c => <SelectItem key={c} value={c}>{optionLabel(c)}</SelectItem>)}</SelectContent></Select></div>

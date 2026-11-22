@@ -14,6 +14,7 @@ import UniversityCover from '@/components/ui/UniversityCover';
 import { useLanguage } from '@/lib/i18n';
 import { calculateChance } from '@/lib/matching';
 import SearchProgrammePreview from './SearchProgrammePreview';
+import { legacyTuitionPresentation } from '@/lib/legacyTuitionPresentation';
 import { comparisonProgrammes } from '@/lib/comparisonPresentation';
 import UniversityPhoto from './UniversityPhoto';
 
@@ -33,6 +34,9 @@ export default function UniversityCard({ university, programme = comparisonProgr
     // silently dropping that data.
     const hasTuitionMin = university.tuition_min !== null && university.tuition_min !== undefined;
     const hasTuitionMax = university.tuition_max !== null && university.tuition_max !== undefined && university.tuition_max !== university.tuition_min;
+    const legacyTuition = hasTuitionMin && university.tuition_min !== 0
+        ? legacyTuitionPresentation(university.tuition_min, hasTuitionMax ? university.tuition_max : null, language)
+        : null;
     const showHolisticGpaNote = university.country === 'United States' && (university.min_gpa === null || university.min_gpa === undefined);
 
     return (
@@ -99,8 +103,8 @@ export default function UniversityCard({ university, programme = comparisonProgr
                                             <span className="text-emerald-700">{t('university.free')}</span>
                                         ) : (
                                             <>
-                                                €{university.tuition_min.toLocaleString(language)}
-                                                {hasTuitionMax && <>–€{university.tuition_max.toLocaleString(language)}</>}
+                                                {legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}
+                                                {legacyTuition && <small className="block mt-0.5 text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}
                                             </>
                                         )
                                     ) : (

@@ -25,7 +25,9 @@ Search uses warm Liquid Glass materials, amber background light, compact program
 
 On mobile Search, drag the top handle down to dismiss Filters and keep your selections. Swipe inside the filter list to scroll.
 
-The catalog shows programmes in one list. With a tuition limit, programmes with confirmed annual tuition above the limit are filtered out. Programmes without a comparable confirmed price stay visible. Programme cards identify the campus when sourced details are available.
+The catalog shows tuition and its annual limit in USD. Converted prices show an estimate and retain the university’s original quote. Programmes with confirmed annual tuition above the limit are filtered out. Programmes without a comparable confirmed price stay visible. Programme cards identify the campus when sourced details are available.
+
+Before publishing, run `node scripts/update-tuition-rates.mjs` to refresh the bundled [European Central Bank reference rates](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html). The site displays the reference date with converted prices.
 
 University Liquid Glass: a full-width pearl card with amber light and visible information sections, matching filter controls and language menus, plus compact mobile navigation with inline EN / RU / UZ and keyboard/outside dismissal. [Implementation and release verification](docs/qa/university-glass-2026-11-07.md).
 

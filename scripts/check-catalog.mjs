@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { selectCatalogResults, selectCatalogSearchResults, getCatalogueProgrammeLocation, getCatalogPage } from '../src/lib/catalogResults.js';
 import { loadUniversityCatalog } from '../src/lib/catalogRepository.js';
-import { readCatalogState, writeCatalogState } from '../src/lib/catalogState.js';
+import { readCatalogState, readStoredCatalogFilters, serializeCatalogFilters, writeCatalogState } from '../src/lib/catalogState.js';
+import { toUsd } from '../src/lib/tuitionCurrency.js';
 import { withPublicProgrammeFacts } from '../src/lib/admissions/universityCatalog.js';
 import { universityPageUrl } from '../src/lib/universityNavigation.js';
 import { publicAdmissionCatalogRow, publicCatalogFact, publicCatalogSource } from './fixtures/publicAdmissionCatalog.mjs';
@@ -57,7 +58,7 @@ assert.equal(selectCatalogResults([invalidCatalog], { ...filters, languages: ['E
 assert.equal(selectCatalogResults([invalidCatalog], { ...filters, degree: 'Bachelor' }, '').length, 0, 'invalid canonical catalog cannot affirm a degree filter');
 
 const budgetFilters = { ...filters, budget: 4000, languages: ['English'], degree: 'Bachelor' };
-const annualFee = { amount: 4000, currency: 'EUR', period: 'year', feeYear: '2027/28', includedFees: [], excludedFees: [] };
+const annualFee = { amount: 4000, currency: 'USD', period: 'year', feeYear: '2027/28', includedFees: [], excludedFees: [] };
 const budgetUniversity = ({ tuition = publicCatalogFact(annualFee), targetIntakeYear = 2027 } = {}) => {
   const row = publicAdmissionCatalogRow({ targetIntakeYear });
   row.catalog.programmes[0].tuition = tuition;
@@ -65,11 +66,16 @@ const budgetUniversity = ({ tuition = publicCatalogFact(annualFee), targetIntake
 };
 const budgetStatus = (row, activeFilters = budgetFilters, query = 'Computer Science', currentYear = 2026) =>
   selectCatalogSearchResults([row], activeFilters, query, currentYear)[0]?.budget;
-assert.deepEqual(budgetStatus(budgetUniversity()), { group: 'within', reason: null }, 'the annual EUR maximum is inclusive');
+assert.deepEqual(budgetStatus(budgetUniversity()), { group: 'within', reason: null }, 'the annual USD maximum is inclusive');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 4001 }) })), undefined, 'confirmed tuition above the limit is excluded');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: '12_months' }) })).group, 'within');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 0 }) }), { ...budgetFilters, budget: 0 }).group, 'within');
-assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'USD' }) })).reason, 'nonEuroTuition');
+const euroUniversity = budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'EUR' }) });
+const euroLimitUsd = Number(toUsd(4000, 'EUR').toFixed(2));
+assert.equal(budgetStatus(euroUniversity, { ...budgetFilters, budget: euroLimitUsd }).group, 'within');
+assert.equal(budgetStatus(euroUniversity, { ...budgetFilters, budget: euroLimitUsd - 0.01 }), undefined);
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'KRW', amount: 4000 }) })).group, 'within');
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'UZS' }) })).reason, 'unavailableExchangeRate');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: 'semester' }) })).reason, 'nonAnnualTuition');
 
 const historicalFee = publicCatalogFact(null, 'historical_reference', { applicability: 'unconfirmed', historical: {
@@ -103,7 +109,7 @@ for (const fact of Object.values(korea)) if (fact?.scope) fact.scope.programmeId
 multiProgramme.catalog.programmes.push(korea);
 const programmeRows = [withPublicProgrammeFacts({ ...multiProgramme, admission_requirements: { unimatch_catalog_v1: multiProgramme.catalog } })];
 assert.deepEqual(selectCatalogSearchResults(programmeRows, { ...filters, budget: 4000 }, 'Robotics', 2026), [], 'a different affordable programme cannot make the searched programme affordable');
-const multiResult = selectCatalogSearchResults(programmeRows, { ...filters, budget: 6000 }, 'Robotics', 2026)[0];
+const multiResult = selectCatalogSearchResults(programmeRows, { ...filters, budget: toUsd(6000, 'EUR') }, 'Robotics', 2026)[0];
 assert.equal(multiResult.programme.id, korea.id);
 assert.equal(multiResult.university.country, 'United States');
 assert.deepEqual(getCatalogueProgrammeLocation(multiResult.programme), { country: 'South Korea', region: 'South Korea', campus: 'SUNY Korea' });
@@ -115,6 +121,13 @@ const alternateView = writeCatalogState(new URLSearchParams('q=Robotics&budgetVi
 assert.equal(readCatalogState(new URLSearchParams('budgetView=unknown&page=3')).page, 1);
 assert.equal(alternateView.has('budgetView'), false);
 assert.equal(readCatalogState(alternateView).query, 'Robotics');
+assert.equal(JSON.parse(alternateView.get('filters')).budgetCurrency, 'USD');
+assert.equal(readCatalogState(alternateView).filters.budget, 4000);
+const oldLink = new URLSearchParams({ filters: JSON.stringify({ budget: 4000 }) });
+assert.equal(readCatalogState(oldLink).filters.budget, euroLimitUsd);
+assert.equal(readCatalogState(writeCatalogState(oldLink, { query: 'Computer Science' })).filters.budget, euroLimitUsd);
+assert.equal(readStoredCatalogFilters({ budget: 4000 }).budget, euroLimitUsd);
+assert.equal(readStoredCatalogFilters(JSON.parse(serializeCatalogFilters(readStoredCatalogFilters({ budget: 4000 })))).budget, euroLimitUsd);
 const zeroLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: 0 } });
 assert.equal(readCatalogState(zeroLimit).filters.budget, 0);
 const clearedLimit = writeCatalogState(alternateView, { filters: { ...budgetFilters, budget: null } });

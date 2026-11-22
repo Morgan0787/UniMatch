@@ -23,6 +23,7 @@ const COPY = {
 function ComparisonCell({ fact, copy }) {
   return <>
     <span>{fact?.value || copy.unknown}</span>
+    {fact?.tuitionReference && <small className="mt-1 block text-xs text-[#55504a]">{fact.tuitionReference}</small>}
     {fact?.notice && fact.value !== copy.unknown && <p className="mt-1 text-xs text-amber-800">{fact.notice}</p>}
     {fact?.detail && <details className="mt-2 text-xs text-[#55504a]">
       <summary className="inline-flex items-center gap-1 cursor-pointer text-[#704a2d]"><span>{copy.scope}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>

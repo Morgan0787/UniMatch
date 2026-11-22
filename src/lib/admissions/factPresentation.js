@@ -1,4 +1,5 @@
 import { catalogValue } from '../catalogCopy.js';
+import { formatUsd, toUsd, TUITION_RATE_DATE } from '../tuitionCurrency.js';
 
 const COPY = {
   en: {
@@ -108,7 +109,21 @@ export function normalizeIntakeText(value) {
     .trim();
 }
 
-function renderValue(value, kind, language) {
+function describeTuitionConversion(value, language) {
+  if (value?.currency === 'USD') return null;
+  const amount = toUsd(value?.amount, value?.currency);
+  if (amount == null) return null;
+  const original = value.amount.toLocaleString(language === 'uz' ? 'uz-UZ' : language, { maximumFractionDigits: 20 });
+  const copy = {
+    en: ['Approx.', 'ECB'], ru: ['Примерно', 'ЕЦБ'], uz: ['Taxminan', 'ECB'],
+  }[language] || ['Approx.', 'ECB'];
+  return {
+    amount: `${copy[0]} ${formatUsd(amount, language)}`,
+    reference: `${original} ${value.currency} · ${copy[1]} ${TUITION_RATE_DATE}`,
+  };
+}
+
+function renderValue(value, kind, language, convertedAmount = null) {
   const c = copy(language);
   if (value === null || value === undefined) return c.unknown;
   if (kind === 'programme') return typeof value === 'string' ? value : c.unknown;
@@ -130,7 +145,8 @@ function renderValue(value, kind, language) {
     const feeYear = typeof value.feeYear === 'string' && value.feeYear ? ` (${value.feeYear})` : '';
     const cleanLabel = typeof value.label === 'string' && value.label.trim() ? normalizeIntakeText(value.label) : '';
     const label = cleanLabel ? ` · ${cleanLabel}` : '';
-    return `${amount}${currency ? ` ${currency}` : ''} / ${period}${feeYear}${label}`;
+    const originalAmount = `${amount}${currency ? ` ${currency}` : ''}`;
+    return `${convertedAmount ?? originalAmount} / ${period}${feeYear}${label}`;
   }
   if (kind === 'deadline') {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return c.unknown;
@@ -152,6 +168,14 @@ function renderValue(value, kind, language) {
   return c.unknown;
 }
 
+function describeValue(value, kind, language) {
+  const conversion = kind === 'tuition' ? describeTuitionConversion(value, language) : null;
+  return {
+    value: renderValue(value, kind, language, conversion?.amount),
+    ...(conversion ? { tuitionReference: conversion.reference } : {}),
+  };
+}
+
 /**
  * Prepare a public catalogue fact for display without implying eligibility.
  * Historical values are read only from historical.value.
@@ -159,7 +183,7 @@ function renderValue(value, kind, language) {
  * @param {string} language
  * @param {string} kind
  * @param {{includeScope?: boolean}} options
- * @returns {{value: string, notice: string, sourceIds: string[]}}
+ * @returns {{value: string, notice: string, sourceIds: string[], tuitionReference?: string}}
  */
 export function describePublicFact(fact, language = 'en', kind = 'text', { includeScope = false } = {}) {
   const c = copy(language);
@@ -173,10 +197,9 @@ export function describePublicFact(fact, language = 'en', kind = 'text', { inclu
 
   if (fact.status === 'historical_reference') {
     const historical = fact.historical;
-    const value = historical?.value == null ? c.unknown : renderValue(historical.value, kind, language);
     const season = typeof historical?.referenceSeason === 'string' ? historical.referenceSeason : '';
     const scope = includeScope ? scopeText(fact.scope, language) : '';
-    return { value, notice: [template(c.historical, { season }), scope].filter(Boolean).join(' '), sourceIds };
+    return { ...describeValue(historical?.value, kind, language), notice: [template(c.historical, { season }), scope].filter(Boolean).join(' '), sourceIds };
   }
   if (fact.status === 'unknown' || fact.value == null) {
     const scope = includeScope ? scopeText(fact.scope, language) : '';
@@ -186,5 +209,5 @@ export function describePublicFact(fact, language = 'en', kind = 'text', { inclu
     ? c.published
     : fact.status === 'estimate' ? c.estimate : '';
   const scope = includeScope ? scopeText(fact.scope, language) : '';
-  return { value: renderValue(fact.value, kind, language), notice: [notice, scope].filter(Boolean).join(' '), sourceIds };
+  return { ...describeValue(fact.value, kind, language), notice: [notice, scope].filter(Boolean).join(' '), sourceIds };
 }

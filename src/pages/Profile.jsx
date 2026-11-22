@@ -27,6 +27,7 @@ import { saveStudentProfile, studentProfileQueryOptions, writeConfirmedUniversit
 import InstitutionMedia, { InstitutionLinks } from '@/components/admissions/InstitutionMedia';
 import useAdmissionFavorites from '@/components/admissions/useAdmissionFavorites';
 import { catalogText, catalogValue } from '@/lib/catalogCopy';
+import { legacyTuitionPresentation } from '@/lib/legacyTuitionPresentation';
 import '@/components/admissions/admissions.css';
 import '@/styles/internal-pages.css';
 import '@/styles/release-pages.css';
@@ -300,7 +301,10 @@ export default function Profile() {
                                         </Button>
                                     </Card>
                                 ))}
-                                {savedUniversities.map(uni => (
+                                {savedUniversities.map(uni => {
+                                    const legacyTuition = uni.tuition_min == null || uni.tuition_min === 0
+                                        ? null : legacyTuitionPresentation(uni.tuition_min, null, language);
+                                    return (
                                     <Card key={uni.id} className="overflow-hidden hover:shadow-md transition-shadow">
                                         <div className="saved-university-row flex items-center gap-6 p-6">
                                             <div className="w-16 h-16 bg-gradient-to-br from-[#f4e4cc] to-[#e9dfd0] rounded-xl flex items-center justify-center flex-shrink-0">
@@ -326,7 +330,7 @@ export default function Profile() {
                                                             // as "Free". Same wording as the comparison table.
                                                             <span className="text-[#625e59] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                                         ) : (
-                                                            <>€{uni.tuition_min.toLocaleString()}/{t('common.year')}</>
+                                                            <>{legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}/{t('common.year')}{legacyTuition && <small className="block text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}</>
                                                         )}
                                                     </span>
                                                 </div>}
@@ -352,7 +356,7 @@ export default function Profile() {
                                             </div>
                                         </div>
                                     </Card>
-                                ))}
+                                ); })}
                             </div>
                         )}
                     </TabsContent>

@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
 import { comparisonFact, comparisonProgrammes, comparisonSources, comparisonUniversity } from '../src/lib/comparisonPresentation.js';
+import { formatUsd, toUsd, TUITION_RATE_DATE } from '../src/lib/tuitionCurrency.js';
 
 const fact = value => ({ status: 'current_verified', applicability: 'confirmed', value, sourceIds: ['official'], scope: { intakeYear: 2027 } });
 const programme = { id: 'cs', name: fact('Computer Science'), tuition: fact({ amount: 17970, currency: 'GBP', period: 'year', feeYear: '2027/28' }) };
 const university = { id: 'uuid', tuition_min: 999, admissionCatalog: { status: 'valid', programmes: [programme], sources: { official: { key: 'official', url: 'https://example.edu/fees' } } } };
 assert.equal(comparisonProgrammes(university)[0], programme);
 const tuition = comparisonFact(programme, 'tuition', 'tuition');
-assert.match(tuition.value, /17970 GBP/);
+assert.equal(tuition.value, `Approx. ${formatUsd(toUsd(17970, 'GBP'), 'en')} / year (2027/28)`);
+assert.equal(tuition.tuitionReference, `17,970 GBP · ECB ${TUITION_RATE_DATE}`);
 assert.match(tuition.value, /2027\/28/);
 assert.match(tuition.detail, /2027/);
 assert.equal(comparisonSources(university, tuition).length, 1);

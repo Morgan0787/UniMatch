@@ -1,6 +1,7 @@
 import { hasGpaData } from './matching.js';
 import { describePublicFact } from './admissions/factPresentation.js';
 import { getUniversityPhoto } from './admissions/presentation.js';
+import { toUsd } from './tuitionCurrency.js';
 
 export const CATALOG_PAGE_SIZE = 24;
 const byGpaGap = (gpa) => (a, b) => {
@@ -122,8 +123,9 @@ function assessProgrammeBudget(programme, catalog, budget, currentYear) {
     return { group: 'unknown', reason: 'unconfirmedTuition' };
   }
   if (!['year', '12_months'].includes(value.period)) return { group: 'unknown', reason: 'nonAnnualTuition' };
-  if (value.currency !== 'EUR') return { group: 'unknown', reason: 'nonEuroTuition' };
-  return { group: value.amount <= budget ? 'within' : 'above', reason: null };
+  const amountUsd = toUsd(value.amount, value.currency);
+  if (amountUsd == null) return { group: 'unknown', reason: 'unavailableExchangeRate' };
+  return { group: Number(amountUsd.toFixed(2)) <= Number(budget.toFixed(2)) ? 'within' : 'above', reason: null };
 }
 
 /** One card per institution. Programme filters must agree on a single preview before claiming budget fit. */

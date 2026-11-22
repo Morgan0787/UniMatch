@@ -114,7 +114,7 @@ function ParticleFigure({ method, pointer }) {
   useFrame((state, frameDelta) => {
     const dt = Math.min(frameDelta, 1)
     data.elapsed += frameDelta
-    data.morph = Math.min(1, data.morph + frameDelta)
+    data.morph = Math.min(1, data.morph + frameDelta * 1.65)
     const t = data.elapsed
     const target = data.shapes[method]
     const targetNormals = data.normals[method]
@@ -153,35 +153,27 @@ function ParticleFigure({ method, pointer }) {
       const normalZ = -nx * sin + nz * cos
       data.normalPositions[j + 1] = ny * cp - normalZ * sp
       data.normalPositions[j + 2] = ny * sp + normalZ * cp
-      const spread = Math.sin(progress * Math.PI) * .65
+      const spread = Math.sin(progress * Math.PI) * .14
       x += data.drift[j] * spread
       y += data.drift[j + 1] * spread
       z += data.drift[j + 2] * spread
-      if (method === 'magic') y += Math.sin(t * 1.2 + Math.abs(x) * 1.5) * Math.abs(x) * .025
-      const breathing = Math.sin(t * .65 + x * 1.6 + y * 1.2) * .016
+      if (method === 'magic') y += Math.sin(t * 1.2 + Math.abs(x) * 1.5) * Math.abs(x) * .018
+      const breathing = Math.sin(t * .65 + x * 1.6 + y * 1.2) * .01
       x += nx * breathing; y += ny * breathing; z += nz * breathing
       let tx = x * cos + z * sin
       const rotatedZ = -x * sin + z * cos
       let ty = y * cp - rotatedZ * sp + bob
       let tz = y * sp + rotatedZ * cp
-      // A small fringe stays detached, so the sculpture breathes outside its silhouette.
-      if (seed < .018) {
-        const driftPhase = t * .35 + seed * 1800
-        tx += Math.cos(driftPhase) * .24 + nx * .18
-        ty += Math.sin(driftPhase * .8) * .22 + ny * .18
-        tz += Math.sin(driftPhase) * .25 + nz * .18
-      }
       const dx = tx - mx, dy = ty - my
       const distance = Math.sqrt(dx * dx + dy * dy) + .001
-      const falloff = Math.max(0, 1 - distance / 1.18)
+      const falloff = Math.max(0, 1 - distance / .68)
       const influence = falloff * falloff * (3 - 2 * falloff) * data.pointerStrength
-      // A persistent local eddy: neighbouring grains orbit at different depths and rates.
-      const phase = t * (1.1 + seed * .8) + seed * Math.PI * 2
-      const orbit = .22 + seed * .5
-      tx += (dx / distance * .38 - dy / distance * .7 + Math.cos(phase) * orbit) * influence
-      ty += (dy / distance * .38 + dx / distance * .7 + Math.sin(phase) * orbit) * influence
-      tz += Math.sin(phase * .7) * influence * .7
-      data.energy[i] = influence + Math.sin(progress * Math.PI) * .25
+      const phase = t * (1.1 + seed * .6) + seed * Math.PI * 2
+      const orbit = .03 + seed * .04
+      tx += (dx / distance * .04 - dy / distance * .06 + Math.cos(phase) * orbit) * influence
+      ty += (dy / distance * .04 + dx / distance * .06 + Math.sin(phase) * orbit) * influence
+      tz += Math.sin(phase * .7) * influence * .08
+      data.energy[i] = influence * .5 + Math.sin(progress * Math.PI) * .18
       // Exact critically damped spring: stable even when a slow GPU skips frames.
       for (let axis = 0; axis < 3; axis++) {
         const index = j + axis

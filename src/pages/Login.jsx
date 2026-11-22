@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -61,6 +61,29 @@ export default function Login() {
   const [error, setError] = useState('')
   const [successState, setSuccessState] = useState(null)
   const [method, setMethod] = useState('password')
+  const panelInnerRef = useRef(null)
+  const [panelHeight, setPanelHeight] = useState(null)
+  const [animatePanelHeight, setAnimatePanelHeight] = useState(false)
+  const showingSuccess = Boolean(successState)
+
+  useLayoutEffect(() => {
+    if (showingSuccess) {
+      setAnimatePanelHeight(false)
+      setPanelHeight(null)
+      return undefined
+    }
+    const node = panelInnerRef.current
+    if (!node || typeof ResizeObserver === 'undefined') return undefined
+    const syncHeight = () => setPanelHeight(node.offsetHeight)
+    syncHeight()
+    const observer = new ResizeObserver(syncHeight)
+    observer.observe(node)
+    const frame = requestAnimationFrame(() => setAnimatePanelHeight(true))
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [showingSuccess])
 
   useEffect(() => {
     const checkSession = async () => {
@@ -218,9 +241,12 @@ export default function Login() {
                 <TabsTrigger value="signup" className="flex-1">{l("Sign Up")}</TabsTrigger>
               </TabsList>
 
-              {/* Mounted grid layers reserve the tallest form's height without exposing inactive controls. */}
-              <div className="login-method-panels">
-              <TabsContent value="password" forceMount inert={method !== 'password' ? '' : undefined} aria-hidden={method !== 'password'}>
+              <div
+                className={`login-method-panels${animatePanelHeight ? ' is-animated' : ''}`}
+                style={panelHeight !== null ? { height: `${panelHeight}px` } : undefined}
+              >
+              <div ref={panelInnerRef} className="login-method-panels-inner">
+              <TabsContent value="password" className="mt-0">
                 <form onSubmit={handlePasswordLogin} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="email-pw">{l("Email")}</Label>
@@ -258,7 +284,7 @@ export default function Login() {
                 </form>
               </TabsContent>
 
-              <TabsContent value="magic" forceMount inert={method !== 'magic' ? '' : undefined} aria-hidden={method !== 'magic'}>
+              <TabsContent value="magic" className="mt-0">
                 <form onSubmit={handleMagicLink} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="email-magic">{l("Email")}</Label>
@@ -281,7 +307,7 @@ export default function Login() {
                 </form>
               </TabsContent>
 
-              <TabsContent value="signup" forceMount inert={method !== 'signup' ? '' : undefined} aria-hidden={method !== 'signup'}>
+              <TabsContent value="signup" className="mt-0">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="full-name">{l("Full name")}</Label>
@@ -330,6 +356,7 @@ export default function Login() {
                   </Button>
                 </form>
               </TabsContent>
+              </div>
               </div>
             </Tabs>}
           </CardContent>

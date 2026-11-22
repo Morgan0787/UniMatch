@@ -47,23 +47,17 @@ body[data-unimatch-theme] .release-login-card button:is([type="submit"], [type="
 body[data-unimatch-theme] .release-login-card button.bg-indigo-600 { background: #252c2f; color: white; }
 body[data-unimatch-theme] .release-login-card button.bg-indigo-600:hover { background: #354044; }
 
-/* Equal grid layers keep the centered card and its tabs still in every method. */
-.login-method-panels { display: grid; }
-.login-method-panels > [role="tabpanel"] {
-  grid-area: 1 / 1;
-  min-width: 0;
-  align-self: start;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(6px);
-  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+/* Hug active form height smoothly with focus-ring room and calm opacity crossfade. */
+.login-method-panels { margin: -6px; overflow: hidden; }
+.login-method-panels.is-animated { transition: height .2s cubic-bezier(.22, 1, .36, 1); }
+.login-method-panels-inner { padding: 6px; }
+.login-method-panels-inner > [role="tabpanel"] { margin-top: 0; min-width: 0; }
+.login-method-panels.is-animated .login-method-panels-inner > [role="tabpanel"][data-state="active"] {
+  animation: auth-panel-fade .18s ease both;
 }
-.login-method-panels > [data-state="active"] {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
+@keyframes auth-panel-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 body[data-unimatch-theme] .release-login-card .login-method-tabs {
   position: relative;
@@ -96,10 +90,13 @@ body[data-unimatch-theme] .release-login-card .login-method-tabs > [role="tab"] 
   transition: color .2s ease;
 }
 @media (prefers-reduced-motion: reduce) {
-  .login-method-panels > [role="tabpanel"],
+  .login-method-panels,
+  .login-method-panels.is-animated,
+  .login-method-panels.is-animated .login-method-panels-inner > [role="tabpanel"][data-state="active"],
   .login-method-tabs::before,
   body[data-unimatch-theme] .release-login-card .login-method-tabs > [role="tab"] {
     transition: none;
+    animation: none;
     transform: none;
   }
 }

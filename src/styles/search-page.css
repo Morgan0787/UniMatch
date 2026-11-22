@@ -140,7 +140,6 @@ body[data-unimatch-theme] .unimatch-app[data-page="Search"] .catalog-page .max-w
 .unimatch-app .catalog-page.search-page .catalog-photo summary { padding-inline: 8px; }
 .unimatch-app .catalog-page.search-page .catalog-grid { gap: 18px; }
 /* Shared shell in product-theme.css owns .product-nav and .product-footer geometry across all routes. */
-.unimatch-app[data-page="Search"] .product-footer { background: #ffffff33; border-color: #ffffffa6; }
 .unimatch-app .catalog-page.search-page .catalog-toolbar > div {
   margin-block: 8px; padding-block: 12px;
   border: 1px solid #ffffffdb; border-radius: 28px;

@@ -1,5 +1,4 @@
-/* Page material; shared nav shell is owned by product-theme.css. */
-.unimatch-app[data-page="AdmissionsSurvey"] .product-footer { background: #ffffff33; border-color: #ffffffa6; }
+/* Page material; shared nav/footer chrome owned by product-theme.css. */
 body[data-unimatch-theme] .unimatch-app .admissions-page.survey-glass {
   --survey-ink: #292823;
   --survey-muted: #55504a;

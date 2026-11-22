@@ -4,7 +4,8 @@ body[data-unimatch-theme] .unimatch-app[data-page="Login"] > .product-main {
   flex-direction: column;
 }
 body[data-unimatch-theme] .unimatch-app[data-page="Login"] .product-footer {
-  margin-top: 0;
+  margin-top: 4px;
+  margin-bottom: 14px;
 }
 body[data-unimatch-theme] .login-page.auth-page {
   --auth-ink: #2c3232;
@@ -15,7 +16,7 @@ body[data-unimatch-theme] .login-page.auth-page {
   display: flex;
   align-items: flex-start;
   min-height: 0;
-  padding: clamp(22px, calc((100dvh - 820px) * 0.42), 92px) clamp(24px, 4vw, 96px) 28px;
+  padding: clamp(16px, calc((100dvh - 840px) * 0.42), 84px) clamp(24px, 4vw, 96px) 16px;
   background: transparent !important;
 }
 .auth-layout {

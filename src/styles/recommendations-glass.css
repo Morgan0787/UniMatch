@@ -110,7 +110,6 @@ body[data-unimatch-theme] .unimatch-app .recommendation-compare-items svg { flex
 body[data-unimatch-theme] .unimatch-app .recommendation-compare-open { gap: 10px; padding-inline: 22px; flex-shrink: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendation-compare-clear { flex-shrink: 0; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; background: #ffffff66; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page :is(button,a,select,summary):focus-visible { outline: 3px solid #966433; outline-offset: 3px; }
-body[data-unimatch-theme] .unimatch-app[data-page="Recommendations"] .product-footer { background: #ffffff33; }
 @media (min-width: 1600px) {
   body[data-unimatch-theme] .unimatch-app .recommendations-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 20px; }
 }

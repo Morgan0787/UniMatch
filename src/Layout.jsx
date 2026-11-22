@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/AuthContext';
 import { Button } from "@/components/ui/button";
 import { 
     GraduationCap, Search, User, Menu, X, LogOut, 
-    Home, Bookmark, ChevronDown, Sparkles, ShieldCheck, Database
+    Home, Bookmark, ChevronDown, Sparkles, ShieldCheck, Database,
+    Compass, LifeBuoy, Send, Instagram, ArrowUpRight
 } from 'lucide-react';
 import FeedbackButton from '@/components/feedback/FeedbackButton';
 import HelpDialog from '@/components/HelpDialog';
@@ -258,23 +259,75 @@ function LayoutContent({ children, currentPageName }) {
 
             {currentPageName !== 'Search' && <FeedbackButton />}
 
-            <footer className="product-footer product-footer-compact">
-                <div className="product-footer-inner">
-                    <Link to="/" className="product-footer-brand">UniMatch<span>®</span></Link>
-                    <p>{t('footer.tagline')}</p>
-                    <nav aria-label={t('footer.quickLinks')}>
-                        {currentPageName === 'Search' && <FeedbackButton />}
-                        <Link to={catalogPath(language)}>{t('footer.findUniversities')}</Link>
-                        <Link to={createPageUrl('AdmissionsSurvey')}>{guestCta}</Link>
-                        <button type="button" onClick={() => setHelpOpen(true)}>{t('footer.helpCenter')}</button>
-                        <details><summary className="inline-flex items-center gap-1.5"><span>{t('footer.contactUs')}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><div>
-                            <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer">Telegram: @qebzo</a>
-                            <a href="https://t.me/Abubakr_786" target="_blank" rel="noopener noreferrer">Telegram: @Abubakr_786</a>
-                            <a href="https://t.me/Mr_xomidov" target="_blank" rel="noopener noreferrer">Telegram: @Mr_xomidov</a>
-                            <a href="https://instagram.com/ismailov0787_08" target="_blank" rel="noopener noreferrer">Instagram: @ismailov0787_08</a>
-                        </div></details>
-                    </nav>
-                    <small>© {new Date().getFullYear()} {t('footer.copyright')}</small>
+            <footer className="product-footer">
+                <div className="product-footer-surface">
+                    <div className="product-footer-top">
+                        <div className="product-footer-brand-col">
+                            <Link to="/" className="product-footer-brand">
+                                <span className="product-footer-mark" aria-hidden="true">
+                                    <GraduationCap className="w-5 h-5 text-white" />
+                                </span>
+                                <span className="product-wordmark">UniMatch</span>
+                                <span className="product-footer-reg" aria-hidden="true">®</span>
+                            </Link>
+                            <p className="product-footer-tagline">{t('footer.tagline')}</p>
+                        </div>
+
+                        <div className="product-footer-utility">
+                            <nav aria-label={t('footer.quickLinks')} className="product-footer-nav">
+                                <span className="product-footer-group-label">{t('footer.quickLinks')}</span>
+                                <div className="product-footer-links">
+                                    <Link to={catalogPath(language)} className="product-footer-link">
+                                        <Compass size={15} aria-hidden="true" />
+                                        <span>{t('footer.findUniversities')}</span>
+                                    </Link>
+                                    <Link to={createPageUrl('AdmissionsSurvey')} className="product-footer-link">
+                                        <Sparkles size={15} aria-hidden="true" />
+                                        <span>{guestCta}</span>
+                                    </Link>
+                                    <button type="button" onClick={() => setHelpOpen(true)} className="product-footer-link">
+                                        <LifeBuoy size={15} aria-hidden="true" />
+                                        <span>{t('footer.helpCenter')}</span>
+                                    </button>
+                                </div>
+                            </nav>
+
+                            <div className="product-footer-contacts">
+                                <span className="product-footer-group-label">{t('footer.contactUs')}</span>
+                                <div className="product-footer-contact-list">
+                                    <a href="https://t.me/qebzo" target="_blank" rel="noopener noreferrer" className="product-footer-contact-pill">
+                                        <Send size={14} className="product-footer-contact-icon" aria-hidden="true" />
+                                        <span><span className="sr-only">Telegram </span>@qebzo</span>
+                                        <ArrowUpRight size={13} className="product-footer-contact-arrow" aria-hidden="true" />
+                                    </a>
+                                    <a href="https://t.me/Abubakr_786" target="_blank" rel="noopener noreferrer" className="product-footer-contact-pill">
+                                        <Send size={14} className="product-footer-contact-icon" aria-hidden="true" />
+                                        <span><span className="sr-only">Telegram </span>@Abubakr_786</span>
+                                        <ArrowUpRight size={13} className="product-footer-contact-arrow" aria-hidden="true" />
+                                    </a>
+                                    <a href="https://t.me/Mr_xomidov" target="_blank" rel="noopener noreferrer" className="product-footer-contact-pill">
+                                        <Send size={14} className="product-footer-contact-icon" aria-hidden="true" />
+                                        <span><span className="sr-only">Telegram </span>@Mr_xomidov</span>
+                                        <ArrowUpRight size={13} className="product-footer-contact-arrow" aria-hidden="true" />
+                                    </a>
+                                    <a href="https://instagram.com/ismailov0787_08" target="_blank" rel="noopener noreferrer" className="product-footer-contact-pill">
+                                        <Instagram size={14} className="product-footer-contact-icon" aria-hidden="true" />
+                                        <span><span className="sr-only">Instagram </span>@ismailov0787_08</span>
+                                        <ArrowUpRight size={13} className="product-footer-contact-arrow" aria-hidden="true" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="product-footer-bottom">
+                        <small>© {new Date().getFullYear()} {t('footer.copyright')}</small>
+                        {currentPageName === 'Search' && (
+                            <div className="product-footer-search-feedback">
+                                <FeedbackButton />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </footer>
             <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />

@@ -1,8 +1,4 @@
 /* Editorial Warm Pearl Glass university detail layout and tokens; nav/footer chrome owned by product-theme.css. */
-.unimatch-app[data-page="University"] .product-footer {
-  background: rgba(255, 252, 246, .78);
-  border-color: rgba(133, 90, 54, .14);
-}
 body[data-unimatch-theme] .university-page.release-page {
   --uni-ink: #292823;
   --uni-muted: #55504a;

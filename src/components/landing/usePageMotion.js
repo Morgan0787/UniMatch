@@ -57,15 +57,15 @@ export function usePageMotion(root, language, blocked) {
                 const copy = screen.querySelector(".intro-copy, .experience-lead");
                 const eyebrow = screen.querySelector(".eyebrow");
                 gsap.from([eyebrow, heading, copy].filter(Boolean), {
-                    y: (index) => index === 1 ? 110 : 75,
-                    autoAlpha: 0, duration: 1.05, stagger: 0.1, ease: "power3.out",
+                    y: (index) => index === 1 ? 48 : 32,
+                    autoAlpha: 0, duration: 0.9, stagger: 0.08, ease: "power3.out",
                     scrollTrigger: { trigger: screen,
-                        start: () => `top+=${heading.offsetTop} 92%`,
+                        start: "top 88%",
                         invalidateOnRefresh: true, toggleActions: "play none none reverse" },
                 });
-                gsap.to(screen, { autoAlpha: 0, y: -60, ease: "none",
-                    scrollTrigger: { trigger: screen, start: "bottom 55%",
-                        end: "bottom 8%", scrub: 0.45 } });
+                gsap.to(screen, { autoAlpha: 0, y: -24, ease: "none",
+                    scrollTrigger: { trigger: screen, start: "bottom 22%",
+                        end: "bottom -2%", scrub: 0.45 } });
             });
             el.querySelectorAll("[data-reveal]").forEach((target) => {
                 if (target.closest(".intro-upper, .experience-heading, .discover-section, .footer")) return;

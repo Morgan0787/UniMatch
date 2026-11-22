@@ -11,23 +11,23 @@ export const PRIVATE_PATHS = ['/University', '/Login', '/Profile', '/Recommendat
 
 const copy = {
   en: {
-    '/': ['UniMatch — Find your university abroad', 'Explore universities abroad, compare options and build your shortlist. Start with your study interests, budget and language skills.'],
-    '/Search': ['Explore universities abroad | UniMatch', 'Browse international universities and compare countries, tuition, scholarships and admission requirements to build your university shortlist.'],
-    '/AdmissionsSurvey': ['Find universities for your academic profile | UniMatch', 'Explore university options using your academic background and language exam results. Check preliminary admission matches and official requirements.'],
+    '/': ['UniMatch — Compare Universities Abroad, Tuition & Admission Requirements', 'Compare bachelor’s programmes abroad by tuition, IELTS/GPA requirements and country across the UK, Germany, Italy, Poland, the USA, Finland and more.'],
+    '/Search': ['Explore Universities Abroad — Tuition, IELTS & Requirements | UniMatch', 'Search and compare international universities by tuition fees, English-taught bachelor’s degrees, deadlines, GPA and language requirements.'],
+    '/AdmissionsSurvey': ['Find Universities by GPA, IELTS & Budget | UniMatch', 'Enter your academic background, study field and IELTS or TOPIK results to explore matched bachelor’s programmes and official entry requirements.'],
     private: ['Your workspace | UniMatch', 'Manage your UniMatch profile and explore your study options.'],
     missing: ['Page not found | UniMatch', 'This page could not be found. Explore universities with UniMatch.'],
   },
   ru: {
-    '/': ['UniMatch — Найдите университет за рубежом', 'Изучайте университеты за рубежом, сравнивайте варианты и сохраняйте избранное с учётом ваших интересов, бюджета и знания языков.'],
-    '/Search': ['Университеты за рубежом | UniMatch', 'Сравнивайте зарубежные университеты, страны, стоимость обучения, стипендии и требования к поступлению.'],
-    '/AdmissionsSurvey': ['Подбор университетов по вашему профилю | UniMatch', 'Найдите варианты обучения с учётом образования и языковых экзаменов. Проверьте предварительное соответствие и официальные требования.'],
+    '/': ['UniMatch — Поиск университетов и бакалавриата за рубежом', 'Сравнивайте зарубежные университеты по стоимости обучения, требованиям IELTS и GPA, срокам подачи и странам: Великобритания, Германия, Италия, Польша, США и др.'],
+    '/Search': ['Университеты за рубежом — цены, требования и страны | UniMatch', 'Поиск и сравнение программ бакалавриата за рубежом: стоимость обучения, программы на английском, требования GPA, IELTS, TOPIK и дедлайны.'],
+    '/AdmissionsSurvey': ['Подбор университетов по GPA, IELTS и бюджету | UniMatch', 'Укажите направление обучения, оценки и результаты IELTS или TOPIK, чтобы подобрать подходящие зарубежные университеты и проверить официальные требования.'],
     private: ['Личный кабинет | UniMatch', 'Управляйте профилем UniMatch и изучайте варианты обучения.'],
     missing: ['Страница не найдена | UniMatch', 'Эта страница не найдена. Изучайте университеты с UniMatch.'],
   },
   uz: {
-    '/': ['UniMatch — Xorijda universitetingizni toping', 'Xorijiy universitetlarni o‘rganing, variantlarni solishtiring va qiziqishlaringiz, budjetingiz hamda til bilimingizga mos ro‘yxat tuzing.'],
-    '/Search': ['Xorijiy universitetlar | UniMatch', 'Xorijiy universitetlar, mamlakatlar, o‘qish narxlari, stipendiyalar va qabul talablarini solishtiring.'],
-    '/AdmissionsSurvey': ['Akademik profilingizga mos universitetlar | UniMatch', 'Ta’limingiz va til imtihoni natijalaringiz asosida universitetlarni o‘rganing. Dastlabki moslik va rasmiy talablarni tekshiring.'],
+    '/': ['UniMatch — Xorijiy universitetlar va bakalavr dasturlarini solishtirish', 'Xorijdagi bakalavr dasturlarini o‘qish haqi, IELTS va GPA talablari hamda mamlakatlar (Buyuk Britaniya, Germaniya, Italiya, Polsha, AQSh va boshqalar) bo‘yicha solishtiring.'],
+    '/Search': ['Xorijiy universitetlar — narxlar, IELTS talablari va davlatlar | UniMatch', 'Xorijiy universitetlar va ingliz tilidagi bakalavr dasturlarini o‘qish narxi, muddatlar, GPA va til talablari bo‘yicha qidiring va solishtiring.'],
+    '/AdmissionsSurvey': ['GPA, IELTS va budjet bo‘yicha universitet tanlash | UniMatch', 'Ta’lim yo‘nalishingiz, baholaringiz va IELTS yoki TOPIK natijalaringiz asosida mos xorijiy universitetlar hamda rasmiy qabul talablarini ko‘ring.'],
     private: ['Shaxsiy kabinet | UniMatch', 'UniMatch profilingizni boshqaring va ta’lim imkoniyatlarini o‘rganing.'],
     missing: ['Sahifa topilmadi | UniMatch', 'Bu sahifa topilmadi. UniMatch bilan universitetlarni o‘rganing.'],
   },
@@ -70,11 +70,26 @@ export const siteSchema = {
   '@id': `${SITE_URL}/#website`,
   name: 'UniMatch',
   url: `${SITE_URL}/`,
+  inLanguage: ['en', 'ru', 'uz'],
   publisher: { '@id': `${SITE_URL}/#organization` },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/Search?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
 };
 
 
-const organization = { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'UniMatch', url: `${SITE_URL}/` };
+const organization = {
+  '@type': 'Organization',
+  '@id': `${SITE_URL}/#organization`,
+  name: 'UniMatch',
+  url: `${SITE_URL}/`,
+  logo: { '@type': 'ImageObject', url: SOCIAL_IMAGE },
+};
 
 /** @param {Record<string, unknown>[]} [entities] */
 function schemaGraph(entities = []) {

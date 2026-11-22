@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import { getSeo, PUBLIC_PATHS, PRIVATE_PATHS, SITE_URL } from '../src/lib/seo.js';
-import { catalogContent, catalogLanguage, catalogPath, CATALOG_LANGUAGES, DiscoveryContent } from '../src/lib/discoveryContent.js';
+import { catalogContent, catalogLanguage, catalogPath, CATALOG_LANGUAGES, DiscoveryContent, PublicEntryContent } from '../src/lib/discoveryContent.js';
 import { buildAppFallback, buildDiscoveryPages } from './seo-pages.mjs';
 import { loadSeoCatalogPreview, loadSeoInstitutions } from './seo-catalog.mjs';
 
@@ -48,10 +48,14 @@ function withSeo(html, path, page) {
     .replace('<html lang="en">', `<html lang="${getSeo(path, 'en', page).language}">`);
 }
 
-function withContent(html, page, { standalone = false, interactive = false } = {}) {
+function withContent(html, page, { standalone = false, interactive = false, previewRows = [] } = {}) {
   const root = '<div id="root"></div>';
   if (!html.includes(root)) throw new Error('Missing app root in SEO template');
-  const content = renderToStaticMarkup(createElement(DiscoveryContent, { page, standalone }));
+  const content = renderToStaticMarkup(
+    standalone
+      ? createElement(DiscoveryContent, { page, standalone: true })
+      : createElement(PublicEntryContent, { page, previewRows }),
+  );
   // Keep the initial document navigable while a public app route is starting.
   const markup = standalone ? `<div id="root">${content}</div>`
     : `<div id="public-entry">${content}</div>\n    ${root}`;
@@ -123,6 +127,7 @@ export default function seoPlugin() {
   let discovery = buildDiscoveryPages([]);
   let telemetryEntry;
   let catalogPreview = null;
+  let supabaseOrigin = null;
   return {
     name: 'unimatch-seo',
     enforce: 'post',
@@ -130,6 +135,10 @@ export default function seoPlugin() {
     async buildStart() {
       if (config.command === 'build' && !config.build.ssr) {
         const env = { ...loadEnv(config.mode, config.envDir, ['VITE_', 'SEO_']), ...process.env };
+        try {
+          const parsedUrl = env.VITE_SUPABASE_URL ? new URL(env.VITE_SUPABASE_URL) : null;
+          supabaseOrigin = parsedUrl?.protocol === 'https:' ? parsedUrl.origin : null;
+        } catch { supabaseOrigin = null; }
         const [institutions, preview] = await Promise.all([
           loadSeoInstitutions(env),
           loadSeoCatalogPreview(env).catch(() => null),
@@ -156,16 +165,39 @@ export default function seoPlugin() {
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
       const preloadCatalog = html => html.replace('<head>', '<head>\n    <link rel="preload" href="/assets/catalog-preview.json" as="fetch" crossorigin />');
       if (catalogPreview) emit('assets/catalog-preview.json', JSON.stringify(catalogPreview));
-      const homeChunk = Object.values(bundle).find(file => file.type === 'chunk' && file.name === 'Home');
-      const homeHtml = homeChunk ? html.replace('</head>',
-        `<link rel="modulepreload" crossorigin href="/${escape(homeChunk.fileName)}" />\n  </head>`) : html;
+      const preloadChunk = (targetHtml, chunkName) => {
+        const chunk = Object.values(bundle).find(file => file.type === 'chunk' && file.name === chunkName);
+        return chunk
+          ? targetHtml.replace('</head>', `  <link rel="modulepreload" crossorigin href="/${escape(chunk.fileName)}" />\n  </head>`)
+          : targetHtml;
+      };
+      const withPreconnect = targetHtml => (supabaseOrigin
+        ? targetHtml.replace('<head>', `<head>\n    <link rel="preconnect" href="${escape(supabaseOrigin)}" crossorigin />`)
+        : targetHtml);
+      const universityPathById = new Map(
+        discovery.pages.filter(page => page.universityId).map(page => [page.universityId, page.path]),
+      );
+      const previewRows = (catalogPreview?.rows || []).flatMap(row => {
+        const href = universityPathById.get(row.id);
+        return href ? [{ name: row.name, country: row.country, city: row.city, href }] : [];
+      });
+
+      const homeHtml = preloadChunk(html, 'Home');
       entry.source = withContent(homeHtml, buildAppFallback('/', discovery.catalogLinks));
       for (const path of basePaths.filter(path => path !== '/')) {
         const language = catalogLanguage(path);
-        let output = withSeo(html, path);
-        const page = language ? catalogContent(language, discovery.catalogLinks) : buildAppFallback(path, discovery.catalogLinks);
-        output = withContent(output, page);
-        if (catalogPreview && (language || path === '/Search')) output = preloadCatalog(output);
+        const isSearch = Boolean(language || path === '/Search');
+        let output = withPreconnect(withSeo(html, path));
+        output = preloadChunk(output, isSearch ? 'Search' : 'AdmissionsSurvey');
+        const basePage = language ? catalogContent(language, discovery.catalogLinks) : buildAppFallback(path, discovery.catalogLinks);
+        const localeGuides = language && language !== 'en'
+          ? discovery.pages.filter(p => p.path.startsWith(`/${language}/guides/`)).map(g => ({ href: g.path, label: g.heading }))
+          : [];
+        const page = localeGuides.length
+          ? { ...basePage, actions: [...(basePage.actions || []), ...localeGuides] }
+          : basePage;
+        output = withContent(output, page, { previewRows: isSearch ? previewRows : [] });
+        if (catalogPreview && isSearch) output = preloadCatalog(output);
         emit(`${path.slice(1)}.html`, output);
       }
       for (const page of discovery.pages) {

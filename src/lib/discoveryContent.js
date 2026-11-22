@@ -37,31 +37,45 @@ const catalogCopy = {
     intro: 'Start with the country, degree and subject you want to study. Compare programmes with similar entry routes and check the official programme page before you decide where to apply.',
     checklist: 'What to check before you shortlist',
     advice: 'Write down the teaching language and the certificate the programme accepts. Compare tuition for the same study period, and keep housing and other living expenses separate. If a cost or requirement is missing, confirm it with the university.',
-    explore: 'Explore university profiles and study guides',
-    links: ['University profiles', 'Study destinations', 'Application guides'],
+    explore: 'Explore university profiles, countries, study fields and guides',
+    links: ['University profiles', 'Study destinations', 'Study fields & degrees', 'Application guides'],
+    searchHeroTitle: 'Find your university',
+    searchHeroIntro: 'Compare tuition, entry requirements and location.',
+    cta: 'Find my university',
+    details: 'Details',
   },
   ru: {
     heading: 'Университеты за рубежом',
     intro: 'Начните со страны, уровня образования и специальности. Сравнивайте программы с похожими условиями поступления и сверяйте сведения на официальном сайте перед подачей документов.',
     checklist: 'Что проверить перед выбором вуза',
     advice: 'Уточните язык обучения и список принимаемых сертификатов. Сравнивайте плату за один и тот же период, а жильё и другие расходы учитывайте отдельно. Если стоимость или требование не указаны, уточните их в университете.',
-    explore: 'Профили вузов и материалы о поступлении',
-    links: ['Профили университетов', 'Страны обучения', 'Руководства по поступлению'],
+    explore: 'Профили вузов, страны, направления и руководства',
+    links: ['Профили университетов', 'Страны обучения', 'Направления обучения', 'Руководства по поступлению'],
+    searchHeroTitle: 'Найдите свой университет',
+    searchHeroIntro: 'Сравните стоимость, требования и расположение.',
+    cta: 'Подобрать университет',
+    details: 'Подробнее',
   },
   uz: {
     heading: 'Xorijiy universitetlar',
     intro: 'Avval mamlakat, ta’lim bosqichi va yo‘nalishni tanlang. Qabul tartibi o‘xshash dasturlarni solishtiring va hujjat topshirishdan oldin dastur haqidagi ma’lumotni rasmiy saytdan tekshiring.',
     checklist: 'Universitet tanlashdan oldin nimalarni tekshirish kerak?',
     advice: 'Ta’lim tili va qabul qilinadigan sertifikatlarni aniqlang. Bir xil muddat uchun o‘qish to‘lovini taqqoslang, turar joy va boshqa yashash xarajatlarini alohida hisoblang. Narx yoki talab ko‘rsatilmagan bo‘lsa, universitetdan so‘rang.',
-    explore: 'Universitet profillari va qo‘llanmalar',
-    links: ['Universitet profillari', 'Ta’lim mamlakatlari', 'Qabul bo‘yicha qo‘llanmalar'],
+    explore: 'Universitet profillari, davlatlar, yo‘nalishlar va qo‘llanmalar',
+    links: ['Universitet profillari', 'Ta’lim mamlakatlari', 'Ta’lim yo‘nalishlari', 'Qabul bo‘yicha qo‘llanmalar'],
+    searchHeroTitle: 'Universitetingizni toping',
+    searchHeroIntro: 'O‘qish haqi, qabul talablari va joylashuvni solishtiring.',
+    cta: 'Universitet tanlash',
+    details: 'Batafsil',
   },
 };
+
+const discoveryLinkOrder = ['/universities', '/countries', '/study', '/guides'];
 
 /** @param {string} language @param {DiscoveryLink[]} links */
 export function localizedDiscoveryLinks(language, links) {
   const copy = catalogCopy[language] || catalogCopy.en;
-  const labels = Object.fromEntries(['/universities', '/countries', '/guides'].map((path, i) => [path, copy.links[i]]));
+  const labels = Object.fromEntries(discoveryLinkOrder.map((path, i) => [path, copy.links[i]]));
   return links.map(link => ({ ...link, label: labels[link.href] || link.label }));
 }
 
@@ -125,4 +139,141 @@ export function DiscoverySections({ sections, cards = false }) {
     paragraphs?.map((paragraph, i) => h('p', { key: i, className: 'leading-relaxed mb-3' }, paragraph)),
     items?.length ? h('ul', { className: 'space-y-3 pl-5 list-disc' }, items.map((item, i) => h('li', { key: i }, item))) : null,
     links?.length ? linkList(links, cards) : null));
+}
+
+function collectPublicEntryLinks(page) {
+  const seen = new Set();
+  const out = [];
+  for (const link of [...(page.sections || []).flatMap(section => section.links || []), ...(page.actions || [])]) {
+    if (!link?.href || seen.has(link.href)) continue;
+    seen.add(link.href);
+    out.push(link);
+  }
+  return out;
+}
+
+function EntryNav({ active = '/Search', language = 'en', showDestinations = false }) {
+  const c = catalogCopy[language] || catalogCopy.en;
+  const labels = {
+    en: { home: 'Home', search: 'Find Universities', destinations: 'Destinations', survey: c.cta },
+    ru: { home: 'Главная', search: 'Поиск вузов', destinations: 'Страны', survey: c.cta },
+    uz: { home: 'Bosh sahifa', search: 'Universitetlar', destinations: 'Mamlakatlar', survey: c.cta },
+  }[language] || { home: 'Home', search: 'Find Universities', destinations: 'Destinations', survey: c.cta };
+  return h('header', { className: 'entry-nav-bar' },
+    h('div', { className: 'entry-nav-pill' },
+      h('a', { href: '/', className: 'entry-brand' }, 'UNIMATCH'),
+      h('nav', { 'aria-label': 'Primary', className: 'entry-nav-links' },
+        h('a', { href: '/', className: active === '/' ? 'is-active' : undefined }, labels.home),
+        h('a', { href: catalogPath(language), className: active.endsWith('/Search') ? 'is-active' : undefined }, labels.search),
+        showDestinations && h('a', { href: '/countries' }, labels.destinations)),
+      h('div', { className: 'entry-nav-right' },
+        h('span', { className: 'entry-lang-pill' }, language.toUpperCase()),
+        h('a', { href: '/AdmissionsSurvey', className: 'entry-cta-dark' }, labels.survey))));
+}
+
+/** Pre-mount HTML shell for /, /Search, /ru/Search, /uz/Search and /AdmissionsSurvey matching the live Warm Pearl Glass UI.
+ * @param {{page: DiscoveryPage, previewRows?: {name: string, country?: string, city?: string, href: string}[]}} props */
+export function PublicEntryContent({ page, previewRows = [] }) {
+  const language = page.language || 'en';
+  const c = catalogCopy[language] || catalogCopy.en;
+  const discoveryLinks = collectPublicEntryLinks(page);
+  const hasDestinations = discoveryLinks.some(link => link.href === '/countries');
+
+  if (page.path === '/') {
+    return h('div', { className: 'entry-shell entry-shell--home' },
+      h('header', { className: 'entry-home-header' },
+        h('a', { href: '/', className: 'entry-home-brand' }, 'UNIMATCH'),
+        h('nav', { 'aria-label': 'Primary', className: 'entry-home-top-links' },
+          h('a', { href: '/Search' }, 'Explore universities'),
+          hasDestinations && h('a', { href: '/countries' }, 'Destinations'),
+          h('a', { href: '/AdmissionsSurvey', className: 'entry-home-match-link' }, 'FIND MY UNIVERSITY'))),
+      h('main', { className: 'entry-home-main' },
+        h('div', { className: 'entry-home-orb', 'aria-hidden': 'true' }),
+        h('div', { className: 'entry-home-grid' },
+          h('div', { className: 'entry-home-copy' },
+            h('h1', { className: 'entry-home-title' }, page.heading),
+            h('p', { className: 'entry-home-intro' }, page.intro),
+            h('a', { href: '/AdmissionsSurvey', className: 'entry-cta-dark' }, 'FIND MY UNIVERSITY')),
+          h('aside', { className: 'entry-home-side' },
+            h('h2', { className: 'sr-only' }, 'Browse verified bachelor’s hubs'),
+            h('p', { className: 'entry-home-side-copy' }, 'Compare verified bachelor’s programmes, tuition scope and entry requirements across Europe, the UK, the US and Asia.'),
+            h('nav', { 'aria-label': 'Explore' },
+              h('ul', { className: 'entry-home-pills' },
+                discoveryLinks.filter(link => link.href !== '/AdmissionsSurvey').slice(0, 6).map(link =>
+                  h('li', { key: link.href },
+                    h('a', { href: link.href, className: 'entry-pill-link' }, link.label)
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+
+  if (page.path === '/AdmissionsSurvey') {
+    const fieldChips = ['Business', 'Information Technology (IT)', 'Computer Engineering', 'Software Engineering', 'Computer Science'];
+    return h('div', { className: 'entry-shell entry-shell--app' },
+      h(EntryNav, { active: '/AdmissionsSurvey', language: 'en', showDestinations: hasDestinations }),
+      h('main', { className: 'entry-app-main' },
+        h('div', { className: 'entry-topline' },
+          h('span', null, 'Bachelor’s studies after school')),
+        h('div', { className: 'entry-survey-frame' },
+          h('aside', { className: 'entry-survey-story' },
+            h('p', { className: 'entry-eyebrow' }, 'YOUR NEXT CHAPTER'),
+            h('h2', { className: 'entry-story-title' }, 'A direction starts with curiosity.')),
+          h('section', { className: 'entry-survey-panel' },
+            h('p', { className: 'entry-stepper-text' }, '01 Direction · 02 Preparation · 03 Budget'),
+            h('h1', { className: 'entry-app-h1' }, page.heading),
+            h('p', { className: 'entry-app-intro' }, page.intro),
+            h('p', { className: 'sr-only' }, 'Select your study field, language test results such as IELTS or TOPIK, and target countries to check verified programme requirements before applying.'),
+            h('ul', { className: 'entry-chip-grid', 'aria-hidden': 'true' },
+              fieldChips.map(label => h('li', { key: label, className: 'entry-chip' }, label))),
+            h('ul', { className: 'entry-footer-links' },
+              discoveryLinks.map(link =>
+                h('li', { key: link.href },
+                  h('a', { href: link.href, className: 'discovery-link text-sm' }, link.label)
+                )
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+
+  // /Search, /ru/Search, /uz/Search
+  return h('div', { className: 'entry-shell entry-shell--app' },
+    h(EntryNav, { active: page.path, language, showDestinations: hasDestinations }),
+    h('main', { className: 'entry-app-main entry-app-main--search' },
+      h('div', { className: 'entry-search-header' },
+        h('h1', { className: 'entry-app-h1' }, c.searchHeroTitle),
+        h('p', { className: 'entry-app-intro' }, c.searchHeroIntro)),
+      h('div', { className: 'entry-search-bar' },
+        h('p', { className: 'entry-search-placeholder' }, page.intro)),
+      previewRows.length > 0 && h('section', { 'aria-label': page.heading, className: 'entry-preview-grid' },
+        previewRows.map(row => h('article', { key: row.href, className: 'entry-preview-card' },
+          h('h2', { className: 'entry-preview-title' }, row.name),
+          h('p', { className: 'entry-preview-meta' }, [row.city, row.country].filter(Boolean).join(', ') || 'International university'),
+          h('a', { href: row.href, className: 'entry-preview-link' }, c.details, h('span', { className: 'sr-only' }, ` — ${row.name}`))))),
+      h('section', { className: 'entry-discovery-strip' },
+        h('h2', { className: 'entry-strip-heading' }, page.heading),
+        h('nav', { 'aria-label': c.explore },
+          h('ul', { className: 'entry-footer-links' },
+            discoveryLinks.map(link =>
+              h('li', { key: link.href },
+                h('a', { href: link.href, className: 'discovery-link text-sm' }, link.label)
+              )
+            ),
+            page.alternates && Object.entries(page.alternates).filter(([lang]) => lang !== 'x-default').map(([lang, href]) =>
+              h('li', { key: lang },
+                h('a', { href, hrefLang: lang, lang, className: 'discovery-link text-sm' }, LANGUAGE_NAMES[lang] || lang)
+              )
+            )
+          )
+        )
+      )
+    )
+  );
 }

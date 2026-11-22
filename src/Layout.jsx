@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useAuth } from '@/lib/AuthContext';
@@ -42,7 +42,7 @@ function LayoutContent({ children, currentPageName }) {
     const menuToggle = useRef(null);
     const menuPanel = useRef(null);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         document.body.dataset.unimatchTheme = 'warm-glass';
         return () => { delete document.body.dataset.unimatchTheme; };
     }, []);

@@ -56,6 +56,8 @@ for (const required of ['index.html', 'Search.html', 'AdmissionsSurvey.html', 'r
 }
 assert.ok(builtPages.some(file => file.startsWith('guides/')),
   'Build should emit the currently available static guide page');
+assert.ok(builtPages.some(file => file.startsWith('ru/guides/')) && builtPages.some(file => file.startsWith('uz/guides/')),
+  'Build should emit localized Russian and Uzbek guide pages');
 
 const sitemapLocations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
 assert.equal(new Set(sitemapLocations).size, sitemapLocations.length, 'Sitemap locations must be unique');
@@ -78,6 +80,8 @@ for (const file of builtPages) {
     const rootStart = bodyMarkup.indexOf('<div id="root"></div>');
     assert.ok(entryStart >= 0 && rootStart > entryStart, `${file}: meaningful public entry must precede the empty app root`);
     const fallback = bodyMarkup.slice(entryStart, rootStart);
+    assert.ok(fallback.includes('class="entry-shell'), `${file}: public entry must use the visual pre-hydration shell`);
+    assert.ok(!fallback.includes('discovery-embedded'), `${file}: old generic discovery-embedded box must not return`);
     assert.match(fallback, /<h1\b[^>]*>\s*[^<]+<\/h1>/i, `${file}: public entry must contain a heading`);
     assert.match(fallback, /<p\b[^>]*>\s*[^<]+<\/p>/i, `${file}: public entry must contain introductory copy`);
   } else {
@@ -111,11 +115,17 @@ for (const file of builtPages) {
   assert.ok(Array.isArray(schema['@graph']), `${file}: schema must use @graph`);
   const types = schema['@graph'].flatMap(entity => Array.isArray(entity['@type']) ? entity['@type'] : [entity['@type']]);
   assert.ok(types.includes('WebSite'), `${file}: schema needs WebSite`);
+  const websiteNode = schema['@graph'].find(entity => entity['@type'] === 'WebSite');
+  assert.equal(websiteNode?.potentialAction?.['@type'], 'SearchAction', `${file}: WebSite schema needs SearchAction`);
   assert.ok(types.includes('Organization'), `${file}: schema needs Organization`);
 
-  if (route.startsWith('/universities/')) assert.ok(types.includes('CollegeOrUniversity'), `${file}: profile schema missing`);
+  if (route.startsWith('/universities/')) {
+    assert.ok(types.includes('CollegeOrUniversity'), `${file}: profile schema missing`);
+    assert.ok(types.includes('Course'), `${file}: profile schema needs Course`);
+    assert.ok(types.includes('FAQPage'), `${file}: profile schema needs FAQPage`);
+  }
   if (route.includes('/guides/')) assert.ok(types.includes('Article'), `${file}: guide schema missing`);
-  if (route.startsWith('/countries/') || route.startsWith('/universities/') || route.startsWith('/guides/') || route.startsWith('/study/')) {
+  if (route.startsWith('/countries/') || route.startsWith('/universities/') || route.includes('/guides/') || route.startsWith('/study/')) {
     assert.ok(types.includes('BreadcrumbList'), `${file}: discovery page schema needs breadcrumbs`);
   }
   {
@@ -292,8 +302,13 @@ assert.deepEqual(await loadSeoInstitutions({ VERCEL_ENV: 'preview', SEO_FETCH_PU
 if (process.env.SEO_CHECK_ORIGIN) {
   const origin = new URL(process.env.SEO_CHECK_ORIGIN);
   const request = (route, options = {}) => fetch(new URL(route, origin), { redirect: 'manual', signal: AbortSignal.timeout(10_000), ...options });
-  const profileRoute = [...emittedPublic].map(url => new URL(url).pathname).find(route => route.startsWith('/universities/'));
-  for (const route of ['/', '/Search', '/ru/Search', '/uz/Search', '/sitemap.xml', '/robots.txt', profileRoute].filter(Boolean)) {
+  const paths = [...emittedPublic].map(url => new URL(url).pathname);
+  const profileRoute = paths.find(route => route.startsWith('/universities/'));
+  const countryRoute = paths.find(route => route.startsWith('/countries/'));
+  const studyRoute = paths.find(route => route.startsWith('/study/'));
+  const ruGuideRoute = paths.find(route => route.startsWith('/ru/guides/'));
+  const uzGuideRoute = paths.find(route => route.startsWith('/uz/guides/'));
+  for (const route of ['/', '/Search', '/ru/Search', '/uz/Search', '/sitemap.xml', '/robots.txt', profileRoute, countryRoute, studyRoute, ruGuideRoute, uzGuideRoute].filter(Boolean)) {
     const response = await request(route);
     assert.equal(response.status, 200, route);
     if (route === profileRoute) assert.match(await response.text(), /Programmes in the UniMatch catalog/);

@@ -27,7 +27,7 @@ export default function FilterPanel({ filters, setFilters, onReset, universities
     }, [universities]);
     const updateFilter = (key, value) => setFilters(prev => ({ ...prev, [key]: (key === 'country' || key === 'region') && value === 'all' ? '' : value }));
     const toggleArrayFilter = (key, value) => setFilters(prev => { const current = prev[key] || []; const updated = current.includes(value) ? current.filter(v => v !== value) : [...current, value]; return { ...prev, [key]: updated }; });
-    const activeFilterCount = Object.values(filters).filter(v => v !== null && v !== undefined && v !== "" && (Array.isArray(v) ? v.length > 0 : true)).length;
+    const activeFilterCount = Object.values(filters).filter(v => v !== null && v !== undefined && v !== "" && v !== false && (!Array.isArray(v) || v.length > 0)).length;
     const optionLabel = (value) => catalogValue(value, language);
     const filterId = (name) => `${idPrefix}-search-filter-${name}`;
 

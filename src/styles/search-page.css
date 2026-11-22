@@ -10,7 +10,7 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page {
 .unimatch-app .catalog-page.search-page .catalog-heading h1 { color: var(--search-ink); font-size: var(--product-h1, clamp(28px, 2.7vw, 40px)); font-weight: 650; letter-spacing: -.035em; line-height: 1.12; }
 .unimatch-app .catalog-page.search-page .catalog-heading p { color: var(--search-muted); margin-top: 8px; max-width: 44rem; line-height: 1.45; }
 .unimatch-app .catalog-page.search-page .catalog-toolbar { background: transparent; border: 0; backdrop-filter: none; -webkit-backdrop-filter: none; }
-.unimatch-app .catalog-page.search-page .catalog-toolbar input { min-height: 52px; padding-right: 52px; border-radius: 999px; background: rgba(255,255,255,.72); border-color: rgba(255,255,255,.94); color: var(--search-ink); box-shadow: inset 0 1px 1px #fff, 0 4px 14px #5d49300a; }
+.unimatch-app .catalog-page.search-page .catalog-toolbar input { height: 48px; min-height: 48px; padding-block: 0; padding-right: 52px; border-radius: 999px; background: rgba(255,255,255,.72); border-color: rgba(255,255,255,.94); color: var(--search-ink); box-shadow: inset 0 1px 1px #fff, 0 4px 14px #5d49300a; }
 .unimatch-app .catalog-page.search-page .catalog-grid { grid-template-columns: minmax(0,1fr); gap: 16px; align-items: stretch; }
 .unimatch-app .catalog-page.search-page .catalog-card.search-university-card {
   min-width: 0;
@@ -144,7 +144,13 @@ body[data-unimatch-theme] .unimatch-app .catalog-page.search-page > .max-w-7xl,
 body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .catalog-toolbar > .max-w-7xl {
   max-width: var(--product-shell-max, 1360px);
   width: min(calc(100% - 32px), var(--product-shell-max, 1360px));
+}
+body[data-unimatch-theme] .unimatch-app .catalog-page.search-page > .max-w-7xl {
   padding-inline: 0;
+}
+body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .catalog-toolbar > .max-w-7xl {
+  margin-block: 8px;
+  padding: 16px 20px;
 }
 body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .search-profile-hint {
   margin: 0 auto 12px; max-width: var(--product-shell-max, 1360px);
@@ -226,8 +232,8 @@ body[data-unimatch-theme] .catalog-filter-drawer.search-glass-drawer :focus-visi
   .unimatch-app .catalog-page.search-page .catalog-photo summary { top: 140px; bottom: auto; }
   .unimatch-app .catalog-page.search-page .catalog-photo details[open] summary { position: static; width: fit-content; margin: 8px 0 0 auto; }
   .unimatch-app .catalog-page.search-page :is(.catalog-photo > img, .catalog-photo > picture > img) { height: 180px; }
-  .unimatch-app .catalog-page.search-page .catalog-toolbar { padding-inline: 12px; }
-  .unimatch-app .catalog-page.search-page .catalog-toolbar > div { padding: 14px; border-radius: 24px; background: rgba(255,253,248,.76); border: 1px solid rgba(255,255,255,.92); }
+  .unimatch-app .catalog-page.search-page .catalog-toolbar { padding-inline: 0; }
+  body[data-unimatch-theme] .unimatch-app .catalog-page.search-page .catalog-toolbar > .max-w-7xl { padding: 14px 16px; border-radius: 24px; background: rgba(255,253,248,.76); border: 1px solid rgba(255,255,255,.92); }
   .unimatch-app .catalog-page.search-page .catalog-toolbar input { font-size: 16px; }
   .unimatch-app .catalog-page.search-page .catalog-results { gap: 10px; font-size: 13px; }
   .unimatch-app .catalog-page.search-page .search-programme-preview h4 { min-height: 0; }

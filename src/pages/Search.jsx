@@ -191,12 +191,12 @@ export default function Search() {
                     <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
                         <div className="relative flex-1 w-full">
                             <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#55504a]" />
-                            <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-10 py-6 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
+                            <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-12 pl-12 pr-10 py-0 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
                             {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 min-h-10 min-w-10 inline-flex items-center justify-center rounded-full text-[#55504a] hover:text-[#292823]"><X className="w-4 h-4" /></button>}
                         </div>
                         <FilterDialog open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen} {...(isMobile ? { handleOnly: true, autoFocus: true } : {})}>
                             <FilterTrigger asChild>
-                                <Button variant="outline" className="search-filter-trigger gap-2 shrink-0 w-full md:w-auto min-h-12 px-5 rounded-full border-white/95 bg-[#fffdf8]/90 text-[#292823] hover:bg-white shadow-sm"><SlidersHorizontal className="w-4 h-4" />{t('search.filters')}{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-1">{activeFilterCount}</Badge>}</Button>
+                                <Button variant="outline" className="search-filter-trigger gap-2 shrink-0 w-full md:w-auto h-12 min-h-12 px-5 rounded-full border-white/95 bg-[#fffdf8]/90 text-[#292823] hover:bg-white shadow-sm"><SlidersHorizontal className="w-4 h-4" /><span>{t('search.filters')}</span>{activeFilterCount > 0 && <Badge className="bg-[#252c2f] text-white ml-0.5 min-w-6 h-6 px-1.5 rounded-full justify-center font-semibold tabular-nums">{activeFilterCount}</Badge>}</Button>
                             </FilterTrigger>
                             {isMobile ? (
                                 <Drawer.Portal>

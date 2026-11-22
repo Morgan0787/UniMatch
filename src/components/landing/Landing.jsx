@@ -352,18 +352,15 @@ export default function App() {
           <div className="university-grid">
             {filtered.map((u, i) => (<article className="university-card" key={u.id}>
                 <div className="university-image">
-                  <button className="university-image-link" onClick={() => d.setDetail(u)} aria-label={`${c.cardLink}: ${u.name}`}>
+                  <button type="button" className="university-image-link" onClick={() => d.setDetail(u)} aria-label={`${c.cardLink}: ${u.name}`}>
                     <img src={u.image} alt={u.country[l]} loading="lazy" onError={event => { event.currentTarget.onerror = null; event.currentTarget.src = "/images/community.jpg"; }}/>
                     <span className="image-shade"/>
-                    <span className="card-discover">
-                      <ArrowUpRight size={26}/>
-                    </span>
                   </button>
                   <span className="card-location">
                     <span className="orange-dot"/>
                     {u.country[l]}
                   </span>
-                  <button className={`save-button ${saved.includes(u.id) ? "is-saved" : ""}`} disabled={d.isSaving} onClick={() => toggleSave(u.id)} aria-label={`${saved.includes(u.id) ? c.saved : c.save}: ${u.name}`} aria-pressed={saved.includes(u.id)}>
+                  <button type="button" className={`save-button ${saved.includes(u.id) ? "is-saved" : ""}`} disabled={d.isSaving} onClick={() => toggleSave(u.id)} aria-label={`${saved.includes(u.id) ? c.saved : c.save}: ${u.name}`} aria-pressed={saved.includes(u.id)}>
                     <Bookmark size={18} fill={saved.includes(u.id) ? "currentColor" : "none"}/>
                   </button>
                   <span className="card-number">
@@ -373,12 +370,12 @@ export default function App() {
                 <div className="university-info">
                   <div>
                     <h3>
-                      <button onClick={() => d.setDetail(u)}>{u.name}</button>
+                      <button type="button" onClick={() => d.setDetail(u)}>{u.name}</button>
                     </h3>
                     <p>{u.description[l]}</p>
                   </div>
-                  <button className="university-arrow" aria-label={`${c.cardLink}: ${u.name}`} onClick={() => d.setDetail(u)}>
-                    <ArrowUpRight size={21}/>
+                  <button type="button" className="university-arrow" aria-label={`${c.cardLink}: ${u.name}`} onClick={() => d.setDetail(u)}>
+                    <ArrowUpRight size={18} strokeWidth={1.9}/>
                   </button>
                 </div>
                 <span className="university-tag">{u.tags[l]}</span>

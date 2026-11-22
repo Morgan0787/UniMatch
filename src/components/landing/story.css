@@ -824,6 +824,35 @@
   color: #252c2f;
 }
 
+.unimatch-landing .discover-section .university-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(41, 40, 36, 0.14);
+  background: rgba(255, 253, 248, 0.94);
+  color: var(--ink);
+  box-shadow: 0 6px 16px -10px rgba(41, 40, 36, 0.16);
+  transition: background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease, transform 0.22s ease;
+}
+
+.unimatch-landing .discover-section .university-card:hover .university-arrow,
+.unimatch-landing .discover-section .university-arrow:hover,
+.unimatch-landing .discover-section .university-arrow:focus-visible {
+  background: #252c2f;
+  border-color: #252c2f;
+  color: #faf7ef;
+  transform: translate(2px, -2px);
+}
+
+.unimatch-landing .discover-section .university-info p {
+  color: #524e45;
+}
+
+.unimatch-landing .discover-section .university-tag {
+  color: #7a4116;
+  font-weight: 600;
+}
+
 .unimatch-landing .discover-section .catalog-status {
   width: 100%;
   max-width: 1360px;

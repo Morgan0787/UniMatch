@@ -92,7 +92,7 @@ function projectDescriptiveFact(fact, kind, sources, { includeScope = true } = {
   const described = describePublicFact(fact, 'en', kind, { includeScope });
   if (!described.value || described.value === 'Unknown') return null;
   return {
-    value: [described.value, described.tuitionReference].filter(Boolean).join(' · '),
+    value: described.value,
     notice: described.notice || '',
     status: fact.status,
     sources: resolvedSources,

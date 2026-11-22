@@ -1,7 +1,7 @@
 const COPY = {
   en: {
     budgetLimit: 'Annual tuition limit',
-    budgetHint: 'Tuition only, in USD per year. Converted amounts are estimates. Programmes with unconfirmed tuition stay in the results.',
+    budgetHint: 'Tuition only, in USD per year. Programmes with unconfirmed tuition stay in the results.',
     clearBudget: 'Clear tuition limit',
     budgetReasons: {
       noProgramme: 'Programme tuition is unknown.',
@@ -13,7 +13,7 @@ const COPY = {
   },
   ru: {
     budgetLimit: 'Лимит платы за обучение в год',
-    budgetHint: 'Только плата за обучение в USD за год. Суммы после пересчёта приблизительные. Программы без подтверждённой цены остаются в выдаче.',
+    budgetHint: 'Только плата за обучение в USD за год. Программы без подтверждённой цены остаются в выдаче.',
     clearBudget: 'Сбросить лимит платы за обучение',
     budgetReasons: {
       noProgramme: 'Плата за обучение по программе неизвестна.',
@@ -25,7 +25,7 @@ const COPY = {
   },
   uz: {
     budgetLimit: 'Yillik o‘qish haqi chegarasi',
-    budgetHint: 'Faqat yillik o‘qish haqini USDda kiriting. O‘girilgan summalar taxminiy. O‘qish haqi tasdiqlanmagan dasturlar natijalarda qoladi.',
+    budgetHint: 'Faqat yillik o‘qish haqini USDda kiriting. O‘qish haqi tasdiqlanmagan dasturlar natijalarda qoladi.',
     clearBudget: 'O‘qish haqi chegarasini olib tashlash',
     budgetReasons: {
       noProgramme: 'Dastur uchun o‘qish haqi noma’lum.',

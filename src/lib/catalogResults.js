@@ -125,7 +125,7 @@ function assessProgrammeBudget(programme, catalog, budget, currentYear) {
   if (!['year', '12_months'].includes(value.period)) return { group: 'unknown', reason: 'nonAnnualTuition' };
   const amountUsd = toUsd(value.amount, value.currency);
   if (amountUsd == null) return { group: 'unknown', reason: 'unavailableExchangeRate' };
-  return { group: Number(amountUsd.toFixed(2)) <= Number(budget.toFixed(2)) ? 'within' : 'above', reason: null };
+  return { group: Math.round(amountUsd) <= Math.round(budget) ? 'within' : 'above', reason: null };
 }
 
 /** One card per institution. Programme filters must agree on a single preview before claiming budget fit. */

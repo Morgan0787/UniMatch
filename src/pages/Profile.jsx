@@ -330,7 +330,7 @@ export default function Profile() {
                                                             // as "Free". Same wording as the comparison table.
                                                             <span className="text-[#625e59] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                                         ) : (
-                                                            <>{legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}/{t('common.year')}{legacyTuition && <small className="block text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}</>
+                                                            legacyTuition ? <>{legacyTuition}/{t('common.year')}</> : catalogText(language, 'notPublished')
                                                         )}
                                                     </span>
                                                 </div>}

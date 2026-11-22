@@ -73,7 +73,8 @@ assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...ann
 const euroUniversity = budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'EUR' }) });
 const euroLimitUsd = Number(toUsd(4000, 'EUR').toFixed(2));
 assert.equal(budgetStatus(euroUniversity, { ...budgetFilters, budget: euroLimitUsd }).group, 'within');
-assert.equal(budgetStatus(euroUniversity, { ...budgetFilters, budget: euroLimitUsd - 0.01 }), undefined);
+assert.equal(budgetStatus(euroUniversity, { ...budgetFilters, budget: Math.round(euroLimitUsd) - 1 }), undefined);
+assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, amount: 4000.4 }) })).group, 'within');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'KRW', amount: 4000 }) })).group, 'within');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, currency: 'UZS' }) })).reason, 'unavailableExchangeRate');
 assert.equal(budgetStatus(budgetUniversity({ tuition: publicCatalogFact({ ...annualFee, period: 'semester' }) })).reason, 'nonAnnualTuition');

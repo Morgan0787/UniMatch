@@ -31,8 +31,7 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
   const mainReason = reasons.find(reason => reason.status === 'unmet' && !['ACADEMIC_UNMET', 'LANGUAGE_UNMET'].includes(reason.code)) || reasons.find(reason => reason.status === 'unmet') || reasons.find(reason => reason.code === 'LANGUAGE_SECTIONS_UNKNOWN') || reasons.find(reason => reason.code === 'ASU_SPRING_CS_INTAKE_UNCONFIRMED') || reasons.find(reason => reason.code === 'PERSONAL_CREDENTIAL_UNKNOWN') || reasons.find(reason => reason.status === 'unknown');
   const knownReason = reasons.find(reason => reason.status === 'met' && ['FIELD_MATCH', 'REGION_MATCH'].includes(reason.code));
   const route = option.sources.find(source => source.key === option.routeSourceKey || source.key.endsWith('route') || source.key === 'asu-first-year') || option.sources[0];
-  const tuition = option.tuition;
-  const tuitionFact = option.facts?.tuition;
+  const tuitionFact = option.facts?.tuition ?? (option.tuition?.amount != null ? { value: option.tuition } : null);
   const teachingLanguage = describePublicFact(option.facts?.teachingLanguage, language, 'text');
   const languageReference = option.publishedLanguageReference && reasons.some(reason => ['LANGUAGE_BELOW_PUBLISHED_THRESHOLD', 'LANGUAGE_THRESHOLD_REACHED'].includes(reason.code))
     ? describePublicFact(option.facts.languageThreshold, language, 'rule') : null;
@@ -56,7 +55,7 @@ function CandidateCard({ row, c, language, favorites, compared, onCompare, compa
     <p className="admission-key-reason">{mainReason ? c.cardReasons[mainReason.code] || c.reasons[mainReason.code] || c.incomplete : c.incomplete}</p>
     <dl className="admission-facts">
       <div><dt>{{en:'Teaching language',ru:'Язык обучения',uz:'Ta’lim tili'}[language] || 'Teaching language'}</dt><dd>{c.languages[teachingLanguage.value] || teachingLanguage.value}</dd></div>
-      <div><dt>{ui.tuition}</dt><dd>{tuitionFact ? <TuitionValue fact={tuitionFact} language={language} /> : tuition?.amount != null ? `${tuition.amount.toLocaleString(language)} ${tuition.currency} / ${c.periods[tuition.period] || c.unknownShort}` : c.unknownShort}{!tuitionFact && tuition?.feeYear && <small> · {tuition.feeYear}</small>}</dd></div>
+      <div><dt>{ui.tuition}</dt><dd>{tuitionFact ? <TuitionValue fact={tuitionFact} language={language} /> : c.unknownShort}</dd></div>
       <div><dt>{c.intake}</dt><dd>{option.intakeText || c.unknownShort}</dd></div>
     </dl>
     <div className="admission-card-actions">

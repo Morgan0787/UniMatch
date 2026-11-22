@@ -102,10 +102,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                                         university.tuition_min === 0 ? (
                                             <span className="text-emerald-700">{t('university.free')}</span>
                                         ) : (
-                                            <>
-                                                {legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}
-                                                {legacyTuition && <small className="block mt-0.5 text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}
-                                            </>
+                                            legacyTuition || catalogText(language, 'notPublished')
                                         )
                                     ) : (
                                         <span className="text-[#55504a] font-normal">{{en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}</span>

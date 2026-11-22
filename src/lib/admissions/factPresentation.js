@@ -1,5 +1,5 @@
 import { catalogValue } from '../catalogCopy.js';
-import { formatUsd, toUsd, TUITION_RATE_DATE } from '../tuitionCurrency.js';
+import { formatUsd, toUsd } from '../tuitionCurrency.js';
 
 const COPY = {
   en: {
@@ -109,21 +109,7 @@ export function normalizeIntakeText(value) {
     .trim();
 }
 
-function describeTuitionConversion(value, language) {
-  if (value?.currency === 'USD') return null;
-  const amount = toUsd(value?.amount, value?.currency);
-  if (amount == null) return null;
-  const original = value.amount.toLocaleString(language === 'uz' ? 'uz-UZ' : language, { maximumFractionDigits: 20 });
-  const copy = {
-    en: ['Approx.', 'ECB'], ru: ['Примерно', 'ЕЦБ'], uz: ['Taxminan', 'ECB'],
-  }[language] || ['Approx.', 'ECB'];
-  return {
-    amount: `${copy[0]} ${formatUsd(amount, language)}`,
-    reference: `${original} ${value.currency} · ${copy[1]} ${TUITION_RATE_DATE}`,
-  };
-}
-
-function renderValue(value, kind, language, convertedAmount = null) {
+function renderValue(value, kind, language) {
   const c = copy(language);
   if (value === null || value === undefined) return c.unknown;
   if (kind === 'programme') return typeof value === 'string' ? value : c.unknown;
@@ -138,15 +124,16 @@ function renderValue(value, kind, language, convertedAmount = null) {
   }
   if (kind === 'tuition') {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return c.unknown;
-    const amount = Number.isFinite(value.amount) ? value.amount.toLocaleString(language === 'uz' ? 'uz-UZ' : language, { maximumFractionDigits: 20 }) : c.amountUnknown;
-    const currency = typeof value.currency === 'string' && value.currency ? value.currency : '';
+    const amountUsd = toUsd(value.amount, value.currency);
+    const amount = amountUsd == null ? c.amountUnknown : formatUsd(amountUsd, language);
     const periodNames = { year: c.year, semester: c.semester, credit_hour: c.creditHour, academic_year_9_months: c.nineMonthYear, '12_months': c.twelveMonths };
     const period = periodNames[value.period] || c.unknownPeriod;
     const feeYear = typeof value.feeYear === 'string' && value.feeYear ? ` (${value.feeYear})` : '';
-    const cleanLabel = typeof value.label === 'string' && value.label.trim() ? normalizeIntakeText(value.label) : '';
+    const cleanLabel = typeof value.label === 'string' ? normalizeIntakeText(value.label)
+      .replace(/\s*Original fee line:.*$/i, '')
+      .replace(/^Estimate:\s*€[\d,.]+\/year if paid in one instalment\b/i, 'Single annual instalment') : '';
     const label = cleanLabel ? ` · ${cleanLabel}` : '';
-    const originalAmount = `${amount}${currency ? ` ${currency}` : ''}`;
-    return `${convertedAmount ?? originalAmount} / ${period}${feeYear}${label}`;
+    return `${amount} / ${period}${feeYear}${label}`;
   }
   if (kind === 'deadline') {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return c.unknown;
@@ -168,14 +155,6 @@ function renderValue(value, kind, language, convertedAmount = null) {
   return c.unknown;
 }
 
-function describeValue(value, kind, language) {
-  const conversion = kind === 'tuition' ? describeTuitionConversion(value, language) : null;
-  return {
-    value: renderValue(value, kind, language, conversion?.amount),
-    ...(conversion ? { tuitionReference: conversion.reference } : {}),
-  };
-}
-
 /**
  * Prepare a public catalogue fact for display without implying eligibility.
  * Historical values are read only from historical.value.
@@ -183,7 +162,7 @@ function describeValue(value, kind, language) {
  * @param {string} language
  * @param {string} kind
  * @param {{includeScope?: boolean}} options
- * @returns {{value: string, notice: string, sourceIds: string[], tuitionReference?: string}}
+ * @returns {{value: string, notice: string, sourceIds: string[]}}
  */
 export function describePublicFact(fact, language = 'en', kind = 'text', { includeScope = false } = {}) {
   const c = copy(language);
@@ -199,7 +178,7 @@ export function describePublicFact(fact, language = 'en', kind = 'text', { inclu
     const historical = fact.historical;
     const season = typeof historical?.referenceSeason === 'string' ? historical.referenceSeason : '';
     const scope = includeScope ? scopeText(fact.scope, language) : '';
-    return { ...describeValue(historical?.value, kind, language), notice: [template(c.historical, { season }), scope].filter(Boolean).join(' '), sourceIds };
+    return { value: renderValue(historical?.value, kind, language), notice: [template(c.historical, { season }), scope].filter(Boolean).join(' '), sourceIds };
   }
   if (fact.status === 'unknown' || fact.value == null) {
     const scope = includeScope ? scopeText(fact.scope, language) : '';
@@ -209,5 +188,5 @@ export function describePublicFact(fact, language = 'en', kind = 'text', { inclu
     ? c.published
     : fact.status === 'estimate' ? c.estimate : '';
   const scope = includeScope ? scopeText(fact.scope, language) : '';
-  return { ...describeValue(fact.value, kind, language), notice: [notice, scope].filter(Boolean).join(' '), sourceIds };
+  return { value: renderValue(fact.value, kind, language), notice: [notice, scope].filter(Boolean).join(' '), sourceIds };
 }

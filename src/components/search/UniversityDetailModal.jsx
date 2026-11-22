@@ -135,7 +135,7 @@ export function UniversityDetails({ university, userGpa, userIelts, userTopik, i
                                         {university.tuition_min === 0 ? (
                                             t('university.free')
                                         ) : hasTuitionMin ? (
-                                            <>{legacyTuition?.amount || ({ en: 'Currency unavailable', ru: 'Валюта неизвестна', uz: 'Valuta noma’lum' }[language] || 'Currency unavailable')}{legacyTuition && <small className="block mt-0.5 text-xs font-normal text-[#55504a]">{legacyTuition.note}: {legacyTuition.originalRange}</small>}</>
+                                            legacyTuition || catalogText(language, 'notPublished')
                                         ) : (
                                             <span className="text-[#656158] italic font-normal text-sm">{catalogText(language, 'notPublished')}</span>
                                         )}

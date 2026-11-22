@@ -8,7 +8,7 @@
 - Missing tuition, acceptance rate, degree levels, or notable programs must display `Not published` unless verified data exists.
 - Never treat an LLM-generated number as fact without `source_url` and `verified`.
 - Search compares an annual USD tuition limit against confirmed tuition for the displayed programme and intake. The main list includes matches within the limit and programmes without a comparable confirmed price. Living costs are separate from the Search limit.
-- USD tuition estimates use the dated European Central Bank reference rates in `src/lib/tuitionExchangeRates.json`. Store fees in their official currencies and retain their scope and period. A missing exchange rate leaves the official quote visible and excludes the fee from budget comparisons. Search links and preferences written before USD were denominated in EUR.
+- Display tuition in whole US dollars using the dated European Central Bank reference rates in `src/lib/tuitionExchangeRates.json`. Store fees in their official currencies and retain their scope and period. A missing exchange rate leaves the displayed USD amount unavailable and excludes the fee from budget comparisons. Search links and preferences written before USD were denominated in EUR.
 - Survey-to-profile transfer is opt-in. It copies GPA only from the original 4-point scale, transfers IELTS and TOPIK to their own fields, and leaves the survey's tuition-only budget out of the total-cost profile field.
 - Do not scrape or reuse competitor databases such as Studyportals.
 

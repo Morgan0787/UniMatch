@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from "react";
-import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe2, Sprout, Instagram, Linkedin, ArrowRight, Play, Pause, Plus } from "lucide-react";
+import { ArrowUpRight, ArrowDown, Bookmark, Compass, Globe, Globe2, Sprout, Sparkles, Instagram, Linkedin, ArrowRight, Play, Pause, Plus } from "lucide-react";
 import { Header } from "./Header";
 import { HeroSceneBoundary, HeroLoadingScreen } from './HeroSceneFallback';
 const HeroExplorer = lazy(() => import("./HeroExplorer"));
@@ -209,25 +209,51 @@ export default function App() {
               </button>)}
           </div>
           <div className="experience-details">
-            <article data-reveal>
-              <span className="eyebrow">01 / {labels.people}</span>
-              <h3>{c.benefitOne}</h3>
-              <p>{c.benefitOneText}</p>
-              <a className="text-link" href="#discover">
-                {c.benefitOneLink}
-                <ArrowUpRight size={18}/>
-              </a>
+            <article className="experience-detail-card detail-card-people" data-reveal>
+              <div className="detail-card-top">
+                <span className="detail-index-pill">
+                  <span className="orange-dot" aria-hidden="true"/>
+                  <span>01 / {labels.people}</span>
+                </span>
+                <span className="detail-icon-badge" aria-hidden="true">
+                  <Globe size={18} strokeWidth={1.65}/>
+                </span>
+              </div>
+              <div className="detail-card-body">
+                <h3>{c.benefitOne}</h3>
+                <p>{c.benefitOneText}</p>
+              </div>
+              <div className="detail-card-actions">
+                <a className="detail-cta detail-cta-secondary" href="#discover">
+                  <span>{c.benefitOneLink}</span>
+                  <span className="detail-cta-icon" aria-hidden="true">
+                    <ArrowUpRight size={15} strokeWidth={1.9}/>
+                  </span>
+                </a>
+              </div>
             </article>
-            <article data-reveal>
-              <span className="eyebrow">
-                02 / {labels.possibilities}
-              </span>
-              <h3>{c.benefitTwo}</h3>
-              <p>{c.benefitTwoText}</p>
-              <button className="text-link" onClick={match}>
-                {c.benefitTwoLink}
-                <ArrowUpRight size={18}/>
-              </button>
+            <article className="experience-detail-card detail-card-possibilities" data-reveal>
+              <div className="detail-card-top">
+                <span className="detail-index-pill">
+                  <span className="orange-dot" aria-hidden="true"/>
+                  <span>02 / {labels.possibilities}</span>
+                </span>
+                <span className="detail-icon-badge" aria-hidden="true">
+                  <Sparkles size={18} strokeWidth={1.65}/>
+                </span>
+              </div>
+              <div className="detail-card-body">
+                <h3>{c.benefitTwo}</h3>
+                <p>{c.benefitTwoText}</p>
+              </div>
+              <div className="detail-card-actions">
+                <button type="button" className="detail-cta detail-cta-primary" onClick={match}>
+                  <span>{c.benefitTwoLink}</span>
+                  <span className="detail-cta-icon" aria-hidden="true">
+                    <ArrowUpRight size={15} strokeWidth={1.9}/>
+                  </span>
+                </button>
+              </div>
             </article>
           </div>
           <div className="values-grid">
@@ -235,8 +261,10 @@ export default function App() {
             const Icon = [Sprout, Compass, Globe2][i];
             return (<article className="value-card" key={i} data-reveal>
                   <div className="value-top">
-                    <span>0{i + 1}</span>
-                    <Icon strokeWidth={1.2} size={28}/>
+                    <span className="value-index">0{i + 1}</span>
+                    <span className="value-icon-badge" aria-hidden="true">
+                      <Icon strokeWidth={1.65} size={19}/>
+                    </span>
                   </div>
                   <h3>{value.title}</h3>
                   <p>{value.text}</p>

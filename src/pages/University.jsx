@@ -70,16 +70,33 @@ export default function University({ publicId } = {}) {
   };
 
   const Heading = publicId ? 'h2' : 'h1';
-  return <div className={`university-page release-page catalog-page${publicId ? '' : ' min-h-screen'}`}>
-    <div className="university-page-layout mx-auto px-4 sm:px-6 py-4">
-      {!publicId && <Link className="university-back inline-flex items-center gap-2 min-h-11 px-4 mb-3 text-sm rounded-full border border-white/90 bg-white/75 text-[#292823] shadow-sm hover:bg-white transition-colors" to={returnTo} onClick={event => {
-        if (location.state?.fromApp && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) { event.preventDefault(); navigate(-1); }
-      }}><ArrowLeft className="w-4 h-4" aria-hidden="true" />{isRecommendationsReturn(returnTo) ? c.backToRecommendations : c.back}</Link>}
-      {savingAction && favoriteMutation.isError && <p role="alert" className="mb-4 text-amber-800">{favoriteText.saveError}</p>}
+  return <div className={`university-page release-page catalog-page${publicId ? ' university-page-embedded' : ''}`}>
+    <div className="university-page-layout mx-auto">
+      {!publicId && <div className="university-topbar">
+        <Link className="university-back inline-flex items-center gap-2 min-h-11 px-4 text-sm rounded-full text-[#292823] transition-colors" to={returnTo} onClick={event => {
+          if (location.state?.fromApp && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) { event.preventDefault(); navigate(-1); }
+        }}><ArrowLeft className="w-4 h-4" aria-hidden="true" />{isRecommendationsReturn(returnTo) ? c.backToRecommendations : c.back}</Link>
+      </div>}
+      {savingAction && favoriteMutation.isError && <p role="alert" className="university-inline-alert mb-4 text-amber-900">{favoriteText.saveError}</p>}
       <span role="status" className="sr-only">{savePendingLabel || (savingAction && favoriteMutation.isSuccess ? favoriteText[savingAction.remove ? 'removedFromAccount' : 'savedInAccount'] : '')}</span>
-      {validId && query.isLoading ? <p role="status">{c.loading}</p> : query.isError ? <div role="alert"><Heading>{c.error}</Heading><Button className="mt-4" onClick={() => void query.refetch()}>{c.retry}</Button></div> : !university || (publicId && university.admissionCatalog?.status !== 'valid') ? <Heading>{c.missing}</Heading> : <>
+      {validId && query.isLoading ? (
+        <div className="university-status-card" role="status" aria-busy="true">
+          <div className="university-skeleton university-skeleton-title" />
+          <div className="university-skeleton university-skeleton-sub" />
+          <p className="text-sm text-[#55504a] mt-3">{c.loading}</p>
+        </div>
+      ) : query.isError ? (
+        <div className="university-status-card" role="alert">
+          <Heading className="text-xl font-semibold text-[#292823]">{c.error}</Heading>
+          <Button className="mt-4 rounded-full bg-[#252c2f] hover:bg-[#354044] text-white min-h-11 px-6" onClick={() => void query.refetch()}>{c.retry}</Button>
+        </div>
+      ) : !university || (publicId && university.admissionCatalog?.status !== 'valid') ? (
+        <div className="university-status-card">
+          <Heading className="text-xl font-semibold text-[#292823]">{c.missing}</Heading>
+        </div>
+      ) : (
         <UniversityDetails university={university} heading={Heading} programmeId={params.get('programme')} userGpa={fromSearch ? filters.gpa : profile?.gpa} userIelts={fromSearch ? filters.ielts : profile?.english_proficiency} userTopik={fromSearch ? filters.topikLevel : profile?.topikLevel} isSaved={saved} saveDisabled={saving || Boolean(owner?.id && (profileQuery.isLoading || profileQuery.isError))} savePendingLabel={savePendingLabel} onSave={save} />
-      </>}
+      )}
     </div>
   </div>;
 }

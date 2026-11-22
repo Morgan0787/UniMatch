@@ -28,7 +28,6 @@ export default function UniversityPhoto({ university, language, showDetails = tr
   const responsiveSources = responsivePreview && failedResponsiveUrl !== image.url ? getWikimediaResponsiveSources(image.url) : null;
   const localized = image.localized?.[language] || image.localized?.en;
   const caption = localized?.caption || image.caption || image.title;
-  const creditLabel = { en: 'Photo details and credit', ru: 'О фото и его авторе', uz: 'Surat va muallif haqida' }[language] || 'Photo details and credit';
 
   const preview = <img src={image.url} width={image.width} height={image.height}
       srcSet={responsiveSources?.srcSet}
@@ -43,8 +42,11 @@ export default function UniversityPhoto({ university, language, showDetails = tr
     </picture> : preview}
     {showDetails && <figcaption>
       <details>
-        <summary aria-label={`${creditLabel}: ${caption}`}>
-          <Camera size={13} className="shrink-0" aria-hidden="true" /><span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" />
+        <summary>
+          <Camera size={13} className="shrink-0" aria-hidden="true" />
+          <span>{{en:'Photo credit',ru:'О фото',uz:'Surat haqida'}[language] || 'Photo credit'}</span>
+          {caption ? <span className="sr-only"> — {caption}</span> : null}
+          <ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" />
         </summary>
         <div className="catalog-photo-credit">
           <img className="catalog-photo-original" src={image.url} width={image.width} height={image.height}

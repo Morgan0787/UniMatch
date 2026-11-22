@@ -29,7 +29,7 @@ function DeadlineValue({ fact, language, fallback }) {
   const parsed = new Date(`${date}T00:00:00Z`);
   if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) return fallback;
   const formatted = new Intl.DateTimeFormat(language === 'uz' ? 'uz-UZ' : language, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(parsed);
-  return <><time dateTime={date}>{formatted}</time><details className="programme-date-details"><summary className="inline-flex items-center gap-1"><span>{{en:'Deadline conditions',ru:'Условия срока подачи',uz:'Ariza muddati shartlari'}[language]}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{fallback}</p></details></>;
+  return <><time dateTime={date}>{formatted}</time><details className="programme-date-details"><summary className="programme-pill-toggle"><span>{{en:'Deadline conditions',ru:'Условия срока подачи',uz:'Ariza muddati shartlari'}[language]}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p className="programme-disclosure-panel">{fallback}</p></details></>;
 }
 
 function Fact({ label, fact, language, kind = 'text', includeScope = true, compact = false, tile = false, icon: Icon = null, children = null }) {
@@ -41,15 +41,15 @@ function Fact({ label, fact, language, kind = 'text', includeScope = true, compa
   const ieltsParts = kind === 'rule' && /^(IELTS|минимальный IELTS)/.test(result.value) ? result.value.split(';') : [];
   const value = ieltsParts.length > 1 ? <><span className="programme-rule-main">{ieltsParts[0]}</span><span className="programme-rule-detail">{ieltsParts.slice(1).join(';').trim()}</span></> : result.value;
   const longRule = compact && kind === 'rule' && result.value.length > 100;
-  const ruleValue = longRule ? <details className="programme-rule-conditions"><summary className="inline-flex items-center gap-1"><span>{{en:'See full requirements',ru:'Смотреть все требования',uz:'Barcha talablarni ko‘rish'}[language] || 'See full requirements'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{value}</p></details> : value;
+  const ruleValue = longRule ? <details className="programme-rule-conditions"><summary className="programme-pill-toggle"><span>{{en:'See full requirements',ru:'Смотреть все требования',uz:'Barcha talablarni ko‘rish'}[language] || 'See full requirements'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p className="programme-disclosure-panel">{value}</p></details> : value;
   const tuitionDetails = kind === 'tuition' && (fact?.value != null || fact?.historical?.value != null);
   return (
     <div className={tile ? 'programme-stat' : compact && kind !== 'tuition' ? 'programme-inline-fact' : undefined}>
       <dt className="text-xs text-[#55504a]">{Icon && <Icon size={16} aria-hidden="true" />}{label}</dt>
       <dd className={`programme-value font-medium text-[#292823] ${!fact || fact.status === 'unknown' ? 'programme-value-unknown' : ''} ${tuitionDetails ? 'catalog-tuition' : ''}`}>{kind === 'tuition' ? <TuitionValue fact={fact} language={language} concise /> : kind === 'deadline' ? <DeadlineValue fact={fact} language={language} fallback={result.value} /> : ruleValue}</dd>
-      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-[#855a36]"><details><summary className="inline-flex items-center gap-1"><span>{compactNotice}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{result.notice}</p></details></dd>}
-      {tuitionDetails && <dd className="programme-price-details text-xs text-[#55504a]"><details><summary className="inline-flex items-center gap-1"><span>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</details></dd>}
-      {scope && !compact && !tuitionDetails && <dd className="text-xs text-[#55504a]"><details><summary className="inline-flex items-center gap-1 cursor-pointer"><span>{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>{scope}</details></dd>}
+      {kind !== 'tuition' && result.notice && fact?.status !== 'unknown' && !(compact && needsConfirmation(fact)) && <dd className="programme-fact-status text-xs text-[#855a36]"><details><summary className="programme-pill-toggle"><span>{compactNotice}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p className="programme-disclosure-panel">{result.notice}</p></details></dd>}
+      {tuitionDetails && <dd className="programme-price-details text-xs text-[#55504a]"><details><summary className="programme-pill-toggle"><span>{{en:'Price details',ru:'Что входит в цену',uz:'Narx tafsilotlari'}[language] || 'Price details'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><div className="programme-disclosure-panel"><p>{result.value}</p>{result.notice && <p>{result.notice}</p>}{scope && <p>{scope}</p>}</div></details></dd>}
+      {scope && !compact && !tuitionDetails && <dd className="text-xs text-[#55504a]"><details><summary className="programme-pill-toggle"><span>{{en:'Who this applies to',ru:'К кому относится',uz:'Kimga tegishli'}[language] || 'Who this applies to'}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><p className="programme-disclosure-panel">{scope}</p></details></dd>}
       {children && <dd className="programme-stat-note">{children}</dd>}
     </div>
   );
@@ -124,7 +124,7 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
               </Fact>
               <Fact label={labels.academic} fact={factFor(programme, 'academicRequirement')} language={language} kind="rule" includeScope={false} tile icon={GraduationCap} />
               <Fact label={labels.deadline} fact={factFor(programme, 'deadline')} language={language} kind="deadline" includeScope={false} tile icon={Calendar}>
-                <details className="programme-intake-details"><summary className="inline-flex items-center gap-1"><span>{extra.intake}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><dl className="programme-intake"><Fact label={extra.intake} fact={factFor(programme, 'intake')} language={language} kind="intake" includeScope={false} /></dl></details>
+                <details className="programme-intake-details"><summary className="programme-pill-toggle"><span>{extra.intake}</span><ChevronDown size={13} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary><dl className="programme-intake programme-disclosure-panel"><Fact label={extra.intake} fact={factFor(programme, 'intake')} language={language} kind="intake" includeScope={false} /></dl></details>
               </Fact>
             </dl>
             <dl className="programme-meta text-sm">
@@ -132,14 +132,14 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
               <Fact label={labels.degree} fact={factFor(programme, 'degree')} language={language} kind="degree" includeScope={false} />
               {factFor(programme, 'location') && <Fact label={extra.location} fact={factFor(programme, 'location')} language={language} kind="location" includeScope={false} />}
             </dl>
-            <details className="programme-disclosure"><summary className="inline-flex items-center gap-1.5"><span>{{en:'Details & conditions',ru:'Подробности и условия',uz:'Tafsilotlar va shartlar'}[language] || 'Details & conditions'}</span><ChevronDown size={15} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
+            <details className="programme-disclosure"><summary className="inline-flex items-center gap-2"><span>{{en:'Details & conditions',ru:'Подробности и условия',uz:'Tafsilotlar va shartlar'}[language] || 'Details & conditions'}</span><ChevronDown size={15} className="disclosure-chevron shrink-0 ml-auto" aria-hidden="true" /></summary>
             <div className="space-y-4">
             <p>{help.results}</p>
             {(repeatedThreshold || !thresholdFact || thresholdFact.status === 'unknown') && <dl>
               <Fact label={labels.languageLevel} fact={thresholdFact} language={language} kind="rule" includeScope={false} />
             </dl>}
             {scopeFields.length > 0 && <div><h3>{scopeLabel}</h3><ul>{scopeFields.map(item => <li key={item.key}><strong>{item.label}:</strong> {item.scope}</li>)}</ul></div>}
-            {(programme.costReferences?.length > 0 || programme.publicNotes?.length > 0) && <dl className="grid sm:grid-cols-2 gap-3">
+            {(programme.costReferences?.length > 0 || programme.publicNotes?.length > 0) && <dl className="programme-extra-grid grid sm:grid-cols-2 gap-3">
               {(Array.isArray(programme.costReferences) ? programme.costReferences : []).map((reference, index) => <CostReference key={`${programme.id}-cost-${index}`} label={quoteLabel(reference, labels.costReference)} fact={reference} language={language} labels={labels} />)}
               {(programme.publicNotes || []).map((note, index) => <Fact key={`${programme.id}-note-${index}`} label={extra.notes} fact={note} language={language} />)}
             </dl>}
@@ -148,11 +148,11 @@ export default function PublishedProgrammeFacts({ admissionCatalog, language = '
         );
       })}
       {compact && expandable && programmes.length > 0 && <details className="text-sm">
-        <summary className="inline-flex items-center gap-1.5 cursor-pointer rounded text-[#704a2d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#855a36]"><span>{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
+        <summary className="programme-pill-toggle"><span>{{ en: 'Programme details and sources', ru: 'Условия программы и источники', uz: 'Dastur shartlari va manbalar' }[language] || 'Programme details and sources'}</span><ChevronDown size={14} className="disclosure-chevron shrink-0" aria-hidden="true" /></summary>
         <div className="mt-3"><PublishedProgrammeFacts admissionCatalog={admissionCatalog} language={language} /></div>
       </details>}
       {!compact && sources.length > 0 && <details className="programme-disclosure programme-sources">
-        <summary className="inline-flex items-center gap-2"><span>{labels.sources}</span><span>{sources.length}</span><ChevronDown size={15} className="disclosure-chevron shrink-0 ml-auto" aria-hidden="true" /></summary>
+        <summary className="inline-flex items-center gap-2"><span>{labels.sources}</span><span className="programme-source-count">{sources.length}</span><ChevronDown size={15} className="disclosure-chevron shrink-0 ml-auto" aria-hidden="true" /></summary>
         <OfficialSources sources={sources} language={language} />
       </details>}
     </section>

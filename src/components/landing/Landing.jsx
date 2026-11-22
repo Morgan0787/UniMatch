@@ -191,9 +191,6 @@ export default function App() {
                 {p.mediaAction}
               </Action>
             </div>
-            <span className="media-caption">
-              {labels.mediaCaption}
-            </span>
             {videoAvailable && (<button className="video-control" aria-label={videoPaused ? p.play : p.pause} onClick={() => {
                 if (videoPaused) {
                     video.current
@@ -393,12 +390,11 @@ export default function App() {
               </button>
             </div>)}
           <div className="discover-bottom">
-            <span>
-              {labels.places}
-            </span>
-            <a className="text-link" href={catalogPath(language)}>
-              {p.viewAll}
-              <ArrowUpRight size={16}/>
+            <a className="discover-explore-cta" href={catalogPath(language)}>
+              <span>{p.viewAll}</span>
+              <span className="discover-explore-icon" aria-hidden="true">
+                <ArrowUpRight size={16} strokeWidth={1.9}/>
+              </span>
             </a>
           </div>
         </section>
@@ -418,9 +414,6 @@ export default function App() {
           </div>
           <div className="footer-start-action" data-reveal>
             <Action onClick={match}>{p.footerAction}</Action>
-            <span>
-              {labels.profileChapter}
-            </span>
           </div>
         </div>
         <div className="footer-dark">
@@ -463,7 +456,6 @@ export default function App() {
           </a>
           <div className="footer-bottom">
             <span>© 2026 UniMatch</span>
-            <span>{labels.world}</span>
             <div>
               <button type="button" onClick={() => d.setLegal('privacy')}>{c.privacy}</button>
               <button type="button" onClick={() => d.setLegal('terms')}>{c.terms}</button>

@@ -94,7 +94,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                         ) : <>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.tuition')}</p>
+                                <p className="text-xs text-[#55504a] uppercase tracking-wide">{t('university.tuition')}</p>
                                 <p className="catalog-tuition font-semibold text-[#292823] break-words">
                                     {budgetReason ? (
                                         <span className="catalog-budget-reason text-sm font-normal">{budgetReason}</span>
@@ -110,7 +110,7 @@ export default function UniversityCard({ university, programme = comparisonProgr
                                 </p>
                             </div>
                             <div>
-                                <p className="text-[10px] text-[#55504a] uppercase tracking-wide">{t('university.minGpa')}</p>
+                                <p className="text-xs text-[#55504a] uppercase tracking-wide">{t('university.minGpa')}</p>
                                 <p className="text-sm">
                                     {showHolisticGpaNote ? (
                                         <span className="italic text-[#55504a]" title={catalogText(language, 'holisticNote')}>{catalogText(language, 'holistic')}</span>
@@ -137,13 +137,13 @@ export default function UniversityCard({ university, programme = comparisonProgr
                     </div>
 
                     {/* Tags */}
-                    {!hasAdmissionCatalog && <div className="flex flex-wrap gap-1">
-                        <Badge variant="secondary" className="bg-[#f4efe6] text-[#47443f] border border-[#e3d7c6] font-normal text-[10px] px-1.5 py-0.5">
-                            <Globe className="w-2.5 h-2.5 mr-1" />
+                    {!hasAdmissionCatalog && <div className="flex flex-wrap gap-1.5">
+                        <Badge variant="secondary" className="bg-[#f4efe6] text-[#47443f] border border-[#e3d7c6] font-normal text-xs px-2 py-0.5">
+                            <Globe className="w-3 h-3 mr-1" />
                             {catalogValue(university.language, language) || {en:'Unknown',ru:'Неизвестно',uz:'Noma’lum'}[language]}
                         </Badge>
                         {university.degree_levels?.slice(0, 2).map(deg => (
-                            <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b] font-normal text-[10px] px-1.5 py-0.5">
+                            <Badge key={catalogValue(deg, language)} variant="secondary" className="bg-[#f4e4cc] text-[#5c3c1b] font-normal text-xs px-2 py-0.5">
                                 {catalogValue(deg, language)}
                             </Badge>
                         ))}

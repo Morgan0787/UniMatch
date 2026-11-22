@@ -132,7 +132,7 @@ body[data-unimatch-theme] .auth-page :is(button, input, [role="tab"]):focus-visi
   body[data-unimatch-theme] .auth-page .release-login-card { border-radius: 26px; }
   .auth-form-heading { min-height: 88px; }
   body[data-unimatch-theme] .unimatch-app[data-page="Login"] .auth-form-heading h1 { font-size: 20px; }
-  body[data-unimatch-theme] .auth-page .login-method-tabs > [role="tab"] { font-size: 11px; padding-inline: 3px; }
+  body[data-unimatch-theme] .auth-page .login-method-tabs > [role="tab"] { font-size: 12px; padding-inline: 5px; }
 }
 @media (max-width: 360px) {
   .auth-form-heading { min-height: 98px; }

@@ -55,14 +55,14 @@ body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-save { wi
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo { order: 1; width: 100%; padding: 0 16px; background: transparent; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo > img { width: 100%; height: 160px; object-fit: cover; border-radius: 14px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo figcaption { border: 0; background: transparent; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo summary { min-height: 32px; padding: 3px 6px; justify-content: end; gap: 5px; font-size: 11px; }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo summary { min-height: 32px; padding: 3px 6px; justify-content: end; gap: 5px; font-size: 12px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo summary > span { flex: 0 1 auto; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo-original { width: 100%; height: auto; object-fit: contain; border-radius: 10px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-photo-credit { padding-inline: 4px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-body { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 12px 18px 18px; gap: 10px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts { border-top: 0; padding-top: 0; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts > .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts .uppercase { font-size: 11px; letter-spacing: .02em; color: var(--recommendation-muted); }
+body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-card-facts .uppercase { font-size: 12px; letter-spacing: .02em; color: var(--recommendation-muted); }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-tuition { font-size: 16px; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .catalog-scholarship > div { background: #f2e4c7; color: #72572b; box-shadow: none; }
 body[data-unimatch-theme] .unimatch-app .recommendations-page .search-programme-preview { flex: 1; display: flex; flex-direction: column; gap: 8px; }

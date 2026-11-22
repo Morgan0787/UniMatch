@@ -293,7 +293,7 @@
   border-radius: 999px;
   background: rgba(189, 112, 64, 0.11);
   border: 1px solid rgba(189, 112, 64, 0.18);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0.08em;
@@ -451,9 +451,9 @@
 }
 
 .unimatch-landing .experience-section .value-index {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: #7a4116;
 }
 
@@ -801,7 +801,7 @@
   border: 1px solid rgba(255, 255, 255, 0.24);
   backdrop-filter: blur(8px);
   color: #faf7ef;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
 }
@@ -849,8 +849,96 @@
 }
 
 .unimatch-landing .discover-section .university-tag {
+  font-size: 12px;
   color: #7a4116;
   font-weight: 600;
+}
+
+.unimatch-landing .discover-section .discover-bottom {
+  justify-content: flex-end;
+  margin-top: clamp(32px, 4.5svh, 52px);
+  padding-top: 24px;
+  border-top: 1px solid rgba(41, 40, 36, 0.12);
+}
+
+.unimatch-landing .discover-section .discover-explore-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 46px;
+  padding: 7px 10px 7px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(41, 40, 36, 0.14);
+  background: rgba(255, 253, 248, 0.94);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -18px rgba(41, 40, 36, 0.18);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.unimatch-landing .discover-section .discover-explore-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(189, 112, 64, 0.13);
+  color: #7a4116;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.unimatch-landing .discover-section .discover-explore-cta:hover {
+  background: #252c2f;
+  border-color: #252c2f;
+  color: #faf7ef;
+}
+
+.unimatch-landing .discover-section .discover-explore-cta:hover .discover-explore-icon {
+  background: rgba(250, 247, 239, 0.16);
+  color: #faf7ef;
+  transform: translate(1.5px, -1.5px);
+}
+
+/* Readability floor: keep all landing copy, badges, eyebrows, and footer links >= 12px across desktop and mobile. */
+.unimatch-landing .eyebrow,
+.unimatch-landing .media-eyebrow,
+.unimatch-landing .orbit-num,
+.unimatch-landing .discover-section .card-number {
+  font-size: 12px;
+}
+
+.unimatch-landing .hero-side p,
+.unimatch-landing .hero-pills a,
+.unimatch-landing .scroll-hint,
+.unimatch-landing .discover-section .card-location {
+  font-size: 12.5px;
+}
+
+.unimatch-landing .action,
+.unimatch-landing .orbit-tag {
+  font-size: 13px;
+}
+
+.unimatch-landing .stats-grid .stat p {
+  font-size: 14px;
+}
+
+.unimatch-landing .footer-dark .footer-navigation > a,
+.unimatch-landing .footer-dark .footer-bottom,
+.unimatch-landing .footer-dark .footer-bottom a,
+.unimatch-landing .footer-dark .footer-bottom button {
+  font-size: 13px;
+}
+
+.unimatch-landing .footer-dark .footer-navigation .eyebrow,
+.unimatch-landing .footer-dark .footer-summary .eyebrow {
+  font-size: 12px;
 }
 
 .unimatch-landing .discover-section .catalog-status {
@@ -1021,5 +1109,48 @@
 
   .unimatch-landing .footer-dark {
     border-top-color: #2928241c;
+  }
+
+  .unimatch-landing .discover-section .discover-bottom {
+    justify-content: stretch;
+  }
+
+  .unimatch-landing .discover-section .discover-explore-cta {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 800px) {
+  .unimatch-landing .eyebrow,
+  .unimatch-landing .media-eyebrow,
+  .unimatch-landing .orbit-num,
+  .unimatch-landing .orbit-tag,
+  .unimatch-landing .discover-section .card-number,
+  .unimatch-landing .discover-section .card-location,
+  .unimatch-landing .discover-section .university-tag {
+    font-size: 12px;
+  }
+
+  .unimatch-landing .hero .hero-action,
+  .unimatch-landing .approach-stage .action,
+  .unimatch-landing .media-center .action,
+  .unimatch-landing .discover-section .discover-action,
+  .unimatch-landing .footer-start .footer-start-action .action,
+  .unimatch-landing .action,
+  .unimatch-landing .footer-dark .footer-navigation > a,
+  .unimatch-landing .footer-dark .footer-bottom,
+  .unimatch-landing .footer-dark .footer-bottom a,
+  .unimatch-landing .footer-dark .footer-bottom button {
+    font-size: 12.5px;
+  }
+
+  .unimatch-landing .footer-dark .footer-navigation .eyebrow,
+  .unimatch-landing .footer-dark .footer-summary .eyebrow {
+    font-size: 12px;
+  }
+
+  .unimatch-landing .stats-grid .stat p {
+    font-size: 13px;
   }
 }

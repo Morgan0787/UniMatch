@@ -33,7 +33,7 @@ export default function EstimatedField({ value, field, region, format = (v) => v
   return (
     <span className="italic text-slate-500" title={estimateTitle}>
       ~{format(estimate.min)}–{format(estimate.max)}{unit}
-      <span className="ml-1 text-[10px] not-italic uppercase tracking-wide text-amber-600 align-middle">{catalogText(language, 'estimate')}</span>
+      <span className="ml-1 text-xs not-italic uppercase tracking-wide text-amber-700 align-middle">{catalogText(language, 'estimate')}</span>
     </span>
   );
 }

@@ -206,6 +206,103 @@
   color: #8b7b68;
 }
 
+.discovery-guides {
+  background:
+    radial-gradient(ellipse 560px 430px at 88% 92%, #ffca7b47, transparent 76%),
+    radial-gradient(ellipse 620px 520px at 13% 46%, #ffbd6066, transparent 74%),
+    radial-gradient(ellipse 720px 520px at 86% 4%, #ffbd6073, transparent 75%),
+    #f0eae7;
+  padding: clamp(16px, 4vw, 56px) 12px 56px;
+}
+
+.discovery-guides > .discovery-card {
+  padding: clamp(20px, 4vw, 48px);
+  border-radius: clamp(24px, 4vw, 32px);
+  background: linear-gradient(145deg, #fffdfaeb, #fff9f1b8 62%, #fffdfad6);
+}
+
+.discovery-guides .discovery-header {
+  min-height: 54px;
+  padding: 8px clamp(13px, 2vw, 20px);
+  border: 1px solid #fffc;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ffffffba, #fff3e187);
+  box-shadow: inset 0 1px #fff, 0 4px 12px #5d49300c;
+}
+
+.discovery-guides .discovery-brand {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.discovery-guides .discovery-card h1 {
+  max-width: 28ch;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+}
+
+.discovery-guides .discovery-card > :is(p, section) {
+  max-width: 68ch;
+}
+
+.discovery-guides .discovery-card > section:has(.discovery-card-link) {
+  max-width: none;
+}
+
+.discovery-guides .discovery-card-link {
+  background: linear-gradient(145deg, #ffffffb8, #fff9ed80);
+}
+
+.discovery-guides .discovery-card-link:hover {
+  background: linear-gradient(145deg, #fff9ed, #ffe8c7);
+}
+
+.discovery-guide-actions {
+  padding-top: 20px;
+  border-top: 1px solid #855a362b;
+}
+
+.discovery-guide-actions ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.discovery-guide-actions li {
+  margin: 0;
+}
+
+.discovery-guide-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  background: #fff9;
+  color: #292823;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.discovery-guide-actions a[href='/AdmissionsSurvey'] {
+  border-color: #b67332;
+  background: linear-gradient(145deg, #ffe7b5, #f3ad6a);
+  box-shadow: inset 0 1px #fff9, 0 4px 12px #a8713126;
+}
+
+.discovery-guide-actions a:hover {
+  text-decoration: underline;
+}
+
+.discovery-guides a:focus-visible {
+  outline: 2px solid #96500f;
+  outline-offset: 3px;
+}
+
 /* Pre-hydration #public-entry shells matching Hero / Search / Survey visuals without layout flash */
 .entry-shell {
   min-height: 100svh;

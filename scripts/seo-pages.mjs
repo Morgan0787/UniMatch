@@ -317,7 +317,7 @@ export function buildDiscoveryPages(institutions, editorial = guides) {
       ? Object.fromEntries(alternateEntries.map(entry => [entry.language, `${entry.language === 'en' ? '' : `/${entry.language}`}/guides/${entry.slug}`])) : null;
     if (alternates?.en) alternates['x-default'] = alternates.en;
     articles.push(page(path, heading, intro, [home, guideIndex], sections, {
-      language, actions: [catalog, { ...survey, label: surveyLabels[language] }],
+      language, actions: [{ ...survey, label: surveyLabels[language] }, catalog],
       ...(alternates ? { alternates } : {}),
       schema: [{
         '@type': 'Article', headline: heading, description: intro, inLanguage: language,

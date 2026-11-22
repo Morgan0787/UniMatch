@@ -107,13 +107,18 @@ function linkList(links, cards = false) {
 /** @param {{page: DiscoveryPage, children?: import('react').ReactNode, standalone?: boolean}} props */
 export function DiscoveryContent({ page, children = null, standalone = true }) {
   const directory = page.path === '/universities';
-  return h('main', { className: standalone ? 'discovery-canvas' : 'discovery-canvas discovery-embedded' },
+  const guideDirectory = page.path === '/guides';
+  const guide = guideDirectory || Boolean(page.path?.includes('/guides/'));
+  const breadcrumbs = guide ? page.breadcrumbs?.filter(({ href }) => href !== '/') : page.breadcrumbs;
+  const canvas = standalone ? 'discovery-canvas' : 'discovery-canvas discovery-embedded';
+  const actions = !directory && page.actions?.length ? linkList(page.actions) : null;
+  return h('main', { className: guide ? `${canvas} discovery-guides` : canvas },
     h('div', { className: 'discovery-card' },
       standalone && h('header', { className: 'discovery-header' },
         h('a', { href: '/', className: 'discovery-brand' }, 'UniMatch'),
         h('a', { href: '/Search', className: 'discovery-link text-sm font-medium' }, 'Explore catalog')),
-      page.breadcrumbs?.length ? h('nav', { 'aria-label': 'Breadcrumb', className: 'discovery-breadcrumb mb-5 text-sm' },
-        h('ol', { className: 'flex flex-wrap gap-x-2 gap-y-1' }, page.breadcrumbs.map(({ href, label }, i) =>
+      breadcrumbs?.length ? h('nav', { 'aria-label': 'Breadcrumb', className: 'discovery-breadcrumb mb-5 text-sm' },
+        h('ol', { className: 'flex flex-wrap gap-x-2 gap-y-1' }, breadcrumbs.map(({ href, label }, i) =>
           h('li', { key: `${href}-${i}`, className: 'inline-flex items-center' }, h('a', { href, className: 'inline-flex items-center min-h-[36px] py-1' }, label))))) : null,
       h('h1', { className: 'text-3xl font-bold sm:text-4xl mb-4' }, page.heading),
       h('p', { className: 'text-lg leading-relaxed mb-6 text-[#47443f]' }, page.intro),
@@ -127,8 +132,8 @@ export function DiscoveryContent({ page, children = null, standalone = true }) {
             href, hrefLang: lang, lang, 'aria-current': lang === page.language ? 'page' : undefined,
             className: 'discovery-link',
           }, LANGUAGE_NAMES[lang] || lang))))),
-      h(DiscoverySections, { sections: page.sections, cards: directory }),
-      !directory && page.actions?.length ? linkList(page.actions) : null,
+      h(DiscoverySections, { sections: page.sections, cards: directory || guideDirectory }),
+      guide && actions ? h('div', { className: 'discovery-guide-actions' }, actions) : actions,
       children));
 }
 

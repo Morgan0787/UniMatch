@@ -369,4 +369,87 @@ export const guides = [
       },
     ],
   },
+  {
+    state: 'published',
+    slug: 'ielts-for-study-abroad',
+    language: 'en',
+    datePublished: '2026-11-22',
+    dateModified: '2026-11-22',
+    heading: 'What IELTS Score Do I Need to Study Abroad?',
+    intro: 'Find out how to check which IELTS test and score your course accepts, and when to send your result.',
+    sections: [
+      {
+        heading: 'Start with the course page',
+        paragraphs: ['Open the university page for your course and start date. Check if the course accepts IELTS and which type of test to take. Look for two numbers: the overall score and the lowest score allowed in each part of the test.'],
+        links: [
+          { label: 'IELTS Academic test', href: 'https://ielts.org/take-a-test/test-types/ielts-academic-test', detail: 'Checked 22 November 2026' },
+          { label: 'How universities set IELTS scores', href: 'https://ielts.org/organisations/academic-institutions', detail: 'Checked 22 November 2026' },
+        ],
+      },
+      {
+        heading: 'Make a score and date checklist',
+        paragraphs: ['Copy this list into a note for each course. If anything is unclear, ask the university before you book a test. Leave enough time to get your result and send it.'],
+        items: ['Course name and start date', 'IELTS test type and format accepted by the university', 'Overall score and the score you need in Listening, Reading, Writing and Speaking', 'Last day to send your score'],
+      },
+      {
+        heading: 'Work through one example',
+        paragraphs: ['Imagine a course asks for 6.5 overall and 6.0 in each part. If you score 6.5 overall and 5.5 in Writing, you still need a higher Writing score. Check both numbers on the official course page.'],
+      },
+    ],
+  },
+  {
+    state: 'published',
+    slug: 'study-abroad-costs',
+    language: 'en',
+    datePublished: '2026-11-22',
+    dateModified: '2026-11-22',
+    heading: 'How Much Does It Cost to Study Abroad?',
+    intro: 'Work out your first-year budget. Add the cost of classes, rent, food and travel, then compare two courses.',
+    sections: [
+      {
+        heading: 'Collect costs for one full year',
+        paragraphs: ['Start with tuition, the amount you pay for classes. Look up the price for international students on the university website. Then find the cost of living in that city. Write down the currency and check whether each price is for one month, one term or one year.'],
+        links: [
+          { label: 'EducationUSA guide to university costs in the U.S.', href: 'https://www.educationusa.state.gov/your-5-steps-us-study/finance-your-studies/undergraduate', detail: 'Checked 22 November 2026' },
+          { label: 'Cost of living at Trinity College Dublin', href: 'https://www.tcd.ie/study/international/welcome/cost-of-living/', detail: 'University budget example. Checked 22 November 2026' },
+        ],
+      },
+      {
+        heading: 'Add costs beyond tuition',
+        paragraphs: ['Ask the university what its price includes. For rent, check whether water, power and internet cost extra. If you still need a price, mark it “to check.” If you have a confirmed scholarship, check how much it covers and when you will get it.'],
+        items: ['Classes, university fees and books', 'Rent, food, local travel and insurance', 'One-time costs such as flights, visa fees and document translation'],
+      },
+      {
+        heading: 'Compare two options fairly',
+        paragraphs: ['Here is an example with sample prices. Course A costs €8,000 in university fees and €7,000 for living costs. That is €15,000 for the year. Course B costs €6,000 in fees and €10,000 for living costs. That is €16,000. Compare the total for the same time period and in the same currency.'],
+      },
+    ],
+  },
+  {
+    state: 'published',
+    slug: 'study-abroad-application-timeline',
+    language: 'en',
+    datePublished: '2026-11-22',
+    dateModified: '2026-11-22',
+    heading: 'When Should I Apply to Study Abroad?',
+    intro: 'Use your course deadline to decide when to start looking, book a test and ask for school documents.',
+    sections: [
+      {
+        heading: 'Start from the course deadline',
+        paragraphs: ['Find the course page for the year you want to start. Write down the last day to apply. If you need a scholarship or a test, check those dates too. For U.S. study, EducationUSA suggests starting your research 12 to 18 months before classes begin. Use your own university’s dates to make your plan.'],
+        links: [
+          { label: 'EducationUSA guide to researching U.S. universities', href: 'https://www.educationusa.state.gov/your-5-steps-us-study/research-your-options', detail: 'Checked 22 November 2026' },
+        ],
+      },
+      {
+        heading: 'Work backwards in small steps',
+        paragraphs: ['Start with the tasks that take time. Give your school time to send your grades and leave time for the university to answer your questions. Keep a separate plan for each course.'],
+        items: ['Compare courses and check the dates on each university website', 'Book any required test early enough for the result to arrive', 'Ask for school records, letters or translations if the course needs them', 'Send your application and check that the university got it', 'Add any later dates for funding, a visa or housing'],
+      },
+      {
+        heading: 'Put the dates on your calendar',
+        paragraphs: ['Imagine your application is due on 15 January. If your school needs two weeks to send your grades, ask before the end of December and leave extra days for holidays. Save a reminder to check that your grades arrived before you send your application. Use this same approach for tests and letters.'],
+      },
+    ],
+  },
 ];

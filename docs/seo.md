@@ -62,6 +62,7 @@ If the Vercel project disables system environment variables for builds, set `SEO
 - Country pages (`/countries/*`) need reviewed copy, verified national education portal sources and at least three eligible profiles. Subject/track pages under `/study/*` are generated from verified programme field filters when at least three matching institutions qualify (alongside the reviewed `/study/computer-science-in-poland` page requiring at least two matching bachelor’s programmes with a verified field).
 - Edit [seo-editorial.mjs](../scripts/seo-editorial.mjs) to create a guide. Start with `state: 'draft'`, a stable slug, language, headline, intro, `datePublished`/`dateModified` ISO dates, and sections. Add official source links with the date each was checked. Set `state: 'published'` only after reviewing the complete text (`Article` schema emits `datePublished`, `dateModified` and `BreadcrumbList`). Use a shared `translationKey` for equivalent, independently reviewed translations (`en`/`ru`/`uz`); only published variants participate in `hreflang`. Use one record per language within a translation group.
 - The sitemap omits `lastmod`: a crawl date, build time or programme source check date is not a reliable page modification date.
+- The `/guides` directory links to every published guide. Guide pages use the Warm Pearl Glass discovery layout with static amber light and include the full text, official sources and links to the survey and catalog in the initial HTML. Use URL Inspection on each new canonical guide after deploying.
 
 ## After an approved deployment
 

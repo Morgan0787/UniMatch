@@ -14,7 +14,7 @@ import { MotionConfig } from 'framer-motion';
 import { LanguageProvider } from '@/lib/i18n';
 import RouteSeo from '@/lib/RouteSeo';
 import VercelTelemetry from '@/lib/VercelTelemetry';
-import { CATALOG_LANGUAGES, catalogPath, DiscoveryContent } from '@/lib/discoveryContent';
+import { CATALOG_LANGUAGES, catalogLanguage, catalogPath, DiscoveryContent } from '@/lib/discoveryContent';
 import { readPublicUniversityPage } from '@/lib/publicUniversityPage';
 import ParticleLoader from '@/components/ui/ParticleLoader';
 
@@ -50,8 +50,9 @@ function LayoutWrapper({ children, currentPageName }) {
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { pathname } = useLocation();
 
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  if (isLoadingPublicSettings || (isLoadingAuth && !catalogLanguage(pathname))) {
     return <PageLoading />;
   }
 

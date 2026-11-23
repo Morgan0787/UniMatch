@@ -4,9 +4,11 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { loadEnv } from 'vite';
 import { getSeo, PUBLIC_PATHS, PRIVATE_PATHS, SITE_URL } from '../src/lib/seo.js';
+import { getUniversityPhoto } from '../src/lib/admissions/presentation.js';
 import { catalogContent, catalogLanguage, catalogPath, CATALOG_LANGUAGES, DiscoveryContent, PublicEntryContent } from '../src/lib/discoveryContent.js';
 import { buildAppFallback, buildDiscoveryPages } from './seo-pages.mjs';
-import { loadSeoCatalogPreview, loadSeoInstitutions } from './seo-catalog.mjs';
+import { loadSeoCatalogPreview, loadSeoInstitutions, publicCatalogEnabled } from './seo-catalog.mjs';
+import { assertProtectedSeoPaths } from './seo-route-protection.mjs';
 
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 const scriptJson = value => JSON.stringify(value).replaceAll('<', '\\u003c');
@@ -125,6 +127,7 @@ function usePreviewRoutes(server) {
 export default function seoPlugin() {
   let config;
   let discovery = buildDiscoveryPages([]);
+  let publicPaths = [...basePaths, ...discovery.pages.map(page => page.path)];
   let telemetryEntry;
   let catalogPreview = null;
   let supabaseOrigin = null;
@@ -144,6 +147,8 @@ export default function seoPlugin() {
           loadSeoCatalogPreview(env).catch(() => null),
         ]);
         discovery = buildDiscoveryPages(institutions);
+        publicPaths = [...basePaths, ...discovery.pages.map(page => page.path)];
+        if (publicCatalogEnabled(env)) assertProtectedSeoPaths(publicPaths);
         catalogPreview = preview;
         telemetryEntry = this.emitFile({ type: 'chunk', id: resolve(config.root, 'src/lib/staticTelemetry.js') });
       }
@@ -151,8 +156,7 @@ export default function seoPlugin() {
     resolveId(id) { return id === virtualLinks ? `\0${id}` : null; },
     load(id) {
       if (id !== `\0${virtualLinks}`) return null;
-      const paths = [...basePaths, ...discovery.pages.map(page => page.path)];
-      return `export default ${JSON.stringify(discovery.catalogLinks)}; export const publicPaths = ${JSON.stringify(paths)};`;
+      return `export default ${JSON.stringify(discovery.catalogLinks)}; export const publicPaths = ${JSON.stringify(publicPaths)};`;
     },
     transformIndexHtml: html => withSeo(html, '/'),
     configurePreviewServer: usePreviewRoutes,
@@ -163,7 +167,6 @@ export default function seoPlugin() {
       const html = String(entry.source);
       const telemetryScript = `<script type="module" src="/${escape(this.getFileName(telemetryEntry))}"></script>`;
       const emit = (fileName, source) => this.emitFile({ type: 'asset', fileName, source });
-      const preloadCatalog = html => html.replace('<head>', '<head>\n    <link rel="preload" href="/assets/catalog-preview.json" as="fetch" crossorigin />');
       if (catalogPreview) emit('assets/catalog-preview.json', JSON.stringify(catalogPreview));
       const preloadChunk = (targetHtml, chunkName) => {
         const chunk = Object.values(bundle).find(file => file.type === 'chunk' && file.name === chunkName);
@@ -177,9 +180,11 @@ export default function seoPlugin() {
       const universityPathById = new Map(
         discovery.pages.filter(page => page.universityId).map(page => [page.universityId, page.path]),
       );
+      const firstPhotoRow = catalogPreview?.rows.find(row => getUniversityPhoto(row));
       const previewRows = (catalogPreview?.rows || []).flatMap(row => {
         const href = universityPathById.get(row.id);
-        return href ? [{ name: row.name, country: row.country, city: row.city, href }] : [];
+        const photo = row === firstPhotoRow ? getUniversityPhoto(row) : null;
+        return href ? [{ name: row.name, country: row.country, city: row.city, href, photo }] : [];
       });
 
       const homeHtml = preloadChunk(html, 'Home');
@@ -197,7 +202,10 @@ export default function seoPlugin() {
           ? { ...basePage, actions: [...(basePage.actions || []), ...localeGuides] }
           : basePage;
         output = withContent(output, page, { previewRows: isSearch ? previewRows : [] });
-        if (catalogPreview && isSearch) output = preloadCatalog(output);
+        if (catalogPreview && isSearch) {
+          output = output.replace('</body>', () =>
+            `<script id="unimatch-catalog-preview" type="application/json">${scriptJson(catalogPreview)}</script>\n  </body>`);
+        }
         emit(`${path.slice(1)}.html`, output);
       }
       for (const page of discovery.pages) {
@@ -210,7 +218,7 @@ export default function seoPlugin() {
         heading: 'Page not found', intro: 'This page may have moved or is no longer available.',
         sections: [], actions: [{ href: '/Search', label: 'Explore universities' }],
       }, { standalone: true }));
-      emit('sitemap.xml', sitemap([...basePaths, ...discovery.pages.map(page => page.path)]));
+      emit('sitemap.xml', sitemap(publicPaths));
     },
   };
 }

@@ -1,4 +1,5 @@
 import { createElement as h } from 'react';
+import { getWikimediaResponsiveSources } from './admissions/presentation.js';
 
 /** @typedef {{label: string, href: string, detail?: string}} DiscoveryLink */
 /** @typedef {{heading: string, paragraphs?: string[], items?: string[], links?: DiscoveryLink[]}} DiscoverySection */
@@ -176,8 +177,21 @@ function EntryNav({ active = '/Search', language = 'en', showDestinations = fals
         h('a', { href: '/AdmissionsSurvey', className: 'entry-cta-dark' }, labels.survey))));
 }
 
+/** @param {NonNullable<ReturnType<typeof import('./admissions/presentation.js').getUniversityPhoto>>} photo */
+function EntryPreviewPhoto(photo, language) {
+  const responsive = getWikimediaResponsiveSources(photo.url);
+  const localized = photo.localized?.[language] || photo.localized?.en;
+  const image = h('img', {
+    className: 'entry-preview-photo', src: photo.url, width: photo.width, height: photo.height,
+    alt: localized?.caption || photo.caption || photo.title || '',
+    srcSet: responsive?.srcSet, sizes: responsive?.sizes, decoding: 'async', fetchPriority: 'high',
+  });
+  return responsive ? h('picture', null,
+    h('source', { media: '(max-width: 500px)', srcSet: responsive.mobileSrcSet, sizes: responsive.sizes }), image) : image;
+}
+
 /** Pre-mount HTML shell for /, /Search, /ru/Search, /uz/Search and /AdmissionsSurvey matching the live Warm Pearl Glass UI.
- * @param {{page: DiscoveryPage, previewRows?: {name: string, country?: string, city?: string, href: string}[]}} props */
+ * @param {{page: DiscoveryPage, previewRows?: {name: string, country?: string, city?: string, href: string, photo?: ReturnType<typeof import('./admissions/presentation.js').getUniversityPhoto>}[]}} props */
 export function PublicEntryContent({ page, previewRows = [] }) {
   const language = page.language || 'en';
   const c = catalogCopy[language] || catalogCopy.en;
@@ -261,6 +275,7 @@ export function PublicEntryContent({ page, previewRows = [] }) {
         previewRows.map(row => h('article', { key: row.href, className: 'entry-preview-card' },
           h('h2', { className: 'entry-preview-title' }, row.name),
           h('p', { className: 'entry-preview-meta' }, [row.city, row.country].filter(Boolean).join(', ') || 'International university'),
+          row.photo && EntryPreviewPhoto(row.photo, language),
           h('a', { href: row.href, className: 'entry-preview-link' }, c.details, h('span', { className: 'sr-only' }, ` — ${row.name}`))))),
       h('section', { className: 'entry-discovery-strip' },
         h('h2', { className: 'entry-strip-heading' }, page.heading),

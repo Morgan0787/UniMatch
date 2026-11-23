@@ -11,7 +11,9 @@ Vite emits the canonical HTML and sitemap from the same set of routes. Public UR
 
 ## Public route loading
 
-Home, the three catalog languages and the admissions survey display dedicated route-matched Warm Pearl Glass / Hero pre-hydration HTML shells (`PublicEntryContent` in `src/lib/discoveryContent.js` styled via `src/index.css`) inside `#public-entry` while React restores the session and mounts `#root` (`Layout.jsx` applies `body[data-unimatch-theme]` in `useLayoutEffect`). Search routes pre-render up to six verified preview university links from `/assets/catalog-preview.json` and include a Supabase `<link rel="preconnect">` plus route chunk `modulepreload`. Home shares its English heading and introduction between both versions. Its links to published directories remain available after React starts. The 3D scene loads inside the hero, and the first catalog request starts when the visitor scrolls or focuses the discovery section or its link. The saved-profile and administration routes retain their existing access rules.
+Home, the three catalog languages and the admissions survey display route-matched HTML inside `#public-entry` until React mounts. Search renders up to six public university links and the first reviewed campus photo in the initial HTML. Its embedded data lets the React Search page show preview cards as soon as it mounts. Client-side navigation can still read `/assets/catalog-preview.json`. Search starts mounting while the session is being restored, and save actions wait for the session. Preview cards cover the initial unfiltered results. The full catalog still supports filtering and pagination.
+
+Home shares its English heading and introduction between both versions. Its links to published directories remain available after React starts. The 3D scene loads inside the hero, and the first catalog request starts when the visitor scrolls or focuses the discovery section or its link. The saved-profile and administration routes retain their existing access rules.
 
 ## Build and test
 
@@ -27,12 +29,18 @@ In a second terminal:
 
 ```powershell
 $env:SEO_CHECK_ORIGIN = 'http://127.0.0.1:4173'
-npm run check:seo
+npm run check:seo -- --protected
 ```
 
 Without `SEO_FETCH_PUBLIC_CATALOG=1`, a local build emits the base app pages and independently sourced guides. Vercel Preview and Production builds read the anonymous feed by default. The build fails if its configuration is missing, its read fails or its response is incomplete. A Preview build can opt out with `SEO_FETCH_PUBLIC_CATALOG=0`. The existing feed is bounded to 200 records. Raise that limit only with a reviewed pagination contract. The loader accepts a publishable or legacy `anon` key. The deployed JavaScript continues to use the application's existing public Supabase configuration.
 
 If the Vercel project disables system environment variables for builds, set `SEO_FETCH_PUBLIC_CATALOG=1` in the environment where you want to build catalog pages.
+
+## Preserve published URLs
+
+[The protected path list](../scripts/seo-protected-paths.txt) records the 144 canonical routes served by production release `088476c` and checked on 23 November 2026. Builds that read the published feed, including ordinary Vercel Preview and Production builds, fail with the list of missing paths if any protected route would disappear. This covers the generated routes before the sitemap is emitted. `npm run check:seo -- --protected` also checks the resulting sitemap, HTML and catalog previews. The GitHub quality workflow runs the SEO tests and an offline build, which exercises the guard with a removed-route fixture.
+
+Compare the current production sitemap with the candidate before each release. Add newly confirmed production paths to the protected list. When a route is intentionally retired, review its replacement or expected 404 and update the protected list in the same change. Keep any canonical URL that still serves eligible content.
 
 ## Publish and verify a Preview
 
@@ -49,7 +57,7 @@ If the Vercel project disables system environment variables for builds, set `SEO
    curl.exe -fsS "$preview/sitemap.xml"
    ```
 
-4. Expect `200` and `X-Robots-Tag: noindex` for the existing profile, `404` for the missing one, and `200` for the sitemap. In the original profile response, confirm the `<h1>`, programme names, official source links, and exactly one canonical pointing to `https://getunimatch.app/universities/oc90-032`. The sitemap should list the same production canonical and omit the missing profile and Preview host. If the catalog has changed, pick an existing profile URL from the sitemap and request its path on the Preview host.
+4. Expect `200` and `X-Robots-Tag: noindex` for the existing profile, `404` for the missing one, and `200` for the sitemap. In the original profile response, confirm the `<h1>`, programme names, official source links, and exactly one canonical pointing to `https://getunimatch.app/universities/oc90-032`. Compare the candidate sitemap paths with all current production paths. Keep only canonical production URLs in the candidate sitemap, and review any missing live path before promotion.
 5. Open the profile in the authenticated browser and expand the interactive university details. Confirm the content still renders with JavaScript active. Check that `/ru/Search` and `/uz/Search` each return `200` and use their own production canonicals.
 
 [Vercel Git integration](https://vercel.com/docs/git/vercel-for-github) · [Vercel environments](https://vercel.com/docs/deployments/environments) · [Vercel protected requests](https://vercel.com/docs/cli/curl)
@@ -70,6 +78,8 @@ If the Vercel project disables system environment variables for builds, set `SEO
 2. In the existing [Search Console property](https://search.google.com/search-console/sitemaps?resource_id=https%3A%2F%2Fgetunimatch.app%2F), check the status and last read date for `https://getunimatch.app/sitemap.xml`. Submit it if it is missing from the report. The existing verification tag is preserved.
 3. In **URL Inspection**, test a profile and each catalog language. Use the live test to check fetch status and inspect the Google-selected canonical after processing. A sitemap entry does not confirm indexing.
 4. Check **Page indexing** for unexpected soft 404s, duplicates and crawled-but-not-indexed pages. In **Performance → Search results**, filter by page path and compare clicks, impressions and queries over consistent periods. Use **Core Web Vitals** when field data becomes available.
+
+On 23 November 2026, Search Console confirmed priority crawl requests for `/countries/poland` and `/study/computer-science`. Later the same day, individual inspection still reported the first URL as unknown and the second as discovered and outside the index. The aggregate report was dated 16 November and showed eight indexed pages. Record the inspection date, index verdict, last crawl and Google-selected canonical beside the sitemap's last-read date and the Page indexing report date. Use the sitemap-filtered Page indexing report for total coverage whenever Google refreshes it.
 
 ## Code map
 

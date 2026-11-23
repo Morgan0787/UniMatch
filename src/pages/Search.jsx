@@ -35,17 +35,28 @@ const loadSavedFilters = () => {
     }
 };
 
+function catalogPreviewRows(preview) {
+    const { rows, total } = preview || {};
+    if (Array.isArray(rows) && rows.length <= 6 && Number.isInteger(total) && total >= rows.length) return rows;
+    return undefined;
+}
+
+function readCatalogPreview() {
+    const payload = document.getElementById('unimatch-catalog-preview')?.textContent;
+    if (!payload) return undefined;
+    try { return catalogPreviewRows(JSON.parse(payload)); }
+    catch { return undefined; }
+}
+
 async function loadCatalogPreview({ signal }) {
     const response = await fetch('/assets/catalog-preview.json', { signal });
     if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return [];
-    const { rows, total } = await response.json();
-    if (!Array.isArray(rows) || rows.length > 6 || !Number.isInteger(total) || total < rows.length) return [];
-    return rows;
+    return catalogPreviewRows(await response.json()) ?? [];
 }
 
 export default function Search() {
     const { t, language } = useLanguage();
-    const { session } = useAuth();
+    const { session, isLoadingAuth } = useAuth();
     const queryClient = useQueryClient();
     const owner = session?.user;
     const profileQuery = useQuery(studentProfileQueryOptions(owner));
@@ -120,7 +131,7 @@ export default function Search() {
     const canShowPreview = isLoading && !owner?.id && !searchQuery && activeFilterCount === 0 && resultPage === 1 && !location.state?.catalogFocusId;
     const { data: previewRows = [] } = useQuery({
         queryKey: ['universityCatalogPreview'], queryFn: loadCatalogPreview, enabled: canShowPreview,
-        retry: false, staleTime: Infinity,
+        retry: false, staleTime: Infinity, initialData: readCatalogPreview,
     });
     useEffect(() => {
         if (!userProfile || searchParams.has('filters')) return;
@@ -179,6 +190,7 @@ export default function Search() {
     const handleRemoveFromCompare = (universityId) => setCompareList(prev => prev.filter(id => id !== universityId));
     const compareUniversities = useMemo(() => universities.filter(uni => compareList.includes(uni.id)), [universities, compareList]);
     const loadingLabel = { en: 'Loading all universities…', ru: 'Загружаем полный каталог…', uz: 'To‘liq katalog yuklanmoqda…' }[language];
+    const searchPlaceholder = { en: 'Search universities', ru: 'Поиск вузов', uz: 'Universitet qidirish' }[language];
     const filterDoneLabel = { en: 'Show results', ru: 'Показать результаты', uz: 'Natijalarni ko‘rsatish' }[language] || 'Show results';
     const unsetLabel = { en: 'Not set', ru: 'Не указано', uz: 'Kiritilmagan' }[language] || 'Not set';
     const desktopFilterFields = <FilterPanel filters={filters} setFilters={setFilters} onReset={resetFilters} universities={universities} />;
@@ -207,7 +219,7 @@ export default function Search() {
                     <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
                         <div className="relative flex-1 w-full">
                             <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#55504a]" />
-                            <Input aria-label={t('search.placeholder')} placeholder={t('search.placeholder')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-12 pl-12 pr-10 py-0 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
+                            <Input aria-label={t('search.placeholder')} placeholder={searchPlaceholder} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="h-12 pl-12 pr-10 py-0 text-base bg-[#fffdf8] border-[#ded5c6] rounded-full focus:bg-white" />
                             {searchQuery && <button aria-label={t('filters.reset')} onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 min-h-10 min-w-10 inline-flex items-center justify-center rounded-full text-[#55504a] hover:text-[#292823]"><X className="w-4 h-4" /></button>}
                         </div>
                         <Button
@@ -260,7 +272,7 @@ export default function Search() {
                                     {pageRows.map(({ university, programme, budget }) => (
                                         <UniversityCard key={university.id} university={university} programme={programme} budget={budget}
                                             userGpa={filters.gpa} userIelts={filters.ielts} userTopik={filters.topikLevel} isSaved={isUniversityFavorite(savedUniversities, university)}
-                                            saveDisabled={saving || profileQuery.isLoading || profileQuery.isError} savePendingLabel={favoriteAction?.university.id === university.id ? pendingLabel : undefined}
+                                            saveDisabled={isLoadingAuth || saving || profileQuery.isLoading || profileQuery.isError} savePendingLabel={favoriteAction?.university.id === university.id ? pendingLabel : undefined}
                                             onSave={handleSave} onView={rememberCatalogPosition} isComparing={compareList.includes(university.id)}
                                             compareLimitReached={compareList.length >= 3} onCompareToggle={handleCompareToggle} previewOnly={showingPreview}
                                             prioritizePhotoLoading={university.id === priorityPhotoId} />

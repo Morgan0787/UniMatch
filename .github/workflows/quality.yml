@@ -1,0 +1,32 @@
+name: Quality checks
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'codex/**']
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck -- --noEmit
+      - run: npm run lint
+      - run: npm run check:matching
+      - run: npm run check:admissions
+      - run: node scripts/check-catalog.mjs
+      - run: npm run build
+        env:
+          SEO_FETCH_PUBLIC_CATALOG: '0'
+      - run: npm run check:seo

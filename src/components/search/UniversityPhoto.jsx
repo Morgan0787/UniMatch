@@ -1,24 +1,6 @@
 import { useState } from 'react';
 import { Camera, ChevronDown } from 'lucide-react';
-import { getUniversityPhoto } from '@/lib/admissions/presentation';
-
-const getWikimediaResponsiveSources = (url) => {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== 'https:' || !['upload.wikimedia.org', 'thumb.wikimedia.org'].includes(parsed.hostname)
-      || parsed.port || parsed.username || parsed.password || !/^\/wikipedia\/commons\/thumb\//.test(parsed.pathname)) return null;
-    const match = parsed.pathname.match(/^(.*\/)(960px-)([^/]+\.jpe?g)$/i);
-    if (!match) return null;
-    const srcSet = widths => widths.map(width => `${parsed.origin}${match[1]}${width}px-${match[3]} ${width}w`).join(', ');
-    return {
-      srcSet: srcSet([250, 500, 960]),
-      mobileSrcSet: srcSet([250, 500]),
-      sizes: '(min-width: 1600px) calc((100vw - 100px) / 4), (min-width: 1100px) calc((100vw - 100px) / 3), (min-width: 700px) calc((100vw - 80px) / 2), calc(100vw - 56px)',
-    };
-  } catch {
-    return null;
-  }
-};
+import { getUniversityPhoto, getWikimediaResponsiveSources } from '@/lib/admissions/presentation';
 
 export default function UniversityPhoto({ university, language, showDetails = true, prioritizeLoading = false, responsivePreview = false }) {
   const [failedResponsiveUrl, setFailedResponsiveUrl] = useState(null);

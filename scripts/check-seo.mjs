@@ -9,6 +9,7 @@ import { safePublicLoginReturn } from '../src/lib/loginReturn.js';
 import { universityReturnPath } from '../src/lib/universityNavigation.js';
 import { buildDiscoveryPages } from './seo-pages.mjs';
 import { loadSeoInstitutions, projectSeoInstitutions } from './seo-catalog.mjs';
+import { assertProtectedSeoPaths } from './seo-route-protection.mjs';
 import { publicAdmissionCatalogRow } from './fixtures/publicAdmissionCatalog.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -61,6 +62,24 @@ assert.ok(builtPages.some(file => file.startsWith('ru/guides/')) && builtPages.s
   'Build should emit localized Russian and Uzbek guide pages');
 
 const sitemapLocations = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
+const protectedPaths = (await read('scripts/seo-protected-paths.txt')).trim().split(/\r?\n/);
+assertProtectedSeoPaths([...protectedPaths, '/guides/new-guide']);
+assert.throws(() => assertProtectedSeoPaths(protectedPaths.filter(route => route !== '/study')),
+  /drop 1 published URL\(s\):\n\/study\n/);
+if (process.argv.includes('--protected')) {
+  assertProtectedSeoPaths(sitemapLocations.map(url => new URL(url).pathname));
+  const preview = JSON.parse(await readFile(path.join(dist, 'assets/catalog-preview.json'), 'utf8'));
+  assert.ok(preview.rows.length > 0 && preview.rows.length <= 6, 'The release preview must include public first-page rows');
+  for (const file of ['Search.html', 'ru/Search.html', 'uz/Search.html']) {
+    const html = await readFile(path.join(dist, file), 'utf8');
+    const [, payload] = singleMatch(html, /<script id="unimatch-catalog-preview" type="application\/json">(.*?)<\/script>/s, file);
+    assert.deepEqual(JSON.parse(payload), preview, `${file}: in-document and navigation snapshots must match`);
+    assert.doesNotMatch(html, /<link[^>]+href="\/assets\/catalog-preview\.json"/, file);
+    if (preview.rows[0].admissionCatalog?.media?.image) {
+      assert.match(html, /<img\b[^>]*class="entry-preview-photo"[^>]*fetchPriority="high"/i, file);
+    }
+  }
+}
 assert.equal(new Set(sitemapLocations).size, sitemapLocations.length, 'Sitemap locations must be unique');
 assert.ok(sitemapLocations.includes(`${SITE_URL}/Search`));
 assert.ok(sitemapLocations.includes(`${SITE_URL}/ru/Search`));
@@ -240,6 +259,22 @@ assert.match(sourceSection.links[0].detail, /BSc Computer Science \(teaching lan
   'Official source links must identify the programme and associated facts');
 assert.equal(new Set(sourceSection.links.map(link => link.href)).size, sourceSection.links.length,
   'Official source URLs must be de-duplicated');
+
+const scopedTuition = structuredClone(published);
+scopedTuition.catalog.programmes[0].tuition.scope.studentCategory = 'international_freshman';
+const scopedProfile = project([scopedTuition]).find(page => page.universityId);
+assert.ok(!scopedProfile.description.includes(formatUsd(toUsd(12000, 'EUR'))),
+  'A quote for a specific applicant category must not appear as a general price in search snippets');
+assert.match(scopedProfile.intro, /Published tuition:/);
+
+const historicalTuition = structuredClone(projectSeoInstitutions(adaptPublicCatalog([published]))[0]);
+historicalTuition.programmes[0].tuition = {
+  value: '$2,194 / semester (2026/27)', status: 'historical_reference',
+  notice: 'Historical reference for 2026/27; current applicability is unconfirmed.', generalAudience: true,
+};
+const historicalProfile = buildDiscoveryPages([historicalTuition], []).pages.find(page => page.universityId);
+assert.doesNotMatch(historicalProfile.description, /2,194/);
+assert.match(historicalProfile.intro, /\$2,194.*Historical reference/);
 
 const staleVerified = publicAdmissionCatalogRow({
   id: '00000000-0000-4000-8000-000000000005', slug: 'stale-verified', alias: '10000000-0000-4000-8000-000000000005',

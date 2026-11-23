@@ -147,7 +147,7 @@ function profile(institution, countryLink, needsDisambiguation, { studyLinks = [
       : null,
     programme.intake ? `Its published intake is ${displayIntake(programme.intake)}.` : null,
     programme.tuition
-      ? `Published tuition: ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}.`
+      ? `${programme.tuition.status === 'current_verified' ? 'Published tuition' : 'Published tuition reference'}: ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}.`
       : null,
     programme.languageRequirement ? `Language requirement: ${programme.languageRequirement.value}.` : null,
     'Review the official programme sources before applying.',
@@ -183,7 +183,7 @@ function profile(institution, countryLink, needsDisambiguation, { studyLinks = [
     where ? `Location: ${where}` : null,
     institution.website ? `Official website: ${institution.website}` : null,
     `Catalogued programmes: ${institution.programmes.length}`,
-    programme.tuition ? `Lead programme tuition (${programme.name}): ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}` : null,
+    programme.tuition ? `Lead programme ${programme.tuition.status === 'current_verified' ? 'tuition' : 'tuition reference'} (${programme.name}): ${programme.tuition.value}${programme.tuition.notice ? ` (${programme.tuition.notice})` : ''}` : null,
     programme.deadline ? `Lead programme deadline (${programme.name}): ${programme.deadline.value}` : null,
     programme.languageRequirement ? `Lead language condition (${programme.name}): ${programme.languageRequirement.value}` : null,
     programme.academicRequirement ? `Lead academic condition (${programme.name}): ${programme.academicRequirement.value}` : null,
@@ -248,7 +248,8 @@ function profile(institution, countryLink, needsDisambiguation, { studyLinks = [
     }] : []),
   ];
 
-  const tuitionShort = programme.tuition ? programme.tuition.value.replace(/\s*·\s*International.*$/i, '').trim() : null;
+  const tuitionShort = programme.tuition?.status === 'current_verified' && programme.tuition.generalAudience
+    ? programme.tuition.value : null;
   const metaParts = [
     `${programme.name} at ${institution.name} (${where})`,
     programme.teachingLanguage ? `taught in ${programme.teachingLanguage}` : null,
@@ -365,18 +366,38 @@ export function buildDiscoveryPages(institutions, editorial = guides) {
     if (key === 'poland') {
       // Deliberately curated; classification alone can include AI or engineering tracks.
       const examples = new Set(['oc90-032', 'oc90-035', 'oc90-038', 'oc90-033']);
-      const links = rows.filter(item => examples.has(item.slug)).flatMap(item => {
-        const programme = item.programmes.find(p => p.field === 'computer_science' && p.degree === 'Bachelor'
+      const selectedProgrammes = rows.filter(item => examples.has(item.slug)).flatMap(institution => {
+        const programme = institution.programmes.find(p => p.field === 'computer_science' && p.degree === 'Bachelor'
           && matchesCountry(p.country, 'Poland') && /computer science/i.test(p.name));
-        return programme ? [{ ...institutionLink(item), detail: programme.name }] : [];
+        return programme ? [{ institution, programme }] : [];
       });
-      if (links.length >= 2) {
+      if (selectedProgrammes.length >= 2) {
         const path = '/study/computer-science-in-poland';
+        const links = selectedProgrammes.map(({ institution, programme }) => ({ ...institutionLink(institution), detail: programme.name }));
+        const programmeDifferences = selectedProgrammes.map(({ institution, programme }) => [
+          `${programme.name} — ${institution.name}`,
+          programme.campus ? `Campus: ${programme.campus}` : null,
+          programme.teachingLanguage ? `Verified teaching language: ${programme.teachingLanguage}` : 'Teaching language: not confirmed in this record',
+          programme.intake ? `Published intake: ${displayIntake(programme.intake)}` : 'Intake: not confirmed in this record',
+          programme.tuition
+            ? `${programme.tuition.status === 'current_verified' ? 'Current verified tuition' : 'Tuition reference'}: ${programme.tuition.value}${programme.tuition.notice ? ` — ${programme.tuition.notice}` : ''}`
+            : 'Tuition: not published in this record; confirm with the university',
+        ].filter(Boolean).join(' · '));
+        const programmeSources = selectedProgrammes.flatMap(({ institution, programme }) =>
+          namedPublicSources(programme.sources, 'en').map(source => ({
+            href: source.url,
+            label: source.title,
+            detail: `${institution.name} · ${programme.name} · Checked ${source.checkedAt}`,
+          })));
+        const broadComputerScience = study.find(hub => hub.path === '/study/computer-science');
         study.push(page(path, 'Study computer science in Poland',
           'Compare selected bachelor’s programmes in computer science at Polish universities. Start with the programme name and campus, then follow the sources on each university profile.',
           [home, countryIndex, countryLink], [
             { heading: 'Computer science programmes', links },
-            { heading: 'How to compare the programmes', paragraphs: ['Read the course lists to see how each programme balances programming, mathematics and systems. Confirm the teaching language for your track and check what documents the university requires for the intake you plan to apply to.'], links: [country.source] },
+            { heading: 'Published programme details', items: programmeDifferences },
+            ...(programmeSources.length ? [{ heading: 'Official programme sources', links: programmeSources }] : []),
+            { heading: 'How to compare the programmes', paragraphs: ['Compare the published programme details and follow each official source for current course content, language and application requirements. Confirm the intake and applicant category that apply to you.'], links: [country.source] },
+            ...(broadComputerScience ? [{ heading: 'Explore computer science programmes abroad', links: [{ href: broadComputerScience.path, label: broadComputerScience.heading }] }] : []),
           ]));
         subjectLinks.push({ href: path, label: 'Computer science in Poland' });
       }
@@ -450,6 +471,17 @@ export function buildDiscoveryPages(institutions, editorial = guides) {
       [home], [{ heading: 'Guides', links: articles.map(article => ({ href: article.path, label: article.heading, detail: languageDetail[article.language] || article.language })) }])] : []),
   ];
   const pages = [...indexes, ...profiles, ...destinations, ...study, ...articles];
+  const emittedPaths = new Set(pages.map(entry => entry.path));
+  const polandGuidePath = '/countries/poland';
+  if (emittedPaths.has(polandGuidePath)) {
+    for (const article of articles.filter(entry => entry.language === 'en'
+      && entry.sections.some(section => [section.heading, ...(section.paragraphs || [])].join(' ').includes('Poland')))) {
+      article.sections.push({
+        heading: 'Explore study destinations',
+        links: [{ href: polandGuidePath, label: 'Study in Poland' }],
+      });
+    }
+  }
   if (new Set(pages.map(entry => entry.path)).size !== pages.length) throw new Error('Duplicate discovery path');
   return { pages, catalogLinks: indexes.map(entry => ({ href: entry.path, label: entry.heading })) };
 }

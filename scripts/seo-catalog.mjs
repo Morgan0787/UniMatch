@@ -137,6 +137,7 @@ function projectProgramme(programme, institution, sources, targetIntakeYear) {
   const campus = safeText(verifiedLocation?.campus);
 
   const tuition = projectDescriptiveFact(facts.tuition, 'tuition', sources);
+  const tuitionScope = facts.tuition?.scope;
   const deadline = projectDescriptiveFact(facts.deadline, 'deadline', sources);
   const academicRequirement = facts.requirementPolicy === null
     ? projectDescriptiveFact(facts.academicRequirement, 'rule', sources)
@@ -165,7 +166,11 @@ function projectProgramme(programme, institution, sources, targetIntakeYear) {
     teachingLanguage,
     teachingLanguageYear: teachingLanguage ? targetIntakeYear : null,
     intake,
-    tuition: tuition ? { value: tuition.value, notice: tuition.notice, status: tuition.status } : null,
+    tuition: tuition ? {
+      value: tuition.value, notice: tuition.notice, status: tuition.status,
+      generalAudience: !!tuitionScope && [tuitionScope.studentCategory, tuitionScope.schoolCountry, tuitionScope.credential, tuitionScope.route]
+        .every(value => value == null),
+    } : null,
     deadline: deadline ? { value: deadline.value, notice: deadline.notice } : null,
     academicRequirement: academicRequirement ? { value: academicRequirement.value, notice: academicRequirement.notice } : null,
     languageRequirement: languageRequirement ? { value: languageRequirement.value, notice: languageRequirement.notice } : null,
@@ -225,7 +230,7 @@ function isAllowedPublicKey(key) {
   }
 }
 
-function publicCatalogEnabled(env) {
+export function publicCatalogEnabled(env) {
   if (env.VERCEL_ENV === 'production') return true;
   if (env.SEO_FETCH_PUBLIC_CATALOG === '0') return false;
   return env.VERCEL_ENV === 'preview' || env.SEO_FETCH_PUBLIC_CATALOG === '1';
